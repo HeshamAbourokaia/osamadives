@@ -5,6 +5,7 @@ import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import LogbookForm from "./LogbookForm";
 import PageCard from "./PageCard";
+import WeddingPage from "./WeddingPage";
 
 export const revalidate = 60;
 
@@ -74,6 +75,10 @@ export default async function LogbookPage() {
             <h2 className="lb-h2">Written by the people I took into the water.</h2>
             <p className="lb-stand">Each one is read and signed by me before it goes in the book. Real names, real dives, their own words.</p>
           </div>
+          <div className="lb-featured">
+            <span className="lb-mono">The first page</span>
+            <WeddingPage />
+          </div>
           {entries.some((e) => e.featured) ? (
             <div className="lb-featured">
               <span className="lb-mono">Page of the month</span>
@@ -83,7 +88,7 @@ export default async function LogbookPage() {
           {total === 0 ? (
             <div className="lb-empty">
               <span className="lb-mono">Entry 001</span>
-              <h3 className="lb-h2">The first page is yours.</h3>
+              <h3 className="lb-h2">The next page is yours.</h3>
               <a href="#sign" className="lb-btn lb-btn--paper">Write it</a>
             </div>
           ) : (

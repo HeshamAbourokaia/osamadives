@@ -3,6 +3,7 @@ import { Archivo, Caveat, IBM_Plex_Mono } from "next/font/google";
 import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import PageCard from "./PageCard";
+import WeddingPage from "./WeddingPage";
 import "./logbook.css";
 
 const archivo = Archivo({ subsets: ["latin"], weight: ["500", "700", "800"], variable: "--lb-display", display: "swap" });
@@ -30,18 +31,12 @@ export default async function HomeStrip() {
             <h2 className="lb-h2">Written by the people I took into the water.</h2>
             <p className="lb-stand">Every diver keeps a logbook. This one is mine, and the pages are written by my students. Read them, then add yours.</p>
           </div>
-          {entries.length ? (
-            <div className="lb-grid">
-              {entries.map((e, i) => (
-                <PageCard key={e.id} entry={e} number={total - i} />
-              ))}
-            </div>
-          ) : (
-            <div className="lb-empty">
-              <span className="lb-mono">Entry 001</span>
-              <h3 className="lb-h2">The first page is yours.</h3>
-            </div>
-          )}
+          <div className="lb-grid">
+            <WeddingPage variant="wall" />
+            {entries.slice(0, 2).map((e, i) => (
+              <PageCard key={e.id} entry={e} number={total - i} />
+            ))}
+          </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem", marginTop: "2.4rem" }}>
             <Link href="/logbook#sign" className="lb-btn lb-btn--paper">Sign my logbook</Link>
             <Link href="/logbook" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23, 18, 8, 0.3)" }}>Read every page</Link>

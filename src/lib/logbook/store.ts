@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { EntryStatus, LogbookEntry } from "./types";
+import type { EntryPatch, EntryStatus, LogbookEntry } from "./types";
 
 export interface ListOptions {
   status?: EntryStatus;
@@ -12,6 +12,7 @@ export interface LogbookStore {
   get(id: string): Promise<LogbookEntry | null>;
   list(opts?: ListOptions): Promise<LogbookEntry[]>;
   setStatus(id: string, status: EntryStatus, moderatedAt: string): Promise<LogbookEntry | null>;
+  update(id: string, patch: EntryPatch): Promise<LogbookEntry | null>;
   countSince(ipHash: string, sinceIso: string): Promise<number>;
 }
 
@@ -27,7 +28,9 @@ export class FileStore implements LogbookStore {
 
   private async readAll(): Promise<LogbookEntry[]> {
     try {
-      return JSON.parse(await fs.readFile(this.file, "utf8")) as LogbookEntry[];
+      const rows = JSON.parse(await fs.readFile(this.file, "utf8")) as Partial<LogbookEntry>[];
+      // Rows written before a field existed get its default.
+      return rows.map((r) => ({ reply: "", featured: false, videoUrl: null, ...r }) as LogbookEntry);
     } catch (e) {
       if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
       throw e;
@@ -78,6 +81,19 @@ export class FileStore implements LogbookStore {
     });
   }
 
+  update(id: string, patch: EntryPatch) {
+    return this.locked(async () => {
+      const all = await this.readAll();
+      const e = all.find((x) => x.id === id);
+      if (!e) return null;
+      if (patch.reply !== undefined) e.reply = patch.reply;
+      if (patch.featured !== undefined) e.featured = patch.featured;
+      if (patch.videoUrl !== undefined) e.videoUrl = patch.videoUrl;
+      await this.writeAll(all);
+      return e;
+    });
+  }
+
   async countSince(ipHash: string, sinceIso: string) {
     return (await this.readAll()).filter((e) => e.ipHash === ipHash && e.createdAt >= sinceIso).length;
   }
@@ -91,6 +107,7 @@ type Row = {
   id: string; created_at: string; status: string; name: string; country: string; site: string;
   dived_on: string; course: string; stamp: string; note: string; photo_url: string | null;
   flags: unknown; moderated_at: string | null; ip_hash: string;
+  reply: string | null; featured: boolean | null; video_url: string | null;
 };
 
 const fromRow = (r: Row): LogbookEntry => ({
@@ -108,6 +125,9 @@ const fromRow = (r: Row): LogbookEntry => ({
   flags: Array.isArray(r.flags) ? (r.flags as string[]) : [],
   moderatedAt: r.moderated_at ? new Date(r.moderated_at).toISOString() : null,
   ipHash: r.ip_hash,
+  reply: r.reply ?? "",
+  featured: Boolean(r.featured),
+  videoUrl: r.video_url,
 });
 
 export class NeonStore implements LogbookStore {
@@ -141,6 +161,9 @@ export class NeonStore implements LogbookStore {
           ip_hash text NOT NULL DEFAULT ''
         )`;
         await sql`CREATE INDEX IF NOT EXISTS logbook_status_created ON logbook_entries (status, created_at DESC)`;
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS reply text NOT NULL DEFAULT ''`;
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS featured boolean NOT NULL DEFAULT false`;
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS video_url text`;
       })();
     }
     await this.ready;
@@ -150,9 +173,10 @@ export class NeonStore implements LogbookStore {
   async create(e: LogbookEntry) {
     const sql = await this.db();
     await sql`INSERT INTO logbook_entries
-      (id, created_at, status, name, country, site, dived_on, course, stamp, note, photo_url, flags, moderated_at, ip_hash)
+      (id, created_at, status, name, country, site, dived_on, course, stamp, note, photo_url, flags, moderated_at, ip_hash, reply, featured, video_url)
       VALUES (${e.id}, ${e.createdAt}, ${e.status}, ${e.name}, ${e.country}, ${e.site}, ${e.divedOn}, ${e.course},
-              ${e.stamp}, ${e.note}, ${e.photoUrl}, ${JSON.stringify(e.flags)}::jsonb, ${e.moderatedAt}, ${e.ipHash})`;
+              ${e.stamp}, ${e.note}, ${e.photoUrl}, ${JSON.stringify(e.flags)}::jsonb, ${e.moderatedAt}, ${e.ipHash},
+              ${e.reply}, ${e.featured}, ${e.videoUrl})`;
   }
 
   async get(id: string) {
@@ -173,6 +197,18 @@ export class NeonStore implements LogbookStore {
   async setStatus(id: string, status: EntryStatus, moderatedAt: string) {
     const sql = await this.db();
     const rows = (await sql`UPDATE logbook_entries SET status = ${status}, moderated_at = ${moderatedAt}
+      WHERE id = ${id} RETURNING *`) as Row[];
+    return rows[0] ? fromRow(rows[0]) : null;
+  }
+
+  async update(id: string, patch: EntryPatch) {
+    const sql = await this.db();
+    const current = await this.get(id);
+    if (!current) return null;
+    const reply = patch.reply ?? current.reply;
+    const featured = patch.featured ?? current.featured;
+    const videoUrl = patch.videoUrl === undefined ? current.videoUrl : patch.videoUrl;
+    const rows = (await sql`UPDATE logbook_entries SET reply = ${reply}, featured = ${featured}, video_url = ${videoUrl}
       WHERE id = ${id} RETURNING *`) as Row[];
     return rows[0] ? fromRow(rows[0]) : null;
   }

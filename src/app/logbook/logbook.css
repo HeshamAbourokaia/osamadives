@@ -17,6 +17,7 @@
   --light-soft: #93aba8;
   --display: var(--lb-display), "Archivo", system-ui, sans-serif;
   --mono: var(--lb-mono), "IBM Plex Mono", ui-monospace, monospace;
+  --hand: var(--lb-hand), "Caveat", "Bradley Hand", cursive;
   --gutter: clamp(1.25rem, 5vw, 5.5rem);
   --maxw: 82rem;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -256,3 +257,26 @@
   .lb *, .lb *::before, .lb *::after { animation: none !important; transition: none !important; }
   .lb-grid .lb-page { transform: none; }
 }
+
+/* ---- Osama's reply, in his hand -------------------------------------------- */
+.lb-page__reply { display: grid; gap: 0.15rem; padding: 0.6rem 0 0.2rem; border-top: 1px dashed rgba(23, 18, 8, 0.2); }
+.lb-page__reply-who { font: 600 1.15rem/1 var(--hand); color: var(--reef); }
+.lb-page__reply p { margin: 0; font: 600 1.35rem/1.35 var(--hand); color: var(--ink); transform: rotate(-0.6deg); text-wrap: pretty; }
+.lb-page--single .lb-page__reply p { font-size: 1.7rem; }
+.lb-page__video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #000; }
+
+/* ---- page of the month ----------------------------------------------------- */
+.lb-featured { display: grid; gap: 1rem; margin-bottom: clamp(2.4rem, 5vw, 4rem); }
+.lb-featured > .lb-mono { color: var(--reef); }
+.lb-featured .lb-page { margin-inline: 0; max-width: 46rem; }
+
+/* ---- moderation page ------------------------------------------------------- */
+.lb-admin { gap: 1rem; }
+.lb-admin__links { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+.lb-admin__links a { color: var(--reef); }
+.lb-admin__form { display: grid; gap: 0.9rem; border-top: 1px solid rgba(23, 18, 8, 0.14); padding-top: 1rem; }
+.lb-admin__form .lb-field > .lb-mono { color: var(--ink-soft); }
+.lb-admin__input { width: 100%; border: 1px solid rgba(23, 18, 8, 0.25); border-radius: 3px; background: #fff; color: var(--ink); padding: 0.6rem 0.7rem; font: 500 1rem/1.5 var(--display); }
+.lb-admin__input:focus { outline: 2px solid var(--reef); outline-offset: 1px; }
+.lb-admin__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.lb-admin .lb-consent input { accent-color: var(--reef); }

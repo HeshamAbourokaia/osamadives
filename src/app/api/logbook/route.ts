@@ -112,6 +112,7 @@ export async function POST(req: Request) {
     id, createdAt: new Date().toISOString(), status: "pending",
     name, country, site, divedOn, course, stamp, note, photoUrl,
     flags, moderatedAt: null, ipHash,
+    reply: "", featured: false, videoUrl: null,
   };
   await store.create(entry);
 

@@ -49,11 +49,21 @@ export interface LogbookEntry {
   flags: string[];
   moderatedAt: string | null;
   ipHash: string;
+  reply: string;
+  featured: boolean;
+  videoUrl: string | null;
+}
+
+export interface EntryPatch {
+  reply?: string;
+  featured?: boolean;
+  videoUrl?: string | null;
 }
 
 export const LIMITS = {
   name: { min: 2, max: 40 },
   country: { max: 40 },
   note: { min: 12, max: 600 },
+  reply: { max: 280 },
   photoBytes: 6 * 1024 * 1024,
 } as const;

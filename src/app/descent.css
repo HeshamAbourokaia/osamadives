@@ -816,3 +816,8 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     scroll-snap-type: x proximity;}
 .descent [data-sc-stage] {height: 100svh;}
 .descent #instagram-feed .text-gray-500, .descent #instagram-feed .text-gray-600 { color: #5a5245; }
+
+/* Before the engine is ready the hero copy is visible, so the first paint carries the
+   headline and the Largest Contentful Paint does not wait for JavaScript. The engine
+   takes over opacity per frame once it mounts. */
+html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: none; }

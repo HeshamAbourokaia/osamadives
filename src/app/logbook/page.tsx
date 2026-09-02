@@ -43,7 +43,9 @@ export default async function LogbookPage() {
       </header>
 
       <section className="lb-hero">
-        <span className="lb-hero__year">1983</span>
+        <svg className="lb-hero__year" viewBox="0 0 1000 260" aria-hidden="true" focusable="false">
+          <text x="1000" y="236" textAnchor="end">1983</text>
+        </svg>
         <div className="lb-hero__inner">
           <span className="lb-mono lb-rise">Dive log · Dahab, South Sinai · kept since 1983</span>
           <h1 className="lb-h1 lb-rise">Sign my logbook.</h1>

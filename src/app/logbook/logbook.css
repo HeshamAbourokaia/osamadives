@@ -90,11 +90,16 @@
     radial-gradient(40vw 40vh at 10% 90%, rgba(11, 107, 96, 0.18), transparent 70%),
     var(--abyss);
 }
+/* Decorative year as SVG text: outlined like the descent page, and not a paint candidate
+   for LCP the way a huge stroked text node is. */
 .lb-hero__year {
-  position: absolute; right: -0.04em; bottom: -0.18em; z-index: 0;
-  font: 900 clamp(9rem, 28vw, 24rem)/1 var(--display);
-  color: transparent; -webkit-text-stroke: 2px rgba(63, 209, 190, 0.16);
-  letter-spacing: 0.01em; pointer-events: none; user-select: none;
+  position: absolute; right: -1vw; bottom: -2vw; z-index: 0;
+  width: min(92vw, 1100px); height: auto; pointer-events: none; user-select: none;
+}
+.lb-hero__year text {
+  font: 900 300px/1 var(--display); letter-spacing: 0.01em;
+  fill: transparent; stroke: rgba(63, 209, 190, 0.16); stroke-width: 3px;
+  paint-order: stroke;
 }
 .lb-hero__inner { position: relative; z-index: 1; max-width: var(--maxw); margin-inline: auto; width: 100%; display: grid; gap: 1.4rem; }
 .lb-hero .lb-mono { color: var(--glow); }

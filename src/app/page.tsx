@@ -39,14 +39,14 @@ export default function Home() {
         {/* ACT 1 · ENTRY: the sea, scrubbing under the wheel from the first pixel */}
         <section className="g-abyss" data-sc-act="scrub" data-sc-span="2.3" style={{ "--sc-span": 2.3 } as React.CSSProperties} data-sc-dwell="0.35">
           <div data-sc-stage>
-            <img className="sc-stage__poster" src="/descent/hero-poster.webp" alt="" />
+            <img className="sc-stage__poster" src="/descent/hero-poster.webp" srcSet="/descent/hero-poster-m.webp 800w, /descent/hero-poster.webp 1600w" sizes="100vw" alt="" />
             <video data-sc-scrub data-sc-src="/descent/hero.mp4" data-sc-src-mobile="/descent/hero-m.mp4" muted playsInline />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="copy-scrim" aria-hidden="true" />
             <div className="sea-scrim-m" aria-hidden="true" />
             <div className="sc-copy sc-copy--lead entry-copy" data-sc-cue="0 0.85 0">
               <span className="microcopy">Dive log · Dahab, South Sinai · kept since 1983</span>
-              <h1 data-sc-kinetic="lines">The sea took him in.</h1>
+              <h1>The sea took him in.</h1>
               <p className="stand">Osama is a PADI Master Scuba Diver Trainer, born on this shore. His family has lived beside the water since 1983. Scroll to descend.</p>
               <a className="cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
             </div>
@@ -76,7 +76,7 @@ export default function Home() {
               <div className="guide-plate">
                 <span className="exhibit-letter" aria-hidden="true">O</span>
                 <figure data-sc-reveal="down" data-sc-reveal-at="0.02 0.4" data-sc-tilt="5">
-                  <img src="/descent/osama-portrait.webp" width={960} height={956} alt="Osama in his wetsuit on the shore at Dahab, checking his regulator, Sinai mountains behind him" />
+                  <img src="/descent/osama-portrait.webp" srcSet="/descent/osama-portrait-m.webp 800w, /descent/osama-portrait.webp 960w" sizes="(max-width: 860px) 92vw, 45vw" width={960} height={956} alt="Osama in his wetsuit on the shore at Dahab, checking his regulator, Sinai mountains behind him" />
                   <figcaption>Before the morning dive · Lighthouse, Dahab</figcaption>
                 </figure>
               </div>
@@ -97,8 +97,8 @@ export default function Home() {
             <div className="peak-frame">
               <div className="peak-mat">
                 <div className="peak-plate">
-                  <img src="/descent/peak-1987.webp" width={1400} height={933} alt="A scratched family photograph from August 1987: four young people arm in arm on the Dahab shore beside an orange Bedouin truck" />
-                  <img className="now" src="/descent/peak-now.webp" width={1400} height={933} alt="Osama today on the same shore, in his wetsuit before a dive, the sea on his left and the Sinai mountains behind" />
+                  <img src="/descent/peak-1987.webp" srcSet="/descent/peak-1987-m.webp 800w, /descent/peak-1987.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="A scratched family photograph from August 1987: four young people arm in arm on the Dahab shore beside an orange Bedouin truck" />
+                  <img className="now" src="/descent/peak-now.webp" srcSet="/descent/peak-now-m.webp 800w, /descent/peak-now.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="Osama today on the same shore, in his wetsuit before a dive, the sea on his left and the Sinai mountains behind" />
                 </div>
               </div>
               <div className="peak-captions">
@@ -143,7 +143,7 @@ export default function Home() {
                 <p>A slope of garden eels swaying out of the sand like sea grass. Open Water and up.</p>
               </a>
               <figure className="station-img">
-                <img src="/descent/sea-poster.webp" alt="A coral-crusted pillar rising from the sea floor at Dahab, a diver hovering beside it" />
+                <img src="/descent/sea-poster.webp" srcSet="/descent/sea-poster-m.webp 800w, /descent/sea-poster.webp 1600w" sizes="(max-width: 860px) 74vw, 22rem" alt="A coral-crusted pillar rising from the sea floor at Dahab, a diver hovering beside it" />
                 <figcaption>The reef, on an ordinary morning</figcaption>
               </figure>
               <a className="station" href="/dive-sites/the-canyon-dahab" data-sc-tilt="4">
@@ -178,7 +178,7 @@ export default function Home() {
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true">I</span>
                 <div className="exhibit-card" data-sc-tilt="5">
-                  <img src="/descent/arch-lagoon.webp" alt="The turquoise lagoon at Dahab where first dives happen" />
+                  <img src="/descent/arch-lagoon.webp" srcSet="/descent/arch-lagoon-m.webp 800w, /descent/arch-lagoon.webp 1400w" sizes="(max-width: 860px) 92vw, 40vw" alt="The turquoise lagoon at Dahab where first dives happen" />
                   <div className="row"><h3>Intro Dive</h3><span className="spec">Half a day</span></div>
                   <p>Never tried it. A pool, then the sea, no certification, just a first breath underwater.</p>
                 </div>
@@ -202,7 +202,7 @@ export default function Home() {
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true">R</span>
                 <div className="exhibit-card" data-sc-tilt="5">
-                  <img src="/descent/osama-truck.webp" alt="Osama on the back of a pickup truck in his wetsuit after a dive, talking to divers" />
+                  <img src="/descent/osama-truck.webp" srcSet="/descent/osama-truck-m.webp 800w, /descent/osama-truck.webp 960w" sizes="(max-width: 860px) 92vw, 40vw" alt="Osama on the back of a pickup truck in his wetsuit after a dive, talking to divers" />
                   <div className="row"><h3>Rescue Diver</h3><span className="spec">4 days</span></div>
                   <p>The course that turns you into a buddy worth diving with.</p>
                 </div>
@@ -218,7 +218,7 @@ export default function Home() {
         {/* ACT 7 · SURFACING: the camera breaks the surface, the gauge reads zero */}
         <section className="g-abyss" data-sc-act="scrub" data-sc-span="1.4" style={{ "--sc-span": 1.4 } as React.CSSProperties} data-sc-dwell="0.3">
           <div data-sc-stage>
-            <img className="sc-stage__poster" src="/descent/surface-poster.webp" alt="" />
+            <img className="sc-stage__poster" src="/descent/surface-poster.webp" srcSet="/descent/surface-poster-m.webp 800w, /descent/surface-poster.webp 1600w" sizes="100vw" alt="" />
             <video data-sc-scrub data-sc-src="/descent/surface.mp4" data-sc-src-mobile="/descent/surface-m.mp4" muted playsInline />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="copy-scrim" aria-hidden="true" />

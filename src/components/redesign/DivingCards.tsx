@@ -16,7 +16,7 @@ const cards: Card[] = [
     title: "Intro Dive",
     sub: "Never tried it. Try it.",
     desc: "Half a day. A pool, then the sea. No certification, just a first breath underwater.",
-    img: "/images/20250506_2155_Split-View-Dive-Adventure_simple_compose_01jtjq33dff84rv6vkcwef3g89.png",
+    img: "/images/FB_IMG_1621238990084.jpg",
     context: "I want to try an Intro Dive in Dahab.",
   },
   {

@@ -58,7 +58,7 @@ const reefs: Reef[] = [
     depth: "28m",
     feature: "Garden of swaying eels.",
     quote: "A meadow that breathes.",
-    img: "/images/20250507_2113_Vibrant Coral Reef_remix_01jtn7404xftcbbj5rpbj1xh15.png",
+    img: "/images/FB_IMG_1638331910256.jpg",
     x: 56,
     y: 44,
   },

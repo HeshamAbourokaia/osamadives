@@ -5,6 +5,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --abyss: #0a1f2e;
+  --reef: #0d9488;
+  --sun-glint: #f5d28a;
 }
 
 html {
@@ -17,6 +20,13 @@ body {
   font-family: var(--font-inter), Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Refined selection colour to match the reef palette */
+::selection {
+  background: rgba(13, 148, 136, 0.28);
+  color: inherit;
 }
 
 @layer utilities {
@@ -34,14 +44,75 @@ body {
     text-transform: uppercase;
     font-weight: 500;
   }
+
+  /* Fine film grain - sits over dark sections to add underwater texture */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  /* Caustic light - soft dancing light pools, like sun through water */
+  .caustics::before {
+    content: "";
+    position: absolute;
+    inset: -20% -10% 0 -10%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 40% at 22% 8%, rgba(120, 210, 220, 0.16), transparent 60%),
+      radial-gradient(50% 45% at 82% 4%, rgba(245, 210, 138, 0.12), transparent 62%);
+    filter: blur(6px);
+    animation: causticDrift 22s ease-in-out infinite alternate;
+  }
+
+  @keyframes causticDrift {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.9;
+    }
+    100% {
+      transform: translate3d(2.5%, 1.5%, 0) scale(1.08);
+      opacity: 1;
+    }
+  }
+
+  /* Slow ken-burns drift for hero stills */
+  .ken-burns {
+    animation: kenBurns 26s ease-in-out infinite alternate;
+  }
+  @keyframes kenBurns {
+    0% {
+      transform: scale(1.02) translate3d(0, 0, 0);
+    }
+    100% {
+      transform: scale(1.1) translate3d(-1.5%, -1.5%, 0);
+    }
+  }
+
+  /* Soft seam that fades one section's colour into the next */
+  .seam-into-bone {
+    background: linear-gradient(to bottom, transparent, #f5f5f0);
+  }
+  .seam-into-abyss {
+    background: linear-gradient(to bottom, transparent, #0a1f2e);
+  }
 }
 
 @layer components {
-  /* Fade-in on scroll */
+  /* Fade-in on scroll - wired up by <ScrollReveal /> which adds .is-visible */
   .reveal {
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 900ms ease, transform 900ms ease;
+    transform: translateY(26px);
+    transition: opacity 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
   }
   .reveal.is-visible {
     opacity: 1;

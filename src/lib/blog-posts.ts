@@ -158,7 +158,7 @@ But somewhere during that dive - maybe when you see your first sleeping parrotfi
 You will realize that the underwater world is not one world, but two. And you have only been visiting one of them.
 
 The night reef is waiting for you.`,
-    featuredImage: "/images/20250507_2113_Vibrant-Coral-Reef_remix_01jtn7404xftcbbj5rpbj1xh15.png",
+    featuredImage: "/images/OsamDives_The_Canyon.jpg",
     tags: ["Night Diving", "Dahab", "Diving Stories", "Marine Life"],
   },
 ];

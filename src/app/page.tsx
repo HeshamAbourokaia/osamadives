@@ -3,6 +3,7 @@ import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import ScrollProgress from "@/components/ScrollProgress";
+import ScrollReveal from "@/components/ScrollReveal";
 import Hero from "@/components/redesign/Hero";
 import Lineage from "@/components/redesign/Lineage";
 import ReefsMap from "@/components/redesign/ReefsMap";
@@ -40,6 +41,7 @@ export default function Home() {
     <main className="bg-abyss text-white">
       <TopNav />
       <ScrollProgress sections={sections} />
+      <ScrollReveal />
       <Hero />
       <Lineage />
       <ReefsMap />

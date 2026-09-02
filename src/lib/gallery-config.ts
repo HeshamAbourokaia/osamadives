@@ -202,38 +202,15 @@ export const galleryPhotos: GalleryPhoto[] = [
   },
   {
     id: 'coral-reef-1',
-    src: '/images/20250507_2113_Vibrant-Coral-Reef_remix_01jtn7404xftcbbj5rpbj1xh15.png',
-    alt: 'Vibrant coral reef teeming with colorful fish in the Red Sea',
-    title: 'Living Tapestry',
+    src: '/images/FB_IMG_1638331910256.jpg',
+    alt: 'A diver beside a giant gorgonian sea fan on a Dahab reef',
+    title: 'A Living Reef',
     description: 'These corals were here before my family arrived in 1983. They will be here long after. When I was young, my father showed me how to read the reef - which corals meant healthy water, which fish meant good fishing. Now I pass that knowledge to visitors. Hospitality goes deeper than tables and chairs.',
     location: 'Dahab, Red Sea',
     coordinates: { lat: 28.5000, lng: 34.5167 },
     featured: true,
     category: 'marine-life',
-    tags: ['coral', 'reef', 'colorful', 'red-sea']
-  },
-  {
-    id: 'coral-reef-2',
-    src: '/images/20250507_2113_Vibrant Coral Reef_remix_01jtn7404xftcbbj5rpbj1xh15.png',
-    alt: 'Close-up of healthy coral formations in Dahab',
-    title: 'Patience in Stone',
-    description: 'A coral head this size took decades to grow, maybe centuries. Every tiny polyp a small act of faith. I think about patience differently since I started diving. The reef teaches you that the best things unfold slowly, that presence matters more than speed.',
-    location: 'Dahab, Red Sea',
-    coordinates: { lat: 28.5000, lng: 34.5167 },
-    category: 'marine-life',
-    tags: ['coral', 'close-up', 'red-sea']
-  },
-  {
-    id: 'split-view',
-    src: '/images/20250506_2155_Split-View-Dive-Adventure_simple_compose_01jtjq33dff84rv6vkcwef3g89.png',
-    alt: 'Split view showing above and below water in Dahab',
-    title: 'Between Two Worlds',
-    description: 'This is what Dahab means to me: desert mountains meeting underwater gardens. Above, Bedouin hospitality and endless tea. Below, a silence so complete you hear your own heartbeat. My family planted roots in both worlds.',
-    location: 'Dahab, Egypt',
-    coordinates: { lat: 28.5000, lng: 34.5167 },
-    featured: true,
-    category: 'diving',
-    tags: ['split-view', 'creative', 'dahab']
+    tags: ['coral', 'reef', 'sea-fan', 'red-sea']
   },
   {
     id: 'osama-himself',

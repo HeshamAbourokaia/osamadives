@@ -180,7 +180,7 @@ Congratulations Maria! The ocean is now your playground.`,
   {
     id: 'fb-story-6',
     type: 'video',
-    thumbnail: '/images/20250507_2113_Vibrant-Coral-Reef_remix_01jtn7404xftcbbj5rpbj1xh15.png',
+    thumbnail: '/images/FB_IMG_1638331910256.jpg',
     facebookUrl: 'https://www.facebook.com/osamasharks',
     title: 'Coral Gardens in Full Color',
     caption: `People always ask me: "Is the Red Sea really that colorful?"
@@ -257,7 +257,7 @@ Diving is not my job. It is my calling. And Dahab is not where I work - it is my
   {
     id: 'fb-story-10',
     type: 'photo',
-    thumbnail: '/images/20250506_2155_Split-View-Dive-Adventure_simple_compose_01jtjq33dff84rv6vkcwef3g89.png',
+    thumbnail: '/images/OsamaDives_The_Blue_Hole.jpeg',
     facebookUrl: 'https://www.facebook.com/osamasharks',
     title: 'Where Two Worlds Meet',
     caption: `This is what makes Dahab unique. Above the water: golden desert mountains. Below: an explosion of life and color.

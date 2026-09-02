@@ -44,8 +44,11 @@ export default function Lineage() {
       className="bg-bone py-24 sm:py-32 px-5 sm:px-10 scroll-mt-20"
     >
       <div className="max-w-editorial mx-auto">
-        <p className="label-eyebrow text-reef mb-4">01. Lineage</p>
-        <h2 className="font-display text-abyss text-4xl sm:text-6xl md:text-7xl leading-[1.02] mb-16 max-w-3xl">
+        <p className="reveal label-eyebrow text-reef mb-4">01. Lineage</p>
+        <h2
+          className="reveal font-display text-abyss text-4xl sm:text-6xl md:text-7xl leading-[1.02] mb-16 max-w-3xl"
+          style={{ ["--reveal-delay" as string]: "90ms" }}
+        >
           Forty years on one
           <br />
           stretch of coast.

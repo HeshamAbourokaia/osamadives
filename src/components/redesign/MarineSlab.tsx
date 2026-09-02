@@ -4,8 +4,8 @@ export default function MarineSlab() {
   return (
     <section className="relative h-[80vh] min-h-[520px] w-full overflow-hidden">
       <Image
-        src="/images/20250507_2113_Vibrant Coral Reef_remix_01jtn7404xftcbbj5rpbj1xh15.png"
-        alt="Vibrant Red Sea coral reef with schools of fish"
+        src="/images/FB_IMG_1638331910256.jpg"
+        alt="A diver beside a giant gorgonian sea fan on a Red Sea reef in Dahab"
         fill
         sizes="100vw"
         className="object-cover"

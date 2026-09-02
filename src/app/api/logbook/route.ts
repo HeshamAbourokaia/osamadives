@@ -82,7 +82,13 @@ export async function POST(req: Request) {
     if (forbidden) return fail(FORBIDDEN_MESSAGE[forbidden]);
   }
 
-  const store = getStore();
+  let store: ReturnType<typeof getStore>;
+  try {
+    store = getStore();
+  } catch (e) {
+    console.error("logbook storage not configured", e);
+    return fail("The logbook is not open yet. Send your note to Osama on WhatsApp for now.", 503);
+  }
   const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
   if ((await store.countSince(ipHash, dayAgo)) >= DAILY_LIMIT) {
     return fail("Five pages a day is the limit. Come back tomorrow.", 429);

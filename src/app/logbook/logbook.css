@@ -28,7 +28,7 @@
   min-height: 100vh;
 }
 .lb *, .lb *::before, .lb *::after { box-sizing: border-box; }
-.lb a { color: inherit; }
+.lb :where(a) { color: inherit; } /* zero specificity so .lb-btn colours win */
 .lb img { display: block; max-width: 100%; }
 
 .lb-mono {

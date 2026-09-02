@@ -826,7 +826,7 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .depth-stage { background: var(--abyss-deep); }
 .descent .depth-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .descent .depth-photo--1 { opacity: clamp(0, 1 - (var(--sc-p, 0) - 0.3) / 0.08, 1); }
-.descent .depth-photo--2 { opacity: clamp(0, (var(--sc-p, 0) - 0.3) / 0.08, 1) * clamp(0, 1 - (var(--sc-p, 0) - 0.64) / 0.08, 1); }
+.descent .depth-photo--2 { opacity: calc(clamp(0, (var(--sc-p, 0) - 0.3) / 0.08, 1) * clamp(0, 1 - (var(--sc-p, 0) - 0.64) / 0.08, 1)); }
 .descent .depth-photo--3 { opacity: clamp(0, (var(--sc-p, 0) - 0.64) / 0.08, 1); }
 .descent .depth-copy { position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); z-index: 2; }
 .descent .depth-cue { position: absolute; left: 0; bottom: 0; max-width: 34rem; }

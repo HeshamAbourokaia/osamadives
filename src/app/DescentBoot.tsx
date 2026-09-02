@@ -36,6 +36,7 @@ function startHud() {
     [f(d0 + dh * 0.68), 22, "22 m · The Canyon"],
     [f(d0 + dh * 0.85), 30, "30 m · Blue Hole"],
     [f(top("coast-act")), 30, "30 m · The sites"],
+    [f(top("coast-act") + height("coast-act") - innerHeight), 30, "30 m · The sites"],
     [f(top("school-act")), 5, "Safety stop · The school"],
     [f(top("surface-act")), 5, "Ascent"],
     [f(top("surface-act") + height("surface-act") * 0.6), 0, "Surface"],

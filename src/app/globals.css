@@ -5,34 +5,130 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --abyss: #0a1f2e;
+  --reef: #0d9488;
+  --sun-glint: #f5d28a;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Refined selection colour to match the reef palette */
+::selection {
+  background: rgba(13, 148, 136, 0.28);
+  color: inherit;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  .font-display {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-variation-settings: "opsz" 144;
+  }
+  .label-eyebrow {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Fine film grain - sits over dark sections to add underwater texture */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  /* Caustic light - soft dancing light pools, like sun through water */
+  .caustics::before {
+    content: "";
+    position: absolute;
+    inset: -20% -10% 0 -10%;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 40% at 22% 8%, rgba(120, 210, 220, 0.16), transparent 60%),
+      radial-gradient(50% 45% at 82% 4%, rgba(245, 210, 138, 0.12), transparent 62%);
+    filter: blur(6px);
+    animation: causticDrift 22s ease-in-out infinite alternate;
+  }
+
+  @keyframes causticDrift {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.9;
+    }
+    100% {
+      transform: translate3d(2.5%, 1.5%, 0) scale(1.08);
+      opacity: 1;
+    }
+  }
+
+  /* Slow ken-burns drift for hero stills */
+  .ken-burns {
+    animation: kenBurns 26s ease-in-out infinite alternate;
+  }
+  @keyframes kenBurns {
+    0% {
+      transform: scale(1.02) translate3d(0, 0, 0);
+    }
+    100% {
+      transform: scale(1.1) translate3d(-1.5%, -1.5%, 0);
+    }
+  }
+
+  /* Soft seam that fades one section's colour into the next */
+  .seam-into-bone {
+    background: linear-gradient(to bottom, transparent, #f5f5f0);
+  }
+  .seam-into-abyss {
+    background: linear-gradient(to bottom, transparent, #0a1f2e);
+  }
 }
 
-/* Facebook Gallery Item Tooltip Styles */
 @layer components {
-  /* Smooth tooltip animation */
+  /* Fade-in on scroll - wired up by <ScrollReveal /> which adds .is-visible */
+  .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Slow parallax base */
+  .parallax-slow {
+    will-change: transform;
+    transition: transform 200ms linear;
+  }
+
+  /* Gallery tooltip styles (preserve existing behavior) */
   .fb-gallery-tooltip {
     animation: tooltipFadeIn 0.2s ease-out;
   }
-
   @keyframes tooltipFadeIn {
     from {
       opacity: 0;
@@ -43,21 +139,15 @@ body {
       transform: translateX(-50%) translateY(0);
     }
   }
-
-  /* Gallery item hover effects */
   .fb-gallery-item {
     @apply transition-all duration-300;
   }
-
   .fb-gallery-item:hover {
     @apply shadow-lg;
   }
-
-  /* Click ripple effect */
   .click-ripple {
     animation: ripple 0.4s ease-out;
   }
-
   @keyframes ripple {
     0% {
       transform: scale(0.8);
@@ -69,37 +159,56 @@ body {
     }
   }
 
-  /* Stories lightbox scrollbar */
+  /* Stories sidebar scrollbar */
   .stories-sidebar::-webkit-scrollbar {
     width: 6px;
   }
-
   .stories-sidebar::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
   }
-
   .stories-sidebar::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.3);
     border-radius: 3px;
   }
-
   .stories-sidebar::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
   }
 
-  /* Line clamp utility */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  video[autoplay] {
+    display: none;
+  }
+  .parallax-slow {
+    transform: none !important;
   }
 }

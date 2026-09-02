@@ -67,7 +67,7 @@ const GENERIC_HEADLINE = "From the Red Sea.";
 /**
  * Extract a clean Apple-style headline from the first line of an IG caption.
  * Strips hashtags, @mentions, URLs. Capitalizes first letter. Ends with punctuation.
- * Returns null if no usable text — caller falls back to GENERIC_HEADLINE.
+ * Returns null if no usable text. Caller falls back to GENERIC_HEADLINE.
  */
 function captionToHeadline(caption: string | undefined | null): string | null {
   if (!caption) return null;
@@ -115,7 +115,7 @@ export default async function FeaturedReel() {
               {headline}
             </h2>
             <p className="text-lg text-white/80 leading-relaxed mb-8 max-w-md md:max-w-none mx-auto md:mx-0">
-              Wherever Osama was on his most recent dive &mdash; sidemount training, the Blue Hole, reef life, a quiet day on the boat. This rotates whenever he posts.
+              Wherever Osama was on his most recent dive. Sidemount training, the Blue Hole, reef life, a quiet day on the boat. This rotates whenever he posts.
             </p>
             <a
               href={post.permalink}
@@ -148,7 +148,7 @@ export default async function FeaturedReel() {
                 sizes="(max-width: 640px) 280px, 320px"
                 unoptimized
               />
-              {/* Play icon overlay — only on videos */}
+              {/* Play icon overlay. Only on videos. */}
               {isVideo && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform">

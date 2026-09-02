@@ -37,7 +37,7 @@ export default function InstagramRibbon({ variant = "hero" }: Props) {
         viewBox="0 0 24 24"
         aria-hidden="true"
       >
-        {/* Instagram glyph in a single fill — gradient isn't supported by SVG fill in this minimal embed,
+        {/* Instagram glyph in a single fill. Gradient isn't supported by SVG fill in this minimal embed,
             so we use a recognisable warm-pink that reads as Instagram on dark hero backgrounds. */}
         <path
           fill="#E1306C"

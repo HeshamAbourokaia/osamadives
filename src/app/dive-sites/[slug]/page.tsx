@@ -205,6 +205,22 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
             </div>
           </section>
         )}
+
+        <section className="py-16 px-4 bg-[#061420] text-white">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-xs tracking-[0.2em] uppercase text-[#3FD1BE] mb-3">My logbook</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Dived here with me?</h2>
+            <p className="text-white/75 mb-8 max-w-xl mx-auto">
+              Every diver keeps a logbook. Mine is written by my students. Add your page from this dive.
+            </p>
+            <Link
+              href={`/logbook?site=${params.slug}#sign`}
+              className="inline-block bg-[#3FD1BE] hover:bg-[#5fe0cf] text-[#04121A] font-bold px-8 py-4 rounded-full transition-colors"
+            >
+              Sign my logbook
+            </Link>
+          </div>
+        </section>
       </main>
 
       <footer className="py-12 px-4 bg-gray-900 text-gray-400">

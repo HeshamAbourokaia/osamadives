@@ -787,3 +787,36 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
 .descent .tail-foot nav { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; }
 .descent .tail-foot a { color: rgba(237, 244, 242, 0.85); text-decoration: none; }
 .descent .tail-foot a:hover { color: var(--reef-glow); }
+
+/* ================= pre-mount geometry: no layout shift when the engine boots ================= */
+.descent [data-sc-act="scrub"], .descent [data-sc-act="pin"], .descent [data-sc-act="pan"] { position: relative; height: calc(var(--sc-span, 1.5) * 100vh); }
+.descent [data-sc-stage] {position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: clip;
+  z-index: var(--sc-z-stage);}
+.descent /* scrub / sequence media */
+[data-sc-stage] :is(video[data-sc-scrub], canvas[data-sc-sequence], [data-sc-stage]__poster) {position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;}
+.descent /* The poster is a live frame-holder, not a placeholder: it stays up until a
+   real video frame has painted, which is what stops the blank-stage flash. */
+[data-sc-stage]__poster {z-index: 0; transition: opacity 380ms var(--sc-ease-out);}
+.descent .sc-has-clip [data-sc-stage]__poster {opacity: 0;}
+.descent /* isolation always; position only if nothing more specific already set it.
+   Written with :where() (zero specificity) on purpose: a plain `position:
+   relative` here has the same weight as `[data-sc-stage]` and, being later in the
+   file, silently wins. A stage carrying both attributes then stops being
+   sticky and the whole act scrolls away instead of pinning. */
+[data-sc-spotlight] {isolation: isolate;}
+.descent /* A rail's transform IS its navigation, not decoration. Zeroing it the way
+     parallax and kinetic type are zeroed parks the act on its first screenful
+     and makes everything past the fold unreachable: a device degrading into
+     missing content. Hand the travel back to the reader as an ordinary scroll
+     region instead, so the same items are all still gettable without motion.
+     A build that would rather re-lay the rail out as a grid can still do that;
+     this is the floor, not the ceiling. */
+  [data-sc-act="pan"] [data-sc-stage], [data-sc-act="pan"] [data-sc-stage] {overflow-x: auto; overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;}
+.descent [data-sc-stage] {height: 100svh;}
+.descent #instagram-feed .text-gray-500, .descent #instagram-feed .text-gray-600 { color: #5a5245; }

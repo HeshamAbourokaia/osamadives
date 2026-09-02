@@ -37,7 +37,7 @@ export default function Home() {
 
       <main id="descent-main">
         {/* ACT 1 · ENTRY: the sea, scrubbing under the wheel from the first pixel */}
-        <section className="g-abyss" data-sc-act="scrub" data-sc-span="2.3" data-sc-dwell="0.35">
+        <section className="g-abyss" data-sc-act="scrub" data-sc-span="2.3" style={{ "--sc-span": 2.3 } as React.CSSProperties} data-sc-dwell="0.35">
           <div data-sc-stage>
             <img className="sc-stage__poster" src="/descent/hero-poster.webp" alt="" />
             <video data-sc-scrub data-sc-src="/descent/hero.mp4" data-sc-src-mobile="/descent/hero-m.mp4" muted playsInline />
@@ -58,7 +58,7 @@ export default function Home() {
         </section>
 
         {/* ACT 2 · THE GUIDE: magazine cover on paper, cursor light on the surface */}
-        <section className="g-bone" data-sc-act="pin" data-sc-span="2.1" data-sc-spotlight>
+        <section className="g-bone" data-sc-act="pin" data-sc-span="2.1" style={{ "--sc-span": 2.1 } as React.CSSProperties} data-sc-spotlight>
           <div data-sc-stage className="guide-stage">
             <div className="guide-cover">
               <div>
@@ -91,7 +91,7 @@ export default function Home() {
         </section>
 
         {/* ACT 4 · THE PEAK: the print becomes the man, the year runs behind it */}
-        <section className="g-night" data-sc-act="pin" data-sc-span="2.9">
+        <section className="g-night" data-sc-act="pin" data-sc-span="2.9" style={{ "--sc-span": 2.9 } as React.CSSProperties}>
           <div data-sc-stage className="peak-stage">
             <div className="peak-year sc-nums" data-sc-count="1987 2026" data-sc-count-at="0.1 0.8" aria-hidden="true">1987</div>
             <div className="peak-frame">
@@ -116,7 +116,7 @@ export default function Home() {
         </section>
 
         {/* ACT 5 · THE COAST: lateral travel, south to north, five real dives */}
-        <section className="g-abyss" data-sc-act="pan" data-sc-span="3.5">
+        <section className="g-abyss" data-sc-act="pan" data-sc-span="3.5" style={{ "--sc-span": 3.5 } as React.CSSProperties}>
           <div data-sc-stage>
             <div className="coast-rail" data-sc-pan="0.05">
               <div className="coast-lead">
@@ -216,7 +216,7 @@ export default function Home() {
         </section>
 
         {/* ACT 7 · SURFACING: the camera breaks the surface, the gauge reads zero */}
-        <section className="g-abyss" data-sc-act="scrub" data-sc-span="1.4" data-sc-dwell="0.3">
+        <section className="g-abyss" data-sc-act="scrub" data-sc-span="1.4" style={{ "--sc-span": 1.4 } as React.CSSProperties} data-sc-dwell="0.3">
           <div data-sc-stage>
             <img className="sc-stage__poster" src="/descent/surface-poster.webp" alt="" />
             <video data-sc-scrub data-sc-src="/descent/surface.mp4" data-sc-src-mobile="/descent/surface-m.mp4" muted playsInline />

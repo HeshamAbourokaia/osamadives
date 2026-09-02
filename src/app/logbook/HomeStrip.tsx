@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
@@ -42,8 +41,8 @@ export default async function HomeStrip() {
             </div>
           )}
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem", marginTop: "2.4rem" }}>
-            <Link href="/logbook#sign" className="lb-btn lb-btn--paper">Sign my logbook</Link>
-            <Link href="/logbook" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23, 18, 8, 0.3)" }}>Read every page</Link>
+            <a href="/logbook#sign" className="lb-btn lb-btn--paper">Sign my logbook</a>
+            <a href="/logbook" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23, 18, 8, 0.3)" }}>Read every page</a>
           </div>
         </div>
       </div>

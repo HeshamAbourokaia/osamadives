@@ -97,7 +97,8 @@
   width: min(92vw, 1100px); height: auto; pointer-events: none; user-select: none;
 }
 .lb-hero__year text {
-  font: 900 300px/1 var(--display); letter-spacing: 0.01em;
+  /* System face on purpose: it paints at first contentful paint instead of waiting for the web font. */
+  font: 900 300px/1 system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; letter-spacing: 0.01em;
   fill: transparent; stroke: rgba(63, 209, 190, 0.16); stroke-width: 3px;
   paint-order: stroke;
 }

@@ -17,3 +17,8 @@ export function siteUrl(): string {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return "http://localhost:3000";
 }
+
+// The logbook is "open" when a database exists (Vercel injects DATABASE_URL) or in development.
+export function storageReady(): boolean {
+  return Boolean(process.env.DATABASE_URL) || !isProduction();
+}

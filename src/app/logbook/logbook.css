@@ -190,6 +190,7 @@
 .lb-counter { display: flex; justify-content: space-between; color: var(--light-soft); }
 .lb-counter.is-over { color: #f5a97f; }
 .lb-two { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+.lb-when { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0.9rem; }
 @media (max-width: 560px) { .lb-two { grid-template-columns: 1fr; } }
 .lb-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .lb-chip {

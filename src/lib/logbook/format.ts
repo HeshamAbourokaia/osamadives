@@ -1,4 +1,4 @@
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+export const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 // "2026-05" -> "May 2026", "2026-05-12" -> "12 May 2026", "" -> ""
 export function formatDivedOn(v: string): string {

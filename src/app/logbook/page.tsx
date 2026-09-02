@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { storageReady } from "@/lib/logbook/config";
 import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import LogbookForm from "./LogbookForm";
@@ -31,9 +32,14 @@ async function approvedEntries(): Promise<LogbookEntry[]> {
 }
 
 export default async function LogbookPage() {
-  const entries = await approvedEntries();
+  const open = storageReady();
+  const entries = open ? await approvedEntries() : [];
   const total = entries.length;
+  const countries = new Set(entries.map((e) => e.country.trim().toLowerCase()).filter(Boolean)).size;
   const firstYear = total ? new Date(entries[total - 1].createdAt).getFullYear() : new Date().getFullYear();
+  const countLine = total === 0
+    ? "The first page is yours"
+    : `${total} ${total === 1 ? "page" : "pages"}${countries > 1 ? ` from ${countries} countries` : ""} · since ${firstYear}`;
 
   return (
     <>
@@ -55,9 +61,7 @@ export default async function LogbookPage() {
           </p>
           <div className="lb-hero__row lb-rise">
             <a href="#sign" className="lb-btn">Add your page</a>
-            <span className="lb-mono lb-hero__count">
-              {total === 0 ? "The first page is yours" : `${total} ${total === 1 ? "page" : "pages"} · since ${firstYear}`}
-            </span>
+            <span className="lb-mono lb-hero__count">{countLine}</span>
           </div>
           <div className="lb-rule" aria-hidden="true" />
         </div>
@@ -88,7 +92,16 @@ export default async function LogbookPage() {
 
       <section className="lb-sign" id="sign">
         <div className="lb-sign__inner">
-          <LogbookForm nextNumber={total + 1} />
+          {open ? (
+            <LogbookForm nextNumber={total + 1} />
+          ) : (
+            <div className="lb-sign__head">
+              <span className="lb-mono">A blank page</span>
+              <h2 className="lb-h2">The book opens this week.</h2>
+              <p className="lb-stand">I am still setting up the pages. For now, send me your note on WhatsApp and I will keep it for the first page.</p>
+              <div><a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="lb-btn">Message Osama</a></div>
+            </div>
+          )}
         </div>
       </section>
 

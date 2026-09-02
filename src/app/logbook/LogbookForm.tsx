@@ -5,6 +5,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SITES } from "@/lib/logbook/sites";
 import { STAMPS } from "@/lib/logbook/stamps";
 import { COURSES, LIMITS, type Course, type SiteKey, type StampKey } from "@/lib/logbook/types";
+import { MONTHS } from "@/lib/logbook/format";
+
+const THIS_YEAR = new Date().getFullYear();
+const YEARS = Array.from({ length: THIS_YEAR - 2011 + 1 }, (_, i) => THIS_YEAR - i);
 import PageCard, { type PageData } from "./PageCard";
 import Stamp from "./Stamp";
 
@@ -20,7 +24,9 @@ export default function LogbookForm({ nextNumber }: Props) {
   const [name, setName] = useState("");
   const [country, setCountry] = useState("");
   const [site, setSite] = useState<SiteKey | "">("");
-  const [divedOn, setDivedOn] = useState("");
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
+  const divedOn = month && year ? `${year}-${month}` : "";
   const [course, setCourse] = useState<Course>("");
   const [stamp, setStamp] = useState<StampKey | "">("");
   const [note, setNote] = useState("");
@@ -60,6 +66,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     setError(null);
     if (!site) return setError("Pick where we dived.");
     if (!stamp) return setError("Pick your stamp.");
+    if ((month && !year) || (!month && year)) return setError("Pick both the month and the year, or leave both blank.");
     if (note.trim().length < LIMITS.note.min) return setError("A few more words. Osama reads every page.");
     if (!consent) return setError("Tick the box so Osama can show your page.");
     setBusy(true);
@@ -117,8 +124,23 @@ export default function LogbookForm({ nextNumber }: Props) {
 
           <div className="lb-two">
             <div className="lb-field">
-              <label className="lb-mono" htmlFor="lb-when">When</label>
-              <input id="lb-when" name="divedOn" className="lb-input" type="month" value={divedOn} onChange={(e) => setDivedOn(e.target.value)} min="2011-01" max={new Date().toISOString().slice(0, 7)} />
+              <span className="lb-label lb-mono">When we dived</span>
+              <div className="lb-when">
+                <select aria-label="Month" className="lb-select" value={month} onChange={(e) => setMonth(e.target.value)}>
+                  <option value="">Month</option>
+                  {MONTHS.map((m, i) => (
+                    <option key={m} value={String(i + 1).padStart(2, "0")}>{m}</option>
+                  ))}
+                </select>
+                <select aria-label="Year" className="lb-select" value={year} onChange={(e) => setYear(e.target.value)}>
+                  <option value="">Year</option>
+                  {YEARS.map((y) => (
+                    <option key={y} value={String(y)}>{y}</option>
+                  ))}
+                </select>
+              </div>
+              <input type="hidden" name="divedOn" value={divedOn} />
+              <small>Month and year is enough. Leave it blank if you are not sure.</small>
             </div>
             <div className="lb-field">
               <label className="lb-mono" htmlFor="lb-course">Course, if any</label>
@@ -229,9 +251,10 @@ function Success({ done, preview, number }: { done: Done; preview: PageData; num
         <span className="lb-mono">Entry {String(number).padStart(3, "0")} · with Osama</span>
         <h2 className="lb-h2">Your page is with me.</h2>
         <p className="lb-stand">I read every one and sign it myself. Once it is in the book it shows here, usually the same day.</p>
-        <p className="lb-stand">If you want to show your page now, it is yours to share. Tag <strong>@osama_mohamed_hassan</strong> and I will see it.</p>
+        <p className="lb-stand">Your page is yours to keep: share it to your story and tag <strong>@osama_mohamed_hassan</strong>, or print the keepsake, an A5 page from my logbook with my signature on it.</p>
         <div className="lb-done__actions">
           <button type="button" className="lb-btn" onClick={share} disabled={shared === "sharing"}>{shared === "sharing" ? "Preparing..." : "Share your page"}</button>
+          <a className="lb-btn lb-btn--quiet" href={`${done.cardUrl}&format=print`} target="_blank" rel="noopener noreferrer">Print a keepsake</a>
           <a className="lb-btn lb-btn--quiet" href={done.cardUrl} target="_blank" rel="noopener noreferrer">Open the image</a>
           <a className="lb-btn lb-btn--quiet" href="#pages">Back to the book</a>
         </div>

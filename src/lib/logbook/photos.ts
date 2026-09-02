@@ -30,7 +30,7 @@ export async function savePhoto(file: File, id: string): Promise<string> {
     const blob = await put(key, Buffer.from(bytes), { access: "public", contentType: type, addRandomSuffix: false });
     return blob.url;
   }
-  if (process.env.NODE_ENV === "production") throw new PhotoError("Photo storage is not set up yet.");
+  if (process.env.NODE_ENV === "production") throw new PhotoError("Photos are not switched on yet. Remove the photo and stamp it again.");
 
   const dir = path.join(process.cwd(), "public", "uploads");
   await fs.mkdir(path.join(dir, "logbook"), { recursive: true });

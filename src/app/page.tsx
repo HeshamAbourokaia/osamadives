@@ -58,12 +58,12 @@ export default function Home() {
         </section>
 
         {/* ACT 2 · THE GUIDE: magazine cover on paper, cursor light on the surface */}
-        <section className="g-bone" data-sc-act="pin" data-sc-span="2.1" style={{ "--sc-span": 2.1 } as React.CSSProperties} data-sc-spotlight>
+        <section className="g-bone" id="guide-act" data-sc-act="pin" data-sc-span="2.1" style={{ "--sc-span": 2.1 } as React.CSSProperties} data-sc-spotlight>
           <div data-sc-stage className="guide-stage">
             <div className="guide-cover">
               <div>
                 <div className="rule-draw" aria-hidden="true" />
-                <span className="microcopy">Stop 1 · 12 metres · your guide</span>
+                <span className="microcopy">On the sand · your guide</span>
                 <h2 data-sc-cue="0 1 0 0.1" data-sc-kinetic="lines">Meet Osama.</h2>
                 <p className="sc-body" data-sc-cue="0.06 1 0.12 0.1">Osama Mohamed Hassan was born into a Dahab of fishing boats and palm shelters on the sand. He has spent his life in this water. He briefs slowly, watches closely, and laughs easily.</p>
                 <dl className="ledger" data-sc-cue="0.12 1 0.14 0.1">
@@ -91,7 +91,7 @@ export default function Home() {
         </section>
 
         {/* ACT 4 · THE PEAK: the print becomes the man, the year runs behind it */}
-        <section className="g-night" data-sc-act="pin" data-sc-span="2.9" style={{ "--sc-span": 2.9 } as React.CSSProperties}>
+        <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="2.9" style={{ "--sc-span": 2.9 } as React.CSSProperties}>
           <div data-sc-stage className="peak-stage">
             <div className="peak-year sc-nums" data-sc-count="1987 2026" data-sc-count-at="0.1 0.8" aria-hidden="true">1987</div>
             <div className="peak-frame">
@@ -115,8 +115,34 @@ export default function Home() {
           <p className="line" data-sc-in>From the sand, straight into the sea.</p>
         </section>
 
+        {/* ACT 4b · THE DESCENT: three of Osama's own photographs, shown at the depth they were taken.
+            The dive computer reads those depths, nothing invented. */}
+        <section className="g-abyss" id="descent-act" data-sc-act="pin" data-sc-span="3.2" style={{ "--sc-span": 3.2 } as React.CSSProperties}>
+          <div data-sc-stage className="depth-stage">
+            <img className="depth-photo depth-photo--1" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="Coral garden at Lighthouse Reef, twelve metres down, photographed by Osama" />
+            <img className="depth-photo depth-photo--2" src="/descent/depth-22.webp" srcSet="/descent/depth-22-m.webp 800w, /descent/depth-22.webp 1600w" sizes="100vw" alt="A turtle over the reef in the Canyon, twenty-two metres down, photographed by Osama" />
+            <img className="depth-photo depth-photo--3" src="/descent/depth-30.webp" srcSet="/descent/depth-30-m.webp 800w, /descent/depth-30.webp 1600w" sizes="100vw" alt="A diver silhouetted in the deep blue of the Blue Hole at thirty metres, photographed by Osama" />
+            <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
+            <div className="depth-copy">
+              <div className="depth-cue" data-sc-cue="0.02 0.3 0.08 0.06">
+                <span className="microcopy">12 metres · Lighthouse Reef</span>
+                <h2>The house reef, where first breaths happen.</h2>
+              </div>
+              <div className="depth-cue" data-sc-cue="0.36 0.64 0.06 0.06">
+                <span className="microcopy">22 metres · The Canyon</span>
+                <h2>Shafts of sun, glassfish, a turtle that does not hurry.</h2>
+              </div>
+              <div className="depth-cue" data-sc-cue="0.7 1 0.06 0">
+                <span className="microcopy">30 metres · Blue Hole</span>
+                <h2>The deep blue, within your training, every time.</h2>
+              </div>
+            </div>
+            <div className="depth-credit microcopy" data-sc-cue="0.05">Photographs by Osama, on ordinary working days</div>
+          </div>
+        </section>
+
         {/* ACT 5 · THE COAST: lateral travel, south to north, five real dives */}
-        <section className="g-abyss" data-sc-act="pan" data-sc-span="3.5" style={{ "--sc-span": 3.5 } as React.CSSProperties}>
+        <section className="g-abyss" id="coast-act" data-sc-act="pan" data-sc-span="3.5" style={{ "--sc-span": 3.5 } as React.CSSProperties}>
           <div data-sc-stage>
             <div className="coast-rail" data-sc-pan="0.05">
               <div className="coast-lead">
@@ -167,10 +193,10 @@ export default function Home() {
         </section>
 
         {/* ACT 6 · THE SCHOOL: courses mounted as exhibits */}
-        <section className="g-bone">
+        <section className="g-bone" id="school-act">
           <div className="school">
             <div className="school-head" data-sc-in data-sc-stagger="60">
-              <span className="microcopy">Stop 3 · 30 metres · the school</span>
+              <span className="microcopy">Safety stop · 5 metres · the school</span>
               <h2>Learn it properly.</h2>
               <p className="sc-body">Small groups, slow briefings, the same reef he learned on. Pick the course that matches where you are, and he takes you the rest of the way.</p>
             </div>
@@ -216,7 +242,7 @@ export default function Home() {
         </section>
 
         {/* ACT 7 · SURFACING: the camera breaks the surface, the gauge reads zero */}
-        <section className="g-abyss" data-sc-act="scrub" data-sc-span="1.4" style={{ "--sc-span": 1.4 } as React.CSSProperties} data-sc-dwell="0.3">
+        <section className="g-abyss" id="surface-act" data-sc-act="scrub" data-sc-span="1.4" style={{ "--sc-span": 1.4 } as React.CSSProperties} data-sc-dwell="0.3">
           <div data-sc-stage>
             <img className="sc-stage__poster" src="/descent/surface-poster.webp" srcSet="/descent/surface-poster-m.webp 800w, /descent/surface-poster.webp 1600w" sizes="100vw" alt="" />
             <video data-sc-scrub data-sc-src="/descent/surface.mp4" data-sc-src-mobile="/descent/surface-m.mp4" muted playsInline />

@@ -16,26 +16,36 @@ function startHud() {
   const labelEl = document.getElementById("hud-label");
   const trackEl = document.getElementById("hud-track");
   if (!depthEl || !labelEl || !trackEl) return () => {};
-  // [pageProgress, depth, label] keyframes, lerped between
+  // Keyframes are built from where the acts actually sit on the page, so the gauge reads
+  // the real depth of what is on screen: sand at 0, three photographs at 12 / 22 / 30 m,
+  // the sites at 30, a safety stop at 5 for the school, then the surface.
+  const main = document.getElementById("descent-main");
+  const top = (id: string) => { const el = document.getElementById(id); return el ? el.offsetTop : 0; };
+  const height = (id: string) => { const el = document.getElementById(id); return el ? el.offsetHeight : 0; };
+  const end = main ? main.offsetTop + main.offsetHeight - innerHeight : document.documentElement.scrollHeight - innerHeight;
+  const f = (y: number) => Math.min(1, Math.max(0, y / Math.max(1, end)));
+  const d0 = top("descent-act"), dh = height("descent-act") - innerHeight;
   const K: [number, number, string][] = [
-    [0.0, 0.0, "Entry"],
-    [0.13, 12.0, "Stop 1 · The guide"],
-    [0.3, 12.0, "Stop 1 · The guide"],
-    [0.38, 18.0, "1987"],
-    [0.55, 18.0, "1987"],
-    [0.66, 30.0, "Stop 2 · The sites"],
-    [0.78, 30.0, "Stop 3 · The school"],
-    [0.9, 30.0, "Ascent"],
-    [1.0, 0.0, "Surface"],
+    [0, 0, "Entry"],
+    [f(top("guide-act")), 0, "On the sand · The guide"],
+    [f(top("peak-act")), 0, "1987 · The shore"],
+    [f(d0), 0, "Descending"],
+    [f(d0 + dh * 0.15), 12, "12 m · Lighthouse Reef"],
+    [f(d0 + dh * 0.34), 12, "12 m · Lighthouse Reef"],
+    [f(d0 + dh * 0.5), 22, "22 m · The Canyon"],
+    [f(d0 + dh * 0.68), 22, "22 m · The Canyon"],
+    [f(d0 + dh * 0.85), 30, "30 m · Blue Hole"],
+    [f(top("coast-act")), 30, "30 m · The sites"],
+    [f(top("school-act")), 5, "Safety stop · The school"],
+    [f(top("surface-act")), 5, "Ascent"],
+    [f(top("surface-act") + height("surface-act") * 0.6), 0, "Surface"],
+    [1, 0, "Surface"],
   ];
   const max = 30;
   let raf: number | null = null;
-  // The narrative ends at the surfacing act; the tail below it stays "on the surface".
-  const main = document.getElementById("descent-main");
   function update() {
     raf = null;
-    const end = main ? main.offsetTop + main.offsetHeight - innerHeight : document.documentElement.scrollHeight - innerHeight;
-    const p = Math.min(1, Math.max(0, scrollY / Math.max(1, end)));
+    const p = f(scrollY);
     let d = 0;
     let label = K[0][2];
     for (let i = 0; i < K.length - 1; i++) {

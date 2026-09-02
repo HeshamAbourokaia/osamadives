@@ -821,3 +821,16 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
    headline and the Largest Contentful Paint does not wait for JavaScript. The engine
    takes over opacity per frame once it mounts. */
 html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: none; }
+
+/* ================= act 4b · the descent: three photographs at their true depths ================= */
+.descent .depth-stage { background: var(--abyss-deep); }
+.descent .depth-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.descent .depth-photo--1 { opacity: clamp(0, 1 - (var(--sc-p, 0) - 0.3) / 0.08, 1); }
+.descent .depth-photo--2 { opacity: clamp(0, (var(--sc-p, 0) - 0.3) / 0.08, 1) * clamp(0, 1 - (var(--sc-p, 0) - 0.64) / 0.08, 1); }
+.descent .depth-photo--3 { opacity: clamp(0, (var(--sc-p, 0) - 0.64) / 0.08, 1); }
+.descent .depth-copy { position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); z-index: 2; }
+.descent .depth-cue { position: absolute; left: 0; bottom: 0; max-width: 34rem; }
+.descent .depth-cue .microcopy { display: inline-block; color: var(--reef-glow); background: rgba(4,14,20,0.72); padding: 0.5em 0.75em; border-radius: 3px; border: 1px solid rgba(63,209,190,0.22); margin-bottom: 1rem; }
+.descent .depth-cue h2 { font: 800 clamp(2rem, 4.6vw, 4.2rem)/0.98 var(--sc-font-display); letter-spacing: -0.02em; text-transform: uppercase; margin: 0; text-wrap: balance; text-shadow: 0 2px 30px rgba(0,0,0,0.5); }
+.descent .depth-credit { position: absolute; right: var(--sc-gutter); bottom: 1.4rem; z-index: 2; color: rgba(237,244,242,0.6); }
+@media (max-width: 860px) { .descent .depth-credit { display: none; } .descent .depth-cue { max-width: 100%; } }

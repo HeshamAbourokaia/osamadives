@@ -16,16 +16,19 @@ function startHud() {
   const labelEl = document.getElementById("hud-label");
   const trackEl = document.getElementById("hud-track");
   if (!depthEl || !labelEl || !trackEl) return () => {};
+  let fOf = (y: number) => y;
   // Keyframes are built from where the acts actually sit on the page, so the gauge reads
   // the real depth of what is on screen: sand at 0, three photographs at 12 / 22 / 30 m,
   // the sites at 30, a safety stop at 5 for the school, then the surface.
   const main = document.getElementById("descent-main");
+  const build = (): [number, number, string][] => {
   const top = (id: string) => { const el = document.getElementById(id); return el ? el.offsetTop : 0; };
   const height = (id: string) => { const el = document.getElementById(id); return el ? el.offsetHeight : 0; };
   const end = main ? main.offsetTop + main.offsetHeight - innerHeight : document.documentElement.scrollHeight - innerHeight;
   const f = (y: number) => Math.min(1, Math.max(0, y / Math.max(1, end)));
+  fOf = f;
   const d0 = top("descent-act"), dh = height("descent-act") - innerHeight;
-  const K: [number, number, string][] = [
+  return [
     [0, 0, "Entry"],
     [f(top("guide-act")), 0, "On the sand · The guide"],
     [f(top("peak-act")), 0, "1987 · The shore"],
@@ -42,11 +45,13 @@ function startHud() {
     [f(top("surface-act") + height("surface-act") * 0.6), 0, "Surface"],
     [1, 0, "Surface"],
   ];
+  };
   const max = 30;
   let raf: number | null = null;
   function update() {
     raf = null;
-    const p = f(scrollY);
+    const K = build();
+    const p = fOf(scrollY);
     let d = 0;
     let label = K[0][2];
     for (let i = 0; i < K.length - 1; i++) {

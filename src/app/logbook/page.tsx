@@ -38,6 +38,9 @@ export default async function LogbookPage() {
   const total = entries.length;
   const countries = new Set(entries.map((e) => e.country.trim().toLowerCase()).filter(Boolean)).size;
   const firstYear = total ? new Date(entries[total - 1].createdAt).getFullYear() : new Date().getFullYear();
+  // While the book is closed every "add" button goes to WhatsApp instead of an empty form.
+  const addHref = open ? "#sign" : WHATSAPP;
+  const addLabel = open ? "Add your page" : "Message Osama";
   const countLine = total === 0
     ? "The first page is yours"
     : `${total} ${total === 1 ? "page" : "pages"}${countries > 1 ? ` from ${countries} countries` : ""} · since ${firstYear}`;
@@ -46,7 +49,7 @@ export default async function LogbookPage() {
     <>
       <header className="lb-top">
         <Link href="/" className="lb-brand">Osama<span>Dives</span></Link>
-        <a href="#sign" className="lb-btn">Add your page</a>
+        <a href={addHref} className="lb-btn">{addLabel}</a>
       </header>
 
       <section className="lb-hero">
@@ -61,7 +64,7 @@ export default async function LogbookPage() {
             A first breath, a deep one, a day you will not forget. Add yours.
           </p>
           <div className="lb-hero__row lb-rise">
-            <a href="#sign" className="lb-btn">Add your page</a>
+            <a href={addHref} className="lb-btn">{addLabel}</a>
             <span className="lb-mono lb-hero__count">{countLine}</span>
           </div>
           <div className="lb-rule" aria-hidden="true" />
@@ -89,7 +92,7 @@ export default async function LogbookPage() {
             <div className="lb-empty">
               <span className="lb-mono">Entry 001</span>
               <h3 className="lb-h2">The next page is yours.</h3>
-              <a href="#sign" className="lb-btn lb-btn--paper">Write it</a>
+              <a href={addHref} className="lb-btn lb-btn--paper">{open ? "Write it" : "Message Osama"}</a>
             </div>
           ) : (
             <div className="lb-grid">

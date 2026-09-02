@@ -53,6 +53,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     site: site || "lighthouse-reef-dahab",
     stamp: stamp || "first-breath",
     createdAt: new Date().toISOString(),
+    reply: "", videoUrl: null, featured: false,
   };
 
   function pickStamp(key: StampKey) {

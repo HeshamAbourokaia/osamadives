@@ -8,7 +8,7 @@ import type { LogbookEntry } from "./types";
 const entry = (id: string, createdAt: string, ipHash = "ip1"): LogbookEntry => ({
   id, createdAt, status: "pending", name: "Ana", country: "Spain", site: "blue-hole-dahab",
   divedOn: "2026-05", course: "Open Water", stamp: "open-water", note: "Thank you Osama, I felt safe the whole way.",
-  photoUrl: null, flags: [], moderatedAt: null, ipHash,
+  photoUrl: null, flags: [], moderatedAt: null, ipHash, reply: "", featured: false, videoUrl: null,
 });
 
 describe("FileStore", () => {
@@ -46,5 +46,22 @@ describe("FileStore", () => {
     await store.create(entry("c", "2026-09-02T00:00:00.000Z", "y"));
     expect(await store.countSince("x", "2026-09-01T12:00:00.000Z")).toBe(1);
     expect(await store.countSince("x", "2026-08-01T00:00:00.000Z")).toBe(2);
+  });
+
+  it("updates reply, featured and video, and fills defaults for old rows", async () => {
+    await store.create(entry("a", "2026-09-01T00:00:00.000Z"));
+    const u = await store.update("a", { reply: "Great buoyancy. Come back for Advanced.", featured: true });
+    expect(u?.reply).toBe("Great buoyancy. Come back for Advanced.");
+    expect(u?.featured).toBe(true);
+    expect((await store.update("a", { videoUrl: "/logbook/wedding.mp4" }))?.videoUrl).toBe("/logbook/wedding.mp4");
+    expect(await store.update("zzz", { reply: "x" })).toBeNull();
+    const file = path.join(dir, "nested", "logbook.json");
+    const rows = JSON.parse(await fs.readFile(file, "utf8")) as Record<string, unknown>[];
+    delete rows[0].reply; delete rows[0].featured; delete rows[0].videoUrl;
+    await fs.writeFile(file, JSON.stringify(rows));
+    const old = await store.get("a");
+    expect(old?.reply).toBe("");
+    expect(old?.featured).toBe(false);
+    expect(old?.videoUrl).toBeNull();
   });
 });

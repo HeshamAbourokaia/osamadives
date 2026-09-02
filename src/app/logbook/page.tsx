@@ -74,6 +74,12 @@ export default async function LogbookPage() {
             <h2 className="lb-h2">Written by the people I took into the water.</h2>
             <p className="lb-stand">Each one is read and signed by me before it goes in the book. Real names, real dives, their own words.</p>
           </div>
+          {entries.some((e) => e.featured) ? (
+            <div className="lb-featured">
+              <span className="lb-mono">Page of the month</span>
+              <PageCard entry={entries.find((e) => e.featured)!} number={total - entries.findIndex((e) => e.featured)} variant="single" />
+            </div>
+          ) : null}
           {total === 0 ? (
             <div className="lb-empty">
               <span className="lb-mono">Entry 001</span>

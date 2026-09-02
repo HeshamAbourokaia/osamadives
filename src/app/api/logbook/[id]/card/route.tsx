@@ -68,6 +68,12 @@ function StoryCard({ entry }: { entry: LogbookEntry }) {
         <span style={{ ...mono, color: REEF, marginTop: 44 }}>{site.label}{site.depth ? ` · ${site.depth}` : ""}</span>
         <div style={{ display: "flex", flexDirection: "column", flex: 1, marginTop: 28, position: "relative" }}>
           <span style={{ fontSize: photo ? 38 : 50, fontWeight: 500, lineHeight: 1.35 }}>{note}</span>
+          {entry.reply ? (
+            <div style={{ display: "flex", flexDirection: "column", marginTop: 36, paddingTop: 28, borderTop: `3px dashed ${INK}33` }}>
+              <span style={{ fontFamily: "Caveat", fontSize: 34, color: REEF }}>Osama</span>
+              <span style={{ fontFamily: "Caveat", fontSize: 46, lineHeight: 1.2, transform: "rotate(-1deg)" }}>{entry.reply}</span>
+            </div>
+          ) : null}
           {!photo ? (
             <div style={{ display: "flex", flex: 1, alignItems: "flex-end", justifyContent: "flex-end" }}>
               <span style={{ fontFamily: "Plex", fontSize: 200, fontWeight: 500, lineHeight: 1, color: "rgba(11, 107, 96, 0.13)", letterSpacing: -6 }}>
@@ -109,6 +115,9 @@ function PrintCard({ entry }: { entry: LogbookEntry }) {
             {entry.country ? <span style={{ ...mono, color: SOFT, marginTop: 28 }}>from {entry.country}</span> : null}
             <span style={{ ...mono, color: REEF, marginTop: 40 }}>{site.label}{site.depth ? ` · ${site.depth}` : ""}{entry.course ? ` · ${entry.course}` : ""}</span>
             <span style={{ fontSize: photo ? 42 : 48, fontWeight: 500, lineHeight: 1.4, marginTop: 44, maxWidth: 1180 }}>{note}</span>
+            {entry.reply ? (
+              <span style={{ fontFamily: "Caveat", fontSize: 64, lineHeight: 1.15, marginTop: 40, maxWidth: 1180, color: INK, transform: "rotate(-1deg)" }}>{entry.reply}</span>
+            ) : null}
             <div style={{ display: "flex", flex: 1 }} />
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
               <div style={{ display: "flex", flexDirection: "column" }}>

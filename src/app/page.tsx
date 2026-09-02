@@ -232,7 +232,6 @@ export default function Home() {
               <span>OsamaDives · family on this shore since 1983</span>
               <a href="https://instagram.com/osama_mohamed_hassan" target="_blank" rel="noopener noreferrer">Instagram</a>
               <a href="https://facebook.com/osamasharks" target="_blank" rel="noopener noreferrer">Facebook</a>
-              <a href="/logbook">Sign my logbook</a>
               <span className="ar" lang="ar">دهب · جنوب سيناء</span>
             </div>
           </div>

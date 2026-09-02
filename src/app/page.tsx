@@ -98,12 +98,12 @@ export default function Home() {
               <div className="peak-mat">
                 <div className="peak-plate">
                   <img src="/descent/peak-1987.webp" srcSet="/descent/peak-1987-m.webp 800w, /descent/peak-1987.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="A scratched family photograph from August 1987: four young people arm in arm on the Dahab shore beside an orange Bedouin truck" />
-                  <img className="now" src="/descent/peak-now.webp" srcSet="/descent/peak-now-m.webp 800w, /descent/peak-now.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="Osama today on the same shore, in his wetsuit before a dive, the sea on his left and the Sinai mountains behind" />
+                  <img className="now" src="/descent/peak-now.webp" srcSet="/descent/peak-now-m.webp 800w, /descent/peak-now.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="Osama on the same shore years later, in his wetsuit before a dive, the sea on his left and the Sinai mountains behind" />
                 </div>
               </div>
               <div className="peak-captions">
                 <p data-sc-cue="0 0.46 0 0.1">The shore at Assalah · August 1987 · from the family album</p>
-                <p data-sc-cue="0.5 1 0.1 0.08">The same shore, this year · the boy from the beach will hold your regulator</p>
+                <p data-sc-cue="0.5 1 0.1 0.08">The same shore, decades on · Osama before a morning dive</p>
               </div>
             </div>
           </div>

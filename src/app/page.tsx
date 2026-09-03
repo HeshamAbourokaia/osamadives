@@ -119,22 +119,22 @@ export default function Home() {
             The dive computer reads those depths, nothing invented. */}
         <section className="g-abyss" id="descent-act" data-sc-act="pin" data-sc-span="3.2" style={{ "--sc-span": 3.2 } as React.CSSProperties}>
           <div data-sc-stage className="depth-stage">
-            <img className="depth-photo depth-photo--1" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="Coral garden at Lighthouse Reef, twelve metres down, photographed by Osama" />
-            <img className="depth-photo depth-photo--2" src="/descent/depth-22.webp" srcSet="/descent/depth-22-m.webp 800w, /descent/depth-22.webp 1600w" sizes="100vw" alt="A turtle over the reef in the Canyon, twenty-two metres down, photographed by Osama" />
-            <img className="depth-photo depth-photo--3" src="/descent/depth-30.webp" srcSet="/descent/depth-30-m.webp 800w, /descent/depth-30.webp 1600w" sizes="100vw" alt="A diver silhouetted in the deep blue of the Blue Hole at thirty metres, photographed by Osama" />
+            <img className="depth-photo depth-photo--1" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle over the reef at Om El Seed, seven metres down, photographed by Osama" />
+            <img className="depth-photo depth-photo--2" src="/descent/depth-8.webp" srcSet="/descent/depth-8-m.webp 800w, /descent/depth-8.webp 1600w" sizes="100vw" alt="Coral on the reef shelf at the edge of the Blue Hole, eight metres down, photographed by Osama" />
+            <img className="depth-photo depth-photo--3" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="A diver silhouetted in open blue water at twelve metres, photographed by Osama" />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="depth-copy">
               <div className="depth-cue" data-sc-cue="0.02 0.3 0.08 0.06">
-                <span className="microcopy">12 metres · Lighthouse Reef</span>
-                <h2>The house reef, where first breaths happen.</h2>
+                <span className="microcopy">7 metres · Om El Seed</span>
+                <h2>A turtle that does not hurry.</h2>
               </div>
               <div className="depth-cue" data-sc-cue="0.36 0.64 0.06 0.06">
-                <span className="microcopy">22 metres · The Canyon</span>
-                <h2>Shafts of sun, glassfish, a turtle that does not hurry.</h2>
+                <span className="microcopy">8 metres · the edge of the Blue Hole</span>
+                <h2>The reef shelf, where the Blue Hole begins.</h2>
               </div>
               <div className="depth-cue" data-sc-cue="0.7 1 0.06 0">
-                <span className="microcopy">30 metres · Blue Hole</span>
-                <h2>The deep blue, within your training, every time.</h2>
+                <span className="microcopy">12 metres · the blue</span>
+                <h2>Into the blue, within your training, every time.</h2>
               </div>
             </div>
             <div className="depth-credit microcopy" data-sc-cue="0.05">Photographs by Osama, on ordinary working days</div>
@@ -157,6 +157,7 @@ export default function Home() {
                 <p>Three sandy lagoons opening onto coral gardens. Calm, bright, and easy. Open Water and up.</p>
               </a>
               <a className="station" href="/dive-sites/lighthouse-reef-dahab" data-sc-tilt="4">
+                <img className="station__img" src="/descent/sea-poster-m.webp" alt="" />
                 <span className="microcopy">In town</span>
                 <h3>Lighthouse</h3>
                 <span className="depth mono">03-30 <small>M</small></span>
@@ -179,6 +180,7 @@ export default function Home() {
                 <p>A rift in the reef lit by shafts of sun, full of glassfish. Advanced, properly briefed.</p>
               </a>
               <a className="station" href="/dive-sites/blue-hole-dahab" data-sc-tilt="4">
+                <img className="station__img" src="/descent/depth-8-m.webp" alt="" />
                 <span className="microcopy">The famous one</span>
                 <h3>Blue Hole</h3>
                 <span className="depth mono">05-100 <small>M</small></span>

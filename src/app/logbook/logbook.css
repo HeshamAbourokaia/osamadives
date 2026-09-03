@@ -356,10 +356,10 @@
 .lb-empty .lb-mono, .lb-featured > .lb-mono, .lb-wall__head .lb-mono { color: var(--reef); }
 
 /* Osama's seal: the stamp mark on the hero and on every signed page */
-.lb-hero__seal { width: 104px; height: 104px; border-radius: 50%; box-shadow: 0 10px 28px rgba(20, 40, 36, 0.14); }
+.lb-hero__seal { width: 132px; height: 132px; border-radius: 50%; box-shadow: 0 10px 28px rgba(20, 40, 36, 0.14); }
 .lb-page { position: relative; }
-.lb-page__seal { position: absolute; right: 0.9rem; bottom: 0.9rem; width: 52px; height: 52px; opacity: 0.9; transform: rotate(-9deg); pointer-events: none; }
-.lb-page--single .lb-page__seal { width: 68px; height: 68px; }
+.lb-page__seal { position: absolute; right: 0.9rem; bottom: 0.9rem; width: 44px; height: 44px; opacity: 0.92; transform: rotate(-9deg); pointer-events: none; }
+.lb-page--single .lb-page__seal { width: 56px; height: 56px; }
 
 /* The preview follows the reader down the form on wide screens */
 .lb-preview { position: sticky; top: 5.5rem; align-self: start; }

@@ -59,7 +59,7 @@ export default async function LogbookPage() {
           <text x="1000" y="236" textAnchor="end">1983</text>
         </svg>
         <div className="lb-hero__inner">
-          <img src="/brand/stamp-512.png" alt="" width={104} height={104} className="lb-hero__seal lb-rise" />
+          <img src="/brand/stamp-512.png" alt="" width={132} height={132} className="lb-hero__seal lb-rise" />
           <span className="lb-mono lb-rise">Dive log · Dahab, South Sinai · kept since 1983</span>
           <h1 className="lb-h1 lb-rise">Write me a review.</h1>
           <p className="lb-stand lb-hero__stand lb-rise">

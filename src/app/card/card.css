@@ -1,68 +1,133 @@
+/* Osama's card. Light lagoon ground with Dahab laid in behind it: a far mountain
+   line, then the camel shore, then the code floating in front of both. */
 .card {
+  position: relative;
   min-height: 100svh;
   display: grid;
   place-items: center;
-  padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem max(1.25rem, env(safe-area-inset-bottom));
-  background: #06141B;
-  color: #F4F1EA;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1.25rem max(2rem, env(safe-area-inset-bottom));
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(120% 78% at 50% 0%, #FFFFFF 0%, #E9F6F2 42%, #D8EDE7 72%, #CFE6DF 100%);
+  color: #14231F;
   font-family: var(--font-archivo, system-ui), system-ui, sans-serif;
 }
+
+/* layer 1: the far shore, high and pale */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 42% 0;
+  height: 22vh;
+  min-height: 90px;
+  background: url("/card/dahab-far.webp") center/cover no-repeat;
+  opacity: 0.2;
+  filter: saturate(0.5);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 55%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 55%, transparent);
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* layer 2: the camels on the shore, along the bottom */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 34vh;
+  min-height: 170px;
+  background: url("/card/dahab-band.webp") center bottom/cover no-repeat;
+  opacity: 0.28;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 62%);
+  mask-image: linear-gradient(to bottom, transparent, #000 62%);
+  z-index: -1;
+  pointer-events: none;
+}
+
 .card__inner {
   width: min(520px, 100%);
   display: grid;
   justify-items: center;
-  gap: clamp(0.6rem, 2.5vh, 1.2rem);
+  gap: clamp(0.55rem, 2.2vh, 1.05rem);
   text-align: center;
 }
-.card__stamp { width: clamp(78px, 15vh, 132px); height: auto; filter: invert(1) brightness(1.06); }
+
+.card__stamp {
+  width: clamp(76px, 14vh, 124px);
+  height: auto;
+  filter: drop-shadow(0 8px 18px rgba(20, 60, 52, 0.18));
+}
+
 .card__title {
   margin: 0;
-  font-size: clamp(1.5rem, 6.5vw, 2.3rem);
+  font-size: clamp(1.45rem, 6.4vw, 2.25rem);
   font-weight: 800;
-  letter-spacing: -0.01em;
-  line-height: 1.05;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+  color: #12211D;
 }
+
+/* layer 3: the code, lifted clear of everything behind it */
 .card__code {
   position: relative;
   display: block;
-  width: min(78vw, 46vh, 420px);
+  width: min(76vw, 44vh, 400px);
   aspect-ratio: 1;
-  border-radius: 14px;
+  border-radius: 20px;
   overflow: hidden;
-  background: #F2EDE2;
-  box-shadow: 0 26px 60px -22px rgba(0, 0, 0, 0.8);
+  background: #FFFDF8;
+  padding: 3.5%;
+  box-shadow:
+    0 2px 4px rgba(18, 60, 52, 0.06),
+    0 12px 24px -8px rgba(18, 60, 52, 0.16),
+    0 34px 60px -22px rgba(18, 60, 52, 0.3);
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.3, 1);
 }
+.card__code:hover, .card__code:focus-visible { transform: translateY(-3px); }
 .card__code svg { display: block; width: 100%; height: 100%; }
 .card__code-stamp {
   position: absolute;
   left: 50%; top: 50%;
   transform: translate(-50%, -50%);
-  width: 21%; height: auto;
+  width: 20%; height: auto;
   border-radius: 50%;
-  background: #F2EDE2;
-  padding: 2.5%;
-}
-.card__how {
-  margin: 0;
-  font-size: clamp(0.82rem, 3.4vw, 1rem);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #3FD1BE;
-}
-.card__url { margin: 0; font-size: clamp(1.05rem, 4.6vw, 1.5rem); font-weight: 800; }
-.card__hint {
-  margin: 0.4rem 0 0;
-  max-width: 34ch;
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: #8FA9B2;
+  background: #FFFDF8;
+  padding: 2.4%;
 }
 
-.keep{display:grid;justify-items:center;gap:.7rem;margin-top:.4rem;max-width:34ch}
-.keep__text{margin:0;font-size:.82rem;line-height:1.55;color:#8FA9B2;text-align:center}
-.keep__text strong{color:#F4F1EA;font-weight:700}
-.keep__btn{appearance:none;border:0;border-radius:999px;padding:.85rem 1.4rem;cursor:pointer;
-  background:#3FD1BE;color:#06141B;font:800 .95rem/1 inherit;letter-spacing:.01em;
-  box-shadow:0 14px 30px -14px rgba(63,209,190,.8)}
-.keep__btn:hover{filter:brightness(1.06)}
-.keep__btn--quiet{background:transparent;color:#3FD1BE;border:1px solid rgba(63,209,190,.5);box-shadow:none;padding:.7rem 1.2rem}
+.card__how {
+  margin: 0;
+  font-size: clamp(0.74rem, 3.1vw, 0.9rem);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #0D7D70;
+}
+.card__url {
+  margin: 0;
+  font-size: clamp(1.02rem, 4.4vw, 1.45rem);
+  font-weight: 800;
+  color: #12211D;
+}
+
+.keep { display: grid; justify-items: center; gap: 0.65rem; margin-top: 0.35rem; max-width: 34ch; }
+.keep__text { margin: 0; font-size: 0.8rem; line-height: 1.55; color: #4A6560; text-align: center; }
+.keep__text strong { color: #12211D; font-weight: 700; }
+.keep__btn {
+  appearance: none; border: 0; border-radius: 999px; padding: 0.85rem 1.4rem; cursor: pointer;
+  background: #0D7D70; color: #FFFDF8; font: 800 0.95rem/1 inherit;
+  box-shadow: 0 14px 28px -12px rgba(13, 125, 112, 0.75);
+}
+.keep__btn:hover { background: #0a655b; }
+.keep__btn--quiet {
+  background: transparent; color: #0D7D70; border: 1px solid rgba(13, 125, 112, 0.45);
+  box-shadow: none; padding: 0.7rem 1.2rem;
+}
+.keep__save { margin-top: 0.1rem; font-size: 0.78rem; color: #4A6560; text-decoration: underline; text-underline-offset: 3px; }
+.keep__save:hover { color: #0D7D70; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card__code { transition: none; }
+  .card__code:hover { transform: none; }
+}

@@ -21,7 +21,7 @@ export default function CardScreen() {
 
         <a className="card__code" href={QR_URL} aria-label="Open the review form">
           <svg viewBox={`0 0 ${box} ${box}`} role="img" aria-label="Code for osamadives.com/review" shapeRendering="crispEdges">
-            <rect width={box} height={box} fill="#F2EDE2" />
+            <rect width={box} height={box} fill="#FFFDF8" />
             <path d={QR_PATH} fill="#171208" />
           </svg>
           <img src="/brand/stamp-512.png" alt="" className="card__code-stamp" width={72} height={72} />

@@ -6,8 +6,8 @@
   "scope": "/card",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#06141B",
-  "theme_color": "#06141B",
+  "background_color": "#E9F6F2",
+  "theme_color": "#E9F6F2",
   "icons": [
     {
       "src": "/brand/icon-192.png",

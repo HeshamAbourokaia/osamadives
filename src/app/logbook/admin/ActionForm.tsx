@@ -12,8 +12,10 @@ export default function ActionForm({ children, className, ...props }: React.Form
       className={`${className ?? ""}${busy ? " is-busy" : ""}`}
       onSubmit={(e) => {
         if (busy) { e.preventDefault(); return; }   // one action at a time: a second press, by mouse or keyboard, is ignored until the page comes back
-        setBusy(true);
         const b = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
+        const ask = b?.dataset.confirm;
+        if (ask && !window.confirm(ask)) { e.preventDefault(); return; }
+        setBusy(true);
         if (b) b.textContent = "Working...";
       }}
     >

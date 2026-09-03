@@ -1,7 +1,7 @@
 // Keeps Osama's card working on a boat with no signal. It caches the card and its
 // picture on first visit and serves them from the cache whenever the network is gone.
-const CACHE = "osamadives-card-v2";
-const FILES = ["/card", "/brand/stamp-512.png", "/brand/icon-192.png", "/card.webmanifest"];
+const CACHE = "osamadives-card-v3";
+const FILES = ["/card", "/brand/stamp-512.png", "/brand/icon-192.png", "/card.webmanifest", "/card/dahab-band.webp", "/card/dahab-far.webp", "/review-card.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));

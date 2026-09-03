@@ -6,8 +6,8 @@ export const metadata: Metadata = {
   description: "Show this to a diver. They scan it, or hold a finger on it, and write Osama a review.",
   robots: { index: false, follow: false },
   manifest: "/card.webmanifest",
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Reviews" },
-  themeColor: "#06141B",
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "Reviews" },
+  themeColor: "#E9F6F2",
 };
 
 // Osama's own screen. Saved to his home screen it opens full screen, and it works

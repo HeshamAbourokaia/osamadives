@@ -99,6 +99,10 @@ export default function InstallCard() {
       {mode === "desktop" ? (
         <p className="keep__text">Open osamadives.com/card on your phone to keep it on the home screen.</p>
       ) : null}
+
+      <a className="keep__save" href="/review-card.png" download="osama-review-card.png">
+        Or just save the picture to your photos
+      </a>
     </div>
   );
 }

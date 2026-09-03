@@ -16,6 +16,7 @@ export interface LogbookStore {
   update(id: string, patch: EntryPatch): Promise<LogbookEntry | null>;
   countSince(ipHash: string, sinceIso: string): Promise<number>;
   countStatus(status: EntryStatus): Promise<number>;
+  remove(id: string): Promise<boolean>;
 }
 
 const byNewest = (a: LogbookEntry, b: LogbookEntry) => (a.createdAt < b.createdAt ? 1 : -1);
@@ -74,6 +75,16 @@ export class FileStore implements LogbookStore {
 
   async countStatus(status: EntryStatus) {
     return (await this.readAll()).filter((e) => e.status === status).length;
+  }
+
+  remove(id: string) {
+    return this.locked(async () => {
+      const all = await this.readAll();
+      const next = all.filter((e) => e.id !== id);
+      if (next.length === all.length) return false;
+      await this.writeAll(next);
+      return true;
+    });
   }
 
   setStatus(id: string, status: EntryStatus, moderatedAt: string) {
@@ -209,6 +220,12 @@ export class NeonStore implements LogbookStore {
     const sql = await this.db();
     const rows = (await sql`SELECT count(*)::int AS n FROM logbook_entries WHERE status = ${status}`) as { n: number }[];
     return rows[0]?.n ?? 0;
+  }
+
+  async remove(id: string) {
+    const sql = await this.db();
+    const rows = (await sql`DELETE FROM logbook_entries WHERE id = ${id} RETURNING id`) as { id: string }[];
+    return rows.length > 0;
   }
 
   async setStatus(id: string, status: EntryStatus, moderatedAt: string) {

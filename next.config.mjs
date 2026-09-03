@@ -6,6 +6,7 @@ const nextConfig = {
     return [
       { source: "/review", destination: "/logbook" },
       { source: "/reviews", destination: "/logbook" },
+      { source: "/admin", destination: "/logbook/admin" },
     ];
   },
   images: {

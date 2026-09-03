@@ -87,7 +87,7 @@ function StoryCard({ entry }: { entry: LogbookEntry }) {
         </div>
       </div>
       <div style={{ ...mono, color: "#93ABA8", display: "flex", justifyContent: "space-between", marginTop: 40 }}>
-        <span>Sign my logbook</span>
+        <span>Write a review</span>
         <span>osamadives.com/logbook</span>
       </div>
     </div>

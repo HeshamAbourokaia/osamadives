@@ -27,9 +27,9 @@ export default async function HomeStrip() {
       <div className="lb-wall" style={{ paddingTop: "clamp(3.5rem, 7vw, 6rem)", paddingBottom: "clamp(3.5rem, 7vw, 6rem)" }}>
         <div className="lb-wall__inner">
           <div className="lb-wall__head">
-            <span className="lb-mono">My logbook{total ? ` · ${total} ${total === 1 ? "page" : "pages"}` : ""}</span>
+            <span className="lb-mono">Reviews{total ? ` · ${total}` : ""}</span>
             <h2 className="lb-h2">Written by the people I took into the water.</h2>
-            <p className="lb-stand">Every diver keeps a logbook. This one is mine, and the pages are written by my students. Read them, then add yours.</p>
+            <p className="lb-stand">Reviews written by the people I took into the water. Every one becomes a page in my logbook, signed by me.</p>
           </div>
           <div className="lb-grid">
             <WeddingPage variant="wall" />
@@ -38,8 +38,8 @@ export default async function HomeStrip() {
             ))}
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem", marginTop: "2.4rem" }}>
-            <Link href="/logbook#sign" className="lb-btn lb-btn--paper">Sign my logbook</Link>
-            <Link href="/logbook" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23, 18, 8, 0.3)" }}>Read every page</Link>
+            <Link href="/logbook#sign" className="lb-btn lb-btn--paper">Write a review</Link>
+            <Link href="/logbook#pages" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23, 18, 8, 0.3)" }}>Read all the reviews</Link>
           </div>
         </div>
       </div>

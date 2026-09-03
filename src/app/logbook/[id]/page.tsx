@@ -21,8 +21,8 @@ async function approved(id: string): Promise<LogbookEntry | null> {
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const e = await approved(params.id);
-  if (!e) return { title: "Logbook | OsamaDives", robots: { index: false } };
-  const title = `${e.name}${e.country ? ` from ${e.country}` : ""} signed Osama's logbook`;
+  if (!e) return { title: "Review | OsamaDives", robots: { index: false } };
+  const title = `${e.name}${e.country ? ` from ${e.country}` : ""} reviewed diving with Osama`;
   const description = e.note.length > 160 ? `${e.note.slice(0, 157)}...` : e.note;
   const image = `https://www.osamadives.com/api/logbook/${e.id}/card`;
   return {

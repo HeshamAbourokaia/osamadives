@@ -58,6 +58,7 @@ export interface EntryPatch {
   reply?: string;
   featured?: boolean;
   videoUrl?: string | null;
+  photoUrl?: string | null;
 }
 
 export const LIMITS = {
@@ -66,4 +67,5 @@ export const LIMITS = {
   note: { min: 12, max: 600 },
   reply: { max: 280 },
   photoBytes: 6 * 1024 * 1024,
+  mediaBytes: 200 * 1024 * 1024,   // Osama uploading straight from his phone
 } as const;

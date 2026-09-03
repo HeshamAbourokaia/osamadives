@@ -7,6 +7,8 @@ const nextConfig = {
       { source: "/review", destination: "/logbook" },
       { source: "/reviews", destination: "/logbook" },
       { source: "/admin", destination: "/logbook/admin" },
+      // A single review's own page, so a printed or shared link never says /logbook either.
+      { source: "/review/:id", destination: "/logbook/:id" },
     ];
   },
   images: {

@@ -80,7 +80,7 @@ export default function StoriesLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-black/95 flex"
+      className="fixed inset-0 z-[100] bg-black/95 flex overflow-y-auto md:overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Story lightbox"
@@ -148,16 +148,16 @@ export default function StoriesLightbox({
       </button>
 
       {/* Main Content - Split View */}
-      <div className="flex flex-col md:flex-row w-full h-full">
+      <div className="flex flex-col md:flex-row w-full min-h-full md:h-full">
         {/* Image/Video Section */}
         <div
-          className="flex-1 flex items-center justify-center p-4 md:p-8"
+          className="flex-1 shrink-0 flex items-center justify-center p-3 pt-16 md:p-8"
           onClick={(e) => {
             // Close on background click
             if (e.target === e.currentTarget) onClose();
           }}
         >
-          <div className="relative max-w-4xl max-h-[60vh] md:max-h-[85vh] w-full">
+          <div className="relative max-w-5xl max-h-[70vh] md:max-h-[88vh] w-full">
             {post.type === "video" ? (
               <div className="relative aspect-video">
                 <Image
@@ -198,7 +198,7 @@ export default function StoriesLightbox({
                 alt={post.title}
                 width={1200}
                 height={800}
-                className="max-h-[60vh] md:max-h-[85vh] w-auto h-auto object-contain rounded-lg mx-auto"
+                className="max-h-[70vh] md:max-h-[88vh] w-auto h-auto object-contain rounded-lg mx-auto"
                 priority
               />
             )}
@@ -206,7 +206,7 @@ export default function StoriesLightbox({
         </div>
 
         {/* Story/Caption Sidebar */}
-        <div className="w-full md:w-[400px] bg-gray-900 overflow-y-auto">
+        <div className="w-full shrink-0 md:w-[400px] bg-gray-900 md:overflow-y-auto md:h-full">
           <div className="p-6">
             {/* Header with type badge */}
             <div className="flex items-center gap-2 mb-4">

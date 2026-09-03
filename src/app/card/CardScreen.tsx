@@ -7,7 +7,10 @@ import { QR_MODULES, QR_PATH, QR_URL } from "./qr";
 export default function CardScreen() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/card-sw.js").catch(() => {});
+      navigator.serviceWorker
+        .register("/card-sw.js")
+        .then((reg) => reg.update().catch(() => {}))
+        .catch(() => {});
     }
   }, []);
 

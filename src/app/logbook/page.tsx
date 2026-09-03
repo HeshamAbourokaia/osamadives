@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.osamadives.com/logbook" },
   openGraph: {
     title: "Write me a review | OsamaDives",
-    description: "Pages written by the divers Osama took into the Red Sea. Add yours.",
+    description: "Reviews written by the divers Osama took into the Red Sea. Write yours.",
     url: "https://www.osamadives.com/logbook",
     images: [{ url: "https://www.osamadives.com/og/review-card.png", width: 1200, height: 630, alt: "Write me a review. Osama Dives, Dahab." }],
   },

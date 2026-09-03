@@ -134,13 +134,15 @@ export class NeonStore implements LogbookStore {
   private ready: Promise<void> | null = null;
   private sql: ReturnType<typeof import("@neondatabase/serverless").neon> | null = null;
 
-  constructor(private readonly url: string) {}
+  // The driver talks over fetch, and Next caches fetches made while rendering. The public pages
+  // want that cache (they are rebuilt on a timer and whenever a review is moderated); the private
+  // moderation page must never see a stale list, so it asks for a no-store connection instead.
+  constructor(private readonly url: string, private readonly fresh = false) {}
 
   private async db() {
     if (!this.sql) {
       const { neon } = await import("@neondatabase/serverless");
-      // Next caches fetch calls made while rendering, POST included; the driver goes over fetch, so opt every query out
-      this.sql = neon(this.url, { fetchOptions: { cache: "no-store" } });
+      this.sql = this.fresh ? neon(this.url, { fetchOptions: { cache: "no-store" } }) : neon(this.url);
     }
     if (!this.ready) {
       const sql = this.sql;
@@ -224,12 +226,19 @@ export class NeonStore implements LogbookStore {
 
 // ---------------------------------------------------------------------------
 let cached: LogbookStore | null = null;
+let cachedFresh: LogbookStore | null = null;
 
-export function getStore(): LogbookStore {
-  if (cached) return cached;
+// `fresh` skips every layer of caching: use it on the moderation page and in the moderation route,
+// where showing the previous state reads as a broken button.
+export function getStore(opts: { fresh?: boolean } = {}): LogbookStore {
+  const fresh = opts.fresh === true;
+  const held = fresh ? cachedFresh : cached;
+  if (held) return held;
   const url = process.env.DATABASE_URL;
-  if (url) cached = new NeonStore(url);
+  let store: LogbookStore;
+  if (url) store = new NeonStore(url, fresh);
   else if (process.env.NODE_ENV === "production") throw new Error("DATABASE_URL is not set");
-  else cached = new FileStore(path.join(process.env.LOGBOOK_DATA_DIR || path.join(process.cwd(), ".data"), "logbook.json"));
-  return cached;
+  else store = new FileStore(path.join(process.env.LOGBOOK_DATA_DIR || path.join(process.cwd(), ".data"), "logbook.json"));
+  if (fresh) cachedFresh = store; else cached = store;
+  return store;
 }

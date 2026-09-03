@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async redirects() {
-    // The printed cards say osamadives.com/review; the page lives at /logbook.
+    // /review is a real page (it carries the link-preview tags); only the plural redirects.
     return [
-      { source: "/review", destination: "/logbook#sign", permanent: false },
       { source: "/reviews", destination: "/logbook", permanent: false },
     ];
   },

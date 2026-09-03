@@ -23,7 +23,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
   noStore();
   const key = searchParams.key;
   if (!adminKeyOk(key)) notFound();
-  const entries = await getStore().list();
+  const entries = await getStore({ fresh: true }).list();
   const base = siteUrl();
   const card = (e: LogbookEntry, print: boolean) =>
     `${base}/api/logbook/${e.id}/card?t=${signToken("share", e.id, TTL.share)}${print ? "&format=print" : ""}`;

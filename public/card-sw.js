@@ -2,7 +2,7 @@
 // copy in place: the page itself is fetched fresh whenever there is signal and only
 // falls back to the cache when the network fails. Pictures are served from the cache
 // first, since they do not change.
-const CACHE = "osamadives-card-v4";
+const CACHE = "osamadives-card-v5";
 const FILES = [
   "/card",
   "/brand/stamp-512.png",

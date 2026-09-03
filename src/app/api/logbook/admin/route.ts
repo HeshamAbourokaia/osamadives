@@ -29,9 +29,15 @@ export async function POST(req: Request) {
     await store.remove(id);
   } else if (action === "save") {
     const reply = cleanText(form.get("reply"), LIMITS.reply.max, true);
-    const video = cleanText(form.get("videoUrl"), 300);
-    const videoUrl = /^(\/|https:\/\/)/.test(video) ? video : null;
-    await store.update(id, { reply, videoUrl, featured: form.get("featured") === "1" });
+    const video = cleanText(form.get("videoUrl"), 500);
+    const photo = cleanText(form.get("photoUrl"), 500);
+    const ok = (v: string) => (/^(\/|https:\/\/)/.test(v) ? v : null);
+    await store.update(id, {
+      reply,
+      videoUrl: ok(video),
+      photoUrl: ok(photo),
+      featured: form.get("featured") === "1",
+    });
   } else {
     return new Response("Bad request", { status: 400 });
   }

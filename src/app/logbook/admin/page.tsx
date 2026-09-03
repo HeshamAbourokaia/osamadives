@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 import ActionForm from "./ActionForm";
+import MediaUpload from "./MediaUpload";
 import SignIn from "./SignIn";
 import { siteUrl } from "@/lib/logbook/config";
 import { moderatorKey } from "@/lib/logbook/session";
@@ -60,10 +61,8 @@ export default async function AdminPage({
           placeholder="Great buoyancy. Come back for Advanced."
         />
       </label>
-      <label className="lb-field">
-        <span className="lb-mono">Video link · optional</span>
-        <input name="videoUrl" className="lb-admin__input" defaultValue={e.videoUrl ?? ""} placeholder="/logbook/wedding.mp4" />
-      </label>
+      <MediaUpload name="photoUrl" label="Photo" accept="image/*" current={e.photoUrl} />
+      <MediaUpload name="videoUrl" label="Video" accept="video/*" current={e.videoUrl} />
       <label className="lb-consent" style={{ color: "var(--ink)" }}>
         <input type="checkbox" name="featured" value="1" defaultChecked={e.featured} />
         <span>Review of the month (pinned at the top)</span>

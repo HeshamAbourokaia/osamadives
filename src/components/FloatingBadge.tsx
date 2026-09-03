@@ -14,7 +14,7 @@ export default function FloatingBadge() {
       <div className="absolute inset-0 bg-[#d4a857] rounded-full blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
 
       {/* Badge container - circular with background to hide any transparency issues */}
-      <div className="relative w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 drop-shadow-2xl transform group-hover:scale-110 transition-transform duration-300 rounded-full overflow-hidden bg-[#c9a45c]">
+      <div className="relative w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 drop-shadow-2xl transform group-hover:scale-110 transition-transform duration-300 rounded-full overflow-hidden bg-[#F2EDE2]">
         <Image
           src="/brand/stamp-512.png"
           alt="OsamaDives stamp: Shark family, Dahab, since 1983"

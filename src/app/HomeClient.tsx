@@ -194,7 +194,7 @@ export default function HomeClient({ stories, reel }: { stories: React.ReactNode
               href="/logbook"
               className="hover:text-white transition focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#5a5f4e] rounded"
             >
-              Logbook
+              Reviews
             </Link>
             <Link
               href="#gallery"
@@ -298,7 +298,7 @@ export default function HomeClient({ stories, reel }: { stories: React.ReactNode
                 className="block text-white/90 hover:text-white transition py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Logbook
+                Reviews
               </Link>
               <Link
                 href="#gallery"
@@ -1254,7 +1254,7 @@ export default function HomeClient({ stories, reel }: { stories: React.ReactNode
                     href="/logbook"
                     className="hover:text-white transition focus:outline-none focus:ring-2 focus:ring-white rounded"
                   >
-                    Logbook
+                    Reviews
                   </Link>
                 </li>
                 <li>

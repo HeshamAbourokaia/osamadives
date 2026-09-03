@@ -363,3 +363,14 @@
 
 /* The preview follows the reader down the form on wide screens */
 .lb-preview { position: sticky; top: 5.5rem; align-self: start; }
+
+/* Moderation page: a solid header that covers nothing, a state on every review, a confirmation after each action */
+.lb-top--solid { position: sticky; background: var(--bone); border-bottom: 1px solid rgba(23, 18, 8, 0.1); pointer-events: auto; }
+.lb-top--solid .lb-brand { color: var(--ink); }
+.lb-admin__status { display: inline-block; align-self: start; font: 600 0.68rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; padding: 0.4rem 0.6rem; border-radius: 3px; margin-bottom: 0.4rem; background: #f3e2b3; color: #5a4300; }
+.lb-admin__status.is-approved { background: #cfeee5; color: #0b4f45; }
+.lb-admin__status.is-hidden { background: #e6e2da; color: #4a4640; }
+.lb-admin__banner { font: 600 1rem/1.4 var(--display); color: #0b4f45; background: #cfeee5; padding: 0.8rem 1rem; border-radius: 4px; }
+
+.lb-admin__form.is-busy .lb-btn { opacity: 0.55; pointer-events: none; }
+.lb-admin:target { outline: 3px solid #0d9488; outline-offset: 6px; }

@@ -211,7 +211,7 @@ export default function LogbookForm({ nextNumber }: Props) {
           {error ? <p className="lb-error" role="alert">{error}</p> : null}
 
           <div>
-            <button type="submit" className="lb-btn" disabled={busy}>{busy ? "Stamping..." : "Stamp it"}</button>
+            <button type="submit" className="lb-btn" disabled={busy}>{busy ? "Sending..." : "Submit review"}</button>
           </div>
         </form>
       </div>

@@ -94,6 +94,16 @@ export async function POST(req: Request) {
     return fail("Five pages a day is the limit. Come back tomorrow.", 429);
   }
 
+  // One review per person per dive: the same name with the same words, or the same name and country
+  // within six hours, is the same review pressed twice. Say so instead of saving a twin.
+  const norm = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
+  const sixHoursAgo = Date.now() - 6 * 3_600_000;
+  const recent = await store.list({ limit: 100 });
+  const twin = recent.find((e) =>
+    e.status !== "hidden" && norm(e.name) === norm(name) &&
+    (norm(e.note) === norm(note) || (norm(e.country) === norm(country) && new Date(e.createdAt).getTime() > sixHoursAgo)));
+  if (twin) return fail("Osama already has your review. It shows once he has signed it.", 409);
+
   const id = newId();
   let photoUrl: string | null = null;
   const photo = form.get("photo");

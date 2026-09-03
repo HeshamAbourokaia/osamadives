@@ -374,3 +374,33 @@
 
 .lb-admin__form.is-busy .lb-btn { opacity: 0.55; pointer-events: none; }
 .lb-admin:target { outline: 3px solid #0d9488; outline-offset: 6px; }
+
+/* A review can be opened on its own: the card lifts off the wall and floats forward. */
+.lb-open{display:block;width:100%;padding:0;border:0;background:none;text-align:inherit;font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.lb-open .lb-page{transition:transform .32s cubic-bezier(.2,.7,.3,1),box-shadow .32s ease}
+.lb-open:hover .lb-page,.lb-open:focus-visible .lb-page{transform:translateY(-6px) rotate(-.35deg);box-shadow:0 26px 60px -28px rgba(20,40,36,.45)}
+.lb-open:focus-visible{outline:none}
+.lb-open:focus-visible .lb-page{outline:2px solid var(--sea,#0d7d70);outline-offset:5px}
+
+.lb-more{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;justify-content:center;margin-top:2.6rem}
+.lb-more .lb-mono{color:var(--ink-soft,#5b5348)}
+
+.lb-modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:clamp(1rem,4vw,3rem);
+  background:rgba(8,26,22,.62);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+  animation:lb-fade .22s ease both;overflow-y:auto}
+.lb-modal__panel{position:relative;width:min(760px,100%);transform-origin:50% 40%;
+  animation:lb-lift .42s cubic-bezier(.16,.9,.3,1) both;perspective:1200px}
+.lb-modal__panel .lb-page{box-shadow:0 50px 110px -35px rgba(0,0,0,.6),0 0 0 1px rgba(23,18,8,.08)}
+.lb-modal__panel .lb-page__photo{aspect-ratio:4/3;max-height:56vh}
+.lb-modal__panel .lb-page__note{font-size:1.12rem;line-height:1.75}
+.lb-modal__close{position:absolute;top:-14px;right:-10px;z-index:2;width:44px;height:44px;border-radius:50%;
+  border:1px solid rgba(23,18,8,.18);background:var(--bone,#f4f1ea);color:var(--ink,#171208);
+  font-size:1.6rem;line-height:1;cursor:pointer;box-shadow:0 10px 26px -10px rgba(0,0,0,.5)}
+.lb-modal__close:hover{background:#fff}
+@keyframes lb-fade{from{opacity:0}to{opacity:1}}
+@keyframes lb-lift{from{opacity:0;transform:translateY(28px) scale(.94) rotateX(7deg)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .lb-modal,.lb-modal__panel{animation:none}
+  .lb-open .lb-page{transition:none}
+  .lb-open:hover .lb-page{transform:none}
+}

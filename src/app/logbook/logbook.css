@@ -371,3 +371,6 @@
 .lb-admin__status.is-approved { background: #cfeee5; color: #0b4f45; }
 .lb-admin__status.is-hidden { background: #e6e2da; color: #4a4640; }
 .lb-admin__banner { font: 600 1rem/1.4 var(--display); color: #0b4f45; background: #cfeee5; padding: 0.8rem 1rem; border-radius: 4px; }
+
+.lb-admin__form.is-busy .lb-btn { opacity: 0.55; pointer-events: none; }
+.lb-admin:target { outline: 3px solid #0d9488; outline-offset: 6px; }

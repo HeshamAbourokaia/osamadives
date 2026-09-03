@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adminKeyOk } from "@/lib/logbook/admin";
+import ActionForm from "./ActionForm";
 import { siteUrl } from "@/lib/logbook/config";
 import { siteInfo } from "@/lib/logbook/sites";
 import { stampInfo } from "@/lib/logbook/stamps";
@@ -69,7 +70,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
                       <a href={card(e, true)} target="_blank" rel="noopener noreferrer">Keepsake</a>
                       {e.status === "approved" ? <a href={`/logbook/${e.id}`} target="_blank" rel="noopener noreferrer">Live page</a> : null}
                     </div>
-                    <form method="post" action="/api/logbook/admin" className="lb-admin__form">
+                    <ActionForm method="post" action="/api/logbook/admin" className="lb-admin__form">
                       <input type="hidden" name="key" value={key} />
                       <input type="hidden" name="id" value={e.id} />
                       <label className="lb-field">
@@ -89,7 +90,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
                         {e.status !== "approved" ? <button type="submit" name="action" value="approve" className="lb-btn">Approve</button> : null}
                         {e.status !== "hidden" ? <button type="submit" name="action" value="hide" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23,18,8,0.3)" }}>Hide</button> : null}
                       </div>
-                    </form>
+                    </ActionForm>
                   </article>
                 ))}
               </div>

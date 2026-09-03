@@ -5,6 +5,7 @@ import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import LogbookForm from "./LogbookForm";
 import PageCard from "./PageCard";
+import ReviewWall from "./ReviewWall";
 import WeddingPage from "./WeddingPage";
 
 export const revalidate = 60;
@@ -24,6 +25,8 @@ export const metadata: Metadata = {
 };
 
 const WHATSAPP = "https://wa.me/201090208050?text=" + encodeURIComponent("Hi Osama! I would love to chat about diving in Dahab.");
+
+const WALL_PAGE = 24;
 
 async function approvedEntries(): Promise<LogbookEntry[]> {
   try {
@@ -98,11 +101,7 @@ export default async function LogbookPage() {
               <a href={addHref} className="lb-btn lb-btn--paper">{open ? "Write it" : "Message Osama"}</a>
             </div>
           ) : (
-            <div className="lb-grid">
-              {entries.map((entry, i) => (
-                <PageCard key={entry.id} entry={entry} number={total - i} />
-              ))}
-            </div>
+            <ReviewWall initial={entries.slice(0, WALL_PAGE)} total={total} topNumber={total} />
           )}
         </div>
       </section>

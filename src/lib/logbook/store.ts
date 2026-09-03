@@ -5,6 +5,7 @@ import type { EntryPatch, EntryStatus, LogbookEntry } from "./types";
 export interface ListOptions {
   status?: EntryStatus;
   limit?: number;
+  offset?: number;
 }
 
 export interface LogbookStore {
@@ -14,6 +15,7 @@ export interface LogbookStore {
   setStatus(id: string, status: EntryStatus, moderatedAt: string): Promise<LogbookEntry | null>;
   update(id: string, patch: EntryPatch): Promise<LogbookEntry | null>;
   countSince(ipHash: string, sinceIso: string): Promise<number>;
+  countStatus(status: EntryStatus): Promise<number>;
 }
 
 const byNewest = (a: LogbookEntry, b: LogbookEntry) => (a.createdAt < b.createdAt ? 1 : -1);
@@ -66,7 +68,12 @@ export class FileStore implements LogbookStore {
   async list(opts: ListOptions = {}) {
     const all = (await this.readAll()).filter((e) => !opts.status || e.status === opts.status);
     all.sort(byNewest);
-    return opts.limit ? all.slice(0, opts.limit) : all;
+    const from = opts.offset ?? 0;
+    return opts.limit ? all.slice(from, from + opts.limit) : all.slice(from);
+  }
+
+  async countStatus(status: EntryStatus) {
+    return (await this.readAll()).filter((e) => e.status === status).length;
   }
 
   setStatus(id: string, status: EntryStatus, moderatedAt: string) {
@@ -191,10 +198,17 @@ export class NeonStore implements LogbookStore {
   async list(opts: ListOptions = {}) {
     const sql = await this.db();
     const limit = opts.limit ?? 500;
+    const offset = opts.offset ?? 0;
     const rows = (opts.status
-      ? await sql`SELECT * FROM logbook_entries WHERE status = ${opts.status} ORDER BY created_at DESC LIMIT ${limit}`
-      : await sql`SELECT * FROM logbook_entries ORDER BY created_at DESC LIMIT ${limit}`) as Row[];
+      ? await sql`SELECT * FROM logbook_entries WHERE status = ${opts.status} ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`
+      : await sql`SELECT * FROM logbook_entries ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`) as Row[];
     return rows.map(fromRow);
+  }
+
+  async countStatus(status: EntryStatus) {
+    const sql = await this.db();
+    const rows = (await sql`SELECT count(*)::int AS n FROM logbook_entries WHERE status = ${status}`) as { n: number }[];
+    return rows[0]?.n ?? 0;
   }
 
   async setStatus(id: string, status: EntryStatus, moderatedAt: string) {

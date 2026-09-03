@@ -16,8 +16,8 @@ export default function FloatingBadge() {
       {/* Badge container - circular with background to hide any transparency issues */}
       <div className="relative w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 drop-shadow-2xl transform group-hover:scale-110 transition-transform duration-300 rounded-full overflow-hidden bg-[#c9a45c]">
         <Image
-          src="/images/osamadives-logo.png"
-          alt="OsamaDives Heritage Badge - Dahab Since 1983"
+          src="/brand/stamp-512.png"
+          alt="OsamaDives stamp: Shark family, Dahab, since 1983"
           fill
           className="object-cover"
           priority

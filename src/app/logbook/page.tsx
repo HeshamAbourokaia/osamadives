@@ -18,7 +18,9 @@ export const metadata: Metadata = {
     title: "Write me a review | OsamaDives",
     description: "Pages written by the divers Osama took into the Red Sea. Add yours.",
     url: "https://www.osamadives.com/logbook",
+    images: [{ url: "https://www.osamadives.com/og/review-card.png", width: 1200, height: 630, alt: "Write me a review. Osama Dives, Dahab." }],
   },
+  twitter: { card: "summary_large_image", title: "Write me a review | OsamaDives", images: ["https://www.osamadives.com/og/review-card.png"] },
 };
 
 const WHATSAPP = "https://wa.me/201090208050?text=" + encodeURIComponent("Hi Osama! I would love to chat about diving in Dahab.");

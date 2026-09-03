@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="320" height="320">
+<defs><path id="r" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs>
+<circle cx="100" cy="100" r="96" fill="#F2EDE2"/>
+<circle cx="100" cy="100" r="95" fill="none" stroke="#171208" stroke-width="4"/>
+<circle cx="100" cy="100" r="60" fill="none" stroke="#171208" stroke-width="1.6"/>
+<text font-family="Archivo" font-weight="800" font-size="9.6" letter-spacing="2.6" fill="#171208"><textPath href="#r" startOffset="2">OSAMA DIVES · DAHAB · SHARK FAMILY · SINCE 1983 · </textPath></text>
+<g fill="#171208" transform="translate(46 68) scale(0.56)"><path d="M14 50 L34 38 L30 62 Z M31 50 C50 28 112 22 152 42 L178 50 L152 58 C112 78 50 72 31 50 Z M86 32 C92 18 100 10 106 8 L118 30 Z M96 63 L108 84 L124 66 Z"/></g>
+<text x="100" y="128" text-anchor="middle" font-family="Archivo" font-weight="800" font-size="17" letter-spacing="1" fill="#171208">OSAMA</text>
+<text x="100" y="145" text-anchor="middle" font-family="Archivo" font-weight="800" font-size="17" letter-spacing="1" fill="#171208">DIVES</text>
+<text x="100" y="157" text-anchor="middle" font-family="IBM Plex Mono" font-size="6" letter-spacing="2.4" fill="#171208">DAHAB · 1983</text>
+</svg>

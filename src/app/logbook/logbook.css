@@ -414,4 +414,4 @@
 .lb-back:hover,.lb-back:focus-visible{background:#fff;border-color:rgba(23,18,8,.34);transform:translateX(-2px)}
 .lb-back img{border-radius:50%;display:block}
 .lb-back__text span{opacity:.55;font-weight:500}
-@media (max-width:520px){.lb-back__text{display:none}.lb-back{padding:.42rem .55rem}}
+@media (max-width:520px){.lb-back{font-size:.8rem;padding:.38rem .62rem .38rem .48rem;gap:.42rem}.lb-back img{width:24px;height:24px}.lb-back__text span{display:none}}

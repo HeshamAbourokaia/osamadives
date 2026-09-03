@@ -280,3 +280,77 @@
 .lb-admin__input:focus { outline: 2px solid var(--reef); outline-offset: 1px; }
 .lb-admin__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .lb-admin .lb-consent input { accent-color: var(--reef); }
+
+/* ==========================================================================
+   Light theme: shallow water and sand instead of the abyss. The paper wall is
+   unchanged; the ground around it is the surface of the lagoon.
+   ========================================================================== */
+.lb {
+  --abyss: #eaf4f1;
+  --abyss-deep: #dcece8;
+  --surface: #cfe8e2;
+  --light: #171208;
+  --light-soft: #5f6a66;
+  --glow: #0b8f80;
+  background:
+    radial-gradient(70vw 50vh at 100% 0%, rgba(63, 209, 190, 0.22), transparent 70%),
+    radial-gradient(60vw 40vh at 0% 100%, rgba(232, 223, 208, 0.9), transparent 70%),
+    var(--abyss);
+}
+.lb-btn { color: #fff; box-shadow: 0 12px 30px -14px rgba(11, 143, 128, 0.7); }
+.lb-btn--quiet { color: var(--ink); border-color: rgba(23, 18, 8, 0.3); }
+.lb-btn--quiet:hover { color: var(--glow); border-color: var(--glow); }
+.lb-top { background: linear-gradient(to bottom, rgba(234, 244, 241, 0.94), rgba(234, 244, 241, 0)); }
+.lb-brand { color: var(--ink); }
+.lb-hero {
+  background:
+    radial-gradient(60vw 50vh at 85% 10%, rgba(63, 209, 190, 0.28), transparent 70%),
+    radial-gradient(50vw 40vh at 10% 95%, rgba(232, 223, 208, 1), transparent 70%),
+    linear-gradient(180deg, #e3f2ee 0%, #edf3ee 100%);
+}
+.lb-hero::after {
+  /* Dahab in the distance: camels on the shore, faded into the corner */
+  content: ""; position: absolute; right: 0; bottom: 0; width: min(60vw, 720px); aspect-ratio: 3 / 2; z-index: 0;
+  background: url("/logbook/dahab-camels.webp") center / cover no-repeat;
+  opacity: 0.22; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse at 80% 90%, #000 30%, transparent 72%);
+  mask-image: radial-gradient(ellipse at 80% 90%, #000 30%, transparent 72%);
+}
+.lb-hero .lb-mono { color: var(--reef); }
+.lb-hero__stand { color: rgba(23, 18, 8, 0.78); }
+.lb-hero__count { color: var(--light-soft); }
+.lb-hero__year text { stroke: rgba(11, 107, 96, 0.18); }
+.lb-rule { background: var(--reef); }
+.lb-wall { background: var(--bone); }
+.lb-sign { position: relative; background: linear-gradient(180deg, #e6f2ee, #efe8d9); overflow: hidden; }
+.lb-sign::before {
+  /* the lagoon, far off, behind the form */
+  content: ""; position: absolute; left: 0; bottom: 0; width: min(55vw, 640px); aspect-ratio: 4 / 3; z-index: 0;
+  background: url("/logbook/dahab-lagoon.webp") center / cover no-repeat; opacity: 0.16; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse at 20% 90%, #000 25%, transparent 72%);
+  mask-image: radial-gradient(ellipse at 20% 90%, #000 25%, transparent 72%);
+}
+.lb-sign__inner { position: relative; z-index: 1; }
+.lb-sign__head .lb-mono { color: var(--reef); }
+.lb-sign__head .lb-stand { color: rgba(23, 18, 8, 0.78); }
+.lb-field > label, .lb-field > .lb-label, .lb-field small, .lb-counter, .lb-preview > .lb-mono { color: var(--light-soft); }
+.lb-input, .lb-select, .lb-textarea { color: var(--ink); border-bottom-color: rgba(23, 18, 8, 0.3); }
+.lb-input::placeholder, .lb-textarea::placeholder { color: rgba(23, 18, 8, 0.35); }
+.lb-select { background-image: linear-gradient(45deg, transparent 50%, var(--light-soft) 50%), linear-gradient(135deg, var(--light-soft) 50%, transparent 50%); }
+.lb-chip { background: rgba(255, 255, 255, 0.55); border-color: rgba(23, 18, 8, 0.18); color: var(--ink); }
+.lb-chip small { color: var(--light-soft); }
+.lb-chip[aria-pressed="true"] { background: var(--glow); border-color: var(--glow); color: #fff; }
+.lb-chip[aria-pressed="true"] small { color: rgba(255, 255, 255, 0.8); }
+.lb-stamp-pick { background: rgba(255, 255, 255, 0.5); border-color: rgba(23, 18, 8, 0.14); color: rgba(23, 18, 8, 0.45); }
+.lb-stamp-pick:hover { color: var(--ink); border-color: var(--glow); }
+.lb-stamp-pick[aria-pressed="true"] { color: var(--reef); border-color: var(--reef); background: rgba(63, 209, 190, 0.12); }
+.lb-drop { border-color: rgba(23, 18, 8, 0.3); color: var(--light-soft); }
+.lb-drop__remove { color: var(--reef); }
+.lb-consent { color: rgba(23, 18, 8, 0.8); }
+.lb-consent input { accent-color: var(--reef); }
+.lb-error { border-left-color: var(--reef); color: var(--ink); }
+.lb-done .lb-mono { color: var(--reef); }
+.lb-done .lb-stand { color: rgba(23, 18, 8, 0.8); }
+.lb-foot { color: var(--light-soft); border-top-color: rgba(23, 18, 8, 0.12); background: #efe8d9; }
+.lb-foot a:hover { color: var(--reef); }
+.lb-empty .lb-mono, .lb-featured > .lb-mono, .lb-wall__head .lb-mono { color: var(--reef); }

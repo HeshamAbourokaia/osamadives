@@ -1,20 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import InstallCard from "./InstallCard";
 import { QR_MODULES, QR_PATH, QR_URL } from "./qr";
 
 export default function CardScreen() {
-  const [saved, setSaved] = useState(false);
-
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/card-sw.js").catch(() => {});
     }
-    // standalone means it was opened from the home screen, so the hint is not needed
-    const standalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (window.navigator as unknown as { standalone?: boolean }).standalone === true;
-    setSaved(Boolean(standalone));
   }, []);
 
   const box = QR_MODULES;
@@ -36,11 +30,7 @@ export default function CardScreen() {
         <p className="card__how">Scan it, or press and hold to open</p>
         <p className="card__url">osamadives.com/review</p>
 
-        {!saved ? (
-          <p className="card__hint">
-            Keep this on your home screen: tap Share, then Add to Home Screen. It opens without signal.
-          </p>
-        ) : null}
+        <InstallCard />
       </div>
     </main>
   );

@@ -57,3 +57,12 @@
   line-height: 1.5;
   color: #8FA9B2;
 }
+
+.keep{display:grid;justify-items:center;gap:.7rem;margin-top:.4rem;max-width:34ch}
+.keep__text{margin:0;font-size:.82rem;line-height:1.55;color:#8FA9B2;text-align:center}
+.keep__text strong{color:#F4F1EA;font-weight:700}
+.keep__btn{appearance:none;border:0;border-radius:999px;padding:.85rem 1.4rem;cursor:pointer;
+  background:#3FD1BE;color:#06141B;font:800 .95rem/1 inherit;letter-spacing:.01em;
+  box-shadow:0 14px 30px -14px rgba(63,209,190,.8)}
+.keep__btn:hover{filter:brightness(1.06)}
+.keep__btn--quiet{background:transparent;color:#3FD1BE;border:1px solid rgba(63,209,190,.5);box-shadow:none;padding:.7rem 1.2rem}

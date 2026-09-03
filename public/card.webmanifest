@@ -1,5 +1,5 @@
 {
-  "name": "Osama Dives · Reviews",
+  "name": "Osama Dives \u00b7 Reviews",
   "short_name": "Reviews",
   "description": "Show this to a diver so they can write Osama a review.",
   "start_url": "/card",
@@ -9,7 +9,29 @@
   "background_color": "#06141B",
   "theme_color": "#06141B",
   "icons": [
-    { "src": "/brand/stamp-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/brand/stamp-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/stamp-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/brand/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

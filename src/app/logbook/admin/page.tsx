@@ -27,6 +27,12 @@ function when(e: LogbookEntry) {
   return new Date(e.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
 
+// "Blue Hole", "Blue Hole and Advanced", "Blue Hole, Advanced and Deep Specialty"
+function joinAnd(items: string[]): string {
+  if (items.length <= 1) return items.join("");
+  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
 export default async function AdminPage({
   searchParams,
 }: {
@@ -66,11 +72,16 @@ export default async function AdminPage({
       <MediaUpload name="photoUrl" label="Photo" accept="image/*" current={e.photoUrl} />
       <MediaUpload name="videoUrl" label="Video" accept="video/*" current={e.videoUrl} />
       <fieldset className="lb-field lb-admin__stamps">
-        <legend className="lb-mono">Stamp · {e.name} picked &ldquo;{stampInfo(e.stamp).label}&rdquo;</legend>
+        <legend className="lb-mono">
+          Stamps, tick as many as apply.{" "}
+          {e.stamps.length
+            ? `${e.name} picked ${joinAnd(e.stamps.map((k) => `“${stampInfo(k).label}”`))}.`
+            : `${e.name} has not picked one yet.`}
+        </legend>
         <div className="lb-stamps">
           {STAMPS.map((s) => (
             <label key={s.key} className="lb-stamp-pick">
-              <input type="radio" name="stamp" value={s.key} defaultChecked={e.stamp === s.key} className="lb-stamp-pick__radio" />
+              <input type="checkbox" name="stamp" value={s.key} defaultChecked={e.stamps.includes(s.key)} className="lb-stamp-pick__radio" />
               <Stamp stamp={s.key} uid={`admin-${e.id}-${s.key}`} className="lb-stamp--static" />
               <span>{s.label}</span>
             </label>
@@ -99,7 +110,7 @@ export default async function AdminPage({
   const body = (e: LogbookEntry) => (
     <>
       <span className="lb-mono" style={{ color: "var(--ink-soft)" }}>
-        {when(e)} · {siteInfo(e.site).label} · {stampInfo(e.stamp).label}
+        {when(e)} · {siteInfo(e.site).label} · {e.stamps.map((k) => stampInfo(k).label).join(" + ")}
         {e.divedOn ? ` · ${e.divedOn}` : ""}
         {e.course ? ` · ${e.course}` : ""}
         {e.flags.length ? ` · flags: ${e.flags.join(", ")}` : ""}

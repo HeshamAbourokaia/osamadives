@@ -1,4 +1,4 @@
-import type { StampKey } from "./types";
+import { STAMP_KEYS, type StampKey } from "./types";
 
 export interface StampInfo {
   key: StampKey;
@@ -31,4 +31,12 @@ export const STAMPS: StampInfo[] = [
 
 export function stampInfo(key: StampKey): StampInfo {
   return STAMPS.find((s) => s.key === key) ?? STAMPS[0];
+}
+
+// A review can carry more than one stamp (a certification and a site, say). Whatever
+// order they were picked in, they always display in the same ladder order as the picker.
+export function orderStamps(keys: readonly string[]): StampKey[] {
+  const valid = new Set(STAMP_KEYS as readonly string[]);
+  const chosen = new Set(keys.filter((k) => valid.has(k)));
+  return STAMP_KEYS.filter((k) => chosen.has(k));
 }

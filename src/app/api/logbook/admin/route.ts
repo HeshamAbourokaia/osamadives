@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 import { moderatorKey } from "@/lib/logbook/session";
 import { isValidId } from "@/lib/logbook/ids";
 import { cleanText } from "@/lib/logbook/sanitize";
+import { orderStamps } from "@/lib/logbook/stamps";
 import { getStore } from "@/lib/logbook/store";
-import { LIMITS, STAMP_KEYS, type StampKey } from "@/lib/logbook/types";
+import { LIMITS } from "@/lib/logbook/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,14 +33,15 @@ export async function POST(req: Request) {
     const video = cleanText(form.get("videoUrl"), 500);
     const photo = cleanText(form.get("photoUrl"), 500);
     const ok = (v: string) => (/^(\/|https:\/\/)/.test(v) ? v : null);
-    const stampRaw = form.get("stamp");
-    const stamp = (STAMP_KEYS as readonly string[]).includes(stampRaw as string) ? (stampRaw as StampKey) : undefined;
+    // A review can carry more than one stamp now; a save with none checked leaves the
+    // existing ones alone rather than wiping them.
+    const chosen = orderStamps(form.getAll("stamp").filter((v): v is string => typeof v === "string"));
     await store.update(id, {
       reply,
       videoUrl: ok(video),
       photoUrl: ok(photo),
       featured: form.get("featured") === "1",
-      stamp,
+      stamps: chosen.length ? chosen : undefined,
     });
   } else {
     return new Response("Bad request", { status: 400 });

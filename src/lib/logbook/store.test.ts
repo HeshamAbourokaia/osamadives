@@ -7,7 +7,7 @@ import type { LogbookEntry } from "./types";
 
 const entry = (id: string, createdAt: string, ipHash = "ip1"): LogbookEntry => ({
   id, createdAt, status: "pending", name: "Ana", country: "Spain", site: "blue-hole-dahab",
-  divedOn: "2026-05", course: "Open Water", stamp: "open-water", note: "Thank you Osama, I felt safe the whole way.",
+  divedOn: "2026-05", course: "Open Water", stamps: ["open-water"], note: "Thank you Osama, I felt safe the whole way.",
   photoUrl: null, flags: [], moderatedAt: null, ipHash, reply: "", featured: false, videoUrl: null,
 });
 
@@ -63,5 +63,19 @@ describe("FileStore", () => {
     expect(old?.reply).toBe("");
     expect(old?.featured).toBe(false);
     expect(old?.videoUrl).toBeNull();
+  });
+
+  it("carries more than one stamp, and still reads a row saved before that with one", async () => {
+    await store.create(entry("a", "2026-09-01T00:00:00.000Z"));
+    const u = await store.update("a", { stamps: ["blue-hole", "deep-specialty"] });
+    expect(u?.stamps).toEqual(["blue-hole", "deep-specialty"]);
+    expect((await store.get("a"))?.stamps).toEqual(["blue-hole", "deep-specialty"]);
+
+    const file = path.join(dir, "nested", "logbook.json");
+    const rows = JSON.parse(await fs.readFile(file, "utf8")) as Record<string, unknown>[];
+    delete rows[0].stamps;
+    rows[0].stamp = "open-water"; // the shape a review had before it could carry more than one
+    await fs.writeFile(file, JSON.stringify(rows));
+    expect((await store.get("a"))?.stamps).toEqual(["open-water"]);
   });
 });

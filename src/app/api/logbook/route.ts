@@ -110,7 +110,7 @@ export async function POST(req: Request) {
   const { flags } = assessEntry({ name, country, note });
   const entry: LogbookEntry = {
     id, createdAt: new Date().toISOString(), status: "pending",
-    name, country, site, divedOn, course, stamp, note, photoUrl,
+    name, country, site, divedOn, course, stamps: [stamp], note, photoUrl,
     flags, moderatedAt: null, ipHash,
     reply: "", featured: false, videoUrl: null,
   };

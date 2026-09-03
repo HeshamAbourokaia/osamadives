@@ -54,7 +54,8 @@ export interface LogbookEntry {
   site: SiteKey;
   divedOn: string;
   course: Course;
-  stamp: StampKey;
+  /** What Osama chose to mark this dive with. One at first; he can add more later. */
+  stamps: StampKey[];
   note: string;
   photoUrl: string | null;
   flags: string[];
@@ -70,7 +71,7 @@ export interface EntryPatch {
   featured?: boolean;
   videoUrl?: string | null;
   photoUrl?: string | null;
-  stamp?: StampKey;
+  stamps?: StampKey[];
 }
 
 export const LIMITS = {

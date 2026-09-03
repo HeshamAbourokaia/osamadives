@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { EntryPatch, EntryStatus, LogbookEntry } from "./types";
+import type { EntryPatch, EntryStatus, LogbookEntry, StampKey } from "./types";
 
 export interface ListOptions {
   status?: EntryStatus;
@@ -31,9 +31,17 @@ export class FileStore implements LogbookStore {
 
   private async readAll(): Promise<LogbookEntry[]> {
     try {
-      const rows = JSON.parse(await fs.readFile(this.file, "utf8")) as Partial<LogbookEntry>[];
-      // Rows written before a field existed get its default.
-      return rows.map((r) => ({ reply: "", featured: false, videoUrl: null, ...r }) as LogbookEntry);
+      const raw = JSON.parse(await fs.readFile(this.file, "utf8")) as (Partial<LogbookEntry> & { stamp?: string })[];
+      // Rows written before a field existed get its default. Rows from before a review
+      // could carry more than one stamp still have the old singular "stamp" field.
+      return raw.map((r) => {
+        const { stamp, stamps, ...rest } = r;
+        return {
+          reply: "", featured: false, videoUrl: null,
+          ...rest,
+          stamps: stamps && stamps.length ? stamps : stamp ? [stamp as StampKey] : [],
+        } as LogbookEntry;
+      });
     } catch (e) {
       if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
       throw e;
@@ -106,7 +114,7 @@ export class FileStore implements LogbookStore {
       if (!e) return null;
       if (patch.reply !== undefined) e.reply = patch.reply;
       if (patch.photoUrl !== undefined) e.photoUrl = patch.photoUrl;
-      if (patch.stamp !== undefined) e.stamp = patch.stamp;
+      if (patch.stamps !== undefined) e.stamps = patch.stamps;
       if (patch.featured !== undefined) e.featured = patch.featured;
       if (patch.videoUrl !== undefined) e.videoUrl = patch.videoUrl;
       await this.writeAll(all);
@@ -125,7 +133,7 @@ export class FileStore implements LogbookStore {
 // ---------------------------------------------------------------------------
 type Row = {
   id: string; created_at: string; status: string; name: string; country: string; site: string;
-  dived_on: string; course: string; stamp: string; note: string; photo_url: string | null;
+  dived_on: string; course: string; stamp: string; stamps: unknown; note: string; photo_url: string | null;
   flags: unknown; moderated_at: string | null; ip_hash: string;
   reply: string | null; featured: boolean | null; video_url: string | null;
 };
@@ -139,7 +147,9 @@ const fromRow = (r: Row): LogbookEntry => ({
   site: r.site as LogbookEntry["site"],
   divedOn: r.dived_on,
   course: r.course as LogbookEntry["course"],
-  stamp: r.stamp as LogbookEntry["stamp"],
+  // "stamps" is the array column; rows written before a review could carry more than
+  // one stamp only have the old singular "stamp" column, so fall back to wrapping it.
+  stamps: (Array.isArray(r.stamps) && r.stamps.length ? r.stamps : r.stamp ? [r.stamp] : []) as StampKey[],
   note: r.note,
   photoUrl: r.photo_url,
   flags: Array.isArray(r.flags) ? (r.flags as string[]) : [],
@@ -187,6 +197,9 @@ export class NeonStore implements LogbookStore {
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS reply text NOT NULL DEFAULT ''`;
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS featured boolean NOT NULL DEFAULT false`;
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS video_url text`;
+        // "stamp" (singular) stays for rows written before a review could carry more than
+        // one; "stamps" is the array every row is read from now, with "stamp" as its fallback.
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS stamps jsonb NOT NULL DEFAULT '[]'::jsonb`;
       })();
     }
     await this.ready;
@@ -195,10 +208,11 @@ export class NeonStore implements LogbookStore {
 
   async create(e: LogbookEntry) {
     const sql = await this.db();
+    // "stamp" (singular) is kept in step as the first stamp, for anything still reading it directly.
     await sql`INSERT INTO logbook_entries
-      (id, created_at, status, name, country, site, dived_on, course, stamp, note, photo_url, flags, moderated_at, ip_hash, reply, featured, video_url)
+      (id, created_at, status, name, country, site, dived_on, course, stamp, stamps, note, photo_url, flags, moderated_at, ip_hash, reply, featured, video_url)
       VALUES (${e.id}, ${e.createdAt}, ${e.status}, ${e.name}, ${e.country}, ${e.site}, ${e.divedOn}, ${e.course},
-              ${e.stamp}, ${e.note}, ${e.photoUrl}, ${JSON.stringify(e.flags)}::jsonb, ${e.moderatedAt}, ${e.ipHash},
+              ${e.stamps[0] ?? null}, ${JSON.stringify(e.stamps)}::jsonb, ${e.note}, ${e.photoUrl}, ${JSON.stringify(e.flags)}::jsonb, ${e.moderatedAt}, ${e.ipHash},
               ${e.reply}, ${e.featured}, ${e.videoUrl})`;
   }
 
@@ -245,9 +259,9 @@ export class NeonStore implements LogbookStore {
     const featured = patch.featured ?? current.featured;
     const videoUrl = patch.videoUrl === undefined ? current.videoUrl : patch.videoUrl;
     const photoUrl = patch.photoUrl === undefined ? current.photoUrl : patch.photoUrl;
-    const stamp = patch.stamp ?? current.stamp;
+    const stamps = patch.stamps ?? current.stamps;
     const rows = (await sql`UPDATE logbook_entries SET reply = ${reply}, featured = ${featured},
-      video_url = ${videoUrl}, photo_url = ${photoUrl}, stamp = ${stamp}
+      video_url = ${videoUrl}, photo_url = ${photoUrl}, stamp = ${stamps[0] ?? null}, stamps = ${JSON.stringify(stamps)}::jsonb
       WHERE id = ${id} RETURNING *`) as Row[];
     return rows[0] ? fromRow(rows[0]) : null;
   }

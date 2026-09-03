@@ -10,12 +10,12 @@ import WeddingPage from "./WeddingPage";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Sign my logbook | OsamaDives, Dahab",
+  title: "Write me a review | OsamaDives, Dahab",
   description:
-    "Every diver keeps a logbook. This one belongs to Osama, PADI Master Scuba Diver Trainer in Dahab, and its pages are written by the people he took into the water. Add yours.",
+    "Reviews of diving with Osama, PADI Master Scuba Diver Trainer in Dahab, written by the people he took into the water. Every review becomes a page in his logbook, and he signs each one. Write yours.",
   alternates: { canonical: "https://www.osamadives.com/logbook" },
   openGraph: {
-    title: "Sign my logbook | OsamaDives",
+    title: "Write me a review | OsamaDives",
     description: "Pages written by the divers Osama took into the Red Sea. Add yours.",
     url: "https://www.osamadives.com/logbook",
   },
@@ -40,7 +40,7 @@ export default async function LogbookPage() {
   const firstYear = total ? new Date(entries[total - 1].createdAt).getFullYear() : new Date().getFullYear();
   // While the book is closed every "add" button goes to WhatsApp instead of an empty form.
   const addHref = open ? "#sign" : WHATSAPP;
-  const addLabel = open ? "Add your page" : "Message Osama";
+  const addLabel = open ? "Write a review" : "Message Osama";
   const countLine = total === 0
     ? "The first page is yours"
     : `${total} ${total === 1 ? "page" : "pages"}${countries > 1 ? ` from ${countries} countries` : ""} · since ${firstYear}`;
@@ -58,10 +58,10 @@ export default async function LogbookPage() {
         </svg>
         <div className="lb-hero__inner">
           <span className="lb-mono lb-rise">Dive log · Dahab, South Sinai · kept since 1983</span>
-          <h1 className="lb-h1 lb-rise">Sign my logbook.</h1>
+          <h1 className="lb-h1 lb-rise">Write me a review.</h1>
           <p className="lb-stand lb-hero__stand lb-rise">
-            Every diver keeps a logbook. This one is mine, and the pages are written by the people I took into the water.
-            A first breath, a deep one, a day you will not forget. Add yours.
+            Your review becomes a page in my logbook, written in your own words and signed by me.
+            A first breath, a deep one, a day you will not forget. Write yours.
           </p>
           <div className="lb-hero__row lb-rise">
             <a href={addHref} className="lb-btn">{addLabel}</a>
@@ -74,7 +74,7 @@ export default async function LogbookPage() {
       <section className="lb-wall" id="pages">
         <div className="lb-wall__inner">
           <div className="lb-wall__head">
-            <span className="lb-mono">The pages</span>
+            <span className="lb-mono">The reviews</span>
             <h2 className="lb-h2">Written by the people I took into the water.</h2>
             <p className="lb-stand">Each one is read and signed by me before it goes in the book. Real names, real dives, their own words.</p>
           </div>
@@ -91,7 +91,7 @@ export default async function LogbookPage() {
           {total === 0 ? (
             <div className="lb-empty">
               <span className="lb-mono">Entry 001</span>
-              <h3 className="lb-h2">The next page is yours.</h3>
+              <h3 className="lb-h2">The next review is yours.</h3>
               <a href={addHref} className="lb-btn lb-btn--paper">{open ? "Write it" : "Message Osama"}</a>
             </div>
           ) : (

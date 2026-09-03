@@ -23,7 +23,7 @@ export default function LogbookRibbon({ variant = "hero" }: Props) {
     <Link
       href="/logbook"
       className={`${baseClasses} ${variantClasses}`}
-      aria-label="Sign Osama's logbook"
+      aria-label="Write Osama a review"
       onClick={() =>
         gtag.event({
           action: "cta_click",
@@ -37,7 +37,7 @@ export default function LogbookRibbon({ variant = "hero" }: Props) {
         <circle cx="10" cy="10" r="4.5" stroke="#3FD1BE" strokeWidth="1.2" />
       </svg>
       <span className="text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap">
-        Sign my logbook
+        Write me a review
       </span>
       <span className={`text-base leading-none transition-transform group-hover:translate-x-0.5 ${chevronColor}`} aria-hidden="true">
         ›

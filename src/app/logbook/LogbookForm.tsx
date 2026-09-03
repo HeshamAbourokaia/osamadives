@@ -68,7 +68,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     if (!site) return setError("Pick where we dived.");
     if (!stamp) return setError("Pick your stamp.");
     if ((month && !year) || (!month && year)) return setError("Pick both the month and the year, or leave both blank.");
-    if (note.trim().length < LIMITS.note.min) return setError("A few more words. Osama reads every page.");
+    if (note.trim().length < LIMITS.note.min) return setError("A few more words. Osama reads every review.");
     if (!consent) return setError("Tick the box so Osama can show your review.");
     setBusy(true);
     try {

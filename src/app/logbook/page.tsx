@@ -44,8 +44,8 @@ export default async function LogbookPage() {
   const addHref = open ? "#sign" : WHATSAPP;
   const addLabel = open ? "Write a review" : "Message Osama";
   const countLine = total === 0
-    ? "The first page is yours"
-    : `${total} ${total === 1 ? "page" : "pages"}${countries > 1 ? ` from ${countries} countries` : ""} · since ${firstYear}`;
+    ? "The first review is yours"
+    : `${total} ${total === 1 ? "review" : "reviews"}${countries > 1 ? ` from ${countries} countries` : ""} · since ${firstYear}`;
 
   return (
     <>

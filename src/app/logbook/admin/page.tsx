@@ -11,7 +11,7 @@ import { TTL, signToken } from "@/lib/logbook/tokens";
 import { LIMITS, type EntryStatus, type LogbookEntry } from "@/lib/logbook/types";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Logbook moderation", robots: { index: false, follow: false } };
+export const metadata = { title: "Review moderation", robots: { index: false, follow: false } };
 
 const ORDER: EntryStatus[] = ["pending", "approved", "hidden"];
 
@@ -70,7 +70,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
                       {e.photoUrl ? <a href={e.photoUrl} target="_blank" rel="noopener noreferrer">Photo</a> : null}
                       <a href={card(e, false)} target="_blank" rel="noopener noreferrer">Story image</a>
                       <a href={card(e, true)} target="_blank" rel="noopener noreferrer">Keepsake</a>
-                      {e.status === "approved" ? <a href={`/logbook/${e.id}`} target="_blank" rel="noopener noreferrer">Live page</a> : null}
+                      {e.status === "approved" ? <a href={`/logbook/${e.id}`} target="_blank" rel="noopener noreferrer">See it on the site</a> : null}
                     </div>
                     <ActionForm method="post" action="/api/logbook/admin" className="lb-admin__form">
                       <input type="hidden" name="key" value={key} />

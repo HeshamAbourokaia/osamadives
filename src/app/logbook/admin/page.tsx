@@ -2,6 +2,8 @@ import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 import ActionForm from "./ActionForm";
 import MediaUpload from "./MediaUpload";
+import Stamp from "../Stamp";
+import { STAMPS } from "@/lib/logbook/stamps";
 import SignIn from "./SignIn";
 import { siteUrl } from "@/lib/logbook/config";
 import { moderatorKey } from "@/lib/logbook/session";
@@ -63,6 +65,18 @@ export default async function AdminPage({
       </label>
       <MediaUpload name="photoUrl" label="Photo" accept="image/*" current={e.photoUrl} />
       <MediaUpload name="videoUrl" label="Video" accept="video/*" current={e.videoUrl} />
+      <fieldset className="lb-field lb-admin__stamps">
+        <legend className="lb-mono">Stamp · {e.name} picked &ldquo;{stampInfo(e.stamp).label}&rdquo;</legend>
+        <div className="lb-stamps">
+          {STAMPS.map((s) => (
+            <label key={s.key} className="lb-stamp-pick">
+              <input type="radio" name="stamp" value={s.key} defaultChecked={e.stamp === s.key} className="lb-stamp-pick__radio" />
+              <Stamp stamp={s.key} uid={`admin-${e.id}-${s.key}`} className="lb-stamp--static" />
+              <span>{s.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <label className="lb-consent" style={{ color: "var(--ink)" }}>
         <input type="checkbox" name="featured" value="1" defaultChecked={e.featured} />
         <span>Review of the month (pinned at the top)</span>

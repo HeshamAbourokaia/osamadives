@@ -12,6 +12,8 @@ export type SiteKey = (typeof SITE_KEYS)[number];
 
 export const STAMP_KEYS = [
   "first-breath",
+  "dsd",
+  "introduction",
   "open-water",
   "advanced",
   "rescue",
@@ -59,6 +61,7 @@ export interface EntryPatch {
   featured?: boolean;
   videoUrl?: string | null;
   photoUrl?: string | null;
+  stamp?: StampKey;
 }
 
 export const LIMITS = {

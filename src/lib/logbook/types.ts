@@ -11,14 +11,21 @@ export const SITE_KEYS = [
 export type SiteKey = (typeof SITE_KEYS)[number];
 
 export const STAMP_KEYS = [
-  "first-breath",
-  "dsd",
+  // The certification ladder, youngest and earliest to most advanced.
+  "seal-team",
+  "bubblemaker",
   "introduction",
+  "dsd",
   "open-water",
   "advanced",
   "deep-specialty",
+  "nitrox",
   "rescue",
   "divemaster",
+  "dpv-diver",
+  "night-diver-specialty",
+  "peak-performance-buoyancy",
+  // Sites and moments, not courses.
   "blue-hole",
   "canyon",
   "night",

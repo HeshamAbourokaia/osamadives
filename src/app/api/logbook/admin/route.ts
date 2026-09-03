@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const action = form.get("action");
   if (!isValidId(id)) return new Response("Bad request", { status: 400 });
 
-  const store = getStore();
+  const store = getStore({ fresh: true });
   const now = new Date().toISOString();
   if (action === "approve" || action === "hide") {
     await store.setStatus(id, action === "approve" ? "approved" : "hidden", now);

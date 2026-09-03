@@ -34,6 +34,7 @@ export async function POST(req: Request) {
   }
 
   revalidatePath("/logbook");
+  revalidatePath("/logbook/admin");
   revalidatePath(`/logbook/${id}`);
   revalidatePath("/");
   return NextResponse.redirect(new URL(`/logbook/admin?key=${encodeURIComponent(key)}&done=${action}#${id}`, req.url), 303);

@@ -51,7 +51,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     id: "preview",
     name, country, note, divedOn, course, photoUrl,
     site: site || "lighthouse-reef-dahab",
-    stamp: stamp || "first-breath",
+    stamp: stamp || "introduction",
     createdAt: new Date().toISOString(),
     reply: "", videoUrl: null, featured: false,
   };

@@ -27,7 +27,7 @@ export default function Home() {
         <a href="/dive-sites">Sites</a>
         <a href="/blog">Journal</a>
         <a href="/gallery">Gallery</a>
-        <a href="/logbook">Logbook</a>
+        <a href="/logbook">Reviews</a>
       </nav>
       <aside className="hud mono" id="hud" aria-hidden="true">
         <span className="hud__depth"><span id="hud-depth">00.0</span> <small>M</small></span>
@@ -276,7 +276,7 @@ export default function Home() {
             <a href="/dive-sites">Dive sites</a>
             <a href="/blog">Journal</a>
             <a href="/gallery">Gallery</a>
-            <a href="/logbook">Logbook</a>
+            <a href="/logbook">Reviews</a>
             <a href="/featured/chatgpt">Featured</a>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a>
           </nav>

@@ -38,3 +38,4 @@ next-env.d.ts
 # logbook local data + dev uploads
 /.data/
 /public/uploads/
+.env*

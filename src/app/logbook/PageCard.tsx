@@ -4,7 +4,7 @@ import { siteInfo } from "@/lib/logbook/sites";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import Stamp from "./Stamp";
 
-export type PageData = Pick<LogbookEntry, "id" | "name" | "country" | "site" | "divedOn" | "course" | "stamp" | "note" | "photoUrl" | "createdAt">;
+export type PageData = Pick<LogbookEntry, "id" | "name" | "country" | "site" | "divedOn" | "course" | "stamp" | "note" | "photoUrl" | "createdAt"> & Partial<Pick<LogbookEntry, "reply" | "videoUrl" | "featured">>;
 
 interface Props {
   entry: PageData;
@@ -30,12 +30,23 @@ export default function PageCard({ entry, number, variant = "wall", inkStamp = f
         {site.label}
         {site.depth ? ` · ${site.depth}` : ""}
       </span>
-      {entry.photoUrl ? (
+      {entry.videoUrl ? (
+        <div className="lb-page__photo lb-page__video">
+          <video src={entry.videoUrl} controls playsInline preload="metadata" poster={entry.photoUrl ?? undefined} />
+        </div>
+      ) : entry.photoUrl ? (
         <div className="lb-page__photo">
           <Image src={entry.photoUrl} alt="" fill sizes="(max-width: 680px) 100vw, (max-width: 1100px) 50vw, 33vw" className="lb-page__img" unoptimized={isLocalPreview} />
         </div>
       ) : null}
       <p className="lb-page__note">{entry.note || "Your note to Osama will sit here, in your words."}</p>
+      <img src="/brand/stamp-512.png" alt="Signed by Osama" width={62} height={62} className="lb-page__seal" />
+      {entry.reply ? (
+        <div className="lb-page__reply">
+          <span className="lb-page__reply-who" aria-hidden="true">Osama</span>
+          <p>{entry.reply}</p>
+        </div>
+      ) : null}
       <div className="lb-page__foot lb-mono">
         <span>{entry.course ? `${entry.course} · ` : ""}Stamped by Osama</span>
         <span>Dahab</span>

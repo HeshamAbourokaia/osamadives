@@ -5,6 +5,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SITES } from "@/lib/logbook/sites";
 import { STAMPS } from "@/lib/logbook/stamps";
 import { COURSES, LIMITS, type Course, type SiteKey, type StampKey } from "@/lib/logbook/types";
+import { MONTHS } from "@/lib/logbook/format";
+
+const THIS_YEAR = new Date().getFullYear();
+const YEARS = Array.from({ length: THIS_YEAR - 2011 + 1 }, (_, i) => THIS_YEAR - i);
 import PageCard, { type PageData } from "./PageCard";
 import Stamp from "./Stamp";
 
@@ -20,7 +24,9 @@ export default function LogbookForm({ nextNumber }: Props) {
   const [name, setName] = useState("");
   const [country, setCountry] = useState("");
   const [site, setSite] = useState<SiteKey | "">("");
-  const [divedOn, setDivedOn] = useState("");
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
+  const divedOn = month && year ? `${year}-${month}` : "";
   const [course, setCourse] = useState<Course>("");
   const [stamp, setStamp] = useState<StampKey | "">("");
   const [note, setNote] = useState("");
@@ -47,6 +53,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     site: site || "lighthouse-reef-dahab",
     stamp: stamp || "first-breath",
     createdAt: new Date().toISOString(),
+    reply: "", videoUrl: null, featured: false,
   };
 
   function pickStamp(key: StampKey) {
@@ -60,8 +67,9 @@ export default function LogbookForm({ nextNumber }: Props) {
     setError(null);
     if (!site) return setError("Pick where we dived.");
     if (!stamp) return setError("Pick your stamp.");
-    if (note.trim().length < LIMITS.note.min) return setError("A few more words. Osama reads every page.");
-    if (!consent) return setError("Tick the box so Osama can show your page.");
+    if ((month && !year) || (!month && year)) return setError("Pick both the month and the year, or leave both blank.");
+    if (note.trim().length < LIMITS.note.min) return setError("A few more words. Osama reads every review.");
+    if (!consent) return setError("Tick the box so Osama can show your review.");
     setBusy(true);
     try {
       const data = new FormData(e.currentTarget);
@@ -86,7 +94,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     <>
       <div>
         <div className="lb-sign__head">
-          <span className="lb-mono">A blank page</span>
+          <span className="lb-mono">Six short steps</span>
           <h2 className="lb-h2">Write yours.</h2>
           <p className="lb-stand">Your name, where we dived, and what you want to say. I read every page and sign it myself before it goes in the book.</p>
         </div>
@@ -94,17 +102,17 @@ export default function LogbookForm({ nextNumber }: Props) {
         <form ref={formRef} className="lb-form" onSubmit={submit} noValidate>
           <div className="lb-two">
             <div className="lb-field">
-              <label className="lb-mono" htmlFor="lb-name">Your name</label>
+              <label className="lb-mono" htmlFor="lb-name">1 · Your name</label>
               <input id="lb-name" name="name" className="lb-input" value={name} onChange={(e) => setName(e.target.value)} maxLength={LIMITS.name.max} autoComplete="name" placeholder="Ana" required />
             </div>
             <div className="lb-field">
-              <label className="lb-mono" htmlFor="lb-country">From</label>
+              <label className="lb-mono" htmlFor="lb-country">Your country</label>
               <input id="lb-country" name="country" className="lb-input" value={country} onChange={(e) => setCountry(e.target.value)} maxLength={LIMITS.country.max} autoComplete="country-name" placeholder="Spain" />
             </div>
           </div>
 
           <div className="lb-field">
-            <span className="lb-label lb-mono">Where we dived</span>
+            <span className="lb-label lb-mono">2 · Where we dived</span>
             <div className="lb-chips" role="group" aria-label="Dive site">
               {SITES.map((s) => (
                 <button key={s.key} type="button" className="lb-chip" aria-pressed={site === s.key} onClick={() => setSite(s.key)}>
@@ -117,11 +125,26 @@ export default function LogbookForm({ nextNumber }: Props) {
 
           <div className="lb-two">
             <div className="lb-field">
-              <label className="lb-mono" htmlFor="lb-when">When</label>
-              <input id="lb-when" name="divedOn" className="lb-input" type="month" value={divedOn} onChange={(e) => setDivedOn(e.target.value)} min="2011-01" max={new Date().toISOString().slice(0, 7)} />
+              <span className="lb-label lb-mono">3 · When we dived</span>
+              <div className="lb-when">
+                <select aria-label="Month" className="lb-select" value={month} onChange={(e) => setMonth(e.target.value)}>
+                  <option value="">Month</option>
+                  {MONTHS.map((m, i) => (
+                    <option key={m} value={String(i + 1).padStart(2, "0")}>{m}</option>
+                  ))}
+                </select>
+                <select aria-label="Year" className="lb-select" value={year} onChange={(e) => setYear(e.target.value)}>
+                  <option value="">Year</option>
+                  {YEARS.map((y) => (
+                    <option key={y} value={String(y)}>{y}</option>
+                  ))}
+                </select>
+              </div>
+              <input type="hidden" name="divedOn" value={divedOn} />
+              <small>Month and year is enough. Leave it blank if you are not sure.</small>
             </div>
             <div className="lb-field">
-              <label className="lb-mono" htmlFor="lb-course">Course, if any</label>
+              <label className="lb-mono" htmlFor="lb-course">Course, if you did one</label>
               <select id="lb-course" name="course" className="lb-select" value={course} onChange={(e) => setCourse(e.target.value as Course)}>
                 {COURSES.map((c) => (
                   <option key={c || "none"} value={c}>{c || "Just diving"}</option>
@@ -131,8 +154,8 @@ export default function LogbookForm({ nextNumber }: Props) {
           </div>
 
           <div className="lb-field">
-            <label className="lb-mono" htmlFor="lb-note">Your note</label>
-            <textarea id="lb-note" name="note" className="lb-textarea" value={note} onChange={(e) => setNote(e.target.value)} maxLength={LIMITS.note.max} placeholder="What you want Osama to keep." required />
+            <label className="lb-mono" htmlFor="lb-note">4 · Your review</label>
+            <textarea id="lb-note" name="note" className="lb-textarea" value={note} onChange={(e) => setNote(e.target.value)} maxLength={LIMITS.note.max} placeholder="How was the dive with Osama? Say it the way you would tell a friend." required />
             <div className={`lb-counter lb-mono${noteLen > LIMITS.note.max - 40 ? " is-over" : ""}`}>
               <span>In your own words. No links, no numbers to call.</span>
               <span>{noteLen} / {LIMITS.note.max}</span>
@@ -140,7 +163,7 @@ export default function LogbookForm({ nextNumber }: Props) {
           </div>
 
           <div className="lb-field">
-            <span className="lb-label lb-mono">A photo, if you have one</span>
+            <span className="lb-label lb-mono">5 · A photo, if you have one</span>
             <label className="lb-drop">
               {photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -157,7 +180,7 @@ export default function LogbookForm({ nextNumber }: Props) {
           </div>
 
           <div className="lb-field">
-            <span className="lb-label lb-mono">Your stamp</span>
+            <span className="lb-label lb-mono">6 · Pick a stamp, then press Submit review</span>
             <div className="lb-stamps" role="group" aria-label="Stamp">
               {STAMPS.map((s) => (
                 <button key={s.key} type="button" className="lb-stamp-pick" aria-pressed={stamp === s.key} onClick={() => pickStamp(s.key)}>
@@ -170,7 +193,7 @@ export default function LogbookForm({ nextNumber }: Props) {
 
           <label className="lb-consent">
             <input type="checkbox" name="consent" value="yes" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-            <span>Osama may show this page on his site and share it. He signs every page himself; nothing shows until he has.</span>
+            <span>Osama may show this review on his site and share it. He reads and signs every one; nothing shows until he has.</span>
           </label>
 
           <div className="lb-honey" aria-hidden="true">
@@ -188,13 +211,13 @@ export default function LogbookForm({ nextNumber }: Props) {
           {error ? <p className="lb-error" role="alert">{error}</p> : null}
 
           <div>
-            <button type="submit" className="lb-btn" disabled={busy}>{busy ? "Stamping..." : "Stamp it"}</button>
+            <button type="submit" className="lb-btn" disabled={busy}>{busy ? "Sending..." : "Submit review"}</button>
           </div>
         </form>
       </div>
 
       <aside className="lb-preview" aria-label="Preview of your page">
-        <span className="lb-mono">Your page, as I will see it</span>
+        <span className="lb-mono">Your review, as it will look in the book</span>
         <PageCard entry={preview} number={nextNumber} variant="preview" inkStamp={inked} />
       </aside>
     </>
@@ -212,7 +235,7 @@ function Success({ done, preview, number }: { done: Done; preview: PageData; num
       const file = new File([blob], "osamadives-logbook.png", { type: "image/png" });
       const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean };
       if (nav.share && nav.canShare?.({ files: [file] })) {
-        await nav.share({ files: [file], title: "I signed Osama's logbook", text: "osamadives.com/logbook" });
+        await nav.share({ files: [file], title: "My review of diving with Osama", text: "osamadives.com/review" });
         setShared("idle");
         return;
       }
@@ -229,9 +252,10 @@ function Success({ done, preview, number }: { done: Done; preview: PageData; num
         <span className="lb-mono">Entry {String(number).padStart(3, "0")} · with Osama</span>
         <h2 className="lb-h2">Your page is with me.</h2>
         <p className="lb-stand">I read every one and sign it myself. Once it is in the book it shows here, usually the same day.</p>
-        <p className="lb-stand">If you want to show your page now, it is yours to share. Tag <strong>@osama_mohamed_hassan</strong> and I will see it.</p>
+        <p className="lb-stand">Your page is yours to keep: share it to your story and tag <strong>@osama_mohamed_hassan</strong>, or print the keepsake, an A5 page from my logbook with my signature on it.</p>
         <div className="lb-done__actions">
           <button type="button" className="lb-btn" onClick={share} disabled={shared === "sharing"}>{shared === "sharing" ? "Preparing..." : "Share your page"}</button>
+          <a className="lb-btn lb-btn--quiet" href={`${done.cardUrl}&format=print`} target="_blank" rel="noopener noreferrer">Print a keepsake</a>
           <a className="lb-btn lb-btn--quiet" href={done.cardUrl} target="_blank" rel="noopener noreferrer">Open the image</a>
           <a className="lb-btn lb-btn--quiet" href="#pages">Back to the book</a>
         </div>

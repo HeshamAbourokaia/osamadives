@@ -17,6 +17,7 @@
   --light-soft: #93aba8;
   --display: var(--lb-display), "Archivo", system-ui, sans-serif;
   --mono: var(--lb-mono), "IBM Plex Mono", ui-monospace, monospace;
+  --hand: var(--lb-hand), "Caveat", "Bradley Hand", cursive;
   --gutter: clamp(1.25rem, 5vw, 5.5rem);
   --maxw: 82rem;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -190,6 +191,7 @@
 .lb-counter { display: flex; justify-content: space-between; color: var(--light-soft); }
 .lb-counter.is-over { color: #f5a97f; }
 .lb-two { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+.lb-when { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0.9rem; }
 @media (max-width: 560px) { .lb-two { grid-template-columns: 1fr; } }
 .lb-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .lb-chip {
@@ -255,3 +257,120 @@
   .lb *, .lb *::before, .lb *::after { animation: none !important; transition: none !important; }
   .lb-grid .lb-page { transform: none; }
 }
+
+/* ---- Osama's reply, in his hand -------------------------------------------- */
+.lb-page__reply { display: grid; gap: 0.15rem; padding: 0.6rem 0 0.2rem; border-top: 1px dashed rgba(23, 18, 8, 0.2); }
+.lb-page__reply-who { font: 600 1.15rem/1 var(--hand); color: var(--reef); }
+.lb-page__reply p { margin: 0; font: 600 1.35rem/1.35 var(--hand); color: var(--ink); transform: rotate(-0.6deg); text-wrap: pretty; }
+.lb-page--single .lb-page__reply p { font-size: 1.7rem; }
+.lb-page__video video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #000; }
+
+/* ---- page of the month ----------------------------------------------------- */
+.lb-featured { display: grid; gap: 1rem; margin-bottom: clamp(2.4rem, 5vw, 4rem); }
+.lb-featured > .lb-mono { color: var(--reef); }
+.lb-featured .lb-page { margin-inline: 0; max-width: 46rem; }
+
+/* ---- moderation page ------------------------------------------------------- */
+.lb-admin { gap: 1rem; }
+.lb-admin__links { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+.lb-admin__links a { color: var(--reef); }
+.lb-admin__form { display: grid; gap: 0.9rem; border-top: 1px solid rgba(23, 18, 8, 0.14); padding-top: 1rem; }
+.lb-admin__form .lb-field > .lb-mono { color: var(--ink-soft); }
+.lb-admin__input { width: 100%; border: 1px solid rgba(23, 18, 8, 0.25); border-radius: 3px; background: #fff; color: var(--ink); padding: 0.6rem 0.7rem; font: 500 1rem/1.5 var(--display); }
+.lb-admin__input:focus { outline: 2px solid var(--reef); outline-offset: 1px; }
+.lb-admin__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.lb-admin .lb-consent input { accent-color: var(--reef); }
+
+/* ==========================================================================
+   Light theme: shallow water and sand instead of the abyss. The paper wall is
+   unchanged; the ground around it is the surface of the lagoon.
+   ========================================================================== */
+.lb {
+  --abyss: #eaf4f1;
+  --abyss-deep: #dcece8;
+  --surface: #cfe8e2;
+  --light: #171208;
+  --light-soft: #5f6a66;
+  --glow: #0b8f80;
+  background:
+    radial-gradient(70vw 50vh at 100% 0%, rgba(63, 209, 190, 0.22), transparent 70%),
+    radial-gradient(60vw 40vh at 0% 100%, rgba(232, 223, 208, 0.9), transparent 70%),
+    var(--abyss);
+}
+.lb-btn { color: #fff; box-shadow: 0 12px 30px -14px rgba(11, 143, 128, 0.7); }
+.lb-btn--quiet { color: var(--ink); border-color: rgba(23, 18, 8, 0.3); }
+.lb-btn--quiet:hover { color: var(--glow); border-color: var(--glow); }
+.lb-top { background: linear-gradient(to bottom, rgba(234, 244, 241, 0.94), rgba(234, 244, 241, 0)); }
+.lb-brand { color: var(--ink); }
+.lb-hero {
+  background:
+    radial-gradient(60vw 50vh at 85% 10%, rgba(63, 209, 190, 0.28), transparent 70%),
+    radial-gradient(50vw 40vh at 10% 95%, rgba(232, 223, 208, 1), transparent 70%),
+    linear-gradient(180deg, #e3f2ee 0%, #edf3ee 100%);
+}
+.lb-hero::after {
+  /* Dahab in the distance: camels on the shore, faded into the corner */
+  content: ""; position: absolute; right: 0; bottom: 0; width: min(60vw, 720px); aspect-ratio: 3 / 2; z-index: 0;
+  background: url("/logbook/dahab-camels.webp") center / cover no-repeat;
+  opacity: 0.22; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse at 80% 90%, #000 30%, transparent 72%);
+  mask-image: radial-gradient(ellipse at 80% 90%, #000 30%, transparent 72%);
+}
+.lb-hero .lb-mono { color: var(--reef); }
+.lb-hero__stand { color: rgba(23, 18, 8, 0.78); }
+.lb-hero__count { color: var(--light-soft); }
+.lb-hero__year text { stroke: rgba(11, 107, 96, 0.18); }
+.lb-rule { background: var(--reef); }
+.lb-wall { background: var(--bone); }
+.lb-sign { position: relative; background: linear-gradient(180deg, #e6f2ee, #efe8d9); overflow: hidden; overflow: clip; } /* clip, not hidden: hidden makes the section a scroll container and kills the sticky preview */
+.lb-sign::before {
+  /* the lagoon, far off, behind the form */
+  content: ""; position: absolute; left: 0; bottom: 0; width: min(55vw, 640px); aspect-ratio: 4 / 3; z-index: 0;
+  background: url("/logbook/dahab-lagoon.webp") center / cover no-repeat; opacity: 0.16; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse at 20% 90%, #000 25%, transparent 72%);
+  mask-image: radial-gradient(ellipse at 20% 90%, #000 25%, transparent 72%);
+}
+.lb-sign__inner { position: relative; z-index: 1; }
+.lb-sign__head .lb-mono { color: var(--reef); }
+.lb-sign__head .lb-stand { color: rgba(23, 18, 8, 0.78); }
+.lb-field > label, .lb-field > .lb-label, .lb-field small, .lb-counter, .lb-preview > .lb-mono { color: var(--light-soft); }
+.lb-input, .lb-select, .lb-textarea { color: var(--ink); border-bottom-color: rgba(23, 18, 8, 0.3); }
+.lb-input::placeholder, .lb-textarea::placeholder { color: rgba(23, 18, 8, 0.35); }
+.lb-select { background-image: linear-gradient(45deg, transparent 50%, var(--light-soft) 50%), linear-gradient(135deg, var(--light-soft) 50%, transparent 50%); }
+.lb-chip { background: rgba(255, 255, 255, 0.55); border-color: rgba(23, 18, 8, 0.18); color: var(--ink); }
+.lb-chip small { color: var(--light-soft); }
+.lb-chip[aria-pressed="true"] { background: var(--glow); border-color: var(--glow); color: #fff; }
+.lb-chip[aria-pressed="true"] small { color: rgba(255, 255, 255, 0.8); }
+.lb-stamp-pick { background: rgba(255, 255, 255, 0.5); border-color: rgba(23, 18, 8, 0.14); color: rgba(23, 18, 8, 0.45); }
+.lb-stamp-pick:hover { color: var(--ink); border-color: var(--glow); }
+.lb-stamp-pick[aria-pressed="true"] { color: var(--reef); border-color: var(--reef); background: rgba(63, 209, 190, 0.12); }
+.lb-drop { border-color: rgba(23, 18, 8, 0.3); color: var(--light-soft); }
+.lb-drop__remove { color: var(--reef); }
+.lb-consent { color: rgba(23, 18, 8, 0.8); }
+.lb-consent input { accent-color: var(--reef); }
+.lb-error { border-left-color: var(--reef); color: var(--ink); }
+.lb-done .lb-mono { color: var(--reef); }
+.lb-done .lb-stand { color: rgba(23, 18, 8, 0.8); }
+.lb-foot { color: var(--light-soft); border-top-color: rgba(23, 18, 8, 0.12); background: #efe8d9; }
+.lb-foot a:hover { color: var(--reef); }
+.lb-empty .lb-mono, .lb-featured > .lb-mono, .lb-wall__head .lb-mono { color: var(--reef); }
+
+/* Osama's seal: the stamp mark on the hero and on every signed page */
+.lb-hero__seal { width: 132px; height: 132px; border-radius: 50%; box-shadow: 0 10px 28px rgba(20, 40, 36, 0.14); }
+.lb-page { position: relative; }
+.lb-page__seal { position: absolute; right: 0.9rem; bottom: 0.9rem; width: 62px; height: 62px; opacity: 0.95; transform: rotate(-9deg); pointer-events: none; }
+.lb-page--single .lb-page__seal { width: 78px; height: 78px; }
+
+/* The preview follows the reader down the form on wide screens */
+.lb-preview { position: sticky; top: 5.5rem; align-self: start; }
+
+/* Moderation page: a solid header that covers nothing, a state on every review, a confirmation after each action */
+.lb-top--solid { position: sticky; background: var(--bone); border-bottom: 1px solid rgba(23, 18, 8, 0.1); pointer-events: auto; }
+.lb-top--solid .lb-brand { color: var(--ink); }
+.lb-admin__status { display: inline-block; align-self: start; font: 600 0.68rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; padding: 0.4rem 0.6rem; border-radius: 3px; margin-bottom: 0.4rem; background: #f3e2b3; color: #5a4300; }
+.lb-admin__status.is-approved { background: #cfeee5; color: #0b4f45; }
+.lb-admin__status.is-hidden { background: #e6e2da; color: #4a4640; }
+.lb-admin__banner { font: 600 1rem/1.4 var(--display); color: #0b4f45; background: #cfeee5; padding: 0.8rem 1rem; border-radius: 4px; }
+
+.lb-admin__form.is-busy .lb-btn { opacity: 0.55; pointer-events: none; }
+.lb-admin:target { outline: 3px solid #0d9488; outline-offset: 6px; }

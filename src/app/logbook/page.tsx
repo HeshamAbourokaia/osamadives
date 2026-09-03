@@ -14,11 +14,11 @@ export const metadata: Metadata = {
   title: "Write me a review | OsamaDives, Dahab",
   description:
     "Reviews of diving with Osama, PADI Master Scuba Diver Trainer in Dahab, written by the people he took into the water. Every review becomes a page in his logbook, and he signs each one. Write yours.",
-  alternates: { canonical: "https://www.osamadives.com/logbook" },
+  alternates: { canonical: "https://www.osamadives.com/review" },
   openGraph: {
     title: "Write me a review | OsamaDives",
     description: "Reviews written by the divers Osama took into the Red Sea. Write yours.",
-    url: "https://www.osamadives.com/logbook",
+    url: "https://www.osamadives.com/review",
     images: [{ url: "https://www.osamadives.com/og/review-card.png", width: 1200, height: 630, alt: "Write me a review. Osama Dives, Dahab." }],
   },
   twitter: { card: "summary_large_image", title: "Write me a review | OsamaDives", images: ["https://www.osamadives.com/og/review-card.png"] },
@@ -52,8 +52,12 @@ export default async function LogbookPage() {
 
   return (
     <>
-      <header className="lb-top">
-        <Link href="/" className="lb-brand">Osama<span>Dives</span></Link>
+      <header className="lb-top lb-top--bar">
+        <Link href="/" className="lb-back" aria-label="Back to the Osama Dives website">
+          <span aria-hidden="true">&larr;</span>
+          <img src="/brand/stamp-512.png" alt="" width={30} height={30} />
+          <span className="lb-back__text">osamadives<span>.com</span></span>
+        </Link>
         <a href={addHref} className="lb-btn">{addLabel}</a>
       </header>
 

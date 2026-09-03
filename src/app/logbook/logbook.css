@@ -354,3 +354,9 @@
 .lb-foot { color: var(--light-soft); border-top-color: rgba(23, 18, 8, 0.12); background: #efe8d9; }
 .lb-foot a:hover { color: var(--reef); }
 .lb-empty .lb-mono, .lb-featured > .lb-mono, .lb-wall__head .lb-mono { color: var(--reef); }
+
+/* Osama's seal: the stamp mark on the hero and on every signed page */
+.lb-hero__seal { width: 104px; height: 104px; border-radius: 50%; box-shadow: 0 10px 28px rgba(20, 40, 36, 0.14); }
+.lb-page { position: relative; }
+.lb-page__seal { position: absolute; right: 0.9rem; bottom: 0.9rem; width: 52px; height: 52px; opacity: 0.9; transform: rotate(-9deg); pointer-events: none; }
+.lb-page--single .lb-page__seal { width: 68px; height: 68px; }

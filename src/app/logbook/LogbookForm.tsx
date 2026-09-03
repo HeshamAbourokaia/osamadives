@@ -69,7 +69,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     if (!stamp) return setError("Pick your stamp.");
     if ((month && !year) || (!month && year)) return setError("Pick both the month and the year, or leave both blank.");
     if (note.trim().length < LIMITS.note.min) return setError("A few more words. Osama reads every page.");
-    if (!consent) return setError("Tick the box so Osama can show your page.");
+    if (!consent) return setError("Tick the box so Osama can show your review.");
     setBusy(true);
     try {
       const data = new FormData(e.currentTarget);
@@ -94,7 +94,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     <>
       <div>
         <div className="lb-sign__head">
-          <span className="lb-mono">A blank page</span>
+          <span className="lb-mono">Six short steps</span>
           <h2 className="lb-h2">Write yours.</h2>
           <p className="lb-stand">Your name, where we dived, and what you want to say. I read every page and sign it myself before it goes in the book.</p>
         </div>
@@ -102,17 +102,17 @@ export default function LogbookForm({ nextNumber }: Props) {
         <form ref={formRef} className="lb-form" onSubmit={submit} noValidate>
           <div className="lb-two">
             <div className="lb-field">
-              <label className="lb-mono" htmlFor="lb-name">Your name</label>
+              <label className="lb-mono" htmlFor="lb-name">1 · Your name</label>
               <input id="lb-name" name="name" className="lb-input" value={name} onChange={(e) => setName(e.target.value)} maxLength={LIMITS.name.max} autoComplete="name" placeholder="Ana" required />
             </div>
             <div className="lb-field">
-              <label className="lb-mono" htmlFor="lb-country">From</label>
+              <label className="lb-mono" htmlFor="lb-country">Your country</label>
               <input id="lb-country" name="country" className="lb-input" value={country} onChange={(e) => setCountry(e.target.value)} maxLength={LIMITS.country.max} autoComplete="country-name" placeholder="Spain" />
             </div>
           </div>
 
           <div className="lb-field">
-            <span className="lb-label lb-mono">Where we dived</span>
+            <span className="lb-label lb-mono">2 · Where we dived</span>
             <div className="lb-chips" role="group" aria-label="Dive site">
               {SITES.map((s) => (
                 <button key={s.key} type="button" className="lb-chip" aria-pressed={site === s.key} onClick={() => setSite(s.key)}>
@@ -125,7 +125,7 @@ export default function LogbookForm({ nextNumber }: Props) {
 
           <div className="lb-two">
             <div className="lb-field">
-              <span className="lb-label lb-mono">When we dived</span>
+              <span className="lb-label lb-mono">3 · When we dived</span>
               <div className="lb-when">
                 <select aria-label="Month" className="lb-select" value={month} onChange={(e) => setMonth(e.target.value)}>
                   <option value="">Month</option>
@@ -144,7 +144,7 @@ export default function LogbookForm({ nextNumber }: Props) {
               <small>Month and year is enough. Leave it blank if you are not sure.</small>
             </div>
             <div className="lb-field">
-              <label className="lb-mono" htmlFor="lb-course">Course, if any</label>
+              <label className="lb-mono" htmlFor="lb-course">Course, if you did one</label>
               <select id="lb-course" name="course" className="lb-select" value={course} onChange={(e) => setCourse(e.target.value as Course)}>
                 {COURSES.map((c) => (
                   <option key={c || "none"} value={c}>{c || "Just diving"}</option>
@@ -154,8 +154,8 @@ export default function LogbookForm({ nextNumber }: Props) {
           </div>
 
           <div className="lb-field">
-            <label className="lb-mono" htmlFor="lb-note">Your note</label>
-            <textarea id="lb-note" name="note" className="lb-textarea" value={note} onChange={(e) => setNote(e.target.value)} maxLength={LIMITS.note.max} placeholder="What you want Osama to keep." required />
+            <label className="lb-mono" htmlFor="lb-note">4 · Your review</label>
+            <textarea id="lb-note" name="note" className="lb-textarea" value={note} onChange={(e) => setNote(e.target.value)} maxLength={LIMITS.note.max} placeholder="How was the dive with Osama? Say it the way you would tell a friend." required />
             <div className={`lb-counter lb-mono${noteLen > LIMITS.note.max - 40 ? " is-over" : ""}`}>
               <span>In your own words. No links, no numbers to call.</span>
               <span>{noteLen} / {LIMITS.note.max}</span>
@@ -163,7 +163,7 @@ export default function LogbookForm({ nextNumber }: Props) {
           </div>
 
           <div className="lb-field">
-            <span className="lb-label lb-mono">A photo, if you have one</span>
+            <span className="lb-label lb-mono">5 · A photo, if you have one</span>
             <label className="lb-drop">
               {photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -180,7 +180,7 @@ export default function LogbookForm({ nextNumber }: Props) {
           </div>
 
           <div className="lb-field">
-            <span className="lb-label lb-mono">Your stamp</span>
+            <span className="lb-label lb-mono">6 · Pick a stamp, then press Submit review</span>
             <div className="lb-stamps" role="group" aria-label="Stamp">
               {STAMPS.map((s) => (
                 <button key={s.key} type="button" className="lb-stamp-pick" aria-pressed={stamp === s.key} onClick={() => pickStamp(s.key)}>
@@ -193,7 +193,7 @@ export default function LogbookForm({ nextNumber }: Props) {
 
           <label className="lb-consent">
             <input type="checkbox" name="consent" value="yes" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-            <span>Osama may show this page on his site and share it. He signs every page himself; nothing shows until he has.</span>
+            <span>Osama may show this review on his site and share it. He reads and signs every one; nothing shows until he has.</span>
           </label>
 
           <div className="lb-honey" aria-hidden="true">
@@ -211,13 +211,13 @@ export default function LogbookForm({ nextNumber }: Props) {
           {error ? <p className="lb-error" role="alert">{error}</p> : null}
 
           <div>
-            <button type="submit" className="lb-btn" disabled={busy}>{busy ? "Stamping..." : "Stamp it"}</button>
+            <button type="submit" className="lb-btn" disabled={busy}>{busy ? "Sending..." : "Submit review"}</button>
           </div>
         </form>
       </div>
 
       <aside className="lb-preview" aria-label="Preview of your page">
-        <span className="lb-mono">Your page, as I will see it</span>
+        <span className="lb-mono">Your review, as it will look in the book</span>
         <PageCard entry={preview} number={nextNumber} variant="preview" inkStamp={inked} />
       </aside>
     </>
@@ -235,7 +235,7 @@ function Success({ done, preview, number }: { done: Done; preview: PageData; num
       const file = new File([blob], "osamadives-logbook.png", { type: "image/png" });
       const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean };
       if (nav.share && nav.canShare?.({ files: [file] })) {
-        await nav.share({ files: [file], title: "I signed Osama's logbook", text: "osamadives.com/logbook" });
+        await nav.share({ files: [file], title: "My review of diving with Osama", text: "osamadives.com/review" });
         setShared("idle");
         return;
       }

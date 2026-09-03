@@ -115,7 +115,7 @@ export default async function FeaturedReel() {
               {headline}
             </h2>
             <p className="text-lg text-white/80 leading-relaxed mb-8 max-w-md md:max-w-none mx-auto md:mx-0">
-              Wherever Osama was on his most recent dive &mdash; sidemount training, the Blue Hole, reef life, a quiet day on the boat. This rotates whenever he posts.
+              Wherever Osama was on his most recent dive: sidemount training, the Blue Hole, reef life, a quiet day on the boat. This rotates whenever he posts.
             </p>
             <a
               href={post.permalink}

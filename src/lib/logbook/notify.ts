@@ -71,9 +71,29 @@ ${e.photoUrl ? `<p><img src="${esc(e.photoUrl)}" style="max-width:480px;border-r
   return res.ok;
 }
 
+// ntfy.sh needs no account: the site posts to a private topic, phones subscribed to it get a push with Approve and Hide.
+async function ntfy(e: LogbookEntry, links: ModerationLinks): Promise<boolean> {
+  const topic = process.env.NTFY_TOPIC;
+  if (!topic) return false;
+  const res = await fetch(`https://ntfy.sh/${encodeURIComponent(topic)}`, {
+    method: "POST",
+    headers: {
+      "content-type": "text/plain; charset=utf-8",
+      Title: `New review: ${e.name}${e.country ? ` from ${e.country}` : ""}`,
+      Click: links.view,
+      Priority: "high",
+      Tags: "scroll",
+      Actions: `view, Approve, ${links.approve}; view, Hide, ${links.hide}`,
+    },
+    body: summary(e).slice(0, 3800),
+  });
+  if (!res.ok) console.error("ntfy notify failed", res.status, await res.text().catch(() => ""));
+  return res.ok;
+}
+
 // Never throws: a failed notification must not lose the student's entry.
 export async function notifyNewEntry(e: LogbookEntry, links: ModerationLinks): Promise<void> {
-  const results = await Promise.allSettled([telegram(e, links), email(e, links)]);
+  const results = await Promise.allSettled([telegram(e, links), email(e, links), ntfy(e, links)]);
   const delivered = results.some((r) => r.status === "fulfilled" && r.value);
   if (!delivered) {
     console.log(`[logbook] new entry ${e.id} (no notification channel configured)\n${summary(e)}\nApprove: ${links.approve}\nHide: ${links.hide}`);

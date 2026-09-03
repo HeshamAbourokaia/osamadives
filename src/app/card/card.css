@@ -38,19 +38,30 @@
   height: 34vh;
   min-height: 170px;
   background: url("/card/dahab-band.webp") center bottom/cover no-repeat;
-  opacity: 0.28;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 62%);
-  mask-image: linear-gradient(to bottom, transparent, #000 62%);
+  opacity: 0.22;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 70%);
+  mask-image: linear-gradient(to bottom, transparent, #000 70%);
   z-index: -1;
   pointer-events: none;
 }
 
 .card__inner {
+  position: relative;
   width: min(520px, 100%);
   display: grid;
   justify-items: center;
   gap: clamp(0.55rem, 2.2vh, 1.05rem);
   text-align: center;
+}
+/* the content sits on its own plane of light, so the shore behind never eats the words */
+.card__inner::before {
+  content: "";
+  position: absolute;
+  inset: -6% -8%;
+  border-radius: 50% / 42%;
+  background: radial-gradient(58% 52% at 50% 52%, rgba(255, 253, 248, 0.94) 0%, rgba(240, 250, 247, 0.82) 46%, rgba(240, 250, 247, 0) 78%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .card__stamp {
@@ -112,7 +123,7 @@
 }
 
 .keep { display: grid; justify-items: center; gap: 0.65rem; margin-top: 0.35rem; max-width: 34ch; }
-.keep__text { margin: 0; font-size: 0.8rem; line-height: 1.55; color: #4A6560; text-align: center; }
+.keep__text { margin: 0; font-size: 0.84rem; line-height: 1.55; color: #385450; text-align: center; }
 .keep__text strong { color: #12211D; font-weight: 700; }
 .keep__btn {
   appearance: none; border: 0; border-radius: 999px; padding: 0.85rem 1.4rem; cursor: pointer;
@@ -124,7 +135,7 @@
   background: transparent; color: #0D7D70; border: 1px solid rgba(13, 125, 112, 0.45);
   box-shadow: none; padding: 0.7rem 1.2rem;
 }
-.keep__save { margin-top: 0.1rem; font-size: 0.78rem; color: #4A6560; text-decoration: underline; text-underline-offset: 3px; }
+.keep__save { margin-top: 0.1rem; font-size: 0.8rem; color: #385450; text-decoration: underline; text-underline-offset: 3px; }
 .keep__save:hover { color: #0D7D70; }
 
 @media (prefers-reduced-motion: reduce) {

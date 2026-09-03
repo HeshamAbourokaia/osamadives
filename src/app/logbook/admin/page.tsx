@@ -13,7 +13,11 @@ export const metadata = { title: "Logbook moderation", robots: { index: false, f
 
 const ORDER: EntryStatus[] = ["pending", "approved", "hidden"];
 
-export default async function AdminPage({ searchParams }: { searchParams: { key?: string } }) {
+const SECTION: Record<string, string> = { pending: "Waiting for you", approved: "On the site", hidden: "Hidden" };
+const STATUS: Record<string, string> = { pending: "Waiting for you", approved: "On the site", hidden: "Hidden, not on the site" };
+const DONE: Record<string, string> = { hide: "Hidden. It is off the site.", approve: "Approved. It is on the site now.", save: "Saved." };
+
+export default async function AdminPage({ searchParams }: { searchParams: { key?: string; done?: string } }) {
   const key = searchParams.key;
   if (!adminKeyOk(key)) notFound();
   const entries = await getStore().list();
@@ -24,17 +28,18 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
 
   return (
     <>
-      <header className="lb-top">
+      <header className="lb-top lb-top--solid">
         <Link href="/" className="lb-brand">Osama<span>Dives</span></Link>
-        <Link href="/logbook" className="lb-btn lb-btn--quiet">Open the logbook</Link>
+        <Link href="/logbook" className="lb-btn lb-btn--quiet">Open the reviews</Link>
       </header>
       <section className="lb-hero" style={{ minHeight: "auto", paddingBottom: "2rem" }}>
         <div className="lb-hero__inner">
           <span className="lb-mono lb-rise">Private · moderation</span>
-          <h1 className="lb-h2 lb-rise">Every page, every state.</h1>
+          <h1 className="lb-h2 lb-rise">Every review, every state.</h1>
+          {searchParams.done ? <p className="lb-admin__banner" role="status">{DONE[searchParams.done] ?? "Done."}</p> : null}
           <p className="lb-stand lb-hero__stand">
-            {pending} waiting. Approve puts a page in the book, Hide takes it out. A reply shows on the page in Osama&apos;s
-            handwriting. Tick &ldquo;page of the month&rdquo; to pin one page at the top of the book.
+            {pending} waiting for you. Approve puts a review on the site, Hide takes it down. A reply shows on the review in Osama&apos;s
+            handwriting. Tick &ldquo;review of the month&rdquo; to pin one at the top.
           </p>
         </div>
       </section>
@@ -44,7 +49,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
           <section key={status} className="lb-wall" style={{ paddingTop: "3rem", paddingBottom: "3rem", background: status === "pending" ? "var(--bone)" : "var(--bone-dim)" }}>
             <div className="lb-wall__inner">
               <div className="lb-wall__head" style={{ marginBottom: "1.6rem" }}>
-                <span className="lb-mono">{status} · {rows.length}</span>
+                <span className="lb-mono">{SECTION[status]} · {rows.length}</span>
               </div>
               {rows.length === 0 ? <p className="lb-stand" style={{ color: "var(--ink-soft)" }}>Nothing here.</p> : null}
               <div style={{ display: "grid", gap: "1.2rem" }}>
@@ -53,8 +58,9 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
                     <span className="lb-mono" style={{ color: "var(--ink-soft)" }}>
                       {new Date(e.createdAt).toLocaleString("en-GB")} · {siteInfo(e.site).label} · {stampInfo(e.stamp).label}
                       {e.divedOn ? ` · ${e.divedOn}` : ""}{e.course ? ` · ${e.course}` : ""}
-                      {e.flags.length ? ` · flags: ${e.flags.join(", ")}` : ""}{e.featured ? " · PAGE OF THE MONTH" : ""}
+                      {e.flags.length ? ` · flags: ${e.flags.join(", ")}` : ""}{e.featured ? " · REVIEW OF THE MONTH" : ""}
                     </span>
+                    <span className={`lb-admin__status is-${e.status}`}>{STATUS[e.status]}</span>
                     <strong className="lb-page__name" style={{ paddingRight: 0 }}>{e.name}{e.country ? `, ${e.country}` : ""}</strong>
                     <p className="lb-page__note">{e.note}</p>
                     <div className="lb-admin__links lb-mono">
@@ -76,7 +82,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { key?
                       </label>
                       <label className="lb-consent" style={{ color: "var(--ink)" }}>
                         <input type="checkbox" name="featured" value="1" defaultChecked={e.featured} />
-                        <span>Page of the month (pinned at the top of the book)</span>
+                        <span>Review of the month (pinned at the top)</span>
                       </label>
                       <div className="lb-admin__actions">
                         <button type="submit" name="action" value="save" className="lb-btn lb-btn--paper">Save</button>

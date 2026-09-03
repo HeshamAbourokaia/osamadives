@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { unstable_noStore as noStore } from "next/cache";
 import { adminKeyOk } from "@/lib/logbook/admin";
 import ActionForm from "./ActionForm";
 import { siteUrl } from "@/lib/logbook/config";
@@ -19,6 +20,7 @@ const STATUS: Record<string, string> = { pending: "Waiting for you", approved: "
 const DONE: Record<string, string> = { hide: "Hidden. It is off the site.", approve: "Approved. It is on the site now.", save: "Saved." };
 
 export default async function AdminPage({ searchParams }: { searchParams: { key?: string; done?: string } }) {
+  noStore();
   const key = searchParams.key;
   if (!adminKeyOk(key)) notFound();
   const entries = await getStore().list();

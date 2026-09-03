@@ -139,7 +139,8 @@ export class NeonStore implements LogbookStore {
   private async db() {
     if (!this.sql) {
       const { neon } = await import("@neondatabase/serverless");
-      this.sql = neon(this.url);
+      // Next caches fetch calls made while rendering, POST included; the driver goes over fetch, so opt every query out
+      this.sql = neon(this.url, { fetchOptions: { cache: "no-store" } });
     }
     if (!this.ready) {
       const sql = this.sql;

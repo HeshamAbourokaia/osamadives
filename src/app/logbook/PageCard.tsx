@@ -40,7 +40,7 @@ export default function PageCard({ entry, number, variant = "wall", inkStamp = f
         </div>
       ) : null}
       <p className="lb-page__note">{entry.note || "Your note to Osama will sit here, in your words."}</p>
-      <img src="/brand/stamp-small-512.png" alt="Signed by Osama" width={44} height={44} className="lb-page__seal" />
+      <img src="/brand/stamp-512.png" alt="Signed by Osama" width={62} height={62} className="lb-page__seal" />
       {entry.reply ? (
         <div className="lb-page__reply">
           <span className="lb-page__reply-who" aria-hidden="true">Osama</span>

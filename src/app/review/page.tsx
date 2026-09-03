@@ -36,7 +36,7 @@ export default function ReviewLanding() {
         />
         <main style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: "2rem", textAlign: "center" }}>
           <div style={{ display: "grid", gap: "1rem", justifyItems: "center" }}>
-            <img src="/brand/stamp-small-512.png" alt="" width={88} height={88} />
+            <img src="/brand/stamp-512.png" alt="" width={88} height={88} />
             <p style={{ margin: 0, fontSize: "1.1rem" }}>Opening the review form...</p>
             <Link href={FORM} style={{ color: "#0d7d70", fontWeight: 700 }}>
               Tap here if it does not open

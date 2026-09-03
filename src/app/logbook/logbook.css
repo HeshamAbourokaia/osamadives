@@ -404,3 +404,14 @@
   .lb-open .lb-page{transition:none}
   .lb-open:hover .lb-page{transform:none}
 }
+
+/* A bar that stays put and says out loud where it goes back to. */
+.lb-top--bar{position:sticky;top:0;background:rgba(246,243,236,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(23,18,8,.12);pointer-events:auto;padding-block:.6rem}
+.lb-back{display:inline-flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--ink,#171208);
+  font:700 .92rem/1 var(--display);padding:.42rem .8rem .42rem .55rem;border-radius:999px;
+  border:1px solid rgba(23,18,8,.16);background:rgba(255,255,255,.55);transition:background .2s,border-color .2s,transform .2s}
+.lb-back:hover,.lb-back:focus-visible{background:#fff;border-color:rgba(23,18,8,.34);transform:translateX(-2px)}
+.lb-back img{border-radius:50%;display:block}
+.lb-back__text span{opacity:.55;font-weight:500}
+@media (max-width:520px){.lb-back__text{display:none}.lb-back{padding:.42rem .55rem}}

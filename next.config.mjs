@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async redirects() {
-    // /review is a real page (it carries the link-preview tags); only the plural redirects.
+  async rewrites() {
+    // The address people are given is /review. It serves the reviews page without
+    // changing what the browser shows, so nobody ever sees /logbook in the bar.
     return [
-      { source: "/reviews", destination: "/logbook", permanent: false },
+      { source: "/review", destination: "/logbook" },
+      { source: "/reviews", destination: "/logbook" },
     ];
   },
   images: {

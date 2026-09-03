@@ -1,0 +1,15 @@
+{
+  "name": "Osama Dives · Reviews",
+  "short_name": "Reviews",
+  "description": "Show this to a diver so they can write Osama a review.",
+  "start_url": "/card",
+  "scope": "/card",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06141B",
+  "theme_color": "#06141B",
+  "icons": [
+    { "src": "/brand/stamp-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/stamp-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

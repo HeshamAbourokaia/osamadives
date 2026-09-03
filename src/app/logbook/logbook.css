@@ -453,3 +453,13 @@
 .lb-media__row{display:flex;gap:.5rem;flex-wrap:wrap}
 .lb-media__bar{width:100%;height:6px;accent-color:#0d7d70}
 .lb-media__no{margin:0;font:600 .82rem/1.4 var(--display);color:#a3341f}
+
+/* Moderator's stamp picker: reuses the diver's own picker, driven by real radios
+   so a form submit needs no JavaScript to carry the choice. */
+.lb-admin__stamps{border:0;padding:0;margin:0}
+.lb-admin__stamps legend{padding:0;margin-bottom:.5rem}
+.lb-admin__stamps .lb-stamps{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:720px){.lb-admin__stamps .lb-stamps{grid-template-columns:repeat(3,1fr)}}
+.lb-stamp-pick__radio{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.lb-stamp-pick:has(.lb-stamp-pick__radio:checked){color:var(--reef,#0d7d70);border-color:var(--reef,#0d7d70);background:rgba(63,209,190,.12)}
+.lb-stamp-pick:has(.lb-stamp-pick__radio:focus-visible){outline:2px solid var(--reef,#0d7d70);outline-offset:2px}

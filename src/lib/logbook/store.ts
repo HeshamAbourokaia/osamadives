@@ -106,6 +106,7 @@ export class FileStore implements LogbookStore {
       if (!e) return null;
       if (patch.reply !== undefined) e.reply = patch.reply;
       if (patch.photoUrl !== undefined) e.photoUrl = patch.photoUrl;
+      if (patch.stamp !== undefined) e.stamp = patch.stamp;
       if (patch.featured !== undefined) e.featured = patch.featured;
       if (patch.videoUrl !== undefined) e.videoUrl = patch.videoUrl;
       await this.writeAll(all);
@@ -244,8 +245,9 @@ export class NeonStore implements LogbookStore {
     const featured = patch.featured ?? current.featured;
     const videoUrl = patch.videoUrl === undefined ? current.videoUrl : patch.videoUrl;
     const photoUrl = patch.photoUrl === undefined ? current.photoUrl : patch.photoUrl;
+    const stamp = patch.stamp ?? current.stamp;
     const rows = (await sql`UPDATE logbook_entries SET reply = ${reply}, featured = ${featured},
-      video_url = ${videoUrl}, photo_url = ${photoUrl}
+      video_url = ${videoUrl}, photo_url = ${photoUrl}, stamp = ${stamp}
       WHERE id = ${id} RETURNING *`) as Row[];
     return rows[0] ? fromRow(rows[0]) : null;
   }

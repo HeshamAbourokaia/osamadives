@@ -33,7 +33,7 @@ export default function CardScreen() {
           <img src="/brand/stamp-512.png" alt="" className="card__code-stamp" width={72} height={72} />
         </a>
 
-        <p className="card__how">Scan it &mdash; or press and hold to open</p>
+        <p className="card__how">Scan it, or press and hold to open</p>
         <p className="card__url">osamadives.com/review</p>
 
         {!saved ? (

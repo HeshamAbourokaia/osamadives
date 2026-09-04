@@ -12,6 +12,8 @@ interface Props {
   total: number;
   /** Entry number of the newest review, so numbering counts down as we page. */
   topNumber: number;
+  /** The featured pages, shown between the filter bar and the wall until a reader filters. */
+  children?: React.ReactNode;
 }
 
 const PAGE = 24;
@@ -44,7 +46,7 @@ function haystack(e: PageData): string {
 // The wall holds one page of reviews and fetches the next on request, so a book with
 // hundreds of reviews still opens fast. Searching or filtering pulls the whole approved
 // list once and works on it here, so the count and the cards change as you type.
-export default function ReviewWall({ initial, total, topNumber }: Props) {
+export default function ReviewWall({ initial, total, topNumber, children }: Props) {
   const [entries, setEntries] = useState<PageData[]>(initial);
   const [everything, setEverything] = useState<PageData[] | null>(null);
   const [busy, setBusy] = useState(false);
@@ -268,6 +270,8 @@ export default function ReviewWall({ initial, total, topNumber }: Props) {
           </div>
         ) : null}
       </div>
+
+      {!filtering ? children : null}
 
       {filtering && matches.length === 0 ? (
         <div className="lb-empty lb-empty--search">

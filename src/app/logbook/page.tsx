@@ -50,6 +50,21 @@ export default async function LogbookPage() {
   // While the book is closed every "add" button goes to WhatsApp instead of an empty form.
   const addHref = open ? "#sign" : WHATSAPP;
   const addLabel = open ? "Write a review" : "Message Osama";
+  // The wedding page and the page of the month sit above the wall. They step aside while a reader filters.
+  const featured = (
+    <>
+      <div className="lb-featured">
+        <span className="lb-mono">The first page</span>
+        <WeddingPage />
+      </div>
+      {entries.some((e) => e.featured) ? (
+        <div className="lb-featured">
+          <span className="lb-mono">Page of the month</span>
+          <PageCard entry={entries.find((e) => e.featured)!} number={total - entries.findIndex((e) => e.featured)} variant="single" />
+        </div>
+      ) : null}
+    </>
+  );
   const countLine = total === 0
     ? "The first review is yours"
     : `${total} ${total === 1 ? "review" : "reviews"}${countries > 1 ? ` from ${countries} countries` : ""} · since ${firstYear}`;
@@ -92,24 +107,20 @@ export default async function LogbookPage() {
             <h2 className="lb-h2">Written by the people I took into the water.</h2>
             <p className="lb-stand">Each one is read and signed by me before it goes in the book. Real names, real dives, their own words.</p>
           </div>
-          <div className="lb-featured">
-            <span className="lb-mono">The first page</span>
-            <WeddingPage />
-          </div>
-          {entries.some((e) => e.featured) ? (
-            <div className="lb-featured">
-              <span className="lb-mono">Page of the month</span>
-              <PageCard entry={entries.find((e) => e.featured)!} number={total - entries.findIndex((e) => e.featured)} variant="single" />
-            </div>
-          ) : null}
           {total === 0 ? (
-            <div className="lb-empty">
-              <span className="lb-mono">Entry 001</span>
-              <h3 className="lb-h2">The next review is yours.</h3>
-              <a href={addHref} className="lb-btn lb-btn--paper">{open ? "Write it" : "Message Osama"}</a>
-            </div>
+            <>
+              {featured}
+              <div className="lb-empty">
+                <span className="lb-mono">Entry 001</span>
+                <h3 className="lb-h2">The next review is yours.</h3>
+                <a href={addHref} className="lb-btn lb-btn--paper">{open ? "Write it" : "Message Osama"}</a>
+              </div>
+            </>
           ) : (
-            <ReviewWall initial={entries.slice(0, WALL_PAGE)} total={total} topNumber={total} />
+            // The search and filter bar renders first, then the featured pages, then the wall.
+            <ReviewWall initial={entries.slice(0, WALL_PAGE)} total={total} topNumber={total}>
+              {featured}
+            </ReviewWall>
           )}
         </div>
       </section>

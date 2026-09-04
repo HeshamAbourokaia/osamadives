@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isValidId } from "@/lib/logbook/ids";
@@ -8,6 +8,7 @@ import type { LogbookEntry } from "@/lib/logbook/types";
 import PageCard from "../PageCard";
 
 export const dynamic = "force-dynamic";
+export const viewport: Viewport = { colorScheme: "only light", themeColor: "#e6f6f3" };
 
 async function approved(id: string): Promise<LogbookEntry | null> {
   if (!isValidId(id)) return null;

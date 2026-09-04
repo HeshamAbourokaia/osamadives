@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { storageReady } from "@/lib/logbook/config";
 import { getStore } from "@/lib/logbook/store";
@@ -9,6 +9,10 @@ import ReviewWall from "./ReviewWall";
 import WeddingPage from "./WeddingPage";
 
 export const revalidate = 60;
+
+// The page is light on purpose. Without this, Android browsers with "dark mode for web
+// pages" switched on repaint the lagoon as a dark olive and nothing the reader does changes it.
+export const viewport: Viewport = { colorScheme: "only light", themeColor: "#e6f6f3" };
 
 export const metadata: Metadata = {
   title: "Write me a review | OsamaDives, Dahab",

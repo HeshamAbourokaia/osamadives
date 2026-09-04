@@ -15,6 +15,7 @@ import { LIMITS, type EntryStatus, type LogbookEntry } from "@/lib/logbook/types
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Reviews", robots: { index: false, follow: false } };
+export const viewport = { colorScheme: "only light" as const, themeColor: "#e6f6f3" };
 
 const DONE: Record<string, string> = {
   approve: "Approved. It is on the site now.",

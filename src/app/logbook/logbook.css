@@ -298,27 +298,34 @@
    unchanged; the ground around it is the surface of the lagoon.
    ========================================================================== */
 .lb {
-  --abyss: #eaf4f1;
-  --abyss-deep: #dcece8;
-  --surface: #cfe8e2;
+  /* The ocean palette: Tiffany blue at its lightest. --lagoon is the page ground,
+     --lagoon-deep the section grounds, --tiffany the accent used only in tints. */
+  --lagoon: #e6f6f3;
+  --lagoon-deep: #d3efea;
+  --lagoon-mist: #f2fbf9;
+  --tiffany: #0abab5;
+  --abyss: var(--lagoon);
+  --abyss-deep: var(--lagoon-deep);
+  --surface: #c4e9e2;
   --light: #171208;
-  --light-soft: #5f6a66;
-  --glow: #0b8f80;
+  --light-soft: #55615d;
+  --glow: #0a7d70;   /* white text on it reads at 5:1; the old #0b8f80 sat at 4:1 */
+  color-scheme: only light;   /* phones that auto-darken web pages leave this one alone */
   background:
     radial-gradient(70vw 50vh at 100% 0%, rgba(63, 209, 190, 0.22), transparent 70%),
-    radial-gradient(60vw 40vh at 0% 100%, rgba(232, 223, 208, 0.9), transparent 70%),
-    var(--abyss);
+    radial-gradient(60vw 40vh at 0% 100%, rgba(10, 186, 181, 0.14), transparent 70%),
+    var(--lagoon);
 }
 .lb-btn { color: #fff; box-shadow: 0 12px 30px -14px rgba(11, 143, 128, 0.7); }
 .lb-btn--quiet { color: var(--ink); border-color: rgba(23, 18, 8, 0.3); }
 .lb-btn--quiet:hover { color: var(--glow); border-color: var(--glow); }
-.lb-top { background: linear-gradient(to bottom, rgba(234, 244, 241, 0.94), rgba(234, 244, 241, 0)); }
+.lb-top { background: linear-gradient(to bottom, rgba(230, 246, 243, 0.94), rgba(230, 246, 243, 0)); }
 .lb-brand { color: var(--ink); }
 .lb-hero {
   background:
     radial-gradient(60vw 50vh at 85% 10%, rgba(63, 209, 190, 0.28), transparent 70%),
-    radial-gradient(50vw 40vh at 10% 95%, rgba(232, 223, 208, 1), transparent 70%),
-    linear-gradient(180deg, #e3f2ee 0%, #edf3ee 100%);
+    radial-gradient(50vw 40vh at 10% 95%, rgba(10, 186, 181, 0.16), transparent 70%),
+    linear-gradient(180deg, #dcf2ee 0%, var(--lagoon) 100%);
 }
 .lb-hero::after {
   /* Dahab in the distance: camels on the shore, faded into the corner */
@@ -333,12 +340,12 @@
 .lb-hero__count { color: var(--light-soft); }
 .lb-hero__year text { stroke: rgba(11, 107, 96, 0.18); }
 .lb-rule { background: var(--reef); }
-.lb-wall { background: var(--bone); }
-.lb-sign { position: relative; background: linear-gradient(180deg, #e6f2ee, #efe8d9); overflow: hidden; overflow: clip; } /* clip, not hidden: hidden makes the section a scroll container and kills the sticky preview */
+.lb-wall { background: var(--lagoon); }
+.lb-sign { position: relative; background: linear-gradient(180deg, var(--lagoon), var(--lagoon-deep)); overflow: hidden; overflow: clip; } /* clip, not hidden: hidden makes the section a scroll container and kills the sticky preview */
 .lb-sign::before {
   /* the lagoon, far off, behind the form */
   content: ""; position: absolute; left: 0; bottom: 0; width: min(55vw, 640px); aspect-ratio: 4 / 3; z-index: 0;
-  background: url("/logbook/dahab-lagoon.webp") center / cover no-repeat; opacity: 0.16; pointer-events: none;
+  background: url("/logbook/dahab-lagoon.webp") center / cover no-repeat; opacity: 0.2; pointer-events: none;
   -webkit-mask-image: radial-gradient(ellipse at 20% 90%, #000 25%, transparent 72%);
   mask-image: radial-gradient(ellipse at 20% 90%, #000 25%, transparent 72%);
 }
@@ -363,7 +370,7 @@
 .lb-error { border-left-color: var(--reef); color: var(--ink); }
 .lb-done .lb-mono { color: var(--reef); }
 .lb-done .lb-stand { color: rgba(23, 18, 8, 0.8); }
-.lb-foot { color: var(--light-soft); border-top-color: rgba(23, 18, 8, 0.12); background: #efe8d9; }
+.lb-foot { color: var(--light-soft); border-top-color: rgba(11, 107, 96, 0.14); background: var(--lagoon-deep); }
 .lb-foot a:hover { color: var(--reef); }
 .lb-empty .lb-mono, .lb-featured > .lb-mono, .lb-wall__head .lb-mono { color: var(--reef); }
 
@@ -418,7 +425,7 @@
 }
 
 /* A bar that stays put and says out loud where it goes back to. */
-.lb-top--bar{position:sticky;top:0;background:rgba(246,243,236,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+.lb-top--bar{position:sticky;top:0;background:rgba(230,246,243,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(23,18,8,.12);pointer-events:auto;padding-block:.6rem}
 .lb-back{display:inline-flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--ink,#171208);
   font:700 .92rem/1 var(--display);padding:.42rem .8rem .42rem .55rem;border-radius:999px;

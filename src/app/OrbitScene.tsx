@@ -115,9 +115,22 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
 
       for (let i = 0; i < cards.length; i++) {
         const baseAngle = (360 / n) * i;
-        const effective = (((baseAngle - deg) % 360) + 360) % 360;
-        const depth = Math.cos((effective * Math.PI) / 180); // 1 front, -1 back
-        const t = (depth + 1) / 2;
+        // Must match the CSS composition exactly: the ring applies rotateY(deg)
+        // and the card applies its own rotateY(baseAngle) inside that, and
+        // consecutive same-axis rotations add. Using the wrong sign here once
+        // made this compute a card as "front" (opacity near 1) at the exact
+        // moment its real, CSS-applied orientation had already passed 90deg
+        // and backface-visibility:hidden had removed it, or worse, silently
+        // rendered its mirrored backface as garbled text.
+        const effective = (((baseAngle + deg) % 360) + 360) % 360;
+        const depth = Math.cos((effective * Math.PI) / 180); // 1 front, 0 side-on, negative = showing its back
+        // Every card's front face points radially outward, so past 90deg
+        // (depth <= 0) the viewer is looking at its back, which .orbit-card's
+        // backface-visibility:hidden now removes entirely. front fades to 0
+        // by that same 90deg point so the removal reads as a fade (helped by
+        // perspective already narrowing the card toward zero width there),
+        // never a hard pop or a flash of mirrored text.
+        const front = Math.max(0, depth);
         const el = cards[i];
 
         // Rules 1-3: each card arrives on its own staggered window, fast in
@@ -129,10 +142,10 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
 
         el.style.setProperty("--card-rise", `${((1 - eased) * CARD_RISE_PX).toFixed(1)}px`);
         el.style.setProperty("--card-scale", eased.toFixed(3));
-        el.style.opacity = (introOpacity * (0.3 + 0.7 * t)).toFixed(3);
-        el.style.filter = `blur(${((1 - t) * 3.4).toFixed(2)}px) brightness(${(0.62 + 0.38 * t).toFixed(2)})`;
-        el.style.zIndex = String(Math.round(t * 100));
-        el.style.pointerEvents = t > 0.16 && localT > 0.9 ? "auto" : "none";
+        el.style.opacity = (introOpacity * front).toFixed(3);
+        el.style.filter = `blur(${((1 - front) * 3.4).toFixed(2)}px) brightness(${(0.62 + 0.38 * front).toFixed(2)})`;
+        el.style.zIndex = String(Math.round(front * 100));
+        el.style.pointerEvents = front > 0.16 && localT > 0.9 ? "auto" : "none";
       }
     };
     const schedule = () => {

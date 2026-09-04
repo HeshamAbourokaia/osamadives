@@ -19,11 +19,11 @@ export async function POST(req: Request, { params }: { params: { id: string } })
   if (typeof emoji !== "string" || !(REACTIONS as readonly string[]).includes(emoji)) return fail("Pick one of the emojis.");
   if (!validDeviceId(device)) return fail("Reload the page and try again.");
 
-  // Forty taps in ten minutes is plenty for a person and nothing for a script.
-  const ipHash = hashIp(clientIp(req));
-  if (!allowBurst(`react:${ipHash}`, 40)) return fail("Slow down a little.", 429);
-
   try {
+    // Forty taps in ten minutes is plenty for a person and nothing for a script.
+    const ipHash = hashIp(clientIp(req));
+    if (!allowBurst(`react:${ipHash}`, 40)) return fail("Slow down a little.", 429);
+
     const store = getStore({ fresh: true });
     const entry = await store.get(id);
     if (!entry || entry.status !== "approved") return fail("No such review.", 404);

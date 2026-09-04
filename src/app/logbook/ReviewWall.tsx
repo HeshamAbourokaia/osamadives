@@ -25,8 +25,12 @@ interface Filters {
   course: string;
   country: string;
   stamp: string;
+  /** "photo", "video" or "reply": only reviews that carry one */
+  only: string;
+  /** "" newest first, "oldest", or "loved" (most reactions first) */
+  order: string;
 }
-const NONE: Filters = { year: "", month: "", site: "", course: "", country: "", stamp: "" };
+const NONE: Filters = { year: "", month: "", site: "", course: "", country: "", stamp: "", only: "", order: "" };
 const FILTER_KEYS = Object.keys(NONE) as (keyof Filters)[];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -150,7 +154,11 @@ export default function ReviewWall({ initial, total, topNumber, children }: Prop
     const courses = new Set<string>();
     const countries = new Map<string, { label: string; n: number }>();
     const stamps = new Set<string>();
+    let photos = 0, videos = 0, replies = 0;
     for (const e of source) {
+      if (e.photoUrl) photos++;
+      if (e.videoUrl) videos++;
+      if (e.reply) replies++;
       years.add(yearOf(e));
       months.add(monthOf(e));
       sites.add(e.site);
@@ -166,24 +174,32 @@ export default function ReviewWall({ initial, total, topNumber, children }: Prop
       courses: [...courses],
       countries: [...countries.entries()].sort((a, b) => b[1].n - a[1].n || a[1].label.localeCompare(b[1].label)).map(([k, v]) => ({ key: k, label: v.label })),
       stamps: [...stamps].sort((a, b) => stampIndex(a) - stampIndex(b)).map((k) => ({ key: k, label: stampInfo(k as PageData["stamps"][number]).label })),
+      photos, videos, replies,
     };
   }, [source]);
 
   const matches = useMemo(() => {
     if (!filtering) return source;
     const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-    return source.filter((e) => {
+    const loved = (e: PageData) => Object.values(social[e.id]?.counts ?? {}).reduce((a, b) => a + b, 0);
+    const kept = source.filter((e) => {
       if (filters.year && yearOf(e) !== filters.year) return false;
       if (filters.month && monthOf(e) !== filters.month) return false;
       if (filters.site && e.site !== filters.site) return false;
       if (filters.course && e.course !== filters.course) return false;
       if (filters.country && countryOf(e) !== filters.country) return false;
       if (filters.stamp && !e.stamps.includes(filters.stamp as PageData["stamps"][number])) return false;
+      if (filters.only === "photo" && !e.photoUrl) return false;
+      if (filters.only === "video" && !e.videoUrl) return false;
+      if (filters.only === "reply" && !e.reply) return false;
       if (!words.length) return true;
       const hay = haystack(e);
       return words.every((w) => hay.includes(w));
     });
-  }, [filtering, source, query, filters]);
+    if (filters.order === "oldest") return [...kept].reverse();
+    if (filters.order === "loved") return [...kept].sort((a, b) => loved(b) - loved(a)); // stable: ties stay newest first
+    return kept;
+  }, [filtering, source, query, filters, social]);
 
   // Entry numbers count down from the newest. In a filtered view each card keeps its real number.
   const numberOf = useMemo(() => {
@@ -256,6 +272,12 @@ export default function ReviewWall({ initial, total, topNumber, children }: Prop
             {chipGroup("Country", "country", facets.countries)}
             {chipGroup("Course", "course", facets.courses.map((c) => ({ key: c, label: c })))}
             {chipGroup("Stamp", "stamp", facets.stamps)}
+            {chipGroup("Show only", "only", [
+              ...(facets.photos ? [{ key: "photo", label: "With a photo" }] : []),
+              ...(facets.videos ? [{ key: "video", label: "With a video" }] : []),
+              ...(facets.replies ? [{ key: "reply", label: "Osama replied" }] : []),
+            ])}
+            {chipGroup("Order", "order", [{ key: "oldest", label: "Oldest first" }, { key: "loved", label: "Most loved" }])}
             {complete === null && total > entries.length ? <span className="lb-mono lb-tools__hint">Reading the rest of the book...</span> : null}
           </div>
         ) : null}

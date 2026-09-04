@@ -363,6 +363,7 @@
 .lb-stamp-pick { background: rgba(255, 255, 255, 0.5); border-color: rgba(23, 18, 8, 0.14); color: rgba(23, 18, 8, 0.45); }
 .lb-stamp-pick:hover { color: var(--ink); border-color: var(--glow); }
 .lb-stamp-pick[aria-pressed="true"] { color: var(--reef); border-color: var(--reef); background: rgba(63, 209, 190, 0.12); }
+.lb-stamp-pick[aria-disabled="true"] { opacity: 0.45; } /* five picked: the rest wait until one is taken off */
 .lb-drop { border-color: rgba(23, 18, 8, 0.3); color: var(--light-soft); }
 .lb-drop__remove { color: var(--reef); }
 .lb-consent { color: rgba(23, 18, 8, 0.8); }

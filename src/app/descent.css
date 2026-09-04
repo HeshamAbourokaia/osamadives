@@ -716,7 +716,11 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
 
   /* the 3D ring, mounted only once JS confirms reduced-motion is off */
   .orbit-3d { position: relative; height: 100%; min-height: 44vh; perspective: clamp(900px, 90vw, 1500px); perspective-origin: 50% 46%; touch-action: pan-y; }
-  .orbit-ring { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateY(var(--ring-deg, 0deg)); will-change: transform; }
+  /* rotateX tilts the whole ring plane like a dish: the near edge (front,
+     facing the visitor) dips lower than the far edge (back), so it reads as
+     an orbit seen from slightly above rather than a flat halo, and the
+     lowered front sits over the straight crop edge under Osama's gloves. */
+  .orbit-ring { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(16deg) rotateY(var(--ring-deg, 0deg)); will-change: transform; }
   /* Larger than any card and a fixed mid-range z-index (cards run 0-100 by
      depth) so the front half of the ring (t > 0.5, z-index > 50) passes in
      front of him and the back half recedes behind, the crossover landing at
@@ -724,9 +728,9 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .orbit-figure { position: absolute; left: 50%; top: 64%; width: clamp(21rem, 44vw, 36rem); z-index: 50; transform: translate(-50%, -50%); pointer-events: none; }
   .orbit-figure img { width: 100%; height: auto; display: block; filter: drop-shadow(0 26px 46px rgba(11,111,96,0.32)); }
   .orbit-card {
-    position: absolute; left: 50%; top: 64%; width: clamp(8.5rem, 15vw, 12rem);
+    position: absolute; left: 50%; top: 80%; width: clamp(8.5rem, 15vw, 12rem);
     transform: translate(-50%, -50%) translateY(var(--card-rise, 0px))
-      rotateY(var(--card-angle)) translateZ(clamp(10rem, 26vw, 19rem)) scale(var(--card-scale, 1));
+      rotateY(var(--card-angle)) translateZ(clamp(14rem, 34vw, 25rem)) scale(var(--card-scale, 1));
     display: block; text-decoration: none; color: var(--sc-ink);
     background: #fff; border: 1px solid rgba(11,111,96,0.12); border-radius: 8px; overflow: hidden; cursor: pointer;
     box-shadow: 0 20px 46px -22px rgba(11,111,96,0.4);

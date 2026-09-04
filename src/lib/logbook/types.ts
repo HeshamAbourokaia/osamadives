@@ -45,6 +45,8 @@ export const COURSES = [
 ] as const;
 export type Course = (typeof COURSES)[number];
 
+export type ModeratedBy = "link" | "admin" | "";
+
 export interface LogbookEntry {
   id: string;
   createdAt: string;
@@ -60,6 +62,8 @@ export interface LogbookEntry {
   photoUrl: string | null;
   flags: string[];
   moderatedAt: string | null;
+  /** How it was approved or hidden: the signed link in the phone notification, or the password page. */
+  moderatedBy: ModeratedBy;
   ipHash: string;
   reply: string;
   featured: boolean;
@@ -73,6 +77,11 @@ export interface EntryPatch {
   photoUrl?: string | null;
   stamps?: StampKey[];
 }
+
+// Every reaction is a good one; there is no thumbs down. The diving set is the closest
+// Unicode gets to a scuba diver (a mask, not a diver) and renders on iOS 12+ and Android 9+.
+export const REACTIONS = ["👍", "❤️", "😂", "👏", "🤿", "🦈", "🐢", "🐙", "🌊", "🐠"] as const;
+export type Reaction = (typeof REACTIONS)[number];
 
 export const LIMITS = {
   name: { min: 2, max: 40 },

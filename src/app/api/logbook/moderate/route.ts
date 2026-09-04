@@ -12,7 +12,7 @@ const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 function page(title: string, body: string, status: number): Response {
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(title)}</title>
 <style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#061420;color:#EDF4F2;font:500 18px/1.5 system-ui,-apple-system,sans-serif}main{max-width:32rem;padding:2rem}h1{font:800 clamp(2rem,7vw,3rem)/1 system-ui,sans-serif;text-transform:uppercase;letter-spacing:-.02em;margin:0 0 1rem}p{color:#93ABA8;margin:0 0 1.5rem}a{display:inline-block;margin:.25rem .5rem .25rem 0;padding:.8rem 1.3rem;border-radius:4px;background:#3FD1BE;color:#04121A;font-weight:700;text-decoration:none}a.quiet{background:transparent;color:#93ABA8;border:1px solid rgba(147,171,168,.4)}small{display:block;margin-top:2rem;font:500 11px/1.5 ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase;color:#3FD1BE}</style></head>
-<body><main><h1>${esc(title)}</h1>${body}<small>OsamaDives · dive log</small></main></body></html>`;
+<body><main><h1>${esc(title)}</h1>${body}<small>OsamaDives · reviews</small></main></body></html>`;
   return new Response(html, { status, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
 }
 
@@ -27,7 +27,7 @@ export async function GET(req: Request) {
   }
 
   const store = getStore();
-  const entry = await store.setStatus(id, action === "approve" ? "approved" : "hidden", new Date().toISOString());
+  const entry = await store.setStatus(id, action === "approve" ? "approved" : "hidden", new Date().toISOString(), "link");
   if (!entry) return page("No such entry.", "<p>It may have been removed.</p>", 404);
 
   revalidatePath("/logbook");

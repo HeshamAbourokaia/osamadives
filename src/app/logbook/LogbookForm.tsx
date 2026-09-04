@@ -3,7 +3,9 @@
 import Script from "next/script";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SITES } from "@/lib/logbook/sites";
-import { STAMPS } from "@/lib/logbook/stamps";
+import { STAMPS, orderStamps } from "@/lib/logbook/stamps";
+
+const MAX_STAMPS = 5;
 import { COURSES, LIMITS, type Course, type SiteKey, type StampKey } from "@/lib/logbook/types";
 import { MONTHS } from "@/lib/logbook/format";
 
@@ -28,7 +30,7 @@ export default function LogbookForm({ nextNumber }: Props) {
   const [year, setYear] = useState("");
   const divedOn = month && year ? `${year}-${month}` : "";
   const [course, setCourse] = useState<Course>("");
-  const [stamp, setStamp] = useState<StampKey | "">("");
+  const [stamps, setStamps] = useState<StampKey[]>([]);
   const [note, setNote] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const [consent, setConsent] = useState(false);
@@ -51,13 +53,18 @@ export default function LogbookForm({ nextNumber }: Props) {
     id: "preview",
     name, country, note, divedOn, course, photoUrl,
     site: site || "lighthouse-reef-dahab",
-    stamps: [stamp || "introduction"],
+    stamps: stamps.length ? stamps : ["introduction"],
     createdAt: new Date().toISOString(),
     reply: "", videoUrl: null, featured: false,
   };
 
+  // Tap a stamp to add it, tap again to take it off. Up to five, the same as Osama can give.
   function pickStamp(key: StampKey) {
-    setStamp(key);
+    setStamps((prev) => {
+      if (prev.includes(key)) return prev.filter((k) => k !== key);
+      if (prev.length >= MAX_STAMPS) return prev;
+      return orderStamps([...prev, key]);
+    });
     setInked(false);
     requestAnimationFrame(() => setInked(true));
   }
@@ -66,7 +73,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     e.preventDefault();
     setError(null);
     if (!site) return setError("Pick where we dived.");
-    if (!stamp) return setError("Pick your stamp.");
+    if (!stamps.length) return setError("Pick at least one stamp.");
     if ((month && !year) || (!month && year)) return setError("Pick both the month and the year, or leave both blank.");
     if (note.trim().length < LIMITS.note.min) return setError("A few more words. Osama reads every review.");
     if (!consent) return setError("Tick the box so Osama can show your review.");
@@ -74,7 +81,8 @@ export default function LogbookForm({ nextNumber }: Props) {
     try {
       const data = new FormData(e.currentTarget);
       data.set("site", site);
-      data.set("stamp", stamp);
+      data.delete("stamp");
+      for (const k of stamps) data.append("stamp", k);
       const res = await fetch("/api/logbook", { method: "POST", body: data });
       const json = (await res.json()) as { ok: boolean; error?: string; id?: string; cardUrl?: string };
       if (!json.ok || !json.id || !json.cardUrl) throw new Error(json.error || "Something went wrong. Try again.");
@@ -180,10 +188,10 @@ export default function LogbookForm({ nextNumber }: Props) {
           </div>
 
           <div className="lb-field">
-            <span className="lb-label lb-mono">6 · Pick a stamp, then press Submit review</span>
-            <div className="lb-stamps" role="group" aria-label="Stamp">
+            <span className="lb-label lb-mono">6 · Pick your stamps (one to five), then press Submit review</span>
+            <div className="lb-stamps" role="group" aria-label="Stamps">
               {STAMPS.map((s) => (
-                <button key={s.key} type="button" className="lb-stamp-pick" aria-pressed={stamp === s.key} onClick={() => pickStamp(s.key)}>
+                <button key={s.key} type="button" className="lb-stamp-pick" aria-pressed={stamps.includes(s.key)} aria-disabled={!stamps.includes(s.key) && stamps.length >= MAX_STAMPS} onClick={() => pickStamp(s.key)}>
                   <Stamp stamp={s.key} uid={`pick-${s.key}`} className="lb-stamp--static" />
                   <span>{s.label}</span>
                 </button>
@@ -232,7 +240,7 @@ function Success({ done, preview, number }: { done: Done; preview: PageData; num
     try {
       const res = await fetch(done.cardUrl);
       const blob = await res.blob();
-      const file = new File([blob], "osamadives-logbook.png", { type: "image/png" });
+      const file = new File([blob], "osamadives-review.png", { type: "image/png" });
       const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean };
       if (nav.share && nav.canShare?.({ files: [file] })) {
         await nav.share({ files: [file], title: "My review of diving with Osama", text: "osamadives.com/review" });

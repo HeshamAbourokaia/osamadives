@@ -298,27 +298,34 @@
    unchanged; the ground around it is the surface of the lagoon.
    ========================================================================== */
 .lb {
-  --abyss: #eaf4f1;
-  --abyss-deep: #dcece8;
-  --surface: #cfe8e2;
+  /* The ocean palette: Tiffany blue at its lightest. --lagoon is the page ground,
+     --lagoon-deep the section grounds, --tiffany the accent used only in tints. */
+  --lagoon: #e6f6f3;
+  --lagoon-deep: #d3efea;
+  --lagoon-mist: #f2fbf9;
+  --tiffany: #0abab5;
+  --abyss: var(--lagoon);
+  --abyss-deep: var(--lagoon-deep);
+  --surface: #c4e9e2;
   --light: #171208;
-  --light-soft: #5f6a66;
-  --glow: #0b8f80;
+  --light-soft: #55615d;
+  --glow: #0a7d70;   /* white text on it reads at 5:1; the old #0b8f80 sat at 4:1 */
+  color-scheme: only light;   /* phones that auto-darken web pages leave this one alone */
   background:
     radial-gradient(70vw 50vh at 100% 0%, rgba(63, 209, 190, 0.22), transparent 70%),
-    radial-gradient(60vw 40vh at 0% 100%, rgba(232, 223, 208, 0.9), transparent 70%),
-    var(--abyss);
+    radial-gradient(60vw 40vh at 0% 100%, rgba(10, 186, 181, 0.14), transparent 70%),
+    var(--lagoon);
 }
 .lb-btn { color: #fff; box-shadow: 0 12px 30px -14px rgba(11, 143, 128, 0.7); }
 .lb-btn--quiet { color: var(--ink); border-color: rgba(23, 18, 8, 0.3); }
 .lb-btn--quiet:hover { color: var(--glow); border-color: var(--glow); }
-.lb-top { background: linear-gradient(to bottom, rgba(234, 244, 241, 0.94), rgba(234, 244, 241, 0)); }
+.lb-top { background: linear-gradient(to bottom, rgba(230, 246, 243, 0.94), rgba(230, 246, 243, 0)); }
 .lb-brand { color: var(--ink); }
 .lb-hero {
   background:
     radial-gradient(60vw 50vh at 85% 10%, rgba(63, 209, 190, 0.28), transparent 70%),
-    radial-gradient(50vw 40vh at 10% 95%, rgba(232, 223, 208, 1), transparent 70%),
-    linear-gradient(180deg, #e3f2ee 0%, #edf3ee 100%);
+    radial-gradient(50vw 40vh at 10% 95%, rgba(10, 186, 181, 0.16), transparent 70%),
+    linear-gradient(180deg, #dcf2ee 0%, var(--lagoon) 100%);
 }
 .lb-hero::after {
   /* Dahab in the distance: camels on the shore, faded into the corner */
@@ -333,12 +340,12 @@
 .lb-hero__count { color: var(--light-soft); }
 .lb-hero__year text { stroke: rgba(11, 107, 96, 0.18); }
 .lb-rule { background: var(--reef); }
-.lb-wall { background: var(--bone); }
-.lb-sign { position: relative; background: linear-gradient(180deg, #e6f2ee, #efe8d9); overflow: hidden; overflow: clip; } /* clip, not hidden: hidden makes the section a scroll container and kills the sticky preview */
+.lb-wall { background: var(--lagoon); }
+.lb-sign { position: relative; background: linear-gradient(180deg, var(--lagoon), var(--lagoon-deep)); overflow: hidden; overflow: clip; } /* clip, not hidden: hidden makes the section a scroll container and kills the sticky preview */
 .lb-sign::before {
   /* the lagoon, far off, behind the form */
   content: ""; position: absolute; left: 0; bottom: 0; width: min(55vw, 640px); aspect-ratio: 4 / 3; z-index: 0;
-  background: url("/logbook/dahab-lagoon.webp") center / cover no-repeat; opacity: 0.16; pointer-events: none;
+  background: url("/logbook/dahab-lagoon.webp") center / cover no-repeat; opacity: 0.2; pointer-events: none;
   -webkit-mask-image: radial-gradient(ellipse at 20% 90%, #000 25%, transparent 72%);
   mask-image: radial-gradient(ellipse at 20% 90%, #000 25%, transparent 72%);
 }
@@ -356,6 +363,7 @@
 .lb-stamp-pick { background: rgba(255, 255, 255, 0.5); border-color: rgba(23, 18, 8, 0.14); color: rgba(23, 18, 8, 0.45); }
 .lb-stamp-pick:hover { color: var(--ink); border-color: var(--glow); }
 .lb-stamp-pick[aria-pressed="true"] { color: var(--reef); border-color: var(--reef); background: rgba(63, 209, 190, 0.12); }
+.lb-stamp-pick[aria-disabled="true"] { opacity: 0.45; } /* five picked: the rest wait until one is taken off */
 .lb-drop { border-color: rgba(23, 18, 8, 0.3); color: var(--light-soft); }
 .lb-drop__remove { color: var(--reef); }
 .lb-consent { color: rgba(23, 18, 8, 0.8); }
@@ -363,7 +371,7 @@
 .lb-error { border-left-color: var(--reef); color: var(--ink); }
 .lb-done .lb-mono { color: var(--reef); }
 .lb-done .lb-stand { color: rgba(23, 18, 8, 0.8); }
-.lb-foot { color: var(--light-soft); border-top-color: rgba(23, 18, 8, 0.12); background: #efe8d9; }
+.lb-foot { color: var(--light-soft); border-top-color: rgba(11, 107, 96, 0.14); background: var(--lagoon-deep); }
 .lb-foot a:hover { color: var(--reef); }
 .lb-empty .lb-mono, .lb-featured > .lb-mono, .lb-wall__head .lb-mono { color: var(--reef); }
 
@@ -418,7 +426,7 @@
 }
 
 /* A bar that stays put and says out loud where it goes back to. */
-.lb-top--bar{position:sticky;top:0;background:rgba(246,243,236,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+.lb-top--bar{position:sticky;top:0;background:rgba(230,246,243,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(23,18,8,.12);pointer-events:auto;padding-block:.6rem}
 .lb-back{display:inline-flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--ink,#171208);
   font:700 .92rem/1 var(--display);padding:.42rem .8rem .42rem .55rem;border-radius:999px;
@@ -475,3 +483,68 @@
 .lb-stamp-pick__radio{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .lb-stamp-pick:has(.lb-stamp-pick__radio:checked){color:var(--reef,#0d7d70);border-color:var(--reef,#0d7d70);background:rgba(63,209,190,.12)}
 .lb-stamp-pick:has(.lb-stamp-pick__radio:focus-visible){outline:2px solid var(--reef,#0d7d70);outline-offset:2px}
+
+/* ==========================================================================
+   Under each page: the reactions people left, and a picker for adding one.
+   Built for a thumb first: every control is at least 44px tall, no hover needed.
+   ========================================================================== */
+.lb-card{display:grid;gap:.45rem}
+.lb-social{position:relative;display:grid;gap:.5rem;padding:0 .15rem}
+.lb-social--wait{min-height:44px}
+.lb-social__row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.lb-react{
+  display:inline-flex;align-items:center;justify-content:center;gap:.35rem;
+  min-height:44px;min-width:44px;padding:0 .8rem;border-radius:999px;cursor:pointer;
+  background:rgba(255,255,255,.72);border:1px solid rgba(11,107,96,.2);color:var(--ink,#171208);
+  font:600 .95rem/1 var(--display);-webkit-tap-highlight-color:transparent;
+  transition:background .15s,border-color .15s,transform .15s var(--ease);
+}
+.lb-react:active{transform:scale(.94)}
+.lb-react:focus-visible{outline:2px solid var(--reef,#0b6b60);outline-offset:2px}
+.lb-react[aria-pressed="true"]{background:#fff;border-color:var(--reef,#0b6b60);box-shadow:0 0 0 1px var(--reef,#0b6b60) inset}
+.lb-react__emoji{font-size:1.2rem;line-height:1}
+.lb-react__n{font-family:var(--mono);font-size:.82rem;color:var(--ink-soft,#5b5348);font-feature-settings:"tnum"}
+.lb-react[aria-pressed="true"] .lb-react__n{color:var(--reef,#0b6b60)}
+.lb-react--word{font-size:.86rem;color:var(--reef,#0b6b60);background:transparent;border-color:rgba(11,107,96,.28)}
+.lb-react--word.is-open{background:var(--reef,#0b6b60);color:#fff;border-color:var(--reef,#0b6b60)}
+.lb-social__picker{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:.35rem;
+  padding:.55rem;border-radius:12px;background:rgba(255,255,255,.75);border:1px solid rgba(11,107,96,.16);
+  animation:lb-pop .18s var(--ease) both
+}
+.lb-react--pick{min-height:48px;padding:0;font-size:1.5rem;border-radius:10px;background:transparent;border-color:transparent}
+.lb-react--pick[aria-pressed="true"]{background:#fff}
+@keyframes lb-pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.lb-social__note{margin:0;font:600 .9rem/1.4 var(--display);color:#a3341f}
+.lb-social-single{max-width:46rem;margin:.6rem auto 0}
+
+/* ---- search and filters, above the wall -------------------------------- */
+.lb-tools{
+  position:sticky;top:var(--lb-bar,58px);z-index:5;display:grid;gap:.6rem;
+  margin:0 calc(var(--gutter) * -1) clamp(1.4rem,3vw,2.2rem);padding:.7rem var(--gutter);
+  background:rgba(230,246,243,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(11,107,96,.12)
+}
+.lb-tools__bar{display:flex;gap:.5rem;max-width:var(--maxw);margin-inline:auto;width:100%}
+.lb-tools__search{
+  flex:1;min-width:0;min-height:46px;padding:0 .9rem;border-radius:10px;border:1px solid rgba(11,107,96,.25);
+  background:#fff;color:var(--ink,#171208);font:500 1rem/1 var(--display);-webkit-appearance:none;appearance:none
+}
+.lb-tools__search:focus{outline:2px solid var(--reef,#0b6b60);outline-offset:1px}
+.lb-tools__search::placeholder{color:rgba(23,18,8,.42)}
+.lb-tools__toggle{min-height:46px;padding:0 1rem;gap:.45rem;white-space:nowrap}
+.lb-tools__toggle.is-open{background:var(--reef,#0b6b60)}
+.lb-tools__badge{display:inline-grid;place-items:center;min-width:1.3rem;height:1.3rem;padding:0 .3rem;border-radius:999px;background:#fff;color:var(--reef,#0b6b60);font:700 .72rem/1 var(--mono)}
+.lb-tools__panel{display:grid;gap:.8rem;max-width:var(--maxw);margin-inline:auto;width:100%;padding-top:.2rem;animation:lb-pop .18s var(--ease) both}
+.lb-tools__group{display:grid;gap:.4rem}
+.lb-tools__group > .lb-mono{color:var(--reef,#0b6b60)}
+.lb-tools__hint{color:var(--ink-soft,#5b5348)}
+.lb-chip--small{flex-direction:row;min-height:44px;padding:0 .9rem;border-radius:999px;font-size:.9rem;align-items:center}
+.lb-tools__count{display:flex;align-items:center;justify-content:space-between;gap:.8rem;max-width:var(--maxw);margin-inline:auto;width:100%}
+.lb-tools__count .lb-mono{color:var(--ink-soft,#5b5348)}
+.lb-tools__clear{min-height:44px;padding:0 .9rem;border-radius:999px;border:1px solid rgba(11,107,96,.3);background:transparent;color:var(--reef,#0b6b60);font:700 .86rem/1 var(--display);cursor:pointer}
+.lb-tools__clear:focus-visible,.lb-tools__toggle:focus-visible{outline:2px solid var(--reef,#0b6b60);outline-offset:2px}
+.lb-empty--search{margin-bottom:clamp(1.4rem,2.6vw,2.4rem)}
+/* On a phone the open panel is most of the screen, so it scrolls with the page instead of pinning. */
+@media (max-width:680px){.lb-tools.has-panel{position:relative;top:auto}}
+@media (prefers-reduced-motion:reduce){.lb-social__picker,.lb-tools__panel{animation:none}}

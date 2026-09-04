@@ -77,7 +77,7 @@ function StoryCard({ entry }: { entry: LogbookEntry }) {
   return (
     <div style={{ width: 1080, height: 1920, display: "flex", flexDirection: "column", background: ABYSS, padding: 72, fontFamily: "Archivo" }}>
       <div style={{ ...mono, color: GLOW, display: "flex", justifyContent: "space-between" }}>
-        <span>Dive log · Dahab</span>
+        <span>Review · Dahab</span>
         <span>Kept since 1983</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, marginTop: 40, background: BONE, borderRadius: 10, padding: 64, color: INK }}>
@@ -130,7 +130,7 @@ function PrintCard({ entry }: { entry: LogbookEntry }) {
     <div style={{ width: 2480, height: 1748, display: "flex", background: BONE, color: INK, padding: 140, fontFamily: "Archivo" }}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, borderTop: `4px solid ${INK}`, paddingTop: 48 }}>
         <div style={{ ...mono, color: SOFT, display: "flex", justifyContent: "space-between" }}>
-          <span>A page from Osama&apos;s logbook · Dahab, South Sinai</span>
+          <span>A review of diving with Osama · Dahab, South Sinai</span>
           <span>Entry · {whenOf(entry)}</span>
         </div>
         <div style={{ display: "flex", flex: 1, marginTop: 56, gap: 96 }}>

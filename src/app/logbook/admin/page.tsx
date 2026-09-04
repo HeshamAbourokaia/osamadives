@@ -15,6 +15,7 @@ import { LIMITS, type EntryStatus, type LogbookEntry } from "@/lib/logbook/types
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Reviews", robots: { index: false, follow: false } };
+export const viewport = { colorScheme: "only light" as const, themeColor: "#e6f6f3" };
 
 const DONE: Record<string, string> = {
   approve: "Approved. It is on the site now.",
@@ -22,6 +23,15 @@ const DONE: Record<string, string> = {
   save: "Saved.",
   delete: "Deleted for good.",
 };
+
+// "from the phone link" is the Approve button in the ntfy, Telegram or email message;
+// "on this page" is the password-protected moderation page.
+function moderatedHow(e: LogbookEntry) {
+  return e.moderatedBy === "link" ? "from the phone link" : e.moderatedBy === "admin" ? "on this page" : "(before this was recorded)";
+}
+function whenExact(iso: string) {
+  return new Date(iso).toLocaleString("en-GB", { timeZone: "Africa/Cairo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + " Dahab time";
+}
 
 function when(e: LogbookEntry) {
   return new Date(e.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
@@ -115,6 +125,7 @@ export default async function AdminPage({
         {e.course ? ` · ${e.course}` : ""}
         {e.flags.length ? ` · flags: ${e.flags.join(", ")}` : ""}
         {e.featured ? " · REVIEW OF THE MONTH" : ""}
+        {e.moderatedAt ? ` · ${e.status === "approved" ? "put on the site" : e.status === "hidden" ? "hidden" : "moderated"} ${moderatedHow(e)} ${whenExact(e.moderatedAt)}` : ""}
       </span>
       <p className="lb-page__note">{e.note}</p>
       <div className="lb-admin__links lb-mono">

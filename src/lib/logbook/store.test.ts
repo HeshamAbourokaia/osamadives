@@ -8,7 +8,7 @@ import type { LogbookEntry } from "./types";
 const entry = (id: string, createdAt: string, ipHash = "ip1"): LogbookEntry => ({
   id, createdAt, status: "pending", name: "Ana", country: "Spain", site: "blue-hole-dahab",
   divedOn: "2026-05", course: "Open Water", stamps: ["open-water"], note: "Thank you Osama, I felt safe the whole way.",
-  photoUrl: null, flags: [], moderatedAt: null, ipHash, reply: "", featured: false, videoUrl: null,
+  photoUrl: null, flags: [], moderatedAt: null, moderatedBy: "", ipHash, reply: "", featured: false, videoUrl: null,
 });
 
 describe("FileStore", () => {
@@ -25,10 +25,11 @@ describe("FileStore", () => {
     await store.create(entry("b", "2026-09-02T00:00:00.000Z"));
     expect((await store.get("a"))?.name).toBe("Ana");
     expect((await store.list()).map((e) => e.id)).toEqual(["b", "a"]);
-    await store.setStatus("a", "approved", "2026-09-03T00:00:00.000Z");
+    await store.setStatus("a", "approved", "2026-09-03T00:00:00.000Z", "link");
     expect((await store.list({ status: "approved" })).map((e) => e.id)).toEqual(["a"]);
     expect((await store.list({ status: "pending" })).map((e) => e.id)).toEqual(["b"]);
     expect((await store.get("a"))?.moderatedAt).toBe("2026-09-03T00:00:00.000Z");
+    expect((await store.get("a"))?.moderatedBy).toBe("link");
   });
   it("refuses duplicate ids and returns null for unknown ids", async () => {
     await store.create(entry("a", "2026-09-01T00:00:00.000Z"));

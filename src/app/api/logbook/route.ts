@@ -114,7 +114,7 @@ export async function POST(req: Request) {
   const entry: LogbookEntry = {
     id, createdAt: new Date().toISOString(), status: "pending",
     name, country, site, divedOn, course, stamps, note, photoUrl,
-    flags, moderatedAt: null, ipHash,
+    flags, moderatedAt: null, moderatedBy: "", ipHash,
     reply: "", featured: false, videoUrl: null,
   };
   await store.create(entry);

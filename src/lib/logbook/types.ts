@@ -45,6 +45,8 @@ export const COURSES = [
 ] as const;
 export type Course = (typeof COURSES)[number];
 
+export type ModeratedBy = "link" | "admin" | "";
+
 export interface LogbookEntry {
   id: string;
   createdAt: string;
@@ -60,6 +62,8 @@ export interface LogbookEntry {
   photoUrl: string | null;
   flags: string[];
   moderatedAt: string | null;
+  /** How it was approved or hidden: the signed link in the phone notification, or the password page. */
+  moderatedBy: ModeratedBy;
   ipHash: string;
   reply: string;
   featured: boolean;

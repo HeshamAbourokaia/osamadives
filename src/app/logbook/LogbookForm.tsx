@@ -240,7 +240,7 @@ function Success({ done, preview, number }: { done: Done; preview: PageData; num
     try {
       const res = await fetch(done.cardUrl);
       const blob = await res.blob();
-      const file = new File([blob], "osamadives-logbook.png", { type: "image/png" });
+      const file = new File([blob], "osamadives-review.png", { type: "image/png" });
       const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean };
       if (nav.share && nav.canShare?.({ files: [file] })) {
         await nav.share({ files: [file], title: "My review of diving with Osama", text: "osamadives.com/review" });

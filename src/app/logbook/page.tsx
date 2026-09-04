@@ -17,7 +17,7 @@ export const viewport: Viewport = { colorScheme: "only light", themeColor: "#e6f
 export const metadata: Metadata = {
   title: "Write me a review | OsamaDives, Dahab",
   description:
-    "Reviews of diving with Osama, PADI Master Scuba Diver Trainer in Dahab, written by the people he took into the water. Every review becomes a page in his logbook, and he signs each one. Write yours.",
+    "Reviews of diving with Osama, PADI Master Scuba Diver Trainer in Dahab, written by the people he took into the water. He reads and signs every review before it goes on the site. Write yours.",
   alternates: { canonical: "https://www.osamadives.com/review" },
   openGraph: {
     title: "Write me a review | OsamaDives",
@@ -71,10 +71,10 @@ export default async function LogbookPage() {
         </svg>
         <div className="lb-hero__inner">
           <img src="/brand/stamp-512.png" alt="" width={190} height={190} className="lb-hero__seal lb-rise" />
-          <span className="lb-mono lb-rise">Dive log · Dahab, South Sinai · kept since 1983</span>
+          <span className="lb-mono lb-rise">Reviews · Dahab, South Sinai · diving since 1983</span>
           <h1 className="lb-h1 lb-rise">Write me a review.</h1>
           <p className="lb-stand lb-hero__stand lb-rise">
-            Your review becomes a page in my logbook, written in your own words and signed by me.
+            Your review goes on this page in your own words, read and signed by me.
             A first breath, a deep one, a day you will not forget. Write yours.
           </p>
           <div className="lb-hero__row lb-rise">

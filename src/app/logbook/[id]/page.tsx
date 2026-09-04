@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   return {
     title: `${title} | OsamaDives`,
     description,
-    alternates: { canonical: `https://www.osamadives.com/logbook/${e.id}` },
+    alternates: { canonical: `https://www.osamadives.com/review/${e.id}` },
     openGraph: { title, description, images: [{ url: image, width: 1080, height: 1920 }] },
     twitter: { card: "summary_large_image", title, description, images: [image] },
   };
@@ -48,8 +48,8 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
       </header>
       <section className="lb-hero" style={{ minHeight: "auto", paddingBottom: "2rem" }}>
         <div className="lb-hero__inner">
-          <span className="lb-mono lb-rise">Dive log · {site.label}</span>
-          <h1 className="lb-h2 lb-rise">One page from my logbook.</h1>
+          <span className="lb-mono lb-rise">Review · {site.label}</span>
+          <h1 className="lb-h2 lb-rise">One review, read and signed by me.</h1>
         </div>
       </section>
       <section className="lb-wall">

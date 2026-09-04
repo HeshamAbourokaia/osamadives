@@ -233,6 +233,7 @@ export default async function Home() {
             <div className="orbit-head">
               <span className="microcopy">9 m · his world</span>
               <h2 data-sc-cue="0 1 0 0.1" data-sc-kinetic="lines">Everything he has built around him.</h2>
+              <p className="orbit-tagline">Dive sites, stories, and reviews, one turn at a time.</p>
             </div>
             <OrbitScene items={orbitItems} osamaSrc="/descent/osama-cutout.webp" osamaSrcMobile="/descent/osama-cutout-m.webp" osamaAlt="Osama, cut out in his dive gear" />
           </div>

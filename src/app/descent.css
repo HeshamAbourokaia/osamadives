@@ -704,6 +704,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .orbit-head { max-width: 46ch; }
   .orbit-head .microcopy { color: var(--sc-accent); display: block; margin-bottom: 0.7rem; }
   .orbit-head h2 { font: 700 clamp(1.6rem, 3.4vw, 2.6rem)/1.08 var(--sc-font-display); letter-spacing: var(--sc-track-tight); margin: 0; }
+  .orbit-tagline { font: 500 italic clamp(0.85rem, 1.3vw, 1rem)/1.5 var(--sc-font-text); color: var(--sc-ink-soft); margin: 0.7rem 0 0; }
   .orbit-wrap { position: relative; min-height: 0; }
 
   /* the accessible, no-motion floor: real links, real images, always in the DOM */

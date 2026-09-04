@@ -721,7 +721,8 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .orbit-figure img { width: 100%; height: auto; display: block; filter: drop-shadow(0 26px 46px rgba(11,111,96,0.32)); }
   .orbit-card {
     position: absolute; left: 50%; top: 50%; width: clamp(8.5rem, 15vw, 12rem);
-    transform: translate(-50%, -50%) rotateY(var(--card-angle)) translateZ(clamp(10rem, 26vw, 19rem));
+    transform: translate(-50%, -50%) translateY(var(--card-rise, 0px))
+      rotateY(var(--card-angle)) translateZ(clamp(10rem, 26vw, 19rem)) scale(var(--card-scale, 1));
     display: block; text-decoration: none; color: var(--sc-ink);
     background: #fff; border: 1px solid rgba(11,111,96,0.12); border-radius: 8px; overflow: hidden; cursor: pointer;
     box-shadow: 0 20px 46px -22px rgba(11,111,96,0.4);

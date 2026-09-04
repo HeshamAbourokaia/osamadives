@@ -717,10 +717,14 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   /* the 3D ring, mounted only once JS confirms reduced-motion is off */
   .orbit-3d { position: relative; height: 100%; min-height: 44vh; perspective: clamp(900px, 90vw, 1500px); perspective-origin: 50% 46%; touch-action: pan-y; }
   .orbit-ring { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateY(var(--ring-deg, 0deg)); will-change: transform; }
-  .orbit-figure { position: absolute; left: 50%; top: 50%; width: clamp(10rem, 22vw, 15rem); transform: translate(-50%, -50%); pointer-events: none; }
+  /* Larger than any card and a fixed mid-range z-index (cards run 0-100 by
+     depth) so the front half of the ring (t > 0.5, z-index > 50) passes in
+     front of him and the back half recedes behind, the crossover landing at
+     the ring's own left/right edge where a card is beside him either way. */
+  .orbit-figure { position: absolute; left: 50%; top: 64%; width: clamp(21rem, 44vw, 36rem); z-index: 50; transform: translate(-50%, -50%); pointer-events: none; }
   .orbit-figure img { width: 100%; height: auto; display: block; filter: drop-shadow(0 26px 46px rgba(11,111,96,0.32)); }
   .orbit-card {
-    position: absolute; left: 50%; top: 50%; width: clamp(8.5rem, 15vw, 12rem);
+    position: absolute; left: 50%; top: 64%; width: clamp(8.5rem, 15vw, 12rem);
     transform: translate(-50%, -50%) translateY(var(--card-rise, 0px))
       rotateY(var(--card-angle)) translateZ(clamp(10rem, 26vw, 19rem)) scale(var(--card-scale, 1));
     display: block; text-decoration: none; color: var(--sc-ink);
@@ -738,6 +742,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     .orbit-grid { grid-template-columns: 1fr; }
     .orbit-grid__figure { max-width: 12rem; margin-inline: auto; }
     .orbit-3d { min-height: 52vh; }
+    .orbit-figure { width: clamp(14rem, 58vw, 19rem); }
     .orbit-card { width: clamp(7.5rem, 34vw, 9.5rem); }
     .orbit-card img { height: 5rem; }
   }

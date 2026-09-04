@@ -98,11 +98,16 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
       const deg = rotateP * 360 + dragDeg;
       ring.style.setProperty("--ring-deg", deg.toFixed(2) + "deg");
 
-      // Rule 4: Osama holds the centre, one calm scale-in, no overshoot.
+      // Rule 4: Osama holds the centre, one calm scale-in, no overshoot. He
+      // sits at the ring's rotation axis so its rotateY never moves him on
+      // screen, but he is still that rotateY's CHILD, so without a counter
+      // rotation his flat cutout would turn edge-on and warp as the ring
+      // spins. rotateY(-deg) cancels the parent's rotation so he stays
+      // facing the camera the whole time, still, while everything orbits.
       const figureT = easeOutCubic(Math.min(1, p / INTRO_WINDOW));
       if (figureRef.current) {
         figureRef.current.style.opacity = Math.min(1, figureT * 1.4).toFixed(3);
-        figureRef.current.style.transform = `translate(-50%, -50%) scale(${(0.72 + 0.28 * figureT).toFixed(3)})`;
+        figureRef.current.style.transform = `translate(-50%, -50%) rotateY(${(-deg).toFixed(2)}deg) scale(${(0.72 + 0.28 * figureT).toFixed(3)})`;
       }
 
       const introRatio = Math.min(1, p / INTRO_WINDOW);

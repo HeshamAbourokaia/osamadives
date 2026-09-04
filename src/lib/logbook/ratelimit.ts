@@ -21,3 +21,15 @@ export function allowBurst(ipHash: string, limit = 3, windowMs = 10 * 60 * 1000,
 }
 
 export const DAILY_LIMIT = 5;
+export const COMMENT_DAILY_LIMIT = 10;
+
+export function clientIp(req: Request): string {
+  const forwarded = req.headers.get("x-forwarded-for");
+  return (forwarded ? forwarded.split(",")[0] : req.headers.get("x-real-ip") || "0.0.0.0").trim();
+}
+
+// The browser makes itself a random id the first time it reacts, and keeps it in localStorage.
+// It tells one phone from another, nothing more: no account, no cookie, no name attached.
+export function validDeviceId(v: unknown): v is string {
+  return typeof v === "string" && /^[a-z0-9-]{8,64}$/i.test(v);
+}

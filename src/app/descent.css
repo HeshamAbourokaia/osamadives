@@ -460,6 +460,16 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .g-abyss { background: var(--abyss);      --sc-canvas: var(--abyss);      --sc-ink:#EDF4F2; --sc-ink-soft:#93ABA8; --sc-accent:var(--reef-glow); --sc-accent-ink:#04121A; color: var(--sc-ink); }
   .g-night { background: var(--sand-night); --sc-canvas: var(--sand-night); --sc-ink:#F0E9DC; --sc-ink-soft:#A4967E; --sc-accent:var(--reef-glow); --sc-accent-ink:#04121A; color: var(--sc-ink); }
   .g-bone  { background: var(--bone);       --sc-canvas: var(--bone);       --sc-ink:var(--ink-warm); --sc-ink-soft:#6E6350; --sc-accent:var(--reef-deep); --sc-accent-ink:var(--bone); color: var(--sc-ink); }
+  /* Light lagoon ground, reused verbatim from the reviews page's light theme
+     (logbook.css) so the two live in the same "ocean Tiffany" palette. */
+  .g-lagoon {
+    background:
+      radial-gradient(70vw 50vh at 100% 0%, rgba(63, 209, 190, 0.22), transparent 70%),
+      radial-gradient(60vw 40vh at 0% 100%, rgba(232, 223, 208, 0.55), transparent 70%),
+      #eaf4f1;
+    --sc-canvas: #eaf4f1; --sc-ink: #171208; --sc-ink-soft: #5f6a66;
+    --sc-accent: #0b8f80; --sc-accent-ink: #eaf4f1; color: var(--sc-ink);
+  }
 
   .g-abyss .sc-body, .g-night .sc-body { line-height: 1.72; letter-spacing: 0.012em; font-weight: 500; }
 
@@ -505,10 +515,21 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     color: #fff; mix-blend-mode: difference; pointer-events: none;
   }
 
+  /* ================= act 0 · surface: his name, his face ================= */
+  .brand-stage { position: relative; height: 100svh; overflow: hidden; }
+  .brand-stage__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 32%; }
+  .brand-copy { position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); z-index: 2; max-width: min(92vw, 900px); }
+  .brand-copy h1 {
+    font: 800 clamp(3.6rem, 12vw, 9rem)/0.92 var(--sc-font-display);
+    letter-spacing: -0.022em; text-transform: uppercase;
+    margin: 0 0 0.9rem; color: #F4FAF8;
+  }
+  .brand-copy .sc-body { color: rgba(240,247,245,0.92); max-width: 44ch; }
+
   /* ================= act 1 · entry: full-bleed scrub ================= */
   .entry-copy { max-width: min(92vw, 1080px); }
   .entry-copy .microcopy { color: rgba(240,247,245,0.98); margin-bottom: 1.3rem; display: inline-block; background: rgba(4,14,20,0.72); padding: 0.5em 0.75em; border-radius: 3px; border: 1px solid rgba(63,209,190,0.22); }
-  .entry-copy h1 {
+  .entry-copy h2 {
     font: 800 clamp(3rem, 8.6vw, 7.6rem)/0.96 var(--sc-font-display);
     letter-spacing: -0.022em; text-transform: uppercase;
     margin: 0 0 1.4rem; max-width: 12ch; text-wrap: balance;
@@ -678,6 +699,48 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     .coast-rail > :first-child { opacity: 1; }
   }
 
+  /* ================= act 6 · his world: Osama orbited by the site ================= */
+  .orbit-stage { display: grid; grid-template-rows: auto 1fr; padding: 6vh var(--sc-gutter) 4vh; gap: 2vh; }
+  .orbit-head { max-width: 46ch; }
+  .orbit-head .microcopy { color: var(--sc-accent); display: block; margin-bottom: 0.7rem; }
+  .orbit-head h2 { font: 700 clamp(1.6rem, 3.4vw, 2.6rem)/1.08 var(--sc-font-display); letter-spacing: var(--sc-track-tight); margin: 0; }
+  .orbit-wrap { position: relative; min-height: 0; }
+
+  /* the accessible, no-motion floor: real links, real images, always in the DOM */
+  .orbit-grid { display: grid; grid-template-columns: minmax(11rem, 16vw) 1fr; gap: clamp(1.2rem, 3vw, 2.4rem); align-items: center; height: 100%; }
+  .orbit-grid.is-hidden { display: none; }
+  .orbit-grid__figure { margin: 0; }
+  .orbit-grid__figure img { width: 100%; height: auto; display: block; filter: drop-shadow(0 22px 40px rgba(11,111,96,0.28)); }
+  .orbit-grid__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.9rem; max-height: 100%; overflow-y: auto; }
+  .orbit-grid__list a { display: block; text-decoration: none; color: inherit; }
+
+  /* the 3D ring, mounted only once JS confirms reduced-motion is off */
+  .orbit-3d { position: relative; height: 100%; min-height: 44vh; perspective: clamp(900px, 90vw, 1500px); perspective-origin: 50% 46%; touch-action: pan-y; }
+  .orbit-ring { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateY(var(--ring-deg, 0deg)); will-change: transform; }
+  .orbit-figure { position: absolute; left: 50%; top: 50%; width: clamp(10rem, 22vw, 15rem); transform: translate(-50%, -50%); pointer-events: none; }
+  .orbit-figure img { width: 100%; height: auto; display: block; filter: drop-shadow(0 26px 46px rgba(11,111,96,0.32)); }
+  .orbit-card {
+    position: absolute; left: 50%; top: 50%; width: clamp(8.5rem, 15vw, 12rem);
+    transform: translate(-50%, -50%) rotateY(var(--card-angle)) translateZ(clamp(10rem, 26vw, 19rem));
+    display: block; text-decoration: none; color: var(--sc-ink);
+    background: #fff; border: 1px solid rgba(11,111,96,0.12); border-radius: 8px; overflow: hidden; cursor: pointer;
+    box-shadow: 0 20px 46px -22px rgba(11,111,96,0.4);
+  }
+  .orbit-card img { width: 100%; height: 6rem; object-fit: cover; display: block; }
+  .orbit-card__kicker, .orbit-card__title, .orbit-card__meta { display: block; padding-inline: 0.7rem; }
+  .orbit-card__kicker { margin-top: 0.55rem; font: 600 0.58rem/1.4 var(--sc-font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--sc-accent); }
+  .orbit-card__title { font: 700 0.85rem/1.25 var(--sc-font-display); color: var(--ink-warm); }
+  .orbit-card__meta { padding-bottom: 0.65rem; font: 500 0.62rem/1.4 var(--sc-font-mono); letter-spacing: 0.06em; color: var(--sc-ink-soft); }
+  .orbit-hint { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; color: var(--sc-ink-soft); pointer-events: none; }
+
+  @media (max-width: 860px) {
+    .orbit-grid { grid-template-columns: 1fr; }
+    .orbit-grid__figure { max-width: 12rem; margin-inline: auto; }
+    .orbit-3d { min-height: 52vh; }
+    .orbit-card { width: clamp(7.5rem, 34vw, 9.5rem); }
+    .orbit-card img { height: 5rem; }
+  }
+
   /* ================= act 6 · courses: mounted exhibits ================= */
   .school { padding: calc(var(--sc-section) * 0.6) var(--sc-gutter); max-width: var(--sc-maxw); margin-inline: auto; }
   .school-head { max-width: 60ch; margin-bottom: clamp(2.4rem, 5vw, 4rem); }
@@ -761,7 +824,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     .coast-lead { flex-basis: 78vw; }
     .station, .station-img { flex-basis: 74vw; min-height: 52vh; }
     .coast-note { flex-basis: 70vw; }
-    .entry-copy h1 { font-size: clamp(2.5rem, 12vw, 3.4rem); }
+    .entry-copy h2 { font-size: clamp(2.5rem, 12vw, 3.4rem); }
     .peak-frame { width: 92vw; margin-top: 12vh; }
     .entry-foot { display: none; }
   }

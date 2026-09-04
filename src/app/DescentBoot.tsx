@@ -40,6 +40,8 @@ function startHud() {
     [f(d0 + dh * 0.85), 12, "12 m · The blue"],
     [f(top("coast-act")), 12, "12 m · The sites"],
     [f(top("coast-act") + height("coast-act") - innerHeight), 12, "12 m · The sites"],
+    [f(top("orbit-act")), 9, "9 m · His world"],
+    [f(top("orbit-act") + height("orbit-act") - innerHeight), 9, "9 m · His world"],
     [f(top("school-act")), 5, "Safety stop · The school"],
     [f(top("surface-act")), 5, "Ascent"],
     [f(top("surface-act") + height("surface-act") * 0.6), 0, "Surface"],

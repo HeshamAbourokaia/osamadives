@@ -2,7 +2,11 @@
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import InstagramFeed from "@/components/InstagramFeed";
 import DescentBoot from "./DescentBoot";
+import OrbitScene from "./OrbitScene";
 import HomeStrip from "./logbook/HomeStrip";
+import { getStore } from "@/lib/logbook/store";
+import type { LogbookEntry } from "@/lib/logbook/types";
+import { buildOrbitItems } from "@/lib/orbit-content";
 import "./descent.css";
 
 const archivo = Archivo({ subsets: ["latin"], weight: ["500", "600", "700", "800", "900"], variable: "--lb-display", display: "swap" });
@@ -17,7 +21,18 @@ const WHATSAPP = "https://wa.me/201090208050?text=" + encodeURIComponent("Hi Osa
 // driven by the vendored scrollcraft engine that DescentBoot mounts after hydration.
 // Internal links are plain anchors on purpose: leaving this page is a full load, so the
 // scroll engine never outlives it.
-export default function Home() {
+export default async function Home() {
+  // Real approved reviews only, same source HomeStrip reads. If the store
+  // is not reachable yet (no database configured locally), the orbit just
+  // carries fewer cards rather than inventing a reviewer.
+  let approvedReviews: LogbookEntry[] = [];
+  try {
+    approvedReviews = await getStore().list({ status: "approved" });
+  } catch (e) {
+    console.error("orbit reviews fetch failed", e);
+  }
+  const orbitItems = buildOrbitItems(approvedReviews);
+
   return (
     <div className={`descent ${archivo.variable} ${plex.variable}`}>
       <span data-sc-progress />
@@ -36,17 +51,32 @@ export default function Home() {
       </aside>
 
       <main id="descent-main">
+        {/* ACT 0 · SURFACE: his name and his face, before the descent begins. Real
+            photo (public/images/OsamaDives.png, Osama teaching a student in the
+            shallows), the same one live on the current production hero, at
+            Hesham's request 4 Sep 2026: "his face is the branding." */}
+        <section className="g-abyss brand-act" id="brand-act">
+          <div className="brand-stage">
+            <img className="brand-stage__photo" src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="100vw" alt="Osama teaching a diving student in the crystal-clear shallow water of Dahab, Egypt" />
+            <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
+            <div className="brand-copy" data-sc-in>
+              <h1>Osama.</h1>
+              <p className="sc-body">PADI Master Scuba Diver Trainer. Fourth family in Dahab, on this shore since 1983.</p>
+            </div>
+          </div>
+        </section>
+
         {/* ACT 1 · ENTRY: the sea, scrubbing under the wheel from the first pixel */}
-        <section className="g-abyss" data-sc-act="scrub" data-sc-span="2.3" style={{ "--sc-span": 2.3 } as React.CSSProperties} data-sc-dwell="0.35">
+        <section className="g-abyss" id="entry-act" data-sc-act="scrub" data-sc-span="2.3" style={{ "--sc-span": 2.3 } as React.CSSProperties} data-sc-dwell="0.35">
           <div data-sc-stage>
-            <img className="sc-stage__poster" src="/descent/hero-poster.webp" srcSet="/descent/hero-poster-m.webp 800w, /descent/hero-poster.webp 1600w" sizes="100vw" alt="" />
-            <video data-sc-scrub data-sc-src="/descent/hero.mp4" data-sc-src-mobile="/descent/hero-m.mp4" muted playsInline />
+            <img className="sc-stage__poster" data-sc-parallax="-0.22" src="/descent/hero-poster.webp" srcSet="/descent/hero-poster-m.webp 800w, /descent/hero-poster.webp 1600w" sizes="100vw" alt="" />
+            <video data-sc-scrub data-sc-parallax="-0.22" data-sc-src="/descent/hero.mp4" data-sc-src-mobile="/descent/hero-m.mp4" muted playsInline />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="copy-scrim" aria-hidden="true" />
             <div className="sea-scrim-m" aria-hidden="true" />
             <div className="sc-copy sc-copy--lead entry-copy" data-sc-cue="0 0.85 0">
               <span className="microcopy">Dive log · Dahab, South Sinai · kept since 1983</span>
-              <h1>The sea took him in.</h1>
+              <h2>The sea took him in.</h2>
               <p className="stand">Osama is a PADI Master Scuba Diver Trainer, born on this shore. His family has lived beside the water since 1983. Scroll to descend.</p>
               <a className="cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
             </div>
@@ -74,7 +104,7 @@ export default function Home() {
                 </dl>
               </div>
               <div className="guide-plate">
-                <span className="exhibit-letter" aria-hidden="true">O</span>
+                <span className="exhibit-letter" aria-hidden="true" data-sc-parallax="-0.7">O</span>
                 <figure data-sc-reveal="down" data-sc-reveal-at="0.02 0.4" data-sc-tilt="5">
                   <img src="/descent/osama-portrait.webp" srcSet="/descent/osama-portrait-m.webp 800w, /descent/osama-portrait.webp 960w" sizes="(max-width: 860px) 92vw, 45vw" width={960} height={956} alt="Osama in his wetsuit on the shore at Dahab, checking his regulator, Sinai mountains behind him" />
                   <figcaption>Before the morning dive · Lighthouse, Dahab</figcaption>
@@ -93,8 +123,8 @@ export default function Home() {
         {/* ACT 4 · THE PEAK: the print becomes the man, the year runs behind it */}
         <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="2.9" style={{ "--sc-span": 2.9 } as React.CSSProperties}>
           <div data-sc-stage className="peak-stage">
-            <div className="peak-year sc-nums" data-sc-count="1987 2026" data-sc-count-at="0.1 0.8" aria-hidden="true">1987</div>
-            <div className="peak-frame">
+            <div className="peak-year sc-nums" data-sc-count="1987 2026" data-sc-count-at="0.1 0.8" data-sc-parallax="-1" aria-hidden="true">1987</div>
+            <div className="peak-frame" data-sc-parallax="0.35">
               <div className="peak-mat">
                 <div className="peak-plate">
                   <img src="/descent/peak-1987.webp" srcSet="/descent/peak-1987-m.webp 800w, /descent/peak-1987.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="A scratched family photograph from August 1987: four young people arm in arm on the Dahab shore beside an orange Bedouin truck" />
@@ -119,9 +149,9 @@ export default function Home() {
             The dive computer reads those depths, nothing invented. */}
         <section className="g-abyss" id="descent-act" data-sc-act="pin" data-sc-span="3.2" style={{ "--sc-span": 3.2 } as React.CSSProperties}>
           <div data-sc-stage className="depth-stage">
-            <img className="depth-photo depth-photo--1" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle over the reef at Om El Seed, seven metres down, photographed by Osama" />
-            <img className="depth-photo depth-photo--2" src="/descent/depth-8.webp" srcSet="/descent/depth-8-m.webp 800w, /descent/depth-8.webp 1600w" sizes="100vw" alt="Coral on the reef shelf at the edge of the Blue Hole, eight metres down, photographed by Osama" />
-            <img className="depth-photo depth-photo--3" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="A diver silhouetted in open blue water at twelve metres, photographed by Osama" />
+            <img className="depth-photo depth-photo--1" data-sc-parallax="-0.24" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle over the reef at Om El Seed, seven metres down, photographed by Osama" />
+            <img className="depth-photo depth-photo--2" data-sc-parallax="-0.24" src="/descent/depth-8.webp" srcSet="/descent/depth-8-m.webp 800w, /descent/depth-8.webp 1600w" sizes="100vw" alt="Coral on the reef shelf at the edge of the Blue Hole, eight metres down, photographed by Osama" />
+            <img className="depth-photo depth-photo--3" data-sc-parallax="-0.24" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="A diver silhouetted in open blue water at twelve metres, photographed by Osama" />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="depth-copy">
               <div className="depth-cue" data-sc-cue="0.02 0.3 0.08 0.06">
@@ -169,7 +199,7 @@ export default function Home() {
                 <span className="depth mono">05-25 <small>M</small></span>
                 <p>A slope of garden eels swaying out of the sand like sea grass. Open Water and up.</p>
               </a>
-              <figure className="station-img">
+              <figure className="station-img" data-sc-parallax="-0.5">
                 <img src="/descent/sea-poster.webp" srcSet="/descent/sea-poster-m.webp 800w, /descent/sea-poster.webp 1600w" sizes="(max-width: 860px) 74vw, 22rem" alt="A coral-crusted pillar rising from the sea floor at Dahab, a diver hovering beside it" />
                 <figcaption>The reef, on an ordinary morning</figcaption>
               </figure>
@@ -194,8 +224,22 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ACT 6 · THE SCHOOL: courses mounted as exhibits */}
-        <section className="g-bone" id="school-act">
+        {/* ACT 6 · HIS WORLD: Osama at the centre, a 3D ring of the site's own sites,
+            stories, gallery and reviews orbiting him. Sits here because by this point
+            the visitor has met him (the guide), seen the depths and toured the sites;
+            this is the "everything he's built" beat before the school closes the dive. */}
+        <section className="g-lagoon" id="orbit-act" data-sc-act="pin" data-sc-span="2.6" style={{ "--sc-span": 2.6 } as React.CSSProperties}>
+          <div data-sc-stage className="orbit-stage">
+            <div className="orbit-head">
+              <span className="microcopy">9 m · his world</span>
+              <h2 data-sc-cue="0 1 0 0.1" data-sc-kinetic="lines">Everything he has built around him.</h2>
+            </div>
+            <OrbitScene items={orbitItems} osamaSrc="/descent/osama-cutout.webp" osamaSrcMobile="/descent/osama-cutout-m.webp" osamaAlt="Osama, cut out in his dive gear" />
+          </div>
+        </section>
+
+        {/* ACT 7 · THE SCHOOL: courses mounted as exhibits */}
+        <section className="g-bone" id="school-act" data-sc-act="flow">
           <div className="school">
             <div className="school-head" data-sc-in data-sc-stagger="60">
               <span className="microcopy">Safety stop · 5 metres · the school</span>
@@ -204,7 +248,7 @@ export default function Home() {
             </div>
             <div className="exhibits" data-sc-in data-sc-stagger="90">
               <figure className="exhibit">
-                <span className="letter" aria-hidden="true">I</span>
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">I</span>
                 <div className="exhibit-card" data-sc-tilt="5">
                   <img src="/descent/arch-lagoon.webp" srcSet="/descent/arch-lagoon-m.webp 800w, /descent/arch-lagoon.webp 1400w" sizes="(max-width: 860px) 92vw, 40vw" alt="The turquoise lagoon at Dahab where first dives happen" />
                   <div className="row"><h3>Intro Dive</h3><span className="spec">Half a day</span></div>
@@ -212,7 +256,7 @@ export default function Home() {
                 </div>
               </figure>
               <figure className="exhibit">
-                <span className="letter" aria-hidden="true">O</span>
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">O</span>
                 <div className="exhibit-card" data-sc-tilt="5">
                   <img src="/descent/padi-first-fins.webp" alt="A young student in a small wetsuit standing proudly in the street at Assalah" />
                   <div className="row"><h3>Open Water</h3><span className="spec">3-4 days · 18 m</span></div>
@@ -220,7 +264,7 @@ export default function Home() {
                 </div>
               </figure>
               <figure className="exhibit">
-                <span className="letter" aria-hidden="true">A</span>
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">A</span>
                 <div className="exhibit-card" data-sc-tilt="5">
                   <img src="/descent/bluehole-aerial.webp" alt="The Blue Hole of Dahab seen from above, a deep blue circle in the reef shelf" />
                   <div className="row"><h3>Advanced</h3><span className="spec">2 days · 30 m</span></div>
@@ -228,7 +272,7 @@ export default function Home() {
                 </div>
               </figure>
               <figure className="exhibit">
-                <span className="letter" aria-hidden="true">R</span>
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">R</span>
                 <div className="exhibit-card" data-sc-tilt="5">
                   <img src="/descent/osama-truck.webp" srcSet="/descent/osama-truck-m.webp 800w, /descent/osama-truck.webp 960w" sizes="(max-width: 860px) 92vw, 40vw" alt="Osama on the back of a pickup truck in his wetsuit after a dive, talking to divers" />
                   <div className="row"><h3>Rescue Diver</h3><span className="spec">4 days</span></div>
@@ -243,11 +287,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ACT 7 · SURFACING: the camera breaks the surface, the gauge reads zero */}
+        {/* ACT 8 · SURFACING: the camera breaks the surface, the gauge reads zero */}
         <section className="g-abyss" id="surface-act" data-sc-act="scrub" data-sc-span="1.4" style={{ "--sc-span": 1.4 } as React.CSSProperties} data-sc-dwell="0.3">
           <div data-sc-stage>
-            <img className="sc-stage__poster" src="/descent/surface-poster.webp" srcSet="/descent/surface-poster-m.webp 800w, /descent/surface-poster.webp 1600w" sizes="100vw" alt="" />
-            <video data-sc-scrub data-sc-src="/descent/surface.mp4" data-sc-src-mobile="/descent/surface-m.mp4" muted playsInline />
+            <img className="sc-stage__poster" data-sc-parallax="-0.22" src="/descent/surface-poster.webp" srcSet="/descent/surface-poster-m.webp 800w, /descent/surface-poster.webp 1600w" sizes="100vw" alt="" />
+            <video data-sc-scrub data-sc-parallax="-0.22" data-sc-src="/descent/surface.mp4" data-sc-src-mobile="/descent/surface-m.mp4" muted playsInline />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="copy-scrim" aria-hidden="true" />
             <div className="sea-scrim-m" aria-hidden="true" />

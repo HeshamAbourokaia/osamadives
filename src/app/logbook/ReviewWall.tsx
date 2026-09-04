@@ -256,8 +256,16 @@ export default function ReviewWall({ initial, total, topNumber, children }: Prop
             onClick={() => setPanel((p) => !p)}
           >
             Filters{activeCount ? <span className="lb-tools__badge">{activeCount}</span> : null}
+            <svg className="lb-tools__caret" viewBox="0 0 14 9" width="14" height="9" aria-hidden="true" focusable="false">
+              <path d="M1 1l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
           </button>
         </div>
+        {!panel && !filtering ? (
+          <button type="button" className="lb-tools__hintline" onClick={() => setPanel(true)}>
+            <span className="lb-mono">Tap Filters for year, month, dive site, country, course, stamp and more</span>
+          </button>
+        ) : null}
         {panel ? (
           <div className="lb-tools__panel" id="lb-filters">
             <div className="lb-tools__grid">

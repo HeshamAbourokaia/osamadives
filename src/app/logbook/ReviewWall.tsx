@@ -218,23 +218,17 @@ export default function ReviewWall({ initial, total, topNumber }: Props) {
     setFilters(NONE);
     setShownFiltered(PAGE);
   };
-  const pick = (key: keyof Filters, value: string) => {
-    setFilters((f) => ({ ...f, [key]: f[key] === value ? "" : value }));
-    setShownFiltered(PAGE);
-  };
 
-  const chipGroup = (label: string, key: keyof Filters, options: { key: string; label: string }[]) =>
+  // One dropdown per facet: on a phone the system picker opens, on a desktop a styled select.
+  const dropdown = (label: string, any: string, key: keyof Filters, options: { key: string; label: string }[]) =>
     options.length ? (
-      <div className="lb-tools__group" role="group" aria-label={label}>
+      <label className={`lb-tools__field${filters[key] ? " is-set" : ""}`}>
         <span className="lb-mono">{label}</span>
-        <div className="lb-chips">
-          {options.map((o) => (
-            <button key={o.key} type="button" className="lb-chip lb-chip--small" aria-pressed={filters[key] === o.key} onClick={() => pick(key, o.key)}>
-              {o.label}
-            </button>
-          ))}
-        </div>
-      </div>
+        <select className="lb-tools__select" value={filters[key]} onChange={(e) => { setFilters((f) => ({ ...f, [key]: e.target.value })); setShownFiltered(PAGE); }}>
+          <option value="">{any}</option>
+          {options.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+        </select>
+      </label>
     ) : null;
 
   const openOne = list[open ?? -1];
@@ -264,18 +258,20 @@ export default function ReviewWall({ initial, total, topNumber }: Props) {
         </div>
         {panel ? (
           <div className="lb-tools__panel" id="lb-filters">
-            {chipGroup("Year", "year", facets.years.map((y) => ({ key: y, label: y })))}
-            {chipGroup("Month", "month", facets.months)}
-            {chipGroup("Dive site", "site", facets.sites)}
-            {chipGroup("Country", "country", facets.countries)}
-            {chipGroup("Course", "course", facets.courses.map((c) => ({ key: c, label: c })))}
-            {chipGroup("Stamp", "stamp", facets.stamps)}
-            {chipGroup("Show only", "only", [
-              ...(facets.photos ? [{ key: "photo", label: "With a photo" }] : []),
-              ...(facets.videos ? [{ key: "video", label: "With a video" }] : []),
-              ...(facets.replies ? [{ key: "reply", label: "Osama replied" }] : []),
-            ])}
-            {chipGroup("Order", "order", [{ key: "oldest", label: "Oldest first" }, { key: "loved", label: "Most loved" }])}
+            <div className="lb-tools__grid">
+              {dropdown("Year", "Any year", "year", facets.years.map((y) => ({ key: y, label: y })))}
+              {dropdown("Month", "Any month", "month", facets.months)}
+              {dropdown("Dive site", "Anywhere", "site", facets.sites)}
+              {dropdown("Country", "Any country", "country", facets.countries)}
+              {dropdown("Course", "Any course", "course", facets.courses.map((c) => ({ key: c, label: c })))}
+              {dropdown("Stamp", "Any stamp", "stamp", facets.stamps)}
+              {dropdown("Show only", "Everything", "only", [
+                ...(facets.photos ? [{ key: "photo", label: "With a photo" }] : []),
+                ...(facets.videos ? [{ key: "video", label: "With a video" }] : []),
+                ...(facets.replies ? [{ key: "reply", label: "Osama replied" }] : []),
+              ])}
+              {dropdown("Order", "Newest first", "order", [{ key: "oldest", label: "Oldest first" }, { key: "loved", label: "Most loved" }])}
+            </div>
             {complete === null && total > entries.length ? <span className="lb-mono lb-tools__hint">Reading the rest of the book...</span> : null}
           </div>
         ) : null}

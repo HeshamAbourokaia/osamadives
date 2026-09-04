@@ -6,6 +6,7 @@ import { siteInfo } from "@/lib/logbook/sites";
 import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import PageCard from "../PageCard";
+import ReviewSocial from "../ReviewSocial";
 
 export const dynamic = "force-dynamic";
 export const viewport: Viewport = { colorScheme: "only light", themeColor: "#e6f6f3" };
@@ -54,6 +55,9 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
       <section className="lb-wall">
         <div className="lb-wall__inner">
           <PageCard entry={e} number={1} variant="single" />
+          <div className="lb-social-single">
+            <ReviewSocial id={e.id} name={e.name} />
+          </div>
           <p className="lb-mono" style={{ margin: "1.6rem auto 0", textAlign: "center", color: "var(--ink-soft)" }}>
             Signed by Osama · {new Date(e.moderatedAt || e.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
           </p>

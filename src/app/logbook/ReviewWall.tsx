@@ -70,7 +70,7 @@ export default function ReviewWall({ initial, total, topNumber }: Props) {
   const complete = everything ?? (entries.length >= total ? entries : null);
   const source = complete ?? entries;
 
-  // Counts, my reactions and comment counts for cards that have not asked yet, one request per batch.
+  // Counts and this device's own reactions for cards that have not asked yet, one request per batch.
   const visibleIds = useMemo(() => {
     if (!filtering) return entries.map((e) => e.id);
     return source.map((e) => e.id);
@@ -86,7 +86,7 @@ export default function ReviewWall({ initial, total, topNumber }: Props) {
         setSocial((prev) => {
           const next = { ...prev };
           for (const id of need) {
-            next[id] = { counts: d.reactions?.[id] ?? {}, mine: d.mine?.[id] ?? [], comments: d.comments?.[id] ?? 0 };
+            next[id] = { counts: d.reactions?.[id] ?? {}, mine: d.mine?.[id] ?? [] };
           }
           return next;
         });

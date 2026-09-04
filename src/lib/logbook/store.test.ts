@@ -3,7 +3,7 @@ import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { FileStore } from "./store";
-import type { LogbookEntry, ReviewComment } from "./types";
+import type { LogbookEntry } from "./types";
 
 const entry = (id: string, createdAt: string, ipHash = "ip1"): LogbookEntry => ({
   id, createdAt, status: "pending", name: "Ana", country: "Spain", site: "blue-hole-dahab",
@@ -89,25 +89,5 @@ describe("FileStore", () => {
     expect(await store.toggleReaction("a", "🦈", "phone1", "2026-09-02T00:00:03.000Z")).toBe(false);
     expect(await store.reactionCounts(["a"])).toEqual({ a: { "🦈": 1, "❤️": 1 } });
     expect(await store.reactionsBy(["a"], "phone1")).toEqual({ a: ["❤️"] });
-  });
-
-  it("keeps comments pending until moderated, counts only approved ones, and rate-limits by ip", async () => {
-    await store.create(entry("a", "2026-09-01T00:00:00.000Z"));
-    const c = (id: string, createdAt: string, ipHash = "ip1"): ReviewComment => ({
-      id, entryId: "a", createdAt, status: "pending", name: "Ben", text: "Same, Osama is the best.",
-      deviceId: "phone1", ipHash, moderatedAt: null,
-    });
-    await store.createComment(c("c2", "2026-09-03T00:00:00.000Z"));
-    await store.createComment(c("c1", "2026-09-02T00:00:00.000Z"));
-    await expect(store.createComment(c("c1", "2026-09-02T00:00:00.000Z"))).rejects.toThrow(/duplicate/);
-    expect((await store.listComments({ entryId: "a" })).map((x) => x.id)).toEqual(["c1", "c2"]);
-    expect(await store.commentCounts(["a"])).toEqual({});
-    expect((await store.setCommentStatus("c1", "approved", "2026-09-04T00:00:00.000Z"))?.moderatedAt).toBe("2026-09-04T00:00:00.000Z");
-    expect(await store.commentCounts(["a"])).toEqual({ a: 1 });
-    expect((await store.listComments({ entryId: "a", status: "approved" })).map((x) => x.id)).toEqual(["c1"]);
-    expect(await store.countCommentsSince("ip1", "2026-09-02T12:00:00.000Z")).toBe(1);
-    expect(await store.removeComment("c2")).toBe(true);
-    expect(await store.removeComment("c2")).toBe(false);
-    expect(await store.setCommentStatus("zzz", "hidden", "2026-09-04T00:00:00.000Z")).toBeNull();
   });
 });

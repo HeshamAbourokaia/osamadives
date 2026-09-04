@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { EntryPatch, EntryStatus, LogbookEntry, ReviewComment, StampKey } from "./types";
+import type { EntryPatch, EntryStatus, LogbookEntry, StampKey } from "./types";
 
 export interface ListOptions {
   status?: EntryStatus;
@@ -26,21 +26,11 @@ export interface LogbookStore {
   reactionsBy(ids: string[], deviceId: string): Promise<Record<string, string[]>>;
   /** Resolves true when the reaction is now on, false when it was taken back. */
   toggleReaction(entryId: string, emoji: string, deviceId: string, createdAt: string): Promise<boolean>;
-
-  // Comments: moderated like reviews. Listed oldest first, the way a conversation reads.
-  createComment(c: ReviewComment): Promise<void>;
-  listComments(opts?: { entryId?: string; status?: EntryStatus }): Promise<ReviewComment[]>;
-  /** entry id -> number of approved comments */
-  commentCounts(ids: string[]): Promise<Record<string, number>>;
-  setCommentStatus(id: string, status: EntryStatus, moderatedAt: string): Promise<ReviewComment | null>;
-  removeComment(id: string): Promise<boolean>;
-  countCommentsSince(ipHash: string, sinceIso: string): Promise<number>;
 }
 
 interface ReactionRow { entryId: string; emoji: string; deviceId: string; createdAt: string }
 
 const byNewest = (a: LogbookEntry, b: LogbookEntry) => (a.createdAt < b.createdAt ? 1 : -1);
-const byOldest = (a: ReviewComment, b: ReviewComment) => (a.createdAt > b.createdAt ? 1 : -1);
 
 // ---------------------------------------------------------------------------
 // FileStore: one JSON file, for local development. Writes are serialised and
@@ -147,7 +137,7 @@ export class FileStore implements LogbookStore {
     return (await this.readAll()).filter((e) => e.ipHash === ipHash && e.createdAt >= sinceIso).length;
   }
 
-  // Reactions and comments live in two sibling files next to the reviews.
+  // Reactions live in a sibling file next to the reviews.
   private sibling(name: string) {
     return path.join(path.dirname(this.file), name);
   }
@@ -166,7 +156,6 @@ export class FileStore implements LogbookStore {
     await fs.rename(tmp, file);
   }
   private reactions() { return this.readJson<ReactionRow>(this.sibling("reactions.json")); }
-  private comments() { return this.readJson<ReviewComment>(this.sibling("comments.json")); }
 
   async reactionCounts(ids: string[]) {
     const out: ReactionCounts = {};
@@ -196,55 +185,6 @@ export class FileStore implements LogbookStore {
       await this.writeJson(this.sibling("reactions.json"), all);
       return i < 0;
     });
-  }
-
-  createComment(c: ReviewComment) {
-    return this.locked(async () => {
-      const all = await this.comments();
-      if (all.some((x) => x.id === c.id)) throw new Error(`duplicate id ${c.id}`);
-      all.push(c);
-      await this.writeJson(this.sibling("comments.json"), all);
-    });
-  }
-
-  async listComments(opts: { entryId?: string; status?: EntryStatus } = {}) {
-    return (await this.comments())
-      .filter((c) => (!opts.entryId || c.entryId === opts.entryId) && (!opts.status || c.status === opts.status))
-      .sort(byOldest);
-  }
-
-  async commentCounts(ids: string[]) {
-    const out: Record<string, number> = {};
-    for (const c of await this.comments()) {
-      if (c.status === "approved" && ids.includes(c.entryId)) out[c.entryId] = (out[c.entryId] ?? 0) + 1;
-    }
-    return out;
-  }
-
-  setCommentStatus(id: string, status: EntryStatus, moderatedAt: string) {
-    return this.locked(async () => {
-      const all = await this.comments();
-      const c = all.find((x) => x.id === id);
-      if (!c) return null;
-      c.status = status;
-      c.moderatedAt = moderatedAt;
-      await this.writeJson(this.sibling("comments.json"), all);
-      return c;
-    });
-  }
-
-  removeComment(id: string) {
-    return this.locked(async () => {
-      const all = await this.comments();
-      const next = all.filter((c) => c.id !== id);
-      if (next.length === all.length) return false;
-      await this.writeJson(this.sibling("comments.json"), next);
-      return true;
-    });
-  }
-
-  async countCommentsSince(ipHash: string, sinceIso: string) {
-    return (await this.comments()).filter((c) => c.ipHash === ipHash && c.createdAt >= sinceIso).length;
   }
 }
 
@@ -321,7 +261,7 @@ export class NeonStore implements LogbookStore {
         // "stamp" (singular) stays for rows written before a review could carry more than
         // one; "stamps" is the array every row is read from now, with "stamp" as its fallback.
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS stamps jsonb NOT NULL DEFAULT '[]'::jsonb`;
-        // Reactions and comments came later. One reaction per (review, emoji, device).
+        // Reactions came later. One reaction per (review, emoji, device).
         await sql`CREATE TABLE IF NOT EXISTS logbook_reactions (
           entry_id text NOT NULL,
           emoji text NOT NULL,
@@ -329,18 +269,6 @@ export class NeonStore implements LogbookStore {
           created_at timestamptz NOT NULL,
           PRIMARY KEY (entry_id, emoji, device_id)
         )`;
-        await sql`CREATE TABLE IF NOT EXISTS logbook_comments (
-          id text PRIMARY KEY,
-          entry_id text NOT NULL,
-          created_at timestamptz NOT NULL,
-          status text NOT NULL,
-          name text NOT NULL,
-          text text NOT NULL,
-          device_id text NOT NULL DEFAULT '',
-          ip_hash text NOT NULL DEFAULT '',
-          moderated_at timestamptz
-        )`;
-        await sql`CREATE INDEX IF NOT EXISTS logbook_comments_entry ON logbook_comments (entry_id, status, created_at)`;
       })();
     }
     await this.ready;
@@ -442,73 +370,7 @@ export class NeonStore implements LogbookStore {
     await sql`DELETE FROM logbook_reactions WHERE entry_id = ${entryId} AND emoji = ${emoji} AND device_id = ${deviceId}`;
     return false;
   }
-
-  async createComment(c: ReviewComment) {
-    const sql = await this.db();
-    await sql`INSERT INTO logbook_comments (id, entry_id, created_at, status, name, text, device_id, ip_hash, moderated_at)
-      VALUES (${c.id}, ${c.entryId}, ${c.createdAt}, ${c.status}, ${c.name}, ${c.text}, ${c.deviceId}, ${c.ipHash}, ${c.moderatedAt})`;
-  }
-
-  async listComments(opts: { entryId?: string; status?: EntryStatus } = {}) {
-    const sql = await this.db();
-    const { entryId, status } = opts;
-    const rows = (entryId && status
-      ? await sql`SELECT * FROM logbook_comments WHERE entry_id = ${entryId} AND status = ${status} ORDER BY created_at ASC`
-      : entryId
-        ? await sql`SELECT * FROM logbook_comments WHERE entry_id = ${entryId} ORDER BY created_at ASC`
-        : status
-          ? await sql`SELECT * FROM logbook_comments WHERE status = ${status} ORDER BY created_at ASC`
-          : await sql`SELECT * FROM logbook_comments ORDER BY created_at ASC`) as CommentRow[];
-    return rows.map(commentFromRow);
-  }
-
-  async commentCounts(ids: string[]) {
-    const out: Record<string, number> = {};
-    if (!ids.length) return out;
-    const sql = await this.db();
-    const rows = (await sql`SELECT entry_id, count(*)::int AS n FROM logbook_comments
-      WHERE status = 'approved' AND entry_id = ANY(${ids}::text[]) GROUP BY entry_id`) as { entry_id: string; n: number }[];
-    for (const r of rows) out[r.entry_id] = r.n;
-    return out;
-  }
-
-  async setCommentStatus(id: string, status: EntryStatus, moderatedAt: string) {
-    const sql = await this.db();
-    const rows = (await sql`UPDATE logbook_comments SET status = ${status}, moderated_at = ${moderatedAt}
-      WHERE id = ${id} RETURNING *`) as CommentRow[];
-    return rows[0] ? commentFromRow(rows[0]) : null;
-  }
-
-  async removeComment(id: string) {
-    const sql = await this.db();
-    const rows = (await sql`DELETE FROM logbook_comments WHERE id = ${id} RETURNING id`) as { id: string }[];
-    return rows.length > 0;
-  }
-
-  async countCommentsSince(ipHash: string, sinceIso: string) {
-    const sql = await this.db();
-    const rows = (await sql`SELECT count(*)::int AS n FROM logbook_comments
-      WHERE ip_hash = ${ipHash} AND created_at >= ${sinceIso}`) as { n: number }[];
-    return rows[0]?.n ?? 0;
-  }
 }
-
-type CommentRow = {
-  id: string; entry_id: string; created_at: string; status: string; name: string; text: string;
-  device_id: string; ip_hash: string; moderated_at: string | null;
-};
-
-const commentFromRow = (r: CommentRow): ReviewComment => ({
-  id: r.id,
-  entryId: r.entry_id,
-  createdAt: new Date(r.created_at).toISOString(),
-  status: r.status as EntryStatus,
-  name: r.name,
-  text: r.text,
-  deviceId: r.device_id,
-  ipHash: r.ip_hash,
-  moderatedAt: r.moderated_at ? new Date(r.moderated_at).toISOString() : null,
-});
 
 // ---------------------------------------------------------------------------
 let cached: LogbookStore | null = null;

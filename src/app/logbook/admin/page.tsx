@@ -11,7 +11,7 @@ import { siteInfo } from "@/lib/logbook/sites";
 import { stampInfo } from "@/lib/logbook/stamps";
 import { getStore } from "@/lib/logbook/store";
 import { TTL, signToken } from "@/lib/logbook/tokens";
-import { LIMITS, type EntryStatus, type LogbookEntry, type ReviewComment } from "@/lib/logbook/types";
+import { LIMITS, type EntryStatus, type LogbookEntry } from "@/lib/logbook/types";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Reviews", robots: { index: false, follow: false } };
@@ -22,9 +22,6 @@ const DONE: Record<string, string> = {
   hide: "Hidden. It is off the site.",
   save: "Saved.",
   delete: "Deleted for good.",
-  "comment-approve": "The comment is on the site now.",
-  "comment-hide": "The comment is off the site.",
-  "comment-delete": "Comment deleted for good.",
 };
 
 function when(e: LogbookEntry) {
@@ -47,29 +44,8 @@ export default async function AdminPage({
   if (!key) return <SignIn wrong={searchParams.wrong === "1"} />;
 
   const store = getStore({ fresh: true });
-  const [entries, comments] = await Promise.all([store.list(), store.listComments()]);
+  const entries = await store.list();
   const base = siteUrl();
-  const reviewName = (c: ReviewComment) => entries.find((e) => e.id === c.entryId)?.name ?? "a review that is gone";
-  const commentsBy = (s: EntryStatus) => comments.filter((c) => c.status === s).reverse(); // newest first here
-  const commentsWaiting = commentsBy("pending");
-
-  // One comment, with the three buttons. Waiting ones show open; the rest fold away.
-  const commentRow = (c: ReviewComment) => (
-    <ActionForm method="post" action="/api/logbook/admin" className="lb-admin__form lb-admin__comment" key={c.id} id={`c-${c.id}`}>
-      <input type="hidden" name="key" value={key} />
-      <input type="hidden" name="kind" value="comment" />
-      <input type="hidden" name="id" value={c.id} />
-      <span className="lb-mono" style={{ color: "var(--ink-soft)" }}>
-        {c.name} · on {reviewName(c)}&apos;s review · {new Date(c.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
-      </span>
-      <p className="lb-page__note">{c.text}</p>
-      <div className="lb-admin__actions">
-        {c.status !== "approved" ? <button type="submit" name="action" value="approve" className="lb-btn">Put it on the site</button> : null}
-        {c.status !== "hidden" ? <button type="submit" name="action" value="hide" className="lb-btn lb-btn--quiet lb-btn--ink">Hide it</button> : null}
-        <button type="submit" name="action" value="delete" className="lb-btn lb-btn--danger" data-confirm={`Delete the comment from ${c.name}? This cannot be undone.`}>Delete</button>
-      </div>
-    </ActionForm>
-  );
   const card = (e: LogbookEntry, print: boolean) =>
     `${base}/api/logbook/${e.id}/card?t=${signToken("share", e.id, TTL.share)}${print ? "&format=print" : ""}`;
 
@@ -194,13 +170,6 @@ export default async function AdminPage({
           ) : null}
           <p className="lb-stand lb-hero__stand">
             {live.length} on the site, {hidden.length} hidden. Deleting is permanent; hiding can be undone.
-            {commentsWaiting.length ? (
-              <>
-                {" "}<a href="#comments" style={{ color: "var(--reef)" }}>
-                  {commentsWaiting.length} {commentsWaiting.length === 1 ? "comment is" : "comments are"} waiting too.
-                </a>
-              </>
-            ) : null}
           </p>
         </div>
       </section>
@@ -228,41 +197,6 @@ export default async function AdminPage({
               ))}
             </div>
           )}
-        </div>
-      </section>
-
-      <section className="lb-wall" id="comments" style={{ paddingTop: "2.5rem", paddingBottom: "3rem", background: "var(--lagoon-deep, var(--bone-dim))" }}>
-        <div className="lb-wall__inner">
-          <div className="lb-wall__head" style={{ marginBottom: "1.4rem" }}>
-            <span className="lb-mono">Comments waiting for you · {commentsWaiting.length}</span>
-            <p className="lb-stand" style={{ color: "var(--ink-soft)", margin: 0 }}>
-              Readers can leave a few words under a review. Nothing shows until you put it on the site.
-            </p>
-          </div>
-          {commentsWaiting.length === 0 ? (
-            <p className="lb-stand" style={{ color: "var(--ink-soft)" }}>No comments waiting.</p>
-          ) : (
-            <div style={{ display: "grid", gap: "1rem" }}>
-              {commentsWaiting.map((c) => (
-                <article key={c.id} className="lb-page lb-admin">
-                  <span className="lb-admin__status is-pending">Waiting for you</span>
-                  {commentRow(c)}
-                </article>
-              ))}
-            </div>
-          )}
-          {(["approved", "hidden"] as const).map((s) => {
-            const rows = commentsBy(s);
-            return rows.length ? (
-              <details key={s} className="lb-fold" style={{ marginTop: "1rem" }}>
-                <summary>
-                  <span className="lb-fold__name">{s === "approved" ? "Comments on the site" : "Hidden comments"}</span>
-                  <span className="lb-fold__meta lb-mono">{rows.length}</span>
-                </summary>
-                <div className="lb-fold__body" style={{ display: "grid", gap: "1rem" }}>{rows.map(commentRow)}</div>
-              </details>
-            ) : null;
-          })}
         </div>
       </section>
 

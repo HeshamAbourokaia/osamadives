@@ -484,8 +484,8 @@
 .lb-stamp-pick:has(.lb-stamp-pick__radio:focus-visible){outline:2px solid var(--reef,#0d7d70);outline-offset:2px}
 
 /* ==========================================================================
-   Under each page: reactions, a picker, and a short conversation. Built for a
-   thumb first: every control is at least 44px tall and nothing needs a hover.
+   Under each page: the reactions people left, and a picker for adding one.
+   Built for a thumb first: every control is at least 44px tall, no hover needed.
    ========================================================================== */
 .lb-card{display:grid;gap:.45rem}
 .lb-social{position:relative;display:grid;gap:.5rem;padding:0 .15rem}
@@ -514,26 +514,6 @@
 .lb-react--pick{min-height:48px;padding:0;font-size:1.5rem;border-radius:10px;background:transparent;border-color:transparent}
 .lb-react--pick[aria-pressed="true"]{background:#fff}
 @keyframes lb-pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-.lb-social__talk{display:grid;gap:.7rem;padding:.8rem;border-radius:12px;background:rgba(255,255,255,.62);border:1px solid rgba(11,107,96,.16)}
-.lb-social__hint{color:var(--ink-soft,#5b5348);margin:0}
-.lb-talk{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
-.lb-talk__item{display:grid;gap:.2rem;padding-bottom:.6rem;border-bottom:1px dashed rgba(23,18,8,.16)}
-.lb-talk__item:last-child{border-bottom:0;padding-bottom:0}
-.lb-talk__who{font:700 .92rem/1.2 var(--display);color:var(--ink,#171208)}
-.lb-talk__who .lb-mono{color:var(--ink-soft,#5b5348);margin-left:.4rem}
-.lb-talk__item p{margin:0;font-size:.98rem;line-height:1.5;color:var(--ink,#171208);white-space:pre-line;text-wrap:pretty}
-.lb-talk__form{display:grid;gap:.5rem}
-.lb-talk__trap{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-.lb-talk__input{
-  width:100%;min-height:44px;padding:.6rem .75rem;border-radius:8px;border:1px solid rgba(23,18,8,.22);
-  background:#fff;color:var(--ink,#171208);font:500 1rem/1.45 var(--display);resize:vertical
-}
-.lb-talk__input:focus{outline:2px solid var(--reef,#0b6b60);outline-offset:1px}
-.lb-talk__input::placeholder{color:rgba(23,18,8,.42)}
-.lb-talk__foot{display:flex;align-items:center;justify-content:space-between;gap:.8rem}
-.lb-talk__foot .lb-mono{color:var(--ink-soft,#5b5348)}
-.lb-talk__foot .lb-btn{min-height:44px}
-.lb-social__sent{margin:0;padding:.7rem .8rem;border-radius:8px;background:#e2f4ee;color:#0b4f45;font:600 .95rem/1.4 var(--display)}
 .lb-social__note{margin:0;font:600 .9rem/1.4 var(--display);color:#a3341f}
 .lb-social-single{max-width:46rem;margin:.6rem auto 0}
 
@@ -566,5 +546,4 @@
 .lb-empty--search{margin-bottom:clamp(1.4rem,2.6vw,2.4rem)}
 /* On a phone the open panel is most of the screen, so it scrolls with the page instead of pinning. */
 @media (max-width:680px){.lb-tools.has-panel{position:relative;top:auto}}
-.lb-admin__comment{margin-top:.2rem}
 @media (prefers-reduced-motion:reduce){.lb-social__picker,.lb-tools__panel{animation:none}}

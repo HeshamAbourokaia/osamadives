@@ -24,23 +24,6 @@ export async function POST(req: Request) {
 
   const store = getStore({ fresh: true });
   const now = new Date().toISOString();
-
-  // Comments moderate the same three ways. They land back at the comments section.
-  if (form.get("kind") === "comment") {
-    let entryId = "";
-    if (action === "approve" || action === "hide") {
-      entryId = (await store.setCommentStatus(id, action === "approve" ? "approved" : "hidden", now))?.entryId ?? "";
-    } else if (action === "delete") {
-      await store.removeComment(id);
-    } else {
-      return new Response("Bad request", { status: 400 });
-    }
-    revalidatePath("/logbook");
-    revalidatePath("/logbook/admin");
-    if (entryId) revalidatePath(`/logbook/${entryId}`);
-    return NextResponse.redirect(new URL(`/logbook/admin?key=${encodeURIComponent(key)}&done=comment-${action}#comments`, req.url), 303);
-  }
-
   if (action === "approve" || action === "hide") {
     await store.setStatus(id, action === "approve" ? "approved" : "hidden", now);
   } else if (action === "delete") {

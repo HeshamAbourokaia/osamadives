@@ -21,7 +21,6 @@ export function allowBurst(ipHash: string, limit = 3, windowMs = 10 * 60 * 1000,
 }
 
 export const DAILY_LIMIT = 5;
-export const COMMENT_DAILY_LIMIT = 10;
 
 export function clientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");

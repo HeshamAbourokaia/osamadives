@@ -1,19 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { LIMITS, REACTIONS } from "@/lib/logbook/types";
+import { useCallback, useEffect, useState } from "react";
+import { REACTIONS } from "@/lib/logbook/types";
 
 export interface SocialData {
   counts: Record<string, number>;
   mine: string[];
-  comments: number;
-}
-
-interface PublicComment {
-  id: string;
-  name: string;
-  text: string;
-  createdAt: string;
 }
 
 // The browser makes itself a random id the first time it needs one and keeps it in localStorage.
@@ -38,21 +30,6 @@ export function deviceId(): string {
   }
 }
 
-const remembered = (key: string) => {
-  try { return localStorage.getItem(key) ?? ""; } catch { return ""; }
-};
-const remember = (key: string, v: string) => {
-  try { localStorage.setItem(key, v); } catch { /* private window */ }
-};
-
-function ago(iso: string): string {
-  const days = Math.round((Date.now() - new Date(iso).getTime()) / 86_400_000);
-  if (days < 1) return "today";
-  if (days === 1) return "yesterday";
-  if (days < 30) return `${days} days ago`;
-  return new Date(iso).toLocaleDateString("en-GB", { month: "short", year: "numeric" });
-}
-
 interface Props {
   id: string;
   name: string;
@@ -60,26 +37,17 @@ interface Props {
   initial?: SocialData;
 }
 
-// The strip under a review: reactions with counts, a picker, and a short conversation.
+// The strip under a review: the reactions people left, with a picker for adding yours.
 export default function ReviewSocial({ id, name, initial }: Props) {
   const [counts, setCounts] = useState<Record<string, number>>(initial?.counts ?? {});
   const [mine, setMine] = useState<string[]>(initial?.mine ?? []);
-  const [commentCount, setCommentCount] = useState(initial?.comments ?? 0);
   const [picker, setPicker] = useState(false);
-  const [talk, setTalk] = useState(false);
-  const [comments, setComments] = useState<PublicComment[] | null>(null);
   const [note, setNote] = useState("");
-  const [who, setWho] = useState("");
-  const [text, setText] = useState("");
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
-  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (initial) {
       setCounts(initial.counts);
       setMine(initial.mine);
-      setCommentCount(initial.comments);
       return;
     }
     const device = deviceId();
@@ -88,7 +56,6 @@ export default function ReviewSocial({ id, name, initial }: Props) {
       .then((d) => {
         setCounts(d.reactions?.[id] ?? {});
         setMine(d.mine?.[id] ?? []);
-        setCommentCount(d.comments?.[id] ?? 0);
       })
       .catch(() => { /* the card still reads fine without its counts */ });
   }, [id, initial]);
@@ -122,43 +89,6 @@ export default function ReviewSocial({ id, name, initial }: Props) {
     }
   }, [id, mine]);
 
-  const openTalk = useCallback(async () => {
-    const next = !talk;
-    setTalk(next);
-    if (!next || comments !== null) return;
-    if (!who) setWho(remembered("od_name"));
-    try {
-      const res = await fetch(`/api/logbook/${id}/comments`);
-      const d = await res.json();
-      setComments(Array.isArray(d.comments) ? d.comments : []);
-    } catch {
-      setComments([]);
-    }
-  }, [talk, comments, id, who]);
-
-  const send = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (sending) return;
-    setSending(true);
-    setNote("");
-    const form = new FormData(e.currentTarget);
-    try {
-      const res = await fetch(`/api/logbook/${id}/comments`, {
-        method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name: who, text, website: form.get("website") || "", device: deviceId() }),
-      });
-      const d = await res.json();
-      if (!res.ok || !d.ok) throw new Error(d.error || "That did not send. Try again.");
-      remember("od_name", who);
-      setText("");
-      setSent(true);
-    } catch (err) {
-      setNote(err instanceof Error ? err.message : "That did not send. Try again.");
-    } finally {
-      setSending(false);
-    }
-  }, [id, sending, who, text]);
-
   const shown = REACTIONS.filter((e) => (counts[e] ?? 0) > 0 || mine.includes(e));
 
   return (
@@ -186,19 +116,10 @@ export default function ReviewSocial({ id, name, initial }: Props) {
         >
           {picker ? "Done" : shown.length ? "+" : "React"}
         </button>
-        <button
-          type="button"
-          className={`lb-react lb-react--word${talk ? " is-open" : ""}`}
-          aria-expanded={talk}
-          aria-controls={`talk-${id}`}
-          onClick={openTalk}
-        >
-          <span aria-hidden="true">💬</span> {commentCount ? `${commentCount} ${commentCount === 1 ? "comment" : "comments"}` : "Comment"}
-        </button>
       </div>
 
       {picker ? (
-        <div className="lb-social__picker" id={`pick-${id}`} role="group" aria-label={`React to ${name}'s review`} ref={pickerRef}>
+        <div className="lb-social__picker" id={`pick-${id}`} role="group" aria-label={`React to ${name}'s review`}>
           {REACTIONS.map((e) => (
             <button
               key={e}
@@ -211,61 +132,6 @@ export default function ReviewSocial({ id, name, initial }: Props) {
               {e}
             </button>
           ))}
-        </div>
-      ) : null}
-
-      {talk ? (
-        <div className="lb-social__talk" id={`talk-${id}`}>
-          {comments === null ? (
-            <p className="lb-mono lb-social__hint">Reading...</p>
-          ) : comments.length ? (
-            <ul className="lb-talk">
-              {comments.map((c) => (
-                <li key={c.id} className="lb-talk__item">
-                  <span className="lb-talk__who">{c.name} <span className="lb-mono">{ago(c.createdAt)}</span></span>
-                  <p>{c.text}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="lb-mono lb-social__hint">Nothing here yet. Say something to {name}.</p>
-          )}
-          {sent ? (
-            <p className="lb-social__sent" role="status">Sent. Osama reads it first, then it shows here.</p>
-          ) : (
-            <form className="lb-talk__form" onSubmit={send}>
-              <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="lb-talk__trap" />
-              <input
-                className="lb-talk__input"
-                type="text"
-                name="name"
-                value={who}
-                onChange={(e) => setWho(e.target.value)}
-                placeholder="Your name"
-                maxLength={LIMITS.name.max}
-                autoComplete="name"
-                required
-                aria-label="Your name"
-              />
-              <textarea
-                className="lb-talk__input"
-                name="text"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder={`A few words for ${name}`}
-                maxLength={LIMITS.comment.max}
-                rows={2}
-                required
-                aria-label={`Your comment on ${name}'s review`}
-              />
-              <div className="lb-talk__foot">
-                <span className="lb-mono">{text.length} / {LIMITS.comment.max}</span>
-                <button type="submit" className="lb-btn lb-btn--paper" disabled={sending}>
-                  {sending ? "Sending..." : "Send"}
-                </button>
-              </div>
-            </form>
-          )}
         </div>
       ) : null}
 

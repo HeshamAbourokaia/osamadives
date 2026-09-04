@@ -1,4 +1,4 @@
-import type { LogbookEntry, ReviewComment } from "./types";
+import type { LogbookEntry } from "./types";
 import { siteInfo } from "./sites";
 import { stampInfo } from "./stamps";
 
@@ -90,37 +90,6 @@ async function ntfy(e: LogbookEntry, links: ModerationLinks): Promise<boolean> {
   });
   if (!res.ok) console.error("ntfy notify failed", res.status, await res.text().catch(() => ""));
   return res.ok;
-}
-
-// A comment goes to the same phones, as a plain message pointing at the moderation page.
-// Never throws either.
-export async function notifyNewComment(c: ReviewComment, reviewName: string, adminUrl: string): Promise<void> {
-  const title = `New comment on ${reviewName}'s review`;
-  const text = `${c.name} wrote:\n\n${c.text}\n\nIt waits for you until you put it on the site.`;
-  const jobs: Promise<boolean>[] = [];
-
-  const topic = process.env.NTFY_TOPIC;
-  if (topic) {
-    jobs.push(fetch(`https://ntfy.sh/${encodeURIComponent(topic)}`, {
-      method: "POST",
-      headers: { "content-type": "text/plain; charset=utf-8", Title: title, Click: adminUrl, Tags: "speech_balloon", Actions: `view, Open reviews, ${adminUrl}` },
-      body: text.slice(0, 3800),
-    }).then((r) => r.ok, () => false));
-  }
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chats = (process.env.TELEGRAM_CHAT_IDS || "").split(",").map((s) => s.trim()).filter(Boolean);
-  if (token && chats.length) {
-    for (const chat_id of chats) {
-      jobs.push(fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ chat_id, text: `${title}\n\n${text}`.slice(0, 4000), reply_markup: { inline_keyboard: [[{ text: "Open reviews", url: adminUrl }]] } }),
-      }).then((r) => r.ok, () => false));
-    }
-  }
-  const results = await Promise.allSettled(jobs);
-  if (!results.some((r) => r.status === "fulfilled" && r.value)) {
-    console.log(`[logbook] new comment ${c.id} on ${c.entryId} (no notification channel reached)\n${text}`);
-  }
 }
 
 // Never throws: a failed notification must not lose the student's entry.

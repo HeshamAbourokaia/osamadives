@@ -44,7 +44,19 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - x, 3);
 }
 
-export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }: OrbitSceneProps) {
+const PHONE_CARDS = 7;
+
+export default function OrbitScene({ items: allItems, osamaSrc, osamaSrcMobile, osamaAlt }: OrbitSceneProps) {
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 860px)");
+    const apply = () => setNarrow(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+  // On a phone the ring shows a spread of every kind rather than all eleven cards.
+  const items = narrow ? allItems.filter((_, i) => i % Math.ceil(allItems.length / PHONE_CARDS) === 0 || i < 2).slice(0, PHONE_CARDS) : allItems;
   const sceneRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const figureRef = useRef<HTMLDivElement>(null);
@@ -160,7 +172,7 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
         el.style.setProperty("--card-rise", `${((1 - eased) * CARD_RISE_PX).toFixed(1)}px`);
         el.style.setProperty("--card-y", `${(depth * DISH * ringR).toFixed(1)}px`);
         el.style.setProperty("--card-scale", (eased * (0.82 + 0.18 * front)).toFixed(3));
-        el.style.opacity = (introOpacity * front).toFixed(3);
+        el.style.opacity = (introOpacity * Math.pow(front, 1.7)).toFixed(3);
         el.style.filter = `blur(${((1 - front) * 3.4).toFixed(2)}px) brightness(${(0.62 + 0.38 * front).toFixed(2)})`;
         el.style.zIndex = String(Math.round(front * 100));
         el.style.pointerEvents = front > 0.16 && localT > 0.9 ? "auto" : "none";

@@ -1010,3 +1010,7 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 @media (max-width: 860px) {
   .descent .hud { top: 4.6rem !important; }
 }
+
+/* rails fill their stage so frames hung high and low read against the middle */
+.descent .journal-rail, .descent .gal-rail { height: 100svh; align-items: center; }
+.descent .journal-rail .station { align-self: center; }

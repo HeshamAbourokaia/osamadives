@@ -6,9 +6,10 @@ import { PhotoError, savePhoto } from "@/lib/logbook/photos";
 import { DAILY_LIMIT, allowBurst, hashIp } from "@/lib/logbook/ratelimit";
 import { assessEntry } from "@/lib/logbook/rules";
 import { FORBIDDEN_MESSAGE, cleanText, findForbidden } from "@/lib/logbook/sanitize";
+import { orderStamps } from "@/lib/logbook/stamps";
 import { getStore } from "@/lib/logbook/store";
 import { TTL, signToken } from "@/lib/logbook/tokens";
-import { COURSES, LIMITS, SITE_KEYS, STAMP_KEYS, type LogbookEntry } from "@/lib/logbook/types";
+import { COURSES, LIMITS, SITE_KEYS, type LogbookEntry } from "@/lib/logbook/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -67,13 +68,15 @@ export async function POST(req: Request) {
   const note = cleanText(form.get("note"), LIMITS.note.max, true);
   const divedOn = cleanText(form.get("divedOn"), 10);
   const site = form.get("site");
-  const stamp = form.get("stamp");
+  // One to five stamps, in ladder order whatever order they were tapped in.
+  const stamps = orderStamps(form.getAll("stamp").filter((v): v is string => typeof v === "string"));
   const course = form.get("course") ?? "";
 
   if (name.length < LIMITS.name.min) return fail("Tell Osama your name.");
   if (note.length < LIMITS.note.min) return fail("A few more words. Osama reads every page.");
   if (!isOneOf(SITE_KEYS, site)) return fail("Pick where you dived.");
-  if (!isOneOf(STAMP_KEYS, stamp)) return fail("Pick a stamp.");
+  if (!stamps.length) return fail("Pick at least one stamp.");
+  if (stamps.length > 5) return fail("Five stamps is the most a page can carry.");
   if (!isOneOf(COURSES, course)) return fail("Pick a course, or leave it blank.");
   if (!validDivedOn(divedOn)) return fail("Check the date.");
   if (form.get("consent") !== "yes") return fail("Tick the box so Osama can show your page.");
@@ -110,8 +113,8 @@ export async function POST(req: Request) {
   const { flags } = assessEntry({ name, country, note });
   const entry: LogbookEntry = {
     id, createdAt: new Date().toISOString(), status: "pending",
-    name, country, site, divedOn, course, stamp, note, photoUrl,
-    flags, moderatedAt: null, ipHash,
+    name, country, site, divedOn, course, stamps, note, photoUrl,
+    flags, moderatedAt: null, moderatedBy: "", ipHash,
     reply: "", featured: false, videoUrl: null,
   };
   await store.create(entry);

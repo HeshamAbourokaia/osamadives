@@ -211,7 +211,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
             <p className="text-xs tracking-[0.2em] uppercase text-[#3FD1BE] mb-3">Reviews</p>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Dived here with me?</h2>
             <p className="text-white/75 mb-8 max-w-xl mx-auto">
-              Every review becomes a page in my logbook, signed by me. Write yours from this dive.
+              Every review is read and signed by me. Write yours from this dive.
             </p>
             <Link
               href={`/logbook?site=${params.slug}#sign`}

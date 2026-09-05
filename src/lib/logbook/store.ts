@@ -1,20 +1,34 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { EntryPatch, EntryStatus, LogbookEntry } from "./types";
+import type { EntryPatch, EntryStatus, LogbookEntry, ModeratedBy, StampKey } from "./types";
 
 export interface ListOptions {
   status?: EntryStatus;
   limit?: number;
+  offset?: number;
 }
+
+/** entry id -> emoji -> how many */
+export type ReactionCounts = Record<string, Record<string, number>>;
 
 export interface LogbookStore {
   create(entry: LogbookEntry): Promise<void>;
   get(id: string): Promise<LogbookEntry | null>;
   list(opts?: ListOptions): Promise<LogbookEntry[]>;
-  setStatus(id: string, status: EntryStatus, moderatedAt: string): Promise<LogbookEntry | null>;
+  setStatus(id: string, status: EntryStatus, moderatedAt: string, by?: ModeratedBy): Promise<LogbookEntry | null>;
   update(id: string, patch: EntryPatch): Promise<LogbookEntry | null>;
   countSince(ipHash: string, sinceIso: string): Promise<number>;
+  countStatus(status: EntryStatus): Promise<number>;
+  remove(id: string): Promise<boolean>;
+
+  // Reactions: one row per (review, emoji, device). Tapping again takes it back.
+  reactionCounts(ids: string[]): Promise<ReactionCounts>;
+  reactionsBy(ids: string[], deviceId: string): Promise<Record<string, string[]>>;
+  /** Resolves true when the reaction is now on, false when it was taken back. */
+  toggleReaction(entryId: string, emoji: string, deviceId: string, createdAt: string): Promise<boolean>;
 }
+
+interface ReactionRow { entryId: string; emoji: string; deviceId: string; createdAt: string }
 
 const byNewest = (a: LogbookEntry, b: LogbookEntry) => (a.createdAt < b.createdAt ? 1 : -1);
 
@@ -28,9 +42,17 @@ export class FileStore implements LogbookStore {
 
   private async readAll(): Promise<LogbookEntry[]> {
     try {
-      const rows = JSON.parse(await fs.readFile(this.file, "utf8")) as Partial<LogbookEntry>[];
-      // Rows written before a field existed get its default.
-      return rows.map((r) => ({ reply: "", featured: false, videoUrl: null, ...r }) as LogbookEntry);
+      const raw = JSON.parse(await fs.readFile(this.file, "utf8")) as (Partial<LogbookEntry> & { stamp?: string })[];
+      // Rows written before a field existed get its default. Rows from before a review
+      // could carry more than one stamp still have the old singular "stamp" field.
+      return raw.map((r) => {
+        const { stamp, stamps, ...rest } = r;
+        return {
+          reply: "", featured: false, videoUrl: null, moderatedBy: "",
+          ...rest,
+          stamps: stamps && stamps.length ? stamps : stamp ? [stamp as StampKey] : [],
+        } as LogbookEntry;
+      });
     } catch (e) {
       if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
       throw e;
@@ -66,16 +88,32 @@ export class FileStore implements LogbookStore {
   async list(opts: ListOptions = {}) {
     const all = (await this.readAll()).filter((e) => !opts.status || e.status === opts.status);
     all.sort(byNewest);
-    return opts.limit ? all.slice(0, opts.limit) : all;
+    const from = opts.offset ?? 0;
+    return opts.limit ? all.slice(from, from + opts.limit) : all.slice(from);
   }
 
-  setStatus(id: string, status: EntryStatus, moderatedAt: string) {
+  async countStatus(status: EntryStatus) {
+    return (await this.readAll()).filter((e) => e.status === status).length;
+  }
+
+  remove(id: string) {
+    return this.locked(async () => {
+      const all = await this.readAll();
+      const next = all.filter((e) => e.id !== id);
+      if (next.length === all.length) return false;
+      await this.writeAll(next);
+      return true;
+    });
+  }
+
+  setStatus(id: string, status: EntryStatus, moderatedAt: string, by: ModeratedBy = "") {
     return this.locked(async () => {
       const all = await this.readAll();
       const e = all.find((x) => x.id === id);
       if (!e) return null;
       e.status = status;
       e.moderatedAt = moderatedAt;
+      e.moderatedBy = by;
       await this.writeAll(all);
       return e;
     });
@@ -87,6 +125,8 @@ export class FileStore implements LogbookStore {
       const e = all.find((x) => x.id === id);
       if (!e) return null;
       if (patch.reply !== undefined) e.reply = patch.reply;
+      if (patch.photoUrl !== undefined) e.photoUrl = patch.photoUrl;
+      if (patch.stamps !== undefined) e.stamps = patch.stamps;
       if (patch.featured !== undefined) e.featured = patch.featured;
       if (patch.videoUrl !== undefined) e.videoUrl = patch.videoUrl;
       await this.writeAll(all);
@@ -97,6 +137,56 @@ export class FileStore implements LogbookStore {
   async countSince(ipHash: string, sinceIso: string) {
     return (await this.readAll()).filter((e) => e.ipHash === ipHash && e.createdAt >= sinceIso).length;
   }
+
+  // Reactions live in a sibling file next to the reviews.
+  private sibling(name: string) {
+    return path.join(path.dirname(this.file), name);
+  }
+  private async readJson<T>(file: string): Promise<T[]> {
+    try {
+      return JSON.parse(await fs.readFile(file, "utf8")) as T[];
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
+      throw e;
+    }
+  }
+  private async writeJson<T>(file: string, rows: T[]): Promise<void> {
+    await fs.mkdir(path.dirname(file), { recursive: true });
+    const tmp = `${file}.${process.pid}.tmp`;
+    await fs.writeFile(tmp, JSON.stringify(rows, null, 2));
+    await fs.rename(tmp, file);
+  }
+  private reactions() { return this.readJson<ReactionRow>(this.sibling("reactions.json")); }
+
+  async reactionCounts(ids: string[]) {
+    const out: ReactionCounts = {};
+    for (const r of await this.reactions()) {
+      if (!ids.includes(r.entryId)) continue;
+      const m = (out[r.entryId] ??= {});
+      m[r.emoji] = (m[r.emoji] ?? 0) + 1;
+    }
+    return out;
+  }
+
+  async reactionsBy(ids: string[], deviceId: string) {
+    const out: Record<string, string[]> = {};
+    for (const r of await this.reactions()) {
+      if (r.deviceId !== deviceId || !ids.includes(r.entryId)) continue;
+      (out[r.entryId] ??= []).push(r.emoji);
+    }
+    return out;
+  }
+
+  toggleReaction(entryId: string, emoji: string, deviceId: string, createdAt: string) {
+    return this.locked(async () => {
+      const all = await this.reactions();
+      const i = all.findIndex((r) => r.entryId === entryId && r.emoji === emoji && r.deviceId === deviceId);
+      if (i >= 0) all.splice(i, 1);
+      else all.push({ entryId, emoji, deviceId, createdAt });
+      await this.writeJson(this.sibling("reactions.json"), all);
+      return i < 0;
+    });
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -105,8 +195,8 @@ export class FileStore implements LogbookStore {
 // ---------------------------------------------------------------------------
 type Row = {
   id: string; created_at: string; status: string; name: string; country: string; site: string;
-  dived_on: string; course: string; stamp: string; note: string; photo_url: string | null;
-  flags: unknown; moderated_at: string | null; ip_hash: string;
+  dived_on: string; course: string; stamp: string; stamps: unknown; note: string; photo_url: string | null;
+  flags: unknown; moderated_at: string | null; moderated_by: string | null; ip_hash: string;
   reply: string | null; featured: boolean | null; video_url: string | null;
 };
 
@@ -119,11 +209,14 @@ const fromRow = (r: Row): LogbookEntry => ({
   site: r.site as LogbookEntry["site"],
   divedOn: r.dived_on,
   course: r.course as LogbookEntry["course"],
-  stamp: r.stamp as LogbookEntry["stamp"],
+  // "stamps" is the array column; rows written before a review could carry more than
+  // one stamp only have the old singular "stamp" column, so fall back to wrapping it.
+  stamps: (Array.isArray(r.stamps) && r.stamps.length ? r.stamps : r.stamp ? [r.stamp] : []) as StampKey[],
   note: r.note,
   photoUrl: r.photo_url,
   flags: Array.isArray(r.flags) ? (r.flags as string[]) : [],
   moderatedAt: r.moderated_at ? new Date(r.moderated_at).toISOString() : null,
+  moderatedBy: (r.moderated_by ?? "") as ModeratedBy,
   ipHash: r.ip_hash,
   reply: r.reply ?? "",
   featured: Boolean(r.featured),
@@ -167,6 +260,19 @@ export class NeonStore implements LogbookStore {
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS reply text NOT NULL DEFAULT ''`;
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS featured boolean NOT NULL DEFAULT false`;
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS video_url text`;
+        // "stamp" (singular) stays for rows written before a review could carry more than
+        // one; "stamps" is the array every row is read from now, with "stamp" as its fallback.
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS stamps jsonb NOT NULL DEFAULT '[]'::jsonb`;
+        // Who approved: 'link' (the signed link in the phone notification) or 'admin' (the password page).
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS moderated_by text NOT NULL DEFAULT ''`;
+        // Reactions came later. One reaction per (review, emoji, device).
+        await sql`CREATE TABLE IF NOT EXISTS logbook_reactions (
+          entry_id text NOT NULL,
+          emoji text NOT NULL,
+          device_id text NOT NULL,
+          created_at timestamptz NOT NULL,
+          PRIMARY KEY (entry_id, emoji, device_id)
+        )`;
       })();
     }
     await this.ready;
@@ -175,10 +281,11 @@ export class NeonStore implements LogbookStore {
 
   async create(e: LogbookEntry) {
     const sql = await this.db();
+    // "stamp" (singular) is kept in step as the first stamp, for anything still reading it directly.
     await sql`INSERT INTO logbook_entries
-      (id, created_at, status, name, country, site, dived_on, course, stamp, note, photo_url, flags, moderated_at, ip_hash, reply, featured, video_url)
+      (id, created_at, status, name, country, site, dived_on, course, stamp, stamps, note, photo_url, flags, moderated_at, ip_hash, reply, featured, video_url)
       VALUES (${e.id}, ${e.createdAt}, ${e.status}, ${e.name}, ${e.country}, ${e.site}, ${e.divedOn}, ${e.course},
-              ${e.stamp}, ${e.note}, ${e.photoUrl}, ${JSON.stringify(e.flags)}::jsonb, ${e.moderatedAt}, ${e.ipHash},
+              ${e.stamps[0] ?? null}, ${JSON.stringify(e.stamps)}::jsonb, ${e.note}, ${e.photoUrl}, ${JSON.stringify(e.flags)}::jsonb, ${e.moderatedAt}, ${e.ipHash},
               ${e.reply}, ${e.featured}, ${e.videoUrl})`;
   }
 
@@ -191,15 +298,28 @@ export class NeonStore implements LogbookStore {
   async list(opts: ListOptions = {}) {
     const sql = await this.db();
     const limit = opts.limit ?? 500;
+    const offset = opts.offset ?? 0;
     const rows = (opts.status
-      ? await sql`SELECT * FROM logbook_entries WHERE status = ${opts.status} ORDER BY created_at DESC LIMIT ${limit}`
-      : await sql`SELECT * FROM logbook_entries ORDER BY created_at DESC LIMIT ${limit}`) as Row[];
+      ? await sql`SELECT * FROM logbook_entries WHERE status = ${opts.status} ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`
+      : await sql`SELECT * FROM logbook_entries ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`) as Row[];
     return rows.map(fromRow);
   }
 
-  async setStatus(id: string, status: EntryStatus, moderatedAt: string) {
+  async countStatus(status: EntryStatus) {
     const sql = await this.db();
-    const rows = (await sql`UPDATE logbook_entries SET status = ${status}, moderated_at = ${moderatedAt}
+    const rows = (await sql`SELECT count(*)::int AS n FROM logbook_entries WHERE status = ${status}`) as { n: number }[];
+    return rows[0]?.n ?? 0;
+  }
+
+  async remove(id: string) {
+    const sql = await this.db();
+    const rows = (await sql`DELETE FROM logbook_entries WHERE id = ${id} RETURNING id`) as { id: string }[];
+    return rows.length > 0;
+  }
+
+  async setStatus(id: string, status: EntryStatus, moderatedAt: string, by: ModeratedBy = "") {
+    const sql = await this.db();
+    const rows = (await sql`UPDATE logbook_entries SET status = ${status}, moderated_at = ${moderatedAt}, moderated_by = ${by}
       WHERE id = ${id} RETURNING *`) as Row[];
     return rows[0] ? fromRow(rows[0]) : null;
   }
@@ -211,7 +331,10 @@ export class NeonStore implements LogbookStore {
     const reply = patch.reply ?? current.reply;
     const featured = patch.featured ?? current.featured;
     const videoUrl = patch.videoUrl === undefined ? current.videoUrl : patch.videoUrl;
-    const rows = (await sql`UPDATE logbook_entries SET reply = ${reply}, featured = ${featured}, video_url = ${videoUrl}
+    const photoUrl = patch.photoUrl === undefined ? current.photoUrl : patch.photoUrl;
+    const stamps = patch.stamps ?? current.stamps;
+    const rows = (await sql`UPDATE logbook_entries SET reply = ${reply}, featured = ${featured},
+      video_url = ${videoUrl}, photo_url = ${photoUrl}, stamp = ${stamps[0] ?? null}, stamps = ${JSON.stringify(stamps)}::jsonb
       WHERE id = ${id} RETURNING *`) as Row[];
     return rows[0] ? fromRow(rows[0]) : null;
   }
@@ -221,6 +344,35 @@ export class NeonStore implements LogbookStore {
     const rows = (await sql`SELECT count(*)::int AS n FROM logbook_entries
       WHERE ip_hash = ${ipHash} AND created_at >= ${sinceIso}`) as { n: number }[];
     return rows[0]?.n ?? 0;
+  }
+
+  async reactionCounts(ids: string[]) {
+    const out: ReactionCounts = {};
+    if (!ids.length) return out;
+    const sql = await this.db();
+    const rows = (await sql`SELECT entry_id, emoji, count(*)::int AS n FROM logbook_reactions
+      WHERE entry_id = ANY(${ids}::text[]) GROUP BY entry_id, emoji`) as { entry_id: string; emoji: string; n: number }[];
+    for (const r of rows) (out[r.entry_id] ??= {})[r.emoji] = r.n;
+    return out;
+  }
+
+  async reactionsBy(ids: string[], deviceId: string) {
+    const out: Record<string, string[]> = {};
+    if (!ids.length || !deviceId) return out;
+    const sql = await this.db();
+    const rows = (await sql`SELECT entry_id, emoji FROM logbook_reactions
+      WHERE device_id = ${deviceId} AND entry_id = ANY(${ids}::text[])`) as { entry_id: string; emoji: string }[];
+    for (const r of rows) (out[r.entry_id] ??= []).push(r.emoji);
+    return out;
+  }
+
+  async toggleReaction(entryId: string, emoji: string, deviceId: string, createdAt: string) {
+    const sql = await this.db();
+    const added = (await sql`INSERT INTO logbook_reactions (entry_id, emoji, device_id, created_at)
+      VALUES (${entryId}, ${emoji}, ${deviceId}, ${createdAt}) ON CONFLICT DO NOTHING RETURNING entry_id`) as { entry_id: string }[];
+    if (added.length) return true;
+    await sql`DELETE FROM logbook_reactions WHERE entry_id = ${entryId} AND emoji = ${emoji} AND device_id = ${deviceId}`;
+    return false;
   }
 }
 

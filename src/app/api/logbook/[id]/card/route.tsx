@@ -26,6 +26,34 @@ const loadFonts = () =>
 
 const ABYSS = "#061420", BONE = "#F2EDE2", INK = "#171208", SOFT = "#6E6350", REEF = "#0B6B60", GLOW = "#3FD1BE";
 
+// A keepsake image is a fixed canvas, not a page that can grow, so the cluster only ever
+// shows the first few stamps (canonical order) and shrinks once there is more than one.
+// The live web page has no such limit and shows every stamp a review carries.
+const CLUSTER_CAP = 4;
+function StampCluster({ stamps, size, border }: { stamps: LogbookEntry["stamps"]; size: number; border: number }) {
+  const shown = stamps.slice(0, CLUSTER_CAP);
+  const cols = shown.length > 1 ? 2 : 1;
+  const s = shown.length > 1 ? Math.round(size * 0.62) : size;
+  const font = Math.round(s * 0.145);
+  const angles = [-9, 7, -5, 8];
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", width: cols * s + (cols - 1) * 14, gap: 14, justifyContent: "center" }}>
+      {shown.map((key, i) => (
+        <div
+          key={key}
+          style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            width: s, height: s, borderRadius: s / 2, border: `${border}px solid ${REEF}`,
+            color: REEF, transform: `rotate(${angles[i % angles.length]}deg)`, textAlign: "center", padding: Math.round(s * 0.1),
+          }}
+        >
+          <span style={{ fontSize: font, fontWeight: 800, lineHeight: 1.05, textTransform: "uppercase" }}>{stampInfo(key).label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function whenOf(entry: LogbookEntry): string {
   return formatDivedOn(entry.divedOn) || new Date(entry.createdAt).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
 }
@@ -42,7 +70,6 @@ const photoOf = (entry: LogbookEntry) =>
 // 1080x1920: the story card.
 function StoryCard({ entry }: { entry: LogbookEntry }) {
   const site = siteInfo(entry.site);
-  const stamp = stampInfo(entry.stamp);
   const photo = photoOf(entry);
   const maxNote = photo ? 300 : 560;
   const note = entry.note.length > maxNote ? `${entry.note.slice(0, maxNote - 1).trimEnd()}…` : entry.note;
@@ -50,7 +77,7 @@ function StoryCard({ entry }: { entry: LogbookEntry }) {
   return (
     <div style={{ width: 1080, height: 1920, display: "flex", flexDirection: "column", background: ABYSS, padding: 72, fontFamily: "Archivo" }}>
       <div style={{ ...mono, color: GLOW, display: "flex", justifyContent: "space-between" }}>
-        <span>Dive log · Dahab</span>
+        <span>Review · Dahab</span>
         <span>Kept since 1983</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, marginTop: 40, background: BONE, borderRadius: 10, padding: 64, color: INK }}>
@@ -60,9 +87,7 @@ function StoryCard({ entry }: { entry: LogbookEntry }) {
             <span style={{ fontSize: 88, fontWeight: 800, lineHeight: 0.95, textTransform: "uppercase", letterSpacing: -2, marginTop: 28, maxWidth: 640 }}>{entry.name}</span>
             {entry.country ? <span style={{ ...mono, color: SOFT, marginTop: 20 }}>from {entry.country}</span> : null}
           </div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 230, height: 230, borderRadius: 115, border: `7px solid ${REEF}`, color: REEF, transform: "rotate(-9deg)", textAlign: "center", padding: 24 }}>
-            <span style={{ fontSize: 30, fontWeight: 800, lineHeight: 1.05, textTransform: "uppercase" }}>{stamp.label}</span>
-          </div>
+          <StampCluster stamps={entry.stamps} size={230} border={7} />
         </div>
         {photo ? <img src={photo} alt="" style={{ width: 952, height: 640, objectFit: "cover", borderRadius: 6, marginTop: 44 }} /> : null}
         <span style={{ ...mono, color: REEF, marginTop: 44 }}>{site.label}{site.depth ? ` · ${site.depth}` : ""}</span>
@@ -88,7 +113,7 @@ function StoryCard({ entry }: { entry: LogbookEntry }) {
       </div>
       <div style={{ ...mono, color: "#93ABA8", display: "flex", justifyContent: "space-between", marginTop: 40 }}>
         <span>Write a review</span>
-        <span>osamadives.com/logbook</span>
+        <span>osamadives.com/review</span>
       </div>
     </div>
   );
@@ -97,7 +122,6 @@ function StoryCard({ entry }: { entry: LogbookEntry }) {
 // 2480x1748: an A5 landscape page at 300 dpi, made to be printed and kept.
 function PrintCard({ entry }: { entry: LogbookEntry }) {
   const site = siteInfo(entry.site);
-  const stamp = stampInfo(entry.stamp);
   const photo = photoOf(entry);
   const maxNote = photo ? 420 : 600;
   const note = entry.note.length > maxNote ? `${entry.note.slice(0, maxNote - 1).trimEnd()}…` : entry.note;
@@ -106,7 +130,7 @@ function PrintCard({ entry }: { entry: LogbookEntry }) {
     <div style={{ width: 2480, height: 1748, display: "flex", background: BONE, color: INK, padding: 140, fontFamily: "Archivo" }}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, borderTop: `4px solid ${INK}`, paddingTop: 48 }}>
         <div style={{ ...mono, color: SOFT, display: "flex", justifyContent: "space-between" }}>
-          <span>A page from Osama&apos;s logbook · Dahab, South Sinai</span>
+          <span>A review of diving with Osama · Dahab, South Sinai</span>
           <span>Entry · {whenOf(entry)}</span>
         </div>
         <div style={{ display: "flex", flex: 1, marginTop: 56, gap: 96 }}>
@@ -129,9 +153,7 @@ function PrintCard({ entry }: { entry: LogbookEntry }) {
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", flex: 0.85, alignItems: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 360, height: 360, borderRadius: 180, border: `10px solid ${REEF}`, color: REEF, transform: "rotate(-9deg)", textAlign: "center", padding: 40 }}>
-              <span style={{ fontSize: 46, fontWeight: 800, lineHeight: 1.05, textTransform: "uppercase" }}>{stamp.label}</span>
-            </div>
+            <StampCluster stamps={entry.stamps} size={360} border={10} />
             {photo ? (
               <img src={photo} alt="" style={{ width: 900, height: 620, objectFit: "cover", borderRadius: 8, marginTop: 64 }} />
             ) : (
@@ -143,7 +165,7 @@ function PrintCard({ entry }: { entry: LogbookEntry }) {
         </div>
         <div style={{ ...mono, color: SOFT, display: "flex", justifyContent: "space-between", borderTop: `2px solid ${INK}22`, paddingTop: 32, marginTop: 48 }}>
           <span>Family on this shore since 1983</span>
-          <span>osamadives.com/logbook/{entry.id}</span>
+          <span>osamadives.com/review/{entry.id}</span>
         </div>
       </div>
     </div>
@@ -172,7 +194,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     ],
     headers: {
       "cache-control": entry.status === "approved" ? "public, max-age=86400" : "no-store",
-      "content-disposition": `inline; filename="osamadives-logbook-${entry.id}${print ? "-keepsake" : ""}.png"`,
+      "content-disposition": `inline; filename="osamadives-review-${entry.id}${print ? "-keepsake" : ""}.png"`,
     },
   });
 }

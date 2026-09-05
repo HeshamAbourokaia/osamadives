@@ -11,10 +11,21 @@ export const SITE_KEYS = [
 export type SiteKey = (typeof SITE_KEYS)[number];
 
 export const STAMP_KEYS = [
-  "first-breath",
+  // The certification ladder, youngest and earliest to most advanced.
+  "seal-team",
+  "bubblemaker",
+  "introduction",
+  "dsd",
   "open-water",
   "advanced",
+  "deep-specialty",
+  "nitrox",
   "rescue",
+  "divemaster",
+  "dpv-diver",
+  "night-diver-specialty",
+  "peak-performance-buoyancy",
+  // Sites and moments, not courses.
   "blue-hole",
   "canyon",
   "night",
@@ -34,6 +45,8 @@ export const COURSES = [
 ] as const;
 export type Course = (typeof COURSES)[number];
 
+export type ModeratedBy = "link" | "admin" | "";
+
 export interface LogbookEntry {
   id: string;
   createdAt: string;
@@ -43,11 +56,14 @@ export interface LogbookEntry {
   site: SiteKey;
   divedOn: string;
   course: Course;
-  stamp: StampKey;
+  /** What Osama chose to mark this dive with. One at first; he can add more later. */
+  stamps: StampKey[];
   note: string;
   photoUrl: string | null;
   flags: string[];
   moderatedAt: string | null;
+  /** How it was approved or hidden: the signed link in the phone notification, or the password page. */
+  moderatedBy: ModeratedBy;
   ipHash: string;
   reply: string;
   featured: boolean;
@@ -58,7 +74,14 @@ export interface EntryPatch {
   reply?: string;
   featured?: boolean;
   videoUrl?: string | null;
+  photoUrl?: string | null;
+  stamps?: StampKey[];
 }
+
+// Every reaction is a good one; there is no thumbs down. The diving set is the closest
+// Unicode gets to a scuba diver (a mask, not a diver) and renders on iOS 12+ and Android 9+.
+export const REACTIONS = ["👍", "❤️", "😂", "👏", "🤿", "🦈", "🐢", "🐙", "🌊", "🐠"] as const;
+export type Reaction = (typeof REACTIONS)[number];
 
 export const LIMITS = {
   name: { min: 2, max: 40 },
@@ -66,4 +89,5 @@ export const LIMITS = {
   note: { min: 12, max: 600 },
   reply: { max: 280 },
   photoBytes: 6 * 1024 * 1024,
+  mediaBytes: 200 * 1024 * 1024,   // Osama uploading straight from his phone
 } as const;

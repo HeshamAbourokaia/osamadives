@@ -4,7 +4,7 @@ import { siteInfo } from "@/lib/logbook/sites";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import Stamp from "./Stamp";
 
-export type PageData = Pick<LogbookEntry, "id" | "name" | "country" | "site" | "divedOn" | "course" | "stamp" | "note" | "photoUrl" | "createdAt"> & Partial<Pick<LogbookEntry, "reply" | "videoUrl" | "featured">>;
+export type PageData = Pick<LogbookEntry, "id" | "name" | "country" | "site" | "divedOn" | "course" | "stamps" | "note" | "photoUrl" | "createdAt"> & Partial<Pick<LogbookEntry, "reply" | "videoUrl" | "featured">>;
 
 interface Props {
   entry: PageData;
@@ -23,7 +23,11 @@ export default function PageCard({ entry, number, variant = "wall", inkStamp = f
         <span>Entry {entryNumber(number)}</span>
         <span>{when}</span>
       </div>
-      <Stamp stamp={entry.stamp} uid={`${variant}-${entry.id}`} className={inkStamp ? "lb-stamp--ink" : undefined} />
+      <span className="lb-page__stamps">
+        {entry.stamps.map((k) => (
+          <Stamp key={k} stamp={k} uid={`${variant}-${entry.id}-${k}`} className={inkStamp ? "lb-stamp--ink" : undefined} />
+        ))}
+      </span>
       <h3 className="lb-page__name">{entry.name || "Your name"}</h3>
       {entry.country ? <span className="lb-page__from lb-mono">from {entry.country}</span> : null}
       <span className="lb-page__site lb-mono">

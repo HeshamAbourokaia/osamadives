@@ -12,7 +12,8 @@ function summary(e: LogbookEntry): string {
   const site = siteInfo(e.site);
   const bits = [e.name, e.country, site.label, e.divedOn, e.course].filter(Boolean).join(" · ");
   const flags = e.flags.length ? `\nFlags: ${e.flags.join(", ")}` : "";
-  return `New logbook entry\n${bits}\nStamp: ${stampInfo(e.stamp).label}${flags}\n\n${e.note}`;
+  const stamps = e.stamps.map((k) => stampInfo(k).label).join(", ");
+  return `New review\n${bits}\nStamp: ${stamps}${flags}\n\n${e.note}`;
 }
 
 async function telegram(e: LogbookEntry, links: ModerationLinks): Promise<boolean> {
@@ -63,8 +64,8 @@ ${e.photoUrl ? `<p><img src="${esc(e.photoUrl)}" style="max-width:480px;border-r
     method: "POST",
     headers: { authorization: `Bearer ${key}`, "content-type": "application/json" },
     body: JSON.stringify({
-      from: process.env.LOGBOOK_FROM_EMAIL || "OsamaDives Logbook <onboarding@resend.dev>",
-      to, subject: `Logbook: ${e.name}${e.country ? ` from ${e.country}` : ""}`, html,
+      from: process.env.LOGBOOK_FROM_EMAIL || "OsamaDives Reviews <onboarding@resend.dev>",
+      to, subject: `New review: ${e.name}${e.country ? ` from ${e.country}` : ""}`, html,
     }),
   });
   if (!res.ok) console.error("email notify failed", res.status, await res.text().catch(() => ""));

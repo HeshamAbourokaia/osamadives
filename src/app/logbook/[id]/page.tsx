@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isValidId } from "@/lib/logbook/ids";
@@ -6,8 +6,10 @@ import { siteInfo } from "@/lib/logbook/sites";
 import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import PageCard from "../PageCard";
+import ReviewSocial from "../ReviewSocial";
 
 export const dynamic = "force-dynamic";
+export const viewport: Viewport = { colorScheme: "only light", themeColor: "#e6f6f3" };
 
 async function approved(id: string): Promise<LogbookEntry | null> {
   if (!isValidId(id)) return null;
@@ -28,7 +30,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   return {
     title: `${title} | OsamaDives`,
     description,
-    alternates: { canonical: `https://www.osamadives.com/logbook/${e.id}` },
+    alternates: { canonical: `https://www.osamadives.com/review/${e.id}` },
     openGraph: { title, description, images: [{ url: image, width: 1080, height: 1920 }] },
     twitter: { card: "summary_large_image", title, description, images: [image] },
   };
@@ -46,13 +48,16 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
       </header>
       <section className="lb-hero" style={{ minHeight: "auto", paddingBottom: "2rem" }}>
         <div className="lb-hero__inner">
-          <span className="lb-mono lb-rise">Dive log · {site.label}</span>
-          <h1 className="lb-h2 lb-rise">One page from my logbook.</h1>
+          <span className="lb-mono lb-rise">Review · {site.label}</span>
+          <h1 className="lb-h2 lb-rise">One review, read and signed by me.</h1>
         </div>
       </section>
       <section className="lb-wall">
         <div className="lb-wall__inner">
           <PageCard entry={e} number={1} variant="single" />
+          <div className="lb-social-single">
+            <ReviewSocial id={e.id} name={e.name} />
+          </div>
           <p className="lb-mono" style={{ margin: "1.6rem auto 0", textAlign: "center", color: "var(--ink-soft)" }}>
             Signed by Osama · {new Date(e.moderatedAt || e.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
           </p>

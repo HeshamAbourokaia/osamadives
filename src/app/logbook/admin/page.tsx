@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
-import { adminKeyOk } from "@/lib/logbook/admin";
 import ActionForm from "./ActionForm";
+import MediaUpload from "./MediaUpload";
+import Stamp from "../Stamp";
+import { STAMPS } from "@/lib/logbook/stamps";
+import SignIn from "./SignIn";
 import { siteUrl } from "@/lib/logbook/config";
+import { moderatorKey } from "@/lib/logbook/session";
 import { siteInfo } from "@/lib/logbook/sites";
 import { stampInfo } from "@/lib/logbook/stamps";
 import { getStore } from "@/lib/logbook/store";
@@ -11,95 +14,223 @@ import { TTL, signToken } from "@/lib/logbook/tokens";
 import { LIMITS, type EntryStatus, type LogbookEntry } from "@/lib/logbook/types";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Review moderation", robots: { index: false, follow: false } };
+export const metadata = { title: "Reviews", robots: { index: false, follow: false } };
+export const viewport = { colorScheme: "only light" as const, themeColor: "#e6f6f3" };
 
-const ORDER: EntryStatus[] = ["pending", "approved", "hidden"];
+const DONE: Record<string, string> = {
+  approve: "Approved. It is on the site now.",
+  hide: "Hidden. It is off the site.",
+  save: "Saved.",
+  delete: "Deleted for good.",
+};
 
-const SECTION: Record<string, string> = { pending: "Waiting for you", approved: "On the site", hidden: "Hidden" };
-const STATUS: Record<string, string> = { pending: "Waiting for you", approved: "On the site", hidden: "Hidden, not on the site" };
-const DONE: Record<string, string> = { hide: "Hidden. It is off the site.", approve: "Approved. It is on the site now.", save: "Saved." };
+// "from the phone link" is the Approve button in the ntfy, Telegram or email message;
+// "on this page" is the password-protected moderation page.
+function moderatedHow(e: LogbookEntry) {
+  return e.moderatedBy === "link" ? "from the phone link" : e.moderatedBy === "admin" ? "on this page" : "(before this was recorded)";
+}
+function whenExact(iso: string) {
+  return new Date(iso).toLocaleString("en-GB", { timeZone: "Africa/Cairo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + " Dahab time";
+}
 
-export default async function AdminPage({ searchParams }: { searchParams: { key?: string; done?: string } }) {
+function when(e: LogbookEntry) {
+  return new Date(e.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+// "Blue Hole", "Blue Hole and Advanced", "Blue Hole, Advanced and Deep Specialty"
+function joinAnd(items: string[]): string {
+  if (items.length <= 1) return items.join("");
+  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: { key?: string; done?: string; wrong?: string };
+}) {
   noStore();
-  const key = searchParams.key;
-  if (!adminKeyOk(key)) notFound();
-  const entries = await getStore({ fresh: true }).list();
+  const key = moderatorKey(searchParams.key);
+  if (!key) return <SignIn wrong={searchParams.wrong === "1"} />;
+
+  const store = getStore({ fresh: true });
+  const entries = await store.list();
   const base = siteUrl();
   const card = (e: LogbookEntry, print: boolean) =>
     `${base}/api/logbook/${e.id}/card?t=${signToken("share", e.id, TTL.share)}${print ? "&format=print" : ""}`;
-  const pending = entries.filter((e) => e.status === "pending").length;
+
+  const by = (s: EntryStatus) => entries.filter((e) => e.status === s);
+  const waiting = by("pending");
+  const live = by("approved");
+  const hidden = by("hidden");
+
+  // The full editor. Only what is waiting shows this open; the rest stay folded away.
+  const editor = (e: LogbookEntry) => (
+    <ActionForm method="post" action="/api/logbook/admin" className="lb-admin__form">
+      <input type="hidden" name="key" value={key} />
+      <input type="hidden" name="id" value={e.id} />
+      <label className="lb-field">
+        <span className="lb-mono">Osama&apos;s reply · shows in his handwriting</span>
+        <textarea
+          name="reply"
+          className="lb-admin__input"
+          rows={2}
+          maxLength={LIMITS.reply.max}
+          defaultValue={e.reply}
+          placeholder="Great buoyancy. Come back for Advanced."
+        />
+      </label>
+      <MediaUpload name="photoUrl" label="Photo" accept="image/*" current={e.photoUrl} />
+      <MediaUpload name="videoUrl" label="Video" accept="video/*" current={e.videoUrl} />
+      <fieldset className="lb-field lb-admin__stamps">
+        <legend className="lb-mono">
+          Stamps, tick as many as apply.{" "}
+          {e.stamps.length
+            ? `${e.name} picked ${joinAnd(e.stamps.map((k) => `“${stampInfo(k).label}”`))}.`
+            : `${e.name} has not picked one yet.`}
+        </legend>
+        <div className="lb-stamps">
+          {STAMPS.map((s) => (
+            <label key={s.key} className="lb-stamp-pick">
+              <input type="checkbox" name="stamp" value={s.key} defaultChecked={e.stamps.includes(s.key)} className="lb-stamp-pick__radio" />
+              <Stamp stamp={s.key} uid={`admin-${e.id}-${s.key}`} className="lb-stamp--static" />
+              <span>{s.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <label className="lb-consent" style={{ color: "var(--ink)" }}>
+        <input type="checkbox" name="featured" value="1" defaultChecked={e.featured} />
+        <span>Review of the month (pinned at the top)</span>
+      </label>
+      <div className="lb-admin__actions">
+        <button type="submit" name="action" value="save" className="lb-btn lb-btn--paper">Save</button>
+        {e.status !== "approved" ? (
+          <button type="submit" name="action" value="approve" className="lb-btn">Put it on the site</button>
+        ) : null}
+        {e.status !== "hidden" ? (
+          <button type="submit" name="action" value="hide" className="lb-btn lb-btn--quiet lb-btn--ink">Hide it</button>
+        ) : null}
+        <button type="submit" name="action" value="delete" className="lb-btn lb-btn--danger" data-confirm={`Delete the review from ${e.name}? This cannot be undone.`}>
+          Delete
+        </button>
+      </div>
+    </ActionForm>
+  );
+
+  const body = (e: LogbookEntry) => (
+    <>
+      <span className="lb-mono" style={{ color: "var(--ink-soft)" }}>
+        {when(e)} · {siteInfo(e.site).label} · {e.stamps.map((k) => stampInfo(k).label).join(" + ")}
+        {e.divedOn ? ` · ${e.divedOn}` : ""}
+        {e.course ? ` · ${e.course}` : ""}
+        {e.flags.length ? ` · flags: ${e.flags.join(", ")}` : ""}
+        {e.featured ? " · REVIEW OF THE MONTH" : ""}
+        {e.moderatedAt ? ` · ${e.status === "approved" ? "put on the site" : e.status === "hidden" ? "hidden" : "moderated"} ${moderatedHow(e)} ${whenExact(e.moderatedAt)}` : ""}
+      </span>
+      <p className="lb-page__note">{e.note}</p>
+      <div className="lb-admin__links lb-mono">
+        {e.photoUrl ? <a href={e.photoUrl} target="_blank" rel="noopener noreferrer">Photo</a> : null}
+        <a href={card(e, false)} target="_blank" rel="noopener noreferrer">Story image</a>
+        <a href={card(e, true)} target="_blank" rel="noopener noreferrer">Keepsake</a>
+        {e.status === "approved" ? (
+          <a href={`/logbook/${e.id}`} target="_blank" rel="noopener noreferrer">See it on the site</a>
+        ) : null}
+      </div>
+      {editor(e)}
+    </>
+  );
+
+  // A folded row: the name, where and when, and a word for its state. Open it to work on it.
+  const folded = (e: LogbookEntry) => (
+    <details key={e.id} id={e.id} className={`lb-fold is-${e.status}`}>
+      <summary>
+        <span className="lb-fold__name">{e.name}&apos;s review</span>
+        <span className="lb-fold__meta lb-mono">
+          {e.country ? `${e.country} · ` : ""}
+          {siteInfo(e.site).label} · {when(e)}
+        </span>
+        <span className={`lb-admin__status is-${e.status}`}>{e.status === "approved" ? "On the site" : "Hidden"}</span>
+      </summary>
+      <div className="lb-fold__body">{body(e)}</div>
+    </details>
+  );
 
   return (
     <>
       <header className="lb-top lb-top--solid">
         <Link href="/" className="lb-brand">Osama<span>Dives</span></Link>
-        <Link href="/logbook" className="lb-btn lb-btn--quiet">Open the reviews</Link>
+        <div style={{ display: "flex", gap: ".6rem", alignItems: "center" }}>
+          <Link href="/review" className="lb-btn lb-btn--quiet lb-btn--ink">The reviews</Link>
+          <form method="post" action="/api/logbook/logout">
+            <button type="submit" className="lb-btn lb-btn--quiet lb-btn--ink">Sign out</button>
+          </form>
+        </div>
       </header>
+
       <section className="lb-hero" style={{ minHeight: "auto", paddingBottom: "2rem" }}>
         <div className="lb-hero__inner">
           <span className="lb-mono lb-rise">Private · moderation</span>
-          <h1 className="lb-h2 lb-rise">Every review, every state.</h1>
-          {searchParams.done ? <p className="lb-admin__banner" role="status">{DONE[searchParams.done] ?? "Done."}</p> : null}
+          <h1 className="lb-h2 lb-rise">
+            {waiting.length === 0
+              ? "Nothing is waiting for you."
+              : `${waiting.length} ${waiting.length === 1 ? "review is" : "reviews are"} waiting for you.`}
+          </h1>
+          {searchParams.done ? (
+            <p className="lb-admin__banner" role="status">{DONE[searchParams.done] ?? "Done."}</p>
+          ) : null}
           <p className="lb-stand lb-hero__stand">
-            {pending} waiting for you. Approve puts a review on the site, Hide takes it down. A reply shows on the review in Osama&apos;s
-            handwriting. Tick &ldquo;review of the month&rdquo; to pin one at the top.
+            {live.length} on the site, {hidden.length} hidden. Deleting is permanent; hiding can be undone.
           </p>
         </div>
       </section>
-      {ORDER.map((status) => {
-        const rows = entries.filter((e) => e.status === status);
-        return (
-          <section key={status} className="lb-wall" style={{ paddingTop: "3rem", paddingBottom: "3rem", background: status === "pending" ? "var(--bone)" : "var(--bone-dim)" }}>
-            <div className="lb-wall__inner">
-              <div className="lb-wall__head" style={{ marginBottom: "1.6rem" }}>
-                <span className="lb-mono">{SECTION[status]} · {rows.length}</span>
-              </div>
-              {rows.length === 0 ? <p className="lb-stand" style={{ color: "var(--ink-soft)" }}>Nothing here.</p> : null}
-              <div style={{ display: "grid", gap: "1.2rem" }}>
-                {rows.map((e) => (
-                  <article key={e.id} id={e.id} className="lb-page lb-admin">
-                    <span className="lb-mono" style={{ color: "var(--ink-soft)" }}>
-                      {new Date(e.createdAt).toLocaleString("en-GB")} · {siteInfo(e.site).label} · {stampInfo(e.stamp).label}
-                      {e.divedOn ? ` · ${e.divedOn}` : ""}{e.course ? ` · ${e.course}` : ""}
-                      {e.flags.length ? ` · flags: ${e.flags.join(", ")}` : ""}{e.featured ? " · REVIEW OF THE MONTH" : ""}
-                    </span>
-                    <span className={`lb-admin__status is-${e.status}`}>{STATUS[e.status]}</span>
-                    <strong className="lb-page__name" style={{ paddingRight: 0 }}>{e.name}{e.country ? `, ${e.country}` : ""}</strong>
-                    <p className="lb-page__note">{e.note}</p>
-                    <div className="lb-admin__links lb-mono">
-                      {e.photoUrl ? <a href={e.photoUrl} target="_blank" rel="noopener noreferrer">Photo</a> : null}
-                      <a href={card(e, false)} target="_blank" rel="noopener noreferrer">Story image</a>
-                      <a href={card(e, true)} target="_blank" rel="noopener noreferrer">Keepsake</a>
-                      {e.status === "approved" ? <a href={`/logbook/${e.id}`} target="_blank" rel="noopener noreferrer">See it on the site</a> : null}
-                    </div>
-                    <ActionForm method="post" action="/api/logbook/admin" className="lb-admin__form">
-                      <input type="hidden" name="key" value={key} />
-                      <input type="hidden" name="id" value={e.id} />
-                      <label className="lb-field">
-                        <span className="lb-mono">Osama&apos;s reply · shows in his handwriting</span>
-                        <textarea name="reply" className="lb-admin__input" rows={2} maxLength={LIMITS.reply.max} defaultValue={e.reply} placeholder="Great buoyancy. Come back for Advanced." />
-                      </label>
-                      <label className="lb-field">
-                        <span className="lb-mono">Video link · optional, an mp4 on this site or https</span>
-                        <input name="videoUrl" className="lb-admin__input" defaultValue={e.videoUrl ?? ""} placeholder="/logbook/wedding.mp4" />
-                      </label>
-                      <label className="lb-consent" style={{ color: "var(--ink)" }}>
-                        <input type="checkbox" name="featured" value="1" defaultChecked={e.featured} />
-                        <span>Review of the month (pinned at the top)</span>
-                      </label>
-                      <div className="lb-admin__actions">
-                        <button type="submit" name="action" value="save" className="lb-btn lb-btn--paper">Save</button>
-                        {e.status !== "approved" ? <button type="submit" name="action" value="approve" className="lb-btn">Approve</button> : null}
-                        {e.status !== "hidden" ? <button type="submit" name="action" value="hide" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23,18,8,0.3)" }}>Hide</button> : null}
-                      </div>
-                    </ActionForm>
-                  </article>
-                ))}
-              </div>
+
+      <section className="lb-wall" style={{ paddingTop: "2.5rem", paddingBottom: "3rem", background: "var(--bone)" }}>
+        <div className="lb-wall__inner">
+          <div className="lb-wall__head" style={{ marginBottom: "1.4rem" }}>
+            <span className="lb-mono">Waiting for you · {waiting.length}</span>
+          </div>
+          {waiting.length === 0 ? (
+            <p className="lb-stand" style={{ color: "var(--ink-soft)" }}>
+              All caught up. New reviews land here.
+            </p>
+          ) : (
+            <div style={{ display: "grid", gap: "1.2rem" }}>
+              {waiting.map((e) => (
+                <article key={e.id} id={e.id} className="lb-page lb-admin">
+                  <span className="lb-admin__status is-pending">Waiting for you</span>
+                  <strong className="lb-page__name" style={{ paddingRight: 0 }}>
+                    {e.name}
+                    {e.country ? `, ${e.country}` : ""}
+                  </strong>
+                  {body(e)}
+                </article>
+              ))}
             </div>
-          </section>
-        );
-      })}
+          )}
+        </div>
+      </section>
+
+      {[
+        { rows: live, label: "On the site" },
+        { rows: hidden, label: "Hidden" },
+      ].map(({ rows, label }) => (
+        <section
+          key={label}
+          className="lb-wall"
+          style={{ paddingTop: "2.5rem", paddingBottom: "3rem", background: "var(--bone-dim)" }}
+        >
+          <div className="lb-wall__inner">
+            <div className="lb-wall__head" style={{ marginBottom: "1.2rem" }}>
+              <span className="lb-mono">{label} · {rows.length}</span>
+            </div>
+            {rows.length === 0 ? (
+              <p className="lb-stand" style={{ color: "var(--ink-soft)" }}>Nothing here.</p>
+            ) : (
+              <div className="lb-folds">{rows.map(folded)}</div>
+            )}
+          </div>
+        </section>
+      ))}
     </>
   );
 }

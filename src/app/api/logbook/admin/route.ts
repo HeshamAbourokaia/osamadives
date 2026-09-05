@@ -1,8 +1,9 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-import { adminKeyOk } from "@/lib/logbook/admin";
+import { moderatorKey } from "@/lib/logbook/session";
 import { isValidId } from "@/lib/logbook/ids";
 import { cleanText } from "@/lib/logbook/sanitize";
+import { orderStamps } from "@/lib/logbook/stamps";
 import { getStore } from "@/lib/logbook/store";
 import { LIMITS } from "@/lib/logbook/types";
 
@@ -14,8 +15,9 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const form = await req.formData().catch(() => null);
   if (!form) return new Response("Bad request", { status: 400 });
-  const key = form.get("key");
-  if (!adminKeyOk(key)) return new Response("Not found", { status: 404 });
+  const given = form.get("key");
+  const key = moderatorKey(typeof given === "string" ? given : undefined);
+  if (!key) return new Response("Not found", { status: 404 });
   const id = form.get("id");
   const action = form.get("action");
   if (!isValidId(id)) return new Response("Bad request", { status: 400 });
@@ -23,12 +25,24 @@ export async function POST(req: Request) {
   const store = getStore({ fresh: true });
   const now = new Date().toISOString();
   if (action === "approve" || action === "hide") {
-    await store.setStatus(id, action === "approve" ? "approved" : "hidden", now);
+    await store.setStatus(id, action === "approve" ? "approved" : "hidden", now, "admin");
+  } else if (action === "delete") {
+    await store.remove(id);
   } else if (action === "save") {
     const reply = cleanText(form.get("reply"), LIMITS.reply.max, true);
-    const video = cleanText(form.get("videoUrl"), 300);
-    const videoUrl = /^(\/|https:\/\/)/.test(video) ? video : null;
-    await store.update(id, { reply, videoUrl, featured: form.get("featured") === "1" });
+    const video = cleanText(form.get("videoUrl"), 500);
+    const photo = cleanText(form.get("photoUrl"), 500);
+    const ok = (v: string) => (/^(\/|https:\/\/)/.test(v) ? v : null);
+    // A review can carry more than one stamp now; a save with none checked leaves the
+    // existing ones alone rather than wiping them.
+    const chosen = orderStamps(form.getAll("stamp").filter((v): v is string => typeof v === "string"));
+    await store.update(id, {
+      reply,
+      videoUrl: ok(video),
+      photoUrl: ok(photo),
+      featured: form.get("featured") === "1",
+      stamps: chosen.length ? chosen : undefined,
+    });
   } else {
     return new Response("Bad request", { status: 400 });
   }

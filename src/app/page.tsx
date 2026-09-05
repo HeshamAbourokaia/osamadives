@@ -7,6 +7,7 @@ import HomeStrip from "./logbook/HomeStrip";
 import DescentNav from "./DescentNav";
 import Bubbles from "./Bubbles";
 import ReturnToPlace from "./ReturnToPlace";
+import SideRail from "./SideRail";
 import { LENS_MAP } from "./lensMap";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
@@ -446,6 +447,7 @@ export default async function Home() {
           </nav>
         </footer>
       </div>
+      <SideRail />
       <BackToTop />
       <ReturnToPlace />
       <DescentBoot />

@@ -625,3 +625,8 @@
 .book__cover::before { background: linear-gradient(180deg, rgba(230,246,243,0.9), rgba(211,239,234,0.82) 55%, rgba(230,246,243,0.94)); }
 /* the Open pill sits at the bottom centre; the corners belong to the page turn */
 .fpage__open { right: auto; left: 50%; transform: translateX(-50%); bottom: 0.55rem; min-height: 36px; padding: 0 0.85rem; font-size: 0.72rem; }
+.descent .fpage__open, .fpage__open { color: var(--ink) !important; }
+
+/* the hidden measuring copy of a page: same width as the page, never seen, never clicked */
+.fpage__fit-measure { position: absolute; left: 0; top: 0; width: 100%; visibility: hidden; pointer-events: none; }
+.fpage__fit-measure > .lb-page { border-radius: 0; box-shadow: none; transform: none !important; }

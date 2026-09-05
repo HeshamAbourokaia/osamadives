@@ -27,28 +27,31 @@ type Flip = {
   destroy(): void;
 };
 
-// A page that fits its content: laid out at the page's width, measured, scaled down if it
-// would run past the bottom. No scrolling inside a page.
-function FitPage({ children }: { children: React.ReactNode }) {
+// A page that fits its content: laid out at the page's width, measured, and told the book how
+// far it would need to shrink. The book then applies ONE scale to every page, so the type is the
+// same size on facing pages, like a printed book.
+function FitPage({ children, index, report, scale }: { children: React.ReactNode; index: number; report: (i: number, s: number) => void; scale: number }) {
   const box = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
   useLayoutEffect(() => {
     const b = box.current, i = inner.current;
     if (!b || !i) return;
     const fit = () => {
       const bh = b.clientHeight, ih = i.scrollHeight;
-      setScale(ih > bh && ih > 0 ? Math.max(0.55, bh / ih) : 1);
+      // measure at the page's own width, unscaled, so the number does not chase itself
+      const s = ih > bh && ih > 0 && bh > 0 ? Math.max(0.55, bh / ih) : 1;
+      report(index, s);
     };
     fit();
     const ro = new ResizeObserver(fit);
-    ro.observe(b); ro.observe(i);
+    ro.observe(b);
     i.querySelectorAll("img").forEach((img) => img.addEventListener("load", fit));
     return () => ro.disconnect();
-  }, []);
+  }, [index, report]);
   return (
     <div className="fpage__fit" ref={box}>
-      <div className="fpage__fit-inner" ref={inner} style={{ transform: `scale(${scale.toFixed(4)})`, width: `${(100 / scale).toFixed(3)}%` }}>{children}</div>
+      <div className="fpage__fit-measure" ref={inner} aria-hidden="true">{children}</div>
+      <div className="fpage__fit-inner" style={{ transform: `scale(${scale.toFixed(4)})`, width: `${(100 / scale).toFixed(3)}%` }}>{children}</div>
     </div>
   );
 }
@@ -65,6 +68,9 @@ export default function MemoryBook({ pages }: Props) {
   const [open, setOpen] = useState<number | null>(null);
   const down = useRef<{ x: number; y: number; t: number } | null>(null);
   const n = pages.length;
+  const [scales, setScales] = useState<Record<number, number>>({});
+  const report = useCallback((i: number, s: number) => { setScales((prev) => (prev[i] === s ? prev : { ...prev, [i]: s })); }, []);
+  const uniform = Math.min(1, ...Object.values(scales));
 
   useEffect(() => {
     const el = bookRef.current;
@@ -136,10 +142,10 @@ export default function MemoryBook({ pages }: Props) {
               onDoubleClick={() => { if (!pg.hard) setOpen(i); }}
             >
               <div className="fpage__paper">
-                <FitPage>{pg.node}</FitPage>
+                <FitPage index={i} report={report} scale={pg.hard ? 1 : uniform}>{pg.node}</FitPage>
               </div>
               {!pg.hard ? (
-                <button type="button" className="fpage__open lg" onPointerDown={(e) => e.stopPropagation()} onPointerUp={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); setOpen(i); }} aria-label={`Open ${pg.caption}`}>Open</button>
+                <button type="button" className="fpage__open lg" onPointerDown={(e) => e.stopPropagation()} onPointerUp={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); setOpen(i); }} aria-label={`Open ${pg.caption}`}>Open page</button>
               ) : null}
             </div>
           ))}

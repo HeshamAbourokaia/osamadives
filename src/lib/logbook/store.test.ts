@@ -91,4 +91,16 @@ describe("FileStore", () => {
     expect(await store.reactionCounts(["a"])).toEqual({ a: { "🦈": 1, "❤️": 1 } });
     expect(await store.reactionsBy(["a"], "phone1")).toEqual({ a: ["❤️"] });
   });
+
+  it("counts scans of the card by source and time", async () => {
+    await store.recordScan({ id: "s1", createdAt: "2026-08-20T00:00:00.000Z", source: "card", ua: "phone", ipHash: "x" });
+    await store.recordScan({ id: "s2", createdAt: "2026-09-05T20:00:00.000Z", source: "card", ua: "phone", ipHash: "y" });
+    await store.recordScan({ id: "s3", createdAt: "2026-09-06T01:00:00.000Z", source: "sticker", ua: "phone", ipHash: "z" });
+    const st = await store.scanStats("2026-09-06T02:00:00.000Z");
+    expect(st.total).toBe(3);
+    expect(st.week).toBe(2);
+    expect(st.today).toBe(2);
+    expect(st.last).toBe("2026-09-06T01:00:00.000Z");
+    expect(st.bySource).toEqual({ card: 2, sticker: 1 });
+  });
 });

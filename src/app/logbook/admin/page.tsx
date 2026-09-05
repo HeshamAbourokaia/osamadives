@@ -33,6 +33,26 @@ function whenExact(iso: string) {
   return new Date(iso).toLocaleString("en-GB", { timeZone: "Africa/Cairo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + " Dahab time";
 }
 
+// "just now", "3 hours ago", "2 days ago"
+function ago(iso: string | null): string {
+  if (!iso) return "never";
+  const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (mins < 2) return "just now";
+  if (mins < 60) return `${mins} minutes ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+  const days = Math.round(hours / 24);
+  return `${days} ${days === 1 ? "day" : "days"} ago`;
+}
+
+// " (card 11, taps on the screen 3)" once scans come from more than one place
+const SOURCE_LABEL: Record<string, string> = { card: "card", tap: "taps on the screen", sticker: "stickers", table: "table cards" };
+function sourcesNote(bySource: Record<string, number>): string {
+  const parts = Object.entries(bySource).sort((a, b) => b[1] - a[1]);
+  if (parts.length < 2) return "";
+  return ` (${parts.map(([k, n]) => `${SOURCE_LABEL[k] ?? k} ${n}`).join(", ")})`;
+}
+
 function when(e: LogbookEntry) {
   return new Date(e.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
@@ -53,7 +73,7 @@ export default async function AdminPage({
   if (!key) return <SignIn wrong={searchParams.wrong === "1"} />;
 
   const store = getStore({ fresh: true });
-  const entries = await store.list();
+  const [entries, scans] = await Promise.all([store.list(), store.scanStats(new Date().toISOString()).catch(() => null)]);
   const base = siteUrl();
   const card = (e: LogbookEntry, print: boolean) =>
     `${base}/api/logbook/${e.id}/card?t=${signToken("share", e.id, TTL.share)}${print ? "&format=print" : ""}`;
@@ -181,6 +201,13 @@ export default async function AdminPage({
           <p className="lb-stand lb-hero__stand">
             {live.length} on the site, {hidden.length} hidden. Deleting is permanent; hiding can be undone.
           </p>
+          {scans ? (
+            <p className="lb-stand lb-hero__stand" style={{ marginTop: "0.4rem" }}>
+              {scans.total === 0
+                ? "Your card has not been scanned yet."
+                : `Your card has been scanned ${scans.total} ${scans.total === 1 ? "time" : "times"}${sourcesNote(scans.bySource)}: ${scans.week} this week, ${scans.today} in the last day, the last one ${ago(scans.last)}.`}
+            </p>
+          ) : null}
         </div>
       </section>
 

@@ -620,7 +620,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .peak-stage { display: grid; place-items: center; padding: 5vh var(--sc-gutter); position: relative; }
   .peak-year {
     position: absolute; inset-inline: 0; top: 4vh;
-    text-align: center; z-index: 0;
+    justify-content: center; z-index: 0;
     font: 900 clamp(7rem, 22vw, 19rem)/1 var(--sc-font-display);
     font-feature-settings: "tnum";
     color: transparent; -webkit-text-stroke: 2px rgba(63, 209, 190, 0.34);
@@ -1329,3 +1329,42 @@ html:not(.sc-ready) .w__i { transform: none; }
 .navsheet .sharecode__code { width: 5.6rem; }
 .navsheet .sharecode figcaption { color: rgba(237,244,242,0.7); font-size: 0.82rem; }
 @media (max-width: 480px) { .sharecode { gap: 0.9rem; } .sharecode__code { width: 6rem; } }
+
+
+/* --------------------------------------------------- odometer year reel -- */
+/* Four reels, one per digit place. --od-val is the smoothstepped year (a plain
+   float, computed the same way the engine's own counters are: clamp the act's
+   --sc-p to the [at0, at1] window, then 3t^2-2t^3). Each reel's own position is
+   (value / place) - minPos, a continuous, unbounded number: it does not wrap or
+   reset, it simply keeps scrolling, which is what makes the ones place spin
+   fast and complete while the thousands place has barely nudged. */
+.descent .odometer {
+  display: flex;
+  --od-raw: clamp(0, (var(--sc-p, 0) - var(--od-at0)) / var(--od-at1), 1);
+  --od-raw2: calc(var(--od-raw) * var(--od-raw));
+  --od-kt: calc(3 * var(--od-raw2) - 2 * (var(--od-raw2) * var(--od-raw)));
+  --od-val: calc(var(--od-from) + var(--od-span) * var(--od-kt));
+}
+.descent .odometer__digit { position: relative; height: 1em; width: 0.64em; overflow: hidden; }
+.descent .odometer__reel { position: absolute; inset-inline: 0; top: 0; display: flex; flex-direction: column; align-items: center; }
+.descent .odometer__n { height: 1em; line-height: 1; }
+/* The ones place tracks the wheel exactly: at a whole year it is already at rest
+   (1987 / 1 is an integer), so it can scroll continuously with no lag. The tens,
+   hundreds and thousands places are not: 1987 / 10 is 198.7, so tracking the raw
+   division the same way would leave them permanently mid-roll, never settling on
+   a real digit. They snap to the floored year instead and get a short transition,
+   so the reel only turns at the instant that place's digit actually changes (the
+   thousands reel, for this range, turns exactly once, crossing the year 2000). */
+.descent .odometer__digit[data-od-p="1"] .odometer__reel {
+  transform: translate3d(0, calc((var(--od-min) - (var(--od-val) / var(--od-place))) * 1em), 0);
+}
+.descent .odometer__digit:not([data-od-p="1"]) .odometer__reel {
+  transform: translate3d(0, calc((var(--od-min) - round(down, calc(var(--od-val) / var(--od-place)), 1)) * 1em), 0);
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .descent .odometer__reel {
+    transition: none !important;
+    transform: translate3d(0, calc((var(--od-min) - round(down, calc((var(--od-from) + var(--od-span)) / var(--od-place)), 1)) * 1em), 0) !important;
+  }
+}

@@ -12,6 +12,7 @@ import RailTravel from "./RailTravel";
 import PeakYears from "./PeakYears";
 import Words from "./Words";
 import ShareCode from "./ShareCode";
+import OdometerYear from "./OdometerYear";
 import { LENS_MAP } from "./lensMap";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
@@ -175,7 +176,7 @@ export default async function Home() {
         {/* ACT 4 · THE PEAK: the print becomes the man, the year runs behind it */}
         <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="3.8" style={{ "--sc-span": 3.8 } as React.CSSProperties}>
           <div data-sc-stage className="peak-stage">
-            <div className="peak-year sc-nums" data-sc-count="1987 2024" data-sc-count-at="0.1 0.86" data-sc-parallax="-1" aria-hidden="true">1987</div>
+            <OdometerYear className="peak-year" from={1987} to={2024} at={[0.1, 0.86]} parallax={-1} />
             <div className="peak-frame" data-sc-parallax="0.35">
               <a className="peak-mat" href="/gallery" aria-label="Open the gallery to see every stage">
                 <div className="peak-plate">

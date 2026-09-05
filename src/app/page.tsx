@@ -7,6 +7,7 @@ import HomeStrip from "./logbook/HomeStrip";
 import DescentNav from "./DescentNav";
 import Bubbles from "./Bubbles";
 import ReturnToPlace from "./ReturnToPlace";
+import { LENS_MAP } from "./lensMap";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
 import InstagramRibbon from "@/components/InstagramRibbon";
@@ -54,10 +55,10 @@ export default async function Home() {
       <span data-sc-progress />
       {/* the lens for liquid glass: Chrome bends the backdrop through it, other browsers keep the blur */}
       <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true" focusable="false">
-        <filter id="lg-refract" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="noise" />
-          <feGaussianBlur in="noise" stdDeviation="2" result="soft" />
-          <feDisplacementMap in="SourceGraphic" in2="soft" scale="14" xChannelSelector="R" yChannelSelector="G" />
+        <filter id="lg-lens" x="0" y="0" width="1" height="1" filterUnits="objectBoundingBox" colorInterpolationFilters="sRGB">
+          <feImage href={LENS_MAP} x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="lens" />
+          <feGaussianBlur in="lens" stdDeviation="1" result="lensSoft" />
+          <feDisplacementMap in="SourceGraphic" in2="lensSoft" scale="52" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </svg>
       <div className="sc-grain" aria-hidden="true" />

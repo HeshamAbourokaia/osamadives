@@ -1138,3 +1138,31 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .orbit-card__hud i { filter: drop-shadow(0 0 4px rgba(63,209,190,0.9)); }
 /* the dive computer keeps a dark tint so its digits read over bright water */
 .descent .hud { background: linear-gradient(135deg, rgba(20,60,66,0.66), rgba(4,14,20,0.6) 45%, rgba(20,60,66,0.52)) !important; }
+
+/* ================= liquid glass, second cut: thick clear glass =================
+   The centre is nearly clear (a whisper of blur), the rim refracts the backdrop
+   outward through a lens map (Chrome), a bright edge and a top highlight give the
+   thickness, and the capsule gives under a press and springs back. */
+.descent .lg, .descent .cta, .descent .cta--quiet, .descent .navbtn, .descent .brand-ribbons a, .descent .topnav, .descent .hud, .descent .book__arrow, .descent .tail .lb-btn, .descent .fpage__open {
+  background: linear-gradient(160deg, rgba(255,255,255,0.34), rgba(255,255,255,0.06) 38%, rgba(255,255,255,0.1) 62%, rgba(255,255,255,0.28)) !important;
+  border: 1px solid rgba(255,255,255,0.55) !important;
+  backdrop-filter: blur(3px) saturate(170%) brightness(1.06); -webkit-backdrop-filter: blur(3px) saturate(170%) brightness(1.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35), inset 0 1.5px 0 rgba(255,255,255,0.95), inset 0 -3px 8px rgba(255,255,255,0.28), inset 0 8px 18px rgba(255,255,255,0.14), inset 0 -10px 22px rgba(0,0,0,0.06), 0 22px 44px -20px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.12) !important;
+  transition: transform 380ms cubic-bezier(0.2, 1.6, 0.4, 1), box-shadow 240ms, background 240ms;
+}
+@supports (backdrop-filter: url("#lg-lens")) {
+  .descent .lg, .descent .cta, .descent .cta--quiet, .descent .navbtn, .descent .brand-ribbons a, .descent .topnav, .descent .hud, .descent .book__arrow, .descent .tail .lb-btn, .descent .fpage__open {
+    backdrop-filter: url("#lg-lens") blur(2px) saturate(170%) brightness(1.06); -webkit-backdrop-filter: url("#lg-lens") blur(2px) saturate(170%) brightness(1.06);
+  }
+}
+.descent :is(.lg, .cta, .cta--quiet, .navbtn, .brand-ribbons a, .book__arrow, .tail .lb-btn, .fpage__open):hover { transform: scale(1.04); }
+.descent :is(.lg, .cta, .cta--quiet, .navbtn, .brand-ribbons a, .book__arrow, .tail .lb-btn, .fpage__open):active { transform: scale(0.93); }
+.descent .book__arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); }
+.descent .book__arrow:active:not(:disabled) { transform: translateY(-50%) scale(0.92); }
+.descent .cta { background: linear-gradient(160deg, rgba(63,209,190,0.92), rgba(63,209,190,0.6) 40%, rgba(63,209,190,0.7) 65%, rgba(63,209,190,0.95)) !important; }
+.descent .hud { background: linear-gradient(160deg, rgba(20,60,66,0.62), rgba(4,14,20,0.55) 45%, rgba(20,60,66,0.5)) !important; backdrop-filter: blur(10px) saturate(170%); -webkit-backdrop-filter: blur(10px) saturate(170%); }
+.descent .topnav { backdrop-filter: blur(10px) saturate(170%); -webkit-backdrop-filter: blur(10px) saturate(170%); background: linear-gradient(160deg, rgba(255,255,255,0.22), rgba(6,20,32,0.28) 45%, rgba(255,255,255,0.14)) !important; }
+
+/* the two strip buttons keep their reading colours under the glass */
+.descent .tail .lb-btn { color: var(--ink, #171208) !important; }
+.descent .tail .lb-btn--paper { background: linear-gradient(160deg, rgba(11,107,96,0.95), rgba(11,107,96,0.72) 40%, rgba(11,107,96,0.8) 65%, rgba(11,107,96,0.95)) !important; color: #fff !important; }

@@ -34,16 +34,30 @@ export default async function HomeStrip() {
           </div>
           <MemoryBook
             pages={[
-              <div className="book__cover" key="cover">
-                <img src="/brand/stamp-512.png" alt="" width={120} height={120} />
-                <span className="lb-mono">Reviews{total ? ` · ${total}` : ""}</span>
-                <h3 className="lb-h2">The book of the people I took into the water.</h3>
-                <p className="lb-stand">Turn the page.</p>
-              </div>,
-              <WeddingPage variant="wall" key="wedding" />,
-              ...entries.map((e, i) => <PageCard key={e.id} entry={e} number={total - i} />),
+              { hard: true, caption: "The book of reviews", node: (
+                <div className="book__cover" key="cover">
+                  <img className="book__cover-bg" src="/logbook/dahab-camels.webp" alt="" />
+                  <div className="book__cover-ink">
+                    <img src="/brand/stamp-512.png" alt="" width={110} height={110} />
+                    <span className="lb-mono">Reviews{total ? ` · ${total}` : ""}</span>
+                    <h3 className="lb-h2">The book of the people I took into the water.</h3>
+                    <p className="lb-stand">Drag a corner to turn.</p>
+                  </div>
+                </div>
+              ) },
+              { caption: "Entry 000 · Hesham & Sophie · the underwater wedding", href: "/review#pages", node: <WeddingPage variant="wall" key="wedding" /> },
+              ...entries.map((e, i) => ({ caption: `Entry ${String(total - i).padStart(3, "0")} · ${e.name}${e.country ? ` · ${e.country}` : ""}`, href: `/review/${e.id}`, node: <PageCard key={e.id} entry={e} number={total - i} /> })),
+              { hard: true, caption: "The next page is yours", node: (
+                <div className="book__cover book__cover--back" key="back">
+                  <img className="book__cover-bg" src="/logbook/dahab-lagoon.webp" alt="" />
+                  <div className="book__cover-ink">
+                    <span className="lb-mono">A blank page</span>
+                    <h3 className="lb-h2">The next review is yours.</h3>
+                    <Link href="/review#sign" className="lb-btn lb-btn--paper">Write me a review</Link>
+                  </div>
+                </div>
+              ) },
             ]}
-            captions={["The book of reviews", "Entry 000 · Hesham & Sophie · the underwater wedding", ...entries.map((e, i) => `Entry ${String(total - i).padStart(3, "0")} · ${e.name}${e.country ? ` · ${e.country}` : ""}`)]}
           />
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem", marginTop: "2.4rem" }}>
             <Link href="/review#pages" className="lb-btn lb-btn--paper">Read all the reviews</Link>

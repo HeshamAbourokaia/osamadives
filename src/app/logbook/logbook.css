@@ -567,67 +567,61 @@
 
 
 /* ==========================================================================
-   The memory book on the homepage: one bound book photographed from above,
-   thin arrows outside it, a caption under it, a blurred word behind it.
+   The memory book: a real page-curl engine (page-flip) turns the pages. Below is
+   only what the pages and the frame around the book look like.
    ========================================================================== */
-.book { --page-w: clamp(15rem, 25vw, 22rem); --page-h: calc(var(--page-w) * 1.38); position: relative; display: grid; justify-items: center; gap: 1.2rem; padding: clamp(2rem, 5vw, 3.5rem) 0 0; outline: none; user-select: none; -webkit-user-select: none; }
-.book:focus-visible .book__object { outline: 2px solid var(--reef); outline-offset: 10px; }
-.book__ghost { position: absolute; left: 50%; top: 0; transform: translateX(-50%); font: 800 clamp(4rem, 12vw, 9rem)/1 var(--display); letter-spacing: -0.03em; color: rgba(11, 107, 96, 0.28); filter: blur(10px); pointer-events: none; text-transform: uppercase; white-space: nowrap; }
-.book__object {
-  position: relative; display: grid; grid-template-columns: var(--page-w) var(--page-w); height: var(--page-h);
-  perspective: 2600px; border-radius: 10px;
-  filter: drop-shadow(0 30px 40px rgba(23, 18, 8, 0.22)) drop-shadow(0 4px 8px rgba(23, 18, 8, 0.12));
-}
-/* the stack of pages under the open spread */
-.book__object::before, .book__object::after { content: ""; position: absolute; top: 4px; bottom: -6px; width: 10px; border-radius: 0 6px 6px 0; background: repeating-linear-gradient(to right, #f6f1e6 0 1px, #dcd5c6 1px 2px); pointer-events: none; }
-.book__object::before { left: -7px; transform: scaleX(-1); border-radius: 0 6px 6px 0; }
-.book__object::after { right: -7px; }
-.book__page { position: relative; height: 100%; overflow: hidden; background: var(--paper); border-radius: 8px 2px 2px 8px; box-shadow: inset -22px 0 30px -24px rgba(23, 18, 8, 0.45); }
-.book__page--right { border-radius: 2px 8px 8px 2px; box-shadow: inset 22px 0 30px -24px rgba(23, 18, 8, 0.45); }
-.book__page::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, transparent 0 27px, rgba(23, 18, 8, 0.035) 27px 28px), radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.35), transparent 60%); }
-.book__fit { position: absolute; inset: 0; overflow: hidden; }
-.book__fit-inner { position: absolute; left: 0; top: 0; transform-origin: top left; width: 100%; }
-.book__fit-inner > .lb-page { border-radius: 0; box-shadow: none; transform: none !important; min-height: var(--page-h); }
-.book__fit-inner > .lb-page::before { display: none; }
-.book__inside { height: 100%; background: linear-gradient(135deg, #f7f2e7, #ece5d6); }
-.book__cover { display: grid; align-content: center; justify-items: center; gap: 1rem; min-height: var(--page-h); padding: 2rem; text-align: center; background: linear-gradient(160deg, #0b3f3a, #06141b); color: var(--light); }
-.book__cover img { width: 120px; height: 120px; border-radius: 50%; background: var(--bone); }
-.book__cover .lb-mono { color: var(--glow); }
-.book__cover .lb-h2 { font-size: clamp(1.3rem, 2.2vw, 1.8rem); max-width: 14ch; color: var(--light); }
-.book__cover .lb-stand { color: var(--light-soft); font: 600 1.4rem/1 var(--hand); }
-.book__spine { position: absolute; inset-block: 0; left: 50%; width: 18px; transform: translateX(-50%); background: linear-gradient(to right, rgba(23,18,8,0) 0%, rgba(23,18,8,0.16) 40%, rgba(23,18,8,0.28) 50%, rgba(23,18,8,0.16) 60%, rgba(23,18,8,0) 100%); z-index: 3; pointer-events: none; }
-/* the leaf: a two-sided sheet hinged on the spine */
-.book__leaf { position: absolute; top: 0; bottom: 0; width: var(--page-w); transform-style: preserve-3d; z-index: 4; }
-.book__leaf--next { left: var(--page-w); transform-origin: left center; animation: book-turn-next var(--turn, 820ms) cubic-bezier(0.45, 0.02, 0.2, 1) both; }
-.book__leaf--prev { left: 0; transform-origin: right center; animation: book-turn-prev var(--turn, 820ms) cubic-bezier(0.45, 0.02, 0.2, 1) both; }
-.book__face { position: absolute; inset: 0; overflow: hidden; background: var(--paper); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.book__face--front { border-radius: 2px 8px 8px 2px; }
-.book__face--back { transform: rotateY(180deg); border-radius: 8px 2px 2px 8px; }
-.book__leaf--prev .book__face--front { border-radius: 8px 2px 2px 8px; }
-.book__leaf--prev .book__face--back { border-radius: 2px 8px 8px 2px; }
-.book__leaf::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2; background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.22) 100%); animation: book-shade var(--turn, 820ms) linear both; }
-@keyframes book-turn-next { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
-@keyframes book-turn-prev { from { transform: rotateY(0deg); } to { transform: rotateY(180deg); } }
-@keyframes book-shade { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
-.book__arrow { position: absolute; top: calc(50% + 0.6rem); transform: translateY(-50%); z-index: 5; width: 56px; height: 56px; border: 0; background: transparent; color: var(--ink-soft); font: 300 3rem/1 var(--display); cursor: pointer; transition: color 140ms, transform 140ms; }
-.book__arrow--prev { left: max(0.5rem, calc(50% - var(--page-w) - 4.6rem)); }
-.book__arrow--next { right: max(0.5rem, calc(50% - var(--page-w) - 4.6rem)); }
-.book__arrow:hover:not(:disabled) { color: var(--reef); transform: translateY(-50%) scale(1.15); }
-.book__arrow:disabled { opacity: 0.2; cursor: default; }
-.book__arrow:focus-visible { outline: 2px solid var(--reef); outline-offset: 2px; border-radius: 999px; }
-.book__caption { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.6rem; margin: 0.6rem 0 0; color: var(--ink-soft); text-align: center; }
+.flipbook { position: relative; display: grid; justify-items: center; gap: 1rem; padding: clamp(2rem, 5vw, 3.5rem) 0 0; outline: none; }
+.flipbook:focus-visible .flipbook__book { outline: 2px solid var(--reef); outline-offset: 10px; }
+.book__ghost { position: absolute; left: 50%; top: 0; transform: translateX(-50%); font: 800 clamp(4rem, 12vw, 9rem)/1 var(--display); letter-spacing: -0.03em; color: rgba(11, 107, 96, 0.26); filter: blur(10px); pointer-events: none; text-transform: uppercase; white-space: nowrap; }
+.flipbook__stage { width: min(100%, 68rem); padding: 0 3.6rem; }
+.flipbook__book { width: 100%; filter: drop-shadow(0 30px 40px rgba(23, 18, 8, 0.24)) drop-shadow(0 4px 8px rgba(23, 18, 8, 0.12)); }
+/* a page: paper, with the ruled lines the cards use, and a soft gutter shadow */
+.fpage { background: var(--paper); overflow: hidden; touch-action: pan-y; }
+.fpage--hard { background: var(--bone-dim); }
+.fpage__paper { position: absolute; inset: 0; }
+.fpage:not(.fpage--hard) .fpage__paper::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, transparent 0 27px, rgba(23, 18, 8, 0.035) 27px 28px); }
+.stf__item.--left .fpage__paper::before, .stf__item.--right .fpage__paper::before { content: ""; position: absolute; inset-block: 0; width: 26px; pointer-events: none; z-index: 2; }
+.stf__item.--left .fpage__paper::before { right: 0; background: linear-gradient(to left, rgba(23,18,8,0.14), transparent); }
+.stf__item.--right .fpage__paper::before { left: 0; background: linear-gradient(to right, rgba(23,18,8,0.14), transparent); }
+.fpage__fit { position: absolute; inset: 0; overflow: hidden; }
+.fpage__fit-inner { position: absolute; left: 0; top: 0; transform-origin: top left; width: 100%; }
+.fpage__fit-inner > .lb-page { border-radius: 0; box-shadow: none; transform: none !important; min-height: 100%; }
+.fpage__fit-inner > .lb-page::before { display: none; }
+.fpage .lb-page__note { display: -webkit-box; -webkit-line-clamp: 10; -webkit-box-orient: vertical; overflow: hidden; }
+.fpage__open { position: absolute; right: 0.7rem; bottom: 0.7rem; z-index: 5; min-height: 40px; padding: 0 0.95rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.6); background: rgba(255,255,255,0.55); color: var(--ink); font: 700 0.78rem/1 var(--display); letter-spacing: 0.04em; cursor: pointer; backdrop-filter: blur(10px) saturate(160%); -webkit-backdrop-filter: blur(10px) saturate(160%); }
+/* covers: the shore behind a lagoon tint, the stamp, one line */
+.book__cover { position: relative; min-height: 100%; height: 100%; display: grid; place-items: center; overflow: hidden; }
+.book__cover-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 60%; }
+.book__cover::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(230,246,243,0.86), rgba(211,239,234,0.72) 55%, rgba(230,246,243,0.9)); }
+.book__cover-ink { position: relative; display: grid; justify-items: center; gap: 0.9rem; padding: 2rem 1.6rem; text-align: center; color: var(--ink); }
+.book__cover-ink img { width: 110px; height: 110px; border-radius: 50%; background: var(--bone); box-shadow: 0 14px 30px -16px rgba(23,18,8,0.5); }
+.book__cover-ink .lb-mono { color: var(--reef); }
+.book__cover-ink .lb-h2 { font-size: clamp(1.25rem, 2.2vw, 1.7rem); max-width: 14ch; color: var(--ink); }
+.book__cover-ink .lb-stand { color: var(--ink-soft); font: 600 1.35rem/1 var(--hand); }
+.book__arrow { position: absolute; top: calc(50% + 0.6rem); transform: translateY(-50%); z-index: 6; width: 52px; height: 52px; border: 0; color: var(--ink); font: 300 2.2rem/1 var(--display); cursor: pointer; transition: transform 140ms, opacity 140ms; }
+.book__arrow--prev { left: max(0.2rem, calc(50% - 34rem + 0.2rem)); }
+.book__arrow--next { right: max(0.2rem, calc(50% - 34rem + 0.2rem)); }
+.book__arrow:disabled { opacity: 0.25; cursor: default; }
+.book__arrow:focus-visible { outline: 2px solid var(--reef); outline-offset: 2px; }
+.book__caption { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.6rem; margin: 0.4rem 0 0; color: var(--ink-soft); text-align: center; }
 .book__count { color: var(--reef); }
+.book__hint { flex-basis: 100%; color: var(--ink-soft); opacity: 0.7; }
+.flipbook__big .lb-page { max-width: 40rem; margin-inline: auto; }
+.flipbook__biglink { text-align: center; margin: 1.2rem 0 0; }
 @media (max-width: 760px) {
-  .book { --page-w: min(80vw, 22rem); --page-h: clamp(28rem, 72vh, 36rem); }
-  .book__object { grid-template-columns: var(--page-w); }
-  .book__page--left, .book__spine, .book__object::before { display: none; }
-  .book__page--right { border-radius: 8px; }
-  .book__leaf { width: var(--page-w); left: 0 !important; transform-origin: left center !important; }
-  .book__leaf--prev { animation-name: book-turn-prev-m; }
-  @keyframes book-turn-prev-m { from { transform: rotateY(-180deg); } to { transform: rotateY(0deg); } }
-  .book__arrow { width: 44px; height: 44px; font-size: 2.4rem; color: var(--ink); }
+  .flipbook__stage { padding: 0 1.9rem; }
+  .book__arrow { width: 44px; height: 44px; font-size: 2rem; }
   .book__arrow--prev { left: 0; } .book__arrow--next { right: 0; }
 }
-@media (prefers-reduced-motion: reduce) { .book__leaf, .book__leaf::after { animation: none !important; } }
 
-.book .lb-page__note { display: -webkit-box; -webkit-line-clamp: 10; -webkit-box-orient: vertical; overflow: hidden; }
+/* covers fill their page: no fitting, no scaling */
+.fpage--hard .fpage__fit, .fpage--hard .fpage__fit-inner { position: absolute; inset: 0; width: 100% !important; transform: none !important; }
+.fpage--hard .book__cover { position: absolute; inset: 0; height: auto; }
+
+/* the tint sits over the photograph, the writing over the tint */
+.book__cover-bg { z-index: 0; }
+.book__cover::before { z-index: 1; }
+.book__cover-ink { z-index: 2; }
+.book__cover::before { background: linear-gradient(180deg, rgba(230,246,243,0.9), rgba(211,239,234,0.82) 55%, rgba(230,246,243,0.94)); }
+/* the Open pill sits at the bottom centre; the corners belong to the page turn */
+.fpage__open { right: auto; left: 50%; transform: translateX(-50%); bottom: 0.55rem; min-height: 36px; padding: 0 0.85rem; font-size: 0.72rem; }

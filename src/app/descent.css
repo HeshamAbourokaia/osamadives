@@ -484,11 +484,12 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .hud {
     position: fixed; top: 1.1rem; right: 1.2rem; z-index: 60;
     display: grid; gap: 0.3rem; justify-items: end;
-    padding: 0.65rem 0.85rem;
-    background: rgba(4, 14, 20, 0.72);
-    border: 1px solid rgba(63, 209, 190, 0.28);
-    border-radius: 4px;
-    backdrop-filter: blur(6px);
+    padding: 0.7rem 0.95rem;
+    background: linear-gradient(135deg, rgba(20, 60, 66, 0.55), rgba(4, 14, 20, 0.5) 45%, rgba(20, 60, 66, 0.4));
+    border: 1px solid rgba(190, 240, 232, 0.35);
+    border-radius: 14px;
+    backdrop-filter: blur(16px) saturate(170%); -webkit-backdrop-filter: blur(16px) saturate(170%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -1px 0 rgba(255,255,255,0.08), inset 1px 0 0 rgba(255,255,255,0.18), 0 14px 40px -18px rgba(0,0,0,0.6);
     pointer-events: none;
   }
   .hud__depth {
@@ -1026,3 +1027,40 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
   -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent); mask-image: linear-gradient(to bottom, #000 55%, transparent);
 }
 @media (max-width: 860px) { .descent .topbar { height: 7.4rem; } }
+
+/* ================= bubbles ================= */
+.descent .bubbles { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; mix-blend-mode: screen; }
+@media (prefers-reduced-motion: reduce) { .descent .bubbles { display: none; } }
+
+/* ================= liquid glass =================
+   One material for the chrome: a blurred, saturated pane with a bright top edge, a soft
+   inner rim and a moving specular. Dark pane by default; --paper for the bone acts. */
+.descent .glass {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06) 42%, rgba(255,255,255,0.14));
+  border: 1px solid rgba(255,255,255,0.38);
+  backdrop-filter: blur(18px) saturate(170%); -webkit-backdrop-filter: blur(18px) saturate(170%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(255,255,255,0.12), inset 1px 0 0 rgba(255,255,255,0.28), inset -1px 0 0 rgba(255,255,255,0.1), 0 18px 50px -24px rgba(0,0,0,0.55);
+}
+.descent .glass::before {
+  content: ""; position: absolute; inset: -40% -30%; z-index: -1; pointer-events: none;
+  background: radial-gradient(55% 45% at 28% 18%, rgba(255,255,255,0.5), transparent 62%);
+  transform: translate(var(--gx, 0px), var(--gy, 0px)); transition: transform 700ms var(--sc-ease-out, ease-out);
+}
+.descent .glass:hover::before { --gx: 6%; --gy: 4%; }
+.descent .glass--paper {
+  background: linear-gradient(135deg, rgba(255,253,247,0.72), rgba(255,253,247,0.46) 45%, rgba(255,253,247,0.62));
+  border-color: rgba(255,255,255,0.75); color: var(--sc-ink);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), inset 1px 0 0 rgba(255,255,255,0.6), 0 30px 70px -30px rgba(23,18,8,0.45);
+}
+.descent .navbtn { background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(6,20,32,0.45)); border-color: rgba(255,255,255,0.4); box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 10px 30px -14px rgba(0,0,0,0.6); backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); }
+.descent .brand-ribbons a { backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 1px 0 0 rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4) !important; }
+.descent .cta { border-radius: 999px; padding: 0.95rem 1.7rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), inset 0 -1px 0 rgba(0,0,0,0.08), 0 14px 34px -14px rgba(63,209,190,0.7); }
+
+/* ================= guide act, layered ================= */
+.descent .guide-stage { position: relative; overflow: hidden; }
+.descent .guide-back { position: absolute; left: -6%; right: -6%; top: -12%; height: 124%; width: 112%; object-fit: cover; object-position: center 40%; opacity: 0.22; z-index: 0; pointer-events: none; filter: saturate(0.6); -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent); }
+.descent .guide-cover { position: relative; z-index: 1; }
+.descent .guide-panel { padding: clamp(1.4rem, 3vw, 2.4rem); border-radius: 18px; }
+.descent .guide-panel .rule-draw { margin-bottom: 1rem; }
+@media (max-width: 860px) { .descent .guide-panel { padding: 1.2rem; border-radius: 14px; } }

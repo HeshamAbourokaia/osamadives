@@ -5,6 +5,7 @@ import DescentBoot from "./DescentBoot";
 import OrbitScene from "./OrbitScene";
 import HomeStrip from "./logbook/HomeStrip";
 import DescentNav from "./DescentNav";
+import Bubbles from "./Bubbles";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
 import InstagramRibbon from "@/components/InstagramRibbon";
@@ -80,6 +81,7 @@ export default async function Home() {
           <div data-sc-stage>
             <img className="sc-stage__poster" data-sc-parallax="-0.22" src="/descent/hero-poster.webp" srcSet="/descent/hero-poster-m.webp 800w, /descent/hero-poster.webp 1600w" sizes="100vw" alt="" />
             <video data-sc-scrub data-sc-parallax="-0.22" data-sc-src="/descent/hero.mp4" data-sc-src-mobile="/descent/hero-m.mp4" muted playsInline />
+            <Bubbles count={36} strength={1} />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="copy-scrim" aria-hidden="true" />
             <div className="sea-scrim-m" aria-hidden="true" />
@@ -99,8 +101,9 @@ export default async function Home() {
         {/* ACT 2 · THE GUIDE: magazine cover on paper, cursor light on the surface */}
         <section className="g-bone" id="guide-act" data-sc-act="pin" data-sc-span="2.1" style={{ "--sc-span": 2.1 } as React.CSSProperties} data-sc-spotlight>
           <div data-sc-stage className="guide-stage">
+            <img className="guide-back" data-sc-parallax="-0.32" src="/descent/arch-camels.webp" alt="" aria-hidden="true" />
             <div className="guide-cover">
-              <div>
+              <div className="guide-panel glass glass--paper" data-sc-parallax="0.05">
                 <div className="rule-draw" aria-hidden="true" />
                 <span className="microcopy">On the sand · your guide</span>
                 <h2 data-sc-cue="0 1 0 0.1" data-sc-kinetic="lines">Meet Osama.</h2>
@@ -112,7 +115,7 @@ export default async function Home() {
                   <div><dt>Teaches</dt><dd>First breath to first professional step</dd></div>
                 </dl>
               </div>
-              <div className="guide-plate">
+              <div className="guide-plate" data-sc-parallax="-0.06">
                 <span className="exhibit-letter" aria-hidden="true" data-sc-parallax="-0.7">O</span>
                 <figure data-sc-reveal="down" data-sc-reveal-at="0.02 0.4" data-sc-tilt="5">
                   <img src="/descent/osama-portrait.webp" srcSet="/descent/osama-portrait-m.webp 800w, /descent/osama-portrait.webp 960w" sizes="(max-width: 860px) 92vw, 45vw" width={960} height={956} alt="Osama in his wetsuit on the shore at Dahab, checking his regulator, Sinai mountains behind him" />
@@ -161,6 +164,7 @@ export default async function Home() {
             <img className="depth-photo depth-photo--1" data-sc-parallax="-0.24" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle over the reef at Om El Seed, seven metres down, photographed by Osama" />
             <img className="depth-photo depth-photo--2" data-sc-parallax="-0.24" src="/descent/depth-8.webp" srcSet="/descent/depth-8-m.webp 800w, /descent/depth-8.webp 1600w" sizes="100vw" alt="Coral on the reef shelf at the edge of the Blue Hole, eight metres down, photographed by Osama" />
             <img className="depth-photo depth-photo--3" data-sc-parallax="-0.24" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="A diver silhouetted in open blue water at twelve metres, photographed by Osama" />
+            <Bubbles count={22} strength={0.7} />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="depth-copy">
               <div className="depth-cue" data-sc-cue="0.02 0.3 0.08 0.06">

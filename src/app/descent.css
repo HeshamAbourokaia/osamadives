@@ -637,7 +637,8 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
     transform: scale(calc(1.02 + var(--sc-p, 0) * 0.06));
   }
-  .peak-plate img.now { opacity: clamp(0, (var(--sc-p, 0) - 0.34) / 0.32, 1); }
+  .peak-plate img.stage { opacity: clamp(0, (var(--sc-p, 0) - var(--from, 0.3)) / 0.09, 1); }
+  .peak-plate img.stage--tall { object-position: center 18%; }
   .peak-captions { position: relative; min-height: 3.6rem; margin-top: 1rem; }
   .peak-captions p {
     position: absolute; inset-inline: 0; top: 0; margin: 0;
@@ -1191,3 +1192,43 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 /* buttons that ride the clips (the entry and surfacing calls to action) use solid glass:
    no backdrop filter, so the clip under them is never re-rendered while they move */
 .descent .cta { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: linear-gradient(160deg, rgba(63,209,190,0.98), rgba(43,178,160,0.92) 45%, rgba(63,209,190,0.9) 70%, rgba(120,232,214,0.98)) !important; }
+
+/* ================= carried over from the previous homepage (5 Sep) ================= */
+.descent .skip { position: absolute; left: 1rem; top: -4rem; z-index: 100; padding: 0.7rem 1rem; background: #3fd1be; color: #04121a; font: 700 0.9rem/1 var(--sc-font-display); border-radius: 4px; }
+.descent .skip:focus { top: 1rem; }
+/* folded write-ups */
+.descent .more { margin-top: 0.7rem; }
+.descent .more summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 40px; padding: 0 0.9rem; border-radius: 999px; border: 1px solid rgba(11,107,96,0.35); color: var(--reef, #0b6b60); font: 700 0.8rem/1 var(--sc-font-display); background: rgba(255,255,255,0.5); }
+.descent .more summary::-webkit-details-marker { display: none; }
+.descent .more summary::after { content: "+"; font-weight: 700; }
+.descent .more[open] summary::after { content: "\2212"; }
+.descent .more__body { margin-top: 0.8rem; display: grid; gap: 0.7rem; font: 500 0.92rem/1.6 var(--sc-font-text); color: #4B4232; }
+.descent .more__body p { margin: 0; }
+.descent .more__body ul { margin: 0; padding-left: 1.1rem; }
+.descent .facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.4rem 1rem; }
+.descent .facts dt { font: 500 0.58rem/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--sc-ink-soft); }
+.descent .facts dd { margin: 0; font: 600 0.9rem/1.4 var(--sc-font-text); }
+.descent .guide-more summary { background: rgba(255,255,255,0.65); }
+.descent .guide-more .more__body { color: var(--sc-ink); }
+.descent .guide-more .more__body a { color: var(--reef, #0b6b60); }
+.descent .ledger dd a { color: var(--reef, #0b6b60); }
+.descent .exhibits { grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.descent .exhibit-card .exhibit-img--faces { object-position: center 8%; height: 250px; }
+.descent .school-more dd .more { margin-top: 0.5rem; }
+/* the guide act, layered: the shore drifts back and creeps in, the panel rides over it */
+.descent .guide-back-wrap { position: absolute; inset: -12% 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.descent .guide-back { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; opacity: 0.34; filter: saturate(0.75); transform: scale(calc(1.06 + var(--sc-p, 0) * 0.12)); transform-origin: 50% 60%; -webkit-mask-image: none; mask-image: none; }
+/* the four photographs: their years, pressable */
+.descent .peak-mat { display: block; text-decoration: none; color: inherit; }
+.descent .peak-years { display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.9rem; flex-wrap: wrap; }
+.descent .peak-year-chip { min-height: 36px; padding: 0 0.85rem; border-radius: 999px; border: 1px solid rgba(63,209,190,0.45); background: rgba(6,20,32,0.5); color: #edf4f2; font: 600 0.62rem/1 var(--mono); letter-spacing: 0.16em; cursor: pointer; }
+.descent .peak-year-chip:hover { border-color: #3fd1be; color: #3fd1be; }
+/* rails: centred in a full-height stage, panning on the act's own progress with a hold at each end */
+.descent .rail-stage { height: 100svh; display: grid; align-items: center; overflow: hidden; }
+.descent .js-rail { --ease-p: clamp(0, (var(--sc-p, 0) - 0.05) / 0.8, 1); transform: translate3d(calc(-1 * var(--rail-travel, 0px) * var(--ease-p)), 0, 0); will-change: transform; align-items: center; }
+.descent .coast-rail .station { min-height: 52vh; }
+.descent .lead-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; }
+.descent .lead-link { color: #3fd1be; font: 600 0.8rem/1 var(--sc-font-display); text-decoration: none; }
+/* the footer's small print */
+.descent .tail-legal { flex-basis: 100%; margin: 0.6rem 0 0; font: 500 0.66rem/1.7 var(--sc-font-text); letter-spacing: 0; text-transform: none; color: rgba(237,244,242,0.55); max-width: 80ch; }
+@media (prefers-reduced-motion: reduce) { .descent .js-rail { transform: none; } .descent .rail-stage { height: auto; overflow: auto; } .descent .guide-back { transform: none; } }

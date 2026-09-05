@@ -630,3 +630,10 @@
 /* the hidden measuring copy of a page: same width as the page, never seen, never clicked */
 .fpage__fit-measure { position: absolute; left: 0; top: 0; width: 100%; visibility: hidden; pointer-events: none; }
 .fpage__fit-measure > .lb-page { border-radius: 0; box-shadow: none; transform: none !important; }
+
+/* the verified Google review beside the book */
+.google-card { max-width: 46rem; margin: clamp(2rem, 4vw, 3rem) auto 0; padding: 1.4rem 1.6rem; background: var(--paper); border-radius: 6px; box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 22px 50px -26px rgba(23,18,8,0.4); display: grid; gap: 0.8rem; }
+.google-card > .lb-mono { color: var(--reef); }
+.google-card p { margin: 0; font: 500 1rem/1.6 var(--display); color: var(--ink); display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.google-card:hover p, .google-card:focus-within p { -webkit-line-clamp: unset; }
+.google-card a { color: var(--reef); text-decoration: none; }

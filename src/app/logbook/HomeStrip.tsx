@@ -59,6 +59,11 @@ export default async function HomeStrip() {
               ) },
             ]}
           />
+          <aside className="google-card" aria-label="A verified Google review">
+            <span className="lb-mono">Verified Google review · Open Water student · May 2026</span>
+            <p>&ldquo;I did my Open Water with them. I really enjoy diving but because of claustrophobia underwater and panic attacks, it was mentally very challenging for me. They gave me a separate instructor, Osama, and he was incredible. He showed so much patience, understanding and professionalism that I slowly started building trust underwater again. He never forced me or held me underwater, so I always felt safe with him. At the same time, he knew exactly when to push me harder and improve my skills. Teaching someone calm is one thing; teaching someone with claustrophobia and panic attacks requires a completely different level of skill, intelligence, patience and understanding, and Osama has all of this. He even surprised me with a little underwater birthday celebration.&rdquo;</p>
+            <a href="https://www.google.com/maps/reviews/@28.489362,34.5157305,17z/data=!3m1!4b1!4m6!14m5!1m4!2m3!1sCi9DQUlRQUNvZENodHljRjlvT25OWFFtMDFOamhIZGpab1UzTjZXRlpFZVdkUWEwRRAB!2m1!1s0x0:0x4cef5c73b1ff7bb4?hl=en-GB" target="_blank" rel="noopener noreferrer" className="lb-mono">Read on Google</a>
+          </aside>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem", marginTop: "2.4rem" }}>
             <Link href="/review#pages" className="lb-btn lb-btn--paper">Read all the reviews</Link>
             <Link href="/review#sign" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23, 18, 8, 0.3)" }}>Write a review</Link>

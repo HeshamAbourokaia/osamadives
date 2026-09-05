@@ -1,4 +1,5 @@
 import Image from "next/image";
+import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { diveSites, getDiveSiteBySlug } from "@/lib/dive-sites";
@@ -239,6 +240,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
           </div>
         </div>
       </footer>
+      <BackToPlace />
     </div>
   );
 }

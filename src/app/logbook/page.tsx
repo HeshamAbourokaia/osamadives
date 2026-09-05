@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
 import { storageReady } from "@/lib/logbook/config";
 import { getStore } from "@/lib/logbook/store";
@@ -148,6 +149,7 @@ export default async function LogbookPage() {
           <Link href="/">Home</Link>
         </span>
       </footer>
+      <BackToPlace />
     </>
   );
 }

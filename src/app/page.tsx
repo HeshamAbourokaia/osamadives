@@ -6,6 +6,7 @@ import OrbitScene from "./OrbitScene";
 import HomeStrip from "./logbook/HomeStrip";
 import DescentNav from "./DescentNav";
 import Bubbles from "./Bubbles";
+import ReturnToPlace from "./ReturnToPlace";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
 import InstagramRibbon from "@/components/InstagramRibbon";
@@ -40,6 +41,10 @@ export default async function Home() {
     console.error("orbit reviews fetch failed", e);
   }
   const orbitItems = buildOrbitItems(approvedReviews);
+  // One line from a real review sits beside his introduction: the shortest approved note
+  // that still says something, so the page does not open on a wall of text.
+  const quotable = approvedReviews.filter((r) => r.note.length >= 60).sort((a, b) => a.note.length - b.note.length)[0];
+  const quote = quotable ? { text: quotable.note.length > 170 ? `${quotable.note.slice(0, 167).trimEnd()}...` : quotable.note, who: `${quotable.name}${quotable.country ? `, ${quotable.country}` : ""}` } : null;
   const posts = [...blogPosts].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 5);
   const featuredFrames = galleryPhotos.filter((g) => g.featured);
   const frames = (featuredFrames.length >= 6 ? featuredFrames : galleryPhotos).slice(0, 9);
@@ -47,6 +52,14 @@ export default async function Home() {
   return (
     <div className={`descent ${archivo.variable} ${plex.variable}`}>
       <span data-sc-progress />
+      {/* the lens for liquid glass: Chrome bends the backdrop through it, other browsers keep the blur */}
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true" focusable="false">
+        <filter id="lg-refract" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="noise" />
+          <feGaussianBlur in="noise" stdDeviation="2" result="soft" />
+          <feDisplacementMap in="SourceGraphic" in2="soft" scale="14" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
       <div className="sc-grain" aria-hidden="true" />
       <DescentNav whatsapp={WHATSAPP} />
       <aside className="hud mono" id="hud" aria-hidden="true">
@@ -69,9 +82,10 @@ export default async function Home() {
               <p className="sc-body">PADI Master Scuba Diver Trainer. Fourth family in Dahab, on this shore since 1983.</p>
               <div className="brand-ribbons">
                 <LogbookRibbon variant="hero" />
-                <AiFeatureRibbon variant="hero" />
                 <InstagramRibbon variant="hero" />
+                <AiFeatureRibbon variant="hero" />
               </div>
+              <p className="brand-small">Courses and dives are arranged through CDWS-registered dive centres in Dahab.</p>
             </div>
           </div>
         </section>
@@ -99,7 +113,7 @@ export default async function Home() {
         </section>
 
         {/* ACT 2 · THE GUIDE: magazine cover on paper, cursor light on the surface */}
-        <section className="g-bone" id="guide-act" data-sc-act="pin" data-sc-span="2.1" style={{ "--sc-span": 2.1 } as React.CSSProperties} data-sc-spotlight>
+        <section className="g-bone" id="guide-act" data-sc-act="flow" data-sc-spotlight>
           <div data-sc-stage className="guide-stage">
             <img className="guide-back" data-sc-parallax="-0.32" src="/descent/arch-camels.webp" alt="" aria-hidden="true" />
             <div className="guide-cover">
@@ -108,6 +122,12 @@ export default async function Home() {
                 <span className="microcopy">On the sand · your guide</span>
                 <h2 data-sc-cue="0 1 0 0.1" data-sc-kinetic="lines">Meet Osama.</h2>
                 <p className="sc-body" data-sc-cue="0.06 1 0.12 0.1">Osama Mohamed Hassan was born into a Dahab of fishing boats and palm shelters on the sand. He has spent his life in this water. He briefs slowly, watches closely, and laughs easily.</p>
+                {quote ? (
+                  <blockquote className="guide-quote" data-sc-cue="0.1 1 0.12 0.1">
+                    <p>&ldquo;{quote.text}&rdquo;</p>
+                    <cite>{quote.who}</cite>
+                  </blockquote>
+                ) : null}
                 <dl className="ledger" data-sc-cue="0.12 1 0.14 0.1">
                   <div><dt>Rating</dt><dd>PADI Master Scuba Diver Trainer</dd></div>
                   <div><dt>Family</dt><dd>Fourth family of Dahab, on this shore since 1983</dd></div>
@@ -127,7 +147,7 @@ export default async function Home() {
         </section>
 
         {/* ACT 3 · SILENCE: one ledger line in the dark */}
-        <section className="g-night silence">
+        <section className="g-night silence silence--short">
           <span className="microcopy" data-sc-in>Entry 001 · August 1987</span>
           <p className="line" data-sc-in>Someone brought a camera to the beach.</p>
         </section>
@@ -135,7 +155,7 @@ export default async function Home() {
         {/* ACT 4 · THE PEAK: the print becomes the man, the year runs behind it */}
         <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="2.9" style={{ "--sc-span": 2.9 } as React.CSSProperties}>
           <div data-sc-stage className="peak-stage">
-            <div className="peak-year sc-nums" data-sc-count="1987 2026" data-sc-count-at="0.1 0.8" data-sc-parallax="-1" aria-hidden="true">1987</div>
+            <div className="peak-year sc-nums" data-sc-count="1987 2024" data-sc-count-at="0.1 0.8" data-sc-parallax="-1" aria-hidden="true">1987</div>
             <div className="peak-frame" data-sc-parallax="0.35">
               <div className="peak-mat">
                 <div className="peak-plate">
@@ -396,7 +416,7 @@ export default async function Home() {
               <h2>Come up when you&apos;re ready.</h2>
               <p className="sc-body">Send a message and start planning your water. He answers himself.</p>
               <a className="cta" data-sc-magnet="0.26" data-sc-rise="0" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
-              <p className="surface-small">WhatsApp is the fastest way. I usually answer within a few hours. If you would rather talk, <a href="https://cal.com/osama-dives" target="_blank" rel="noopener noreferrer">pick a time</a>.</p>
+              <p className="surface-small">WhatsApp is the fastest way. I usually answer within a few hours.</p>
               <p className="surface-small">I dive with, and refer to, CDWS-registered dive centres in Dahab.</p>
             </div>
             <div className="surface-foot" data-sc-cue="0.2">
@@ -426,6 +446,7 @@ export default async function Home() {
         </footer>
       </div>
       <BackToTop />
+      <ReturnToPlace />
       <DescentBoot />
     </div>
   );

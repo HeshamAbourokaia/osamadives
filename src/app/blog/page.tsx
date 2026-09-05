@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
 import { useState } from "react";
 import { getAllPosts, formatDate } from "@/lib/blog-posts";
@@ -315,6 +316,7 @@ export default function BlogPage() {
 
       {/* Floating Heritage Badge */}
       <FloatingBadge />
+      <BackToPlace />
     </div>
   );
 }

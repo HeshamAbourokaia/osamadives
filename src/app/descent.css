@@ -744,7 +744,8 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .orbit-card {
     position: absolute; left: 50%; top: var(--ring-cy); width: clamp(8rem, 12.5vw, 11rem);
     transform: translate(-50%, -50%) translateY(calc(var(--card-rise, 0px) + var(--card-y, 0px)))
-      rotateY(var(--card-angle)) translateZ(var(--ring-r)) scale(var(--card-scale, 1));
+      rotateY(var(--card-angle)) translateZ(var(--ring-r)) scale(calc(var(--card-scale, 1) * var(--hot, 1)));
+    transition: box-shadow 220ms var(--sc-ease-out, ease-out), border-color 220ms;
     display: block; text-decoration: none; color: var(--sc-ink);
     background: #fff; border: 1px solid rgba(11,111,96,0.12); border-radius: 10px; overflow: hidden; cursor: pointer;
     box-shadow: 0 22px 48px -22px rgba(11,111,96,0.45);
@@ -1064,3 +1065,76 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .guide-panel { padding: clamp(1.4rem, 3vw, 2.4rem); border-radius: 18px; }
 .descent .guide-panel .rule-draw { margin-bottom: 1rem; }
 @media (max-width: 860px) { .descent .guide-panel { padding: 1.2rem; border-radius: 14px; } }
+
+/* ================= orbit: the hover frame ================= */
+/* Hover or focus a card and it comes forward with a targeting frame: four corner
+   brackets, a scan line sweeping the picture, a glow, and the word Open. */
+.descent .orbit-card__hud { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 180ms; }
+.descent .orbit-card__hud i { position: absolute; width: 14px; height: 14px; border: 2px solid #3fd1be; transition: transform 260ms var(--sc-ease-out, ease-out); }
+.descent .orbit-card__hud i:nth-child(1) { top: 5px; left: 5px; border-right: 0; border-bottom: 0; transform: translate(8px, 8px); }
+.descent .orbit-card__hud i:nth-child(2) { top: 5px; right: 5px; border-left: 0; border-bottom: 0; transform: translate(-8px, 8px); }
+.descent .orbit-card__hud i:nth-child(3) { bottom: 5px; left: 5px; border-right: 0; border-top: 0; transform: translate(8px, -8px); }
+.descent .orbit-card__hud i:nth-child(4) { bottom: 5px; right: 5px; border-left: 0; border-top: 0; transform: translate(-8px, -8px); }
+.descent .orbit-card__hud b { position: absolute; right: 0.55rem; top: 0.5rem; font: 700 0.58rem/1 var(--sc-font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: #06141b; background: #3fd1be; padding: 0.3rem 0.45rem; border-radius: 3px; }
+.descent .orbit-card__hud::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(to right, transparent, #3fd1be, transparent); opacity: 0.9; animation: orbit-scan 1.4s linear infinite; }
+@keyframes orbit-scan { from { transform: translateY(0); } to { transform: translateY(5.6rem); } }
+.descent .orbit-card:is(:hover, :focus-visible) { --hot: 1.32; border-color: rgba(63,209,190,0.7); box-shadow: 0 0 0 1px rgba(63,209,190,0.6), 0 0 44px rgba(63,209,190,0.35), 0 30px 60px -24px rgba(11,111,96,0.6); z-index: 200 !important; }
+.descent .orbit-card:is(:hover, :focus-visible) .orbit-card__hud { opacity: 1; }
+.descent .orbit-card:is(:hover, :focus-visible) .orbit-card__hud i { transform: translate(0, 0); }
+.descent .orbit-card:focus-visible { outline: none; }
+@media (prefers-reduced-motion: reduce) { .descent .orbit-card__hud::before { animation: none; } }
+
+/* ================= guide act: full bleed, fits the screen ================= */
+.descent .guide-stage { min-height: 100svh; padding: 4vh var(--sc-gutter); }
+.descent .guide-back { left: 0; right: 0; top: 0; width: 100%; height: 100%; opacity: 0.34; filter: saturate(0.75); -webkit-mask-image: none; mask-image: none; }
+.descent .guide-stage::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(242,237,226,0.55), rgba(242,237,226,0.15) 40%, rgba(242,237,226,0.7)); }
+.descent .guide-panel { padding: clamp(1.1rem, 2.2vw, 1.8rem); }
+.descent .guide-panel .sc-body { font-size: clamp(0.95rem, 1.2vw, 1.05rem); }
+.descent .guide-panel .ledger { margin-top: 1.1rem; }
+.descent .guide-panel .ledger div { padding: 0.45rem 0; }
+.descent .guide-quote { margin: 1.1rem 0 0; padding: 0.2rem 0 0 1rem; border-left: 3px solid #3fd1be; }
+.descent .guide-quote p { margin: 0; font: 600 clamp(1.05rem, 1.5vw, 1.25rem)/1.4 var(--sc-font-text); color: var(--sc-ink); text-wrap: pretty; }
+.descent .guide-quote cite { display: block; margin-top: 0.4rem; font: 500 0.62rem/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--sc-ink-soft); font-style: normal; }
+.descent .guide-plate figure { max-height: 62vh; }
+.descent .guide-plate img { max-height: 62vh; object-fit: cover; }
+@media (max-width: 860px) {
+  .descent .guide-stage { min-height: auto; }
+  .descent .guide-plate figure, .descent .guide-plate img { max-height: 40vh; }
+}
+/* the short silence: a breath, not a blank page */
+.descent .silence--short { min-height: 32vh !important; padding-block: 8vh !important; }
+/* hero small print */
+.descent .brand-small { margin: 0.9rem 0 0; font: 500 0.72rem/1.5 var(--sc-font-text); color: rgba(240,247,245,0.72); max-width: 44ch; }
+
+/* ================= liquid glass, the full material =================
+   Every control on the page is a capsule of glass: the backdrop is blurred and
+   saturated, the edge refracts (Chrome bends the backdrop through an SVG filter,
+   others get a bright rim), a specular sits on the top edge, and the whole thing
+   floats on a soft shadow. Applied to nav, gauge, pills, buttons, book arrows. */
+.descent .lg, .descent .cta, .descent .cta--quiet, .descent .navbtn, .descent .brand-ribbons a, .descent .topnav, .descent .hud, .descent .book__arrow, .descent .tail .lb-btn {
+  isolation: isolate; border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.18)) !important;
+  border: 1px solid rgba(255,255,255,0.45) !important;
+  backdrop-filter: blur(18px) saturate(180%) brightness(1.05); -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.05);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), inset 0 -1px 0 rgba(255,255,255,0.15), inset 1px 0 0 rgba(255,255,255,0.35), inset -1px 0 0 rgba(255,255,255,0.15), inset 0 0 18px rgba(255,255,255,0.12), 0 18px 44px -20px rgba(0,0,0,0.5) !important;
+  color: #fff;
+}
+@supports (backdrop-filter: url("#lg-refract")) {
+  .descent .cta, .descent .navbtn, .descent .brand-ribbons a, .descent .hud { backdrop-filter: blur(14px) saturate(180%) url("#lg-refract"); -webkit-backdrop-filter: blur(14px) saturate(180%) url("#lg-refract"); }
+}
+.descent .cta { background: linear-gradient(135deg, rgba(63,209,190,0.85), rgba(63,209,190,0.55) 50%, rgba(63,209,190,0.8)) !important; color: #04121a; }
+.descent .cta--quiet { color: #edf4f2; }
+.descent .topnav { padding: 0.55rem 1rem; gap: 1.1rem; left: 8.2rem; top: 0.95rem; }
+.descent .topnav a { color: #f3f8f6; text-shadow: none; }
+.descent .hud { border-radius: 16px; }
+.descent .tail .lb-btn { color: var(--ink, #171208) !important; background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.6)) !important; border-color: rgba(11,107,96,0.35) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), inset 1px 0 0 rgba(255,255,255,0.6), 0 18px 40px -22px rgba(11,107,96,0.5) !important; }
+.descent .tail .lb-btn--paper { background: linear-gradient(135deg, rgba(11,107,96,0.92), rgba(11,107,96,0.7) 50%, rgba(11,107,96,0.9)) !important; color: #fff !important; }
+.descent .book__arrow { width: 52px; height: 52px; color: var(--ink, #171208); font-size: 2rem; background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.6)) !important; border-color: rgba(11,107,96,0.3) !important; }
+.descent .book__arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); }
+@media (max-width: 860px) { .descent .surface-copy { padding-bottom: 5.5rem; } }
+
+.descent .cta, .descent .cta--quiet, .descent .tail .lb-btn { position: relative; }
+
+.descent .orbit-card__hud i { filter: drop-shadow(0 0 4px rgba(63,209,190,0.9)); }
+/* the dive computer keeps a dark tint so its digits read over bright water */
+.descent .hud { background: linear-gradient(135deg, rgba(20,60,66,0.66), rgba(4,14,20,0.6) 45%, rgba(20,60,66,0.52)) !important; }

@@ -43,11 +43,11 @@ export default async function HomeStrip() {
               <WeddingPage variant="wall" key="wedding" />,
               ...entries.map((e, i) => <PageCard key={e.id} entry={e} number={total - i} />),
             ]}
-            labels={["Cover", "The underwater wedding", ...entries.map((e) => e.name)]}
+            captions={["The book of reviews", "Entry 000 · Hesham & Sophie · the underwater wedding", ...entries.map((e, i) => `Entry ${String(total - i).padStart(3, "0")} · ${e.name}${e.country ? ` · ${e.country}` : ""}`)]}
           />
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem", marginTop: "2.4rem" }}>
-            <Link href="/logbook#sign" className="lb-btn lb-btn--paper">Write a review</Link>
-            <Link href="/logbook#pages" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23, 18, 8, 0.3)" }}>Read all the reviews</Link>
+            <Link href="/review#pages" className="lb-btn lb-btn--paper">Read all the reviews</Link>
+            <Link href="/review#sign" className="lb-btn lb-btn--quiet" style={{ color: "var(--ink)", borderColor: "rgba(23, 18, 8, 0.3)" }}>Write a review</Link>
           </div>
         </div>
       </div>

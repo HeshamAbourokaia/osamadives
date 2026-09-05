@@ -1,4 +1,5 @@
 import Image from "next/image";
+import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
 import { diveSites } from "@/lib/dive-sites";
 
@@ -134,6 +135,7 @@ export default function DiveSitesPage() {
           </div>
         </div>
       </footer>
+      <BackToPlace />
     </div>
   );
 }

@@ -4,6 +4,13 @@ import InstagramFeed from "@/components/InstagramFeed";
 import DescentBoot from "./DescentBoot";
 import OrbitScene from "./OrbitScene";
 import HomeStrip from "./logbook/HomeStrip";
+import DescentNav from "./DescentNav";
+import AiFeatureRibbon from "@/components/AiFeatureRibbon";
+import LogbookRibbon from "@/components/LogbookRibbon";
+import InstagramRibbon from "@/components/InstagramRibbon";
+import BackToTop from "@/components/BackToTop";
+import { blogPosts } from "@/lib/blog-posts";
+import { galleryPhotos } from "@/lib/gallery-config";
 import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import { buildOrbitItems } from "@/lib/orbit-content";
@@ -32,18 +39,15 @@ export default async function Home() {
     console.error("orbit reviews fetch failed", e);
   }
   const orbitItems = buildOrbitItems(approvedReviews);
+  const posts = [...blogPosts].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 5);
+  const featuredFrames = galleryPhotos.filter((g) => g.featured);
+  const frames = (featuredFrames.length >= 6 ? featuredFrames : galleryPhotos).slice(0, 9);
 
   return (
     <div className={`descent ${archivo.variable} ${plex.variable}`}>
       <span data-sc-progress />
       <div className="sc-grain" aria-hidden="true" />
-      <p className="brand">Osama<span style={{ opacity: 0.75 }}>Dives</span></p>
-      <nav className="topnav" aria-label="Site">
-        <a href="/dive-sites">Sites</a>
-        <a href="/blog">Journal</a>
-        <a href="/gallery">Gallery</a>
-        <a href="/logbook">Reviews</a>
-      </nav>
+      <DescentNav whatsapp={WHATSAPP} />
       <aside className="hud mono" id="hud" aria-hidden="true">
         <span className="hud__depth"><span id="hud-depth">00.0</span> <small>M</small></span>
         <span className="hud__label" id="hud-label">Surface</span>
@@ -57,11 +61,16 @@ export default async function Home() {
             Hesham's request 4 Sep 2026: "his face is the branding." */}
         <section className="g-abyss brand-act" id="brand-act">
           <div className="brand-stage">
-            <img className="brand-stage__photo" src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="100vw" alt="Osama teaching a diving student in the crystal-clear shallow water of Dahab, Egypt" />
+            <img className="brand-stage__photo" data-sc-parallax="-0.12" src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="100vw" alt="Osama teaching a diving student in the crystal-clear shallow water of Dahab, Egypt" />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="brand-copy" data-sc-in>
               <h1>Osama.</h1>
               <p className="sc-body">PADI Master Scuba Diver Trainer. Fourth family in Dahab, on this shore since 1983.</p>
+              <div className="brand-ribbons">
+                <LogbookRibbon variant="hero" />
+                <AiFeatureRibbon variant="hero" />
+                <InstagramRibbon variant="hero" />
+              </div>
             </div>
           </div>
         </section>
@@ -224,6 +233,66 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* ACT 5b · WHY DAHAB: the three reasons, in his words, carried over from the
+            previous homepage so nothing is lost. */}
+        <section className="g-bone" id="why-act" data-sc-act="flow">
+          <div className="school why">
+            <div className="school-head" data-sc-in data-sc-stagger="60">
+              <span className="microcopy">Why here</span>
+              <h2>Why divers dream of Dahab.</h2>
+              <p className="sc-body">Clear Red Sea water, world-class sites, and a shore you walk into. No boat, no seasickness, no rush.</p>
+            </div>
+            <div className="exhibits exhibits--three" data-sc-in data-sc-stagger="90">
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">B</span>
+                <a className="exhibit-card" href="/dive-sites/blue-hole-dahab" data-sc-tilt="5" data-sc-parallax="-0.08">
+                  <img src="/images/OsamaDives_The_Blue_Hole.jpeg" alt="The Blue Hole in Dahab, the famous vertical drop with the Arch at 55 metres" loading="lazy" />
+                  <div className="row"><h3>Blue Hole</h3><span className="spec">A pilgrimage</span></div>
+                  <p>Divers travel from every corner of the world to descend into this sinkhole. Open Water is the minimum. The Arch is for technical divers only; recreational diving here stops at 40 metres. I have dived it more than a thousand times. I know its moods, and how to show you its magic safely.</p>
+                </a>
+              </figure>
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">C</span>
+                <a className="exhibit-card" href="/dive-sites/the-canyon-dahab" data-sc-tilt="5" data-sc-parallax="0.06">
+                  <img src="/images/OsamDives_The_Canyon.jpg" alt="The Canyon dive site in Dahab, dramatic formations with shafts of light" loading="lazy" />
+                  <div className="row"><h3>The Canyon</h3><span className="spec">A cathedral</span></div>
+                  <p>You descend through a narrow passage as beams of sunlight pierce the water above you. Walls covered in soft coral, home to lionfish, moray eels, and schools of glassfish.</p>
+                </a>
+              </figure>
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">S</span>
+                <a className="exhibit-card" href="/dive-sites" data-sc-tilt="5" data-sc-parallax="-0.08">
+                  <img src="/images/FB_IMG_1621238990084.jpg" alt="Shore diving in Dahab, an easy beach entry with no boats" loading="lazy" />
+                  <div className="row"><h3>Shore diving</h3><span className="spec">No boats</span></div>
+                  <p>Forget crowded boats and rough seas. In Dahab you walk to your dive site. Gear up on the beach, wade in through calm water, and you are diving within minutes. More time underwater, less time commuting.</p>
+                </a>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        {/* ACT 5c · THE JOURNAL: his stories, a rail that pans as the visitor scrolls */}
+        <section className="g-night" id="journal-act" data-sc-act="pan" data-sc-span="2.6" style={{ "--sc-span": 2.6 } as React.CSSProperties}>
+          <div data-sc-stage>
+            <div className="coast-rail journal-rail" data-sc-pan="0.05">
+              <div className="coast-lead">
+                <span className="microcopy">The journal</span>
+                <h2>Stories from the water.</h2>
+                <p className="sc-body">A thousand dives at one site, why I teach, what the night does to a reef. Written by me, between dives.</p>
+                <a className="cta cta--quiet" href="/blog">Read the journal</a>
+              </div>
+              {posts.map((post) => (
+                <a className="station journal-card" href={`/blog/${post.slug}`} key={post.slug} data-sc-tilt="4">
+                  <img className="station__img" src={post.featuredImage} alt="" loading="lazy" />
+                  <span className="microcopy">{new Date(post.date).getFullYear()} · journal</span>
+                  <h3>{post.title}</h3>
+                  <p>{post.excerpt}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ACT 6 · HIS WORLD: Osama at the centre, a 3D ring of the site's own sites,
             stories, gallery and reviews orbiting him. Sits here because by this point
             the visitor has met him (the guide), seen the depths and toured the sites;
@@ -250,7 +319,7 @@ export default async function Home() {
             <div className="exhibits" data-sc-in data-sc-stagger="90">
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">I</span>
-                <div className="exhibit-card" data-sc-tilt="5">
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/descent/arch-lagoon.webp" srcSet="/descent/arch-lagoon-m.webp 800w, /descent/arch-lagoon.webp 1400w" sizes="(max-width: 860px) 92vw, 40vw" alt="The turquoise lagoon at Dahab where first dives happen" />
                   <div className="row"><h3>Intro Dive</h3><span className="spec">Half a day</span></div>
                   <p>Never tried it. A pool, then the sea, no certification, just a first breath underwater.</p>
@@ -258,7 +327,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">O</span>
-                <div className="exhibit-card" data-sc-tilt="5">
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="0.06">
                   <img src="/descent/padi-first-fins.webp" alt="A young student in a small wetsuit standing proudly in the street at Assalah" />
                   <div className="row"><h3>Open Water</h3><span className="spec">3-4 days · 18 m</span></div>
                   <p>The certification. You leave able to dive anywhere in the world.</p>
@@ -266,7 +335,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">A</span>
-                <div className="exhibit-card" data-sc-tilt="5">
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/descent/bluehole-aerial.webp" alt="The Blue Hole of Dahab seen from above, a deep blue circle in the reef shelf" />
                   <div className="row"><h3>Advanced</h3><span className="spec">2 days · 30 m</span></div>
                   <p>Five adventure dives. Opens the deep sites, night diving included.</p>
@@ -274,7 +343,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">R</span>
-                <div className="exhibit-card" data-sc-tilt="5">
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="0.06">
                   <img src="/descent/osama-truck.webp" srcSet="/descent/osama-truck-m.webp 800w, /descent/osama-truck.webp 960w" sizes="(max-width: 860px) 92vw, 40vw" alt="Osama on the back of a pickup truck in his wetsuit after a dive, talking to divers" />
                   <div className="row"><h3>Rescue Diver</h3><span className="spec">4 days</span></div>
                   <p>The course that turns you into a buddy worth diving with.</p>
@@ -284,7 +353,30 @@ export default async function Home() {
             <dl className="school-more" data-sc-in>
               <div><dt>Divemaster</dt><dd>Several weeks at his side. The first professional step, if you want one.</dd></div>
               <div><dt>Specialties</dt><dd>Sidemount, nitrox, deep, night. Picked to fit the reefs you want to dive.</dd></div>
+              <div><dt>The Blue Hole</dt><dd>A half day at the famous one. Open Water at minimum, 40 metres at most; the Arch stays with the technical divers.</dd></div>
+              <div><dt>Ras Abu Galum safari</dt><dd>By camel through bronze canyons to reefs no speedboat reaches. Advanced divers, and snorkellers with a private guide, always accompanied.</dd></div>
             </dl>
+            <p className="school-note" data-sc-in>Interested in any of these? I am happy to share recommendations and to connect you with CDWS-registered dive centres in Dahab.</p>
+          </div>
+        </section>
+
+        {/* ACT 7b · THE GALLERY: a rail of his photographs, panning as the visitor scrolls */}
+        <section className="g-abyss" id="gallery-act" data-sc-act="pan" data-sc-span="2.8" style={{ "--sc-span": 2.8 } as React.CSSProperties}>
+          <div data-sc-stage>
+            <div className="coast-rail gal-rail" data-sc-pan="0.05">
+              <div className="coast-lead">
+                <span className="microcopy">The gallery</span>
+                <h2>Forty years of photographs.</h2>
+                <p className="sc-body">Students, reefs, the family, the town. The whole archive is on the gallery page; this is a walk past a few frames.</p>
+                <a className="cta cta--quiet" href="/gallery">Open the gallery</a>
+              </div>
+              {frames.map((photo, i) => (
+                <a className={`gal-frame gal-frame--${i % 3}`} href="/gallery" key={photo.id} data-sc-tilt="3" data-sc-parallax={i % 2 ? "-0.18" : "0.12"}>
+                  <img src={photo.src} alt={photo.alt} loading="lazy" />
+                  <figcaption className="microcopy">{photo.title}</figcaption>
+                </a>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -300,6 +392,8 @@ export default async function Home() {
               <h2>Come up when you&apos;re ready.</h2>
               <p className="sc-body">Send a message and start planning your water. He answers himself.</p>
               <a className="cta" data-sc-magnet="0.26" data-sc-rise="0" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
+              <p className="surface-small">WhatsApp is the fastest way. I usually answer within a few hours. If you would rather talk, <a href="https://cal.com/osama-dives" target="_blank" rel="noopener noreferrer">pick a time</a>.</p>
+              <p className="surface-small">I dive with, and refer to, CDWS-registered dive centres in Dahab.</p>
             </div>
             <div className="surface-foot" data-sc-cue="0.2">
               <span>OsamaDives · family on this shore since 1983</span>
@@ -327,6 +421,7 @@ export default async function Home() {
           </nav>
         </footer>
       </div>
+      <BackToTop />
       <DescentBoot />
     </div>
   );

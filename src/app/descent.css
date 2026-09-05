@@ -1232,3 +1232,20 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 /* the footer's small print */
 .descent .tail-legal { flex-basis: 100%; margin: 0.6rem 0 0; font: 500 0.66rem/1.7 var(--sc-font-text); letter-spacing: 0; text-transform: none; color: rgba(237,244,242,0.55); max-width: 80ch; }
 @media (prefers-reduced-motion: reduce) { .descent .js-rail { transform: none; } .descent .rail-stage { height: auto; overflow: auto; } .descent .guide-back { transform: none; } }
+
+/* ================= seams: acts flow into each other instead of cutting ================= */
+/* Every act after the first overlaps the one before by a slice of the screen and fades in
+   over it, so the previous stage is still there under the next act's top as it slides in.
+   The first act keeps a hard top; the last one keeps a hard bottom. */
+.descent #descent-main > section + section {
+  margin-top: -14svh; padding-top: 14svh;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14svh);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14svh);
+}
+.descent #descent-main > section + section > [data-sc-stage] { top: 0; }
+.descent .tail { position: relative; z-index: 2; }
+@media (max-width: 860px) {
+  .descent #descent-main > section + section { margin-top: -10svh; padding-top: 10svh; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10svh); mask-image: linear-gradient(to bottom, transparent 0, #000 10svh); }
+}
+/* the Open Water photograph: the whole frame, mounted */
+.descent .exhibit-card .exhibit-img--faces { object-fit: contain; object-position: center; height: 330px; background: #e9e2d2; }

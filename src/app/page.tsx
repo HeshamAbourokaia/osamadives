@@ -11,6 +11,7 @@ import SideRail from "./SideRail";
 import RailTravel from "./RailTravel";
 import PeakYears from "./PeakYears";
 import Words from "./Words";
+import ShareCode from "./ShareCode";
 import { LENS_MAP } from "./lensMap";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
@@ -552,6 +553,7 @@ export default async function Home() {
             <a href="https://instagram.com/osama_mohamed_hassan" target="_blank" rel="noopener noreferrer">Instagram</a>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a>
           </nav>
+          <ShareCode path="/" caption="Point a camera at this and the site opens on their phone, no typing." />
           <p className="tail-legal">This website is a personal portfolio showing Osama&apos;s diving experience and credentials. All diving activities, courses and experiences are conducted through CDWS-registered dive centres in Dahab. For diving enquiries and arrangements contact Osama directly; this site is an informational resource and does not take bookings or payments.</p>
           <p className="tail-legal">&copy; 2026 OsamaDives.com · Dahab, South Sinai, Egypt · Pioneer family since 1983 · Shark Restaurant legacy · PADI Master Scuba Diver Trainer</p>
         </footer>

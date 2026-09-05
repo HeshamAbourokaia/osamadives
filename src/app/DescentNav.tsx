@@ -1,5 +1,6 @@
 "use client";
 
+import ShareCode from "./ShareCode";
 import { useEffect, useState } from "react";
 
 const LINKS = [
@@ -56,6 +57,7 @@ export default function DescentNav({ whatsapp }: Props) {
             {LINKS.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>)}
             <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="navsheet__wa">Message Osama on WhatsApp</a>
           </nav>
+          <ShareCode caption="Point a camera at this and the same page opens on their phone." />
           <p className="navsheet__foot mono">OsamaDives · Dahab, South Sinai · since 1983</p>
         </div>
       ) : null}

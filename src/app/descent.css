@@ -1304,3 +1304,28 @@ html:not(.sc-ready) .w__i { transform: none; }
   .descent .entry-copy h2.focus-in { filter: none; transform: none; opacity: 1; }
   .descent .wl__below { animation: none; }
 }
+
+
+/* ------------------------------------------------------- show a friend -- */
+/* A code for the page on screen, so the person beside you scans instead of typing.
+   Paper and ink like the card, the stamp in the middle, WhatsApp as the other way. */
+.sharecode { display: flex; align-items: center; gap: 1.1rem 1.4rem; margin: 1.6rem 0 1.2rem; max-width: 40rem; }
+.sharecode__code {
+  position: relative; flex: 0 0 auto; display: block; width: 7.2rem; aspect-ratio: 1;
+  border-radius: 12px; overflow: hidden; background: #FFFDF8;
+  box-shadow: 0 0 0 1px rgba(255,253,248,0.35), 0 12px 30px -14px rgba(0,0,0,0.6);
+  transition: transform 220ms var(--sc-ease-out);
+}
+.sharecode__code:hover, .sharecode__code:focus-visible { transform: translateY(-2px) scale(1.02); }
+.sharecode__code svg { display: block; width: 100%; height: 100%; }
+.sharecode__stamp {
+  position: absolute; left: 50%; top: 50%; width: 24%; height: auto;
+  transform: translate(-50%, -50%); border-radius: 50%; background: #FFFDF8; padding: 2px;
+}
+.sharecode figcaption { font: 500 0.88rem/1.55 var(--sc-font-text); color: rgba(237,244,242,0.8); max-width: 30ch; text-transform: none; letter-spacing: 0; }
+.sharecode figcaption strong { display: block; font: 700 1rem/1.2 var(--sc-font-display); color: #F4FAF8; margin-bottom: 0.25rem; letter-spacing: 0.01em; }
+.sharecode__wa { display: inline-block; margin-top: 0.5rem; color: var(--reef-glow); text-decoration: underline; text-underline-offset: 0.2em; }
+.navsheet .sharecode { margin: 1.4rem 0 0.4rem; }
+.navsheet .sharecode__code { width: 5.6rem; }
+.navsheet .sharecode figcaption { color: rgba(237,244,242,0.7); font-size: 0.82rem; }
+@media (max-width: 480px) { .sharecode { gap: 0.9rem; } .sharecode__code { width: 6rem; } }

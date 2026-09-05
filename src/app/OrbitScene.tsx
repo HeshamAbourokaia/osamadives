@@ -27,9 +27,12 @@ const DRAG_RATE = 0.32;
 // The whole sequence plays inside the first slice of the act's own scroll
 // progress, so scrolling past it once is "arrived" and scrolling back up
 // un-settles it, same as every other cue on this page.
-const INTRO_WINDOW = 0.2; // fraction of act progress p spent arriving
-const CARD_RISE_PX = 130;
+const INTRO_WINDOW = 0.1; // fraction of act progress p spent arriving
+const CARD_RISE_PX = 90;
 const CARD_DURATION = 0.55; // each card's own share of the intro window
+// The ring is a dish seen from slightly above: the front of the orbit sits this far
+// below its centre line and the back this far above it, as a share of the radius.
+const DISH = 0.16;
 function easeOutBack(t: number) {
   const c1 = 1.70158;
   const c3 = c1 + 1;
@@ -75,6 +78,18 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
     let dragging = false;
     let dragStartX = 0;
     let dragStartDeg = 0;
+    let lastX = 0;
+    let lastT = 0;
+    let velocity = 0; // deg per ms, carried on after a release
+    let glide = 0;
+    const settle = () => {
+      glide = 0;
+      if (Math.abs(velocity) < 0.002) return;
+      dragDeg += velocity * 16;
+      velocity *= 0.94;
+      schedule();
+      glide = requestAnimationFrame(settle);
+    };
     let touchDirDecided = false;
     let touchIsHorizontal = false;
     let touchStartX = 0;
@@ -104,10 +119,12 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
       // rotation his flat cutout would turn edge-on and warp as the ring
       // spins. rotateY(-deg) cancels the parent's rotation so he stays
       // facing the camera the whole time, still, while everything orbits.
+      // He is there from the first frame (a blank stage read as a broken page); the
+      // intro only eases his scale up by a few percent as the cards arrive.
       const figureT = easeOutCubic(Math.min(1, p / INTRO_WINDOW));
+      const ringR = parseFloat(getComputedStyle(scene).getPropertyValue("--ring-r")) || 300;
       if (figureRef.current) {
-        figureRef.current.style.opacity = Math.min(1, figureT * 1.4).toFixed(3);
-        figureRef.current.style.transform = `translate(-50%, -50%) rotateY(${(-deg).toFixed(2)}deg) scale(${(0.72 + 0.28 * figureT).toFixed(3)})`;
+        figureRef.current.style.transform = `translateX(-50%) rotateY(${(-deg).toFixed(2)}deg) scale(${(0.94 + 0.06 * figureT).toFixed(3)})`;
       }
 
       const introRatio = Math.min(1, p / INTRO_WINDOW);
@@ -141,7 +158,8 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
         const introOpacity = Math.min(1, localT * 1.8);
 
         el.style.setProperty("--card-rise", `${((1 - eased) * CARD_RISE_PX).toFixed(1)}px`);
-        el.style.setProperty("--card-scale", eased.toFixed(3));
+        el.style.setProperty("--card-y", `${(depth * DISH * ringR).toFixed(1)}px`);
+        el.style.setProperty("--card-scale", (eased * (0.82 + 0.18 * front)).toFixed(3));
         el.style.opacity = (introOpacity * front).toFixed(3);
         el.style.filter = `blur(${((1 - front) * 3.4).toFixed(2)}px) brightness(${(0.62 + 0.38 * front).toFixed(2)})`;
         el.style.zIndex = String(Math.round(front * 100));
@@ -159,16 +177,23 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
       dragging = true;
       dragStartX = e.clientX;
       dragStartDeg = dragDeg;
+      lastX = e.clientX; lastT = performance.now(); velocity = 0;
+      if (glide) cancelAnimationFrame(glide);
       scene.style.cursor = "grabbing";
     };
     const onMouseMove = (e: MouseEvent) => {
       if (!dragging) return;
+      const now = performance.now();
+      if (now > lastT) velocity = ((e.clientX - lastX) * DRAG_RATE) / (now - lastT);
+      lastX = e.clientX; lastT = now;
       dragDeg = dragStartDeg + (e.clientX - dragStartX) * DRAG_RATE;
       schedule();
     };
     const onMouseUp = () => {
+      if (!dragging) return;
       dragging = false;
       scene.style.cursor = "";
+      settle();
     };
     scene.addEventListener("mousedown", onMouseDown);
     addEventListener("mousemove", onMouseMove);
@@ -184,7 +209,10 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
       touchDirDecided = false;
       touchIsHorizontal = false;
       dragStartDeg = dragDeg;
+      lastX = t0.clientX; lastT = performance.now(); velocity = 0;
+      if (glide) cancelAnimationFrame(glide);
     };
+    const onTouchEnd = () => { if (touchIsHorizontal) settle(); };
     const onTouchMove = (e: TouchEvent) => {
       const t0 = e.touches[0];
       const dx = t0.clientX - touchStartX;
@@ -196,12 +224,16 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
       }
       if (touchIsHorizontal) {
         e.preventDefault();
+        const now = performance.now();
+        if (now > lastT) velocity = ((t0.clientX - lastX) * DRAG_RATE) / (now - lastT);
+        lastX = t0.clientX; lastT = now;
         dragDeg = dragStartDeg + dx * DRAG_RATE;
         schedule();
       }
     };
     scene.addEventListener("touchstart", onTouchStart, { passive: true });
     scene.addEventListener("touchmove", onTouchMove, { passive: false });
+    scene.addEventListener("touchend", onTouchEnd);
 
     render();
     return () => {
@@ -213,6 +245,8 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
       scene.removeEventListener("mousedown", onMouseDown);
       scene.removeEventListener("touchstart", onTouchStart);
       scene.removeEventListener("touchmove", onTouchMove);
+      scene.removeEventListener("touchend", onTouchEnd);
+      if (glide) cancelAnimationFrame(glide);
     };
   }, [reduced, ringActive, items.length]);
 
@@ -245,7 +279,7 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
         <div className="orbit-3d" ref={sceneRef} aria-hidden={false}>
           <div className="orbit-ring" ref={ringRef}>
             <div className="orbit-figure" ref={figureRef}>
-              <img src={osamaSrc} srcSet={`${osamaSrcMobile} 700w, ${osamaSrc} 960w`} sizes="(max-width: 860px) 46vw, 20vw" alt={osamaAlt} loading="lazy" width={960} height={956} />
+              <img src={osamaSrc} srcSet={`${osamaSrcMobile} 700w, ${osamaSrc} 960w`} sizes="(max-width: 860px) 80vw, 36vw" alt={osamaAlt} loading="lazy" width={960} height={956} />
             </div>
             {items.map((item, i) => (
               <a
@@ -264,7 +298,7 @@ export default function OrbitScene({ items, osamaSrc, osamaSrcMobile, osamaAlt }
               </a>
             ))}
           </div>
-          <p className="orbit-hint microcopy">Scroll, or drag sideways</p>
+          <p className="orbit-hint microcopy">Drag sideways, or keep scrolling</p>
         </div>
       )}
     </div>

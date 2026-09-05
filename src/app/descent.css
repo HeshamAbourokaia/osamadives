@@ -512,7 +512,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .brand {
     position: fixed; top: 1.35rem; left: 1.4rem; z-index: 60;
     font: 800 0.82rem/1 var(--sc-font-display); letter-spacing: 0.06em;
-    color: #fff; mix-blend-mode: difference; pointer-events: none;
+    color: #fff; text-shadow: 0 1px 12px rgba(6,20,32,0.5);
   }
 
   /* ================= act 0 · surface: his name, his face ================= */
@@ -866,8 +866,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   display: flex; gap: 1.3rem; align-items: center;
   font: 500 0.6rem/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase;
 }
-.descent .topnav { mix-blend-mode: difference; }
-.descent .topnav a { color: #d9dedd; text-decoration: none; transition: color 140ms; }
+.descent .topnav a { color: #e6ecea; text-decoration: none; transition: color 140ms; text-shadow: 0 1px 10px rgba(6,20,32,0.5); }
 .descent .topnav a:hover { color: #fff; }
 @media (max-width: 860px) { .descent .topnav { display: none; } }
 .descent .tail { position: relative; z-index: 1; }
@@ -1016,3 +1015,14 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .journal-rail .station { align-self: center; }
 /* the orbit heading wraps before it reaches the dive computer on a phone */
 @media (max-width: 860px) { .descent .orbit-head { padding-right: 6.5rem; } }
+
+/* One dark strip behind the fixed chrome so the brand, the links and the dive computer
+   read on every ground, the bone and lagoon acts included. It fades out below, so on
+   the photo hero it is a light hand on the top edge rather than a bar. */
+.descent .topbar {
+  position: fixed; inset-inline: 0; top: 0; height: 4.6rem; z-index: 58; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(6,20,32,0.82) 0%, rgba(6,20,32,0.55) 55%, rgba(6,20,32,0) 100%);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent); mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+@media (max-width: 860px) { .descent .topbar { height: 7.4rem; } }

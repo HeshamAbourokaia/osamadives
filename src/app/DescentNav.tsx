@@ -33,6 +33,7 @@ export default function DescentNav({ whatsapp }: Props) {
 
   return (
     <>
+      <div className="topbar" aria-hidden="true" />
       <a className="brand" href="/" aria-label="OsamaDives, home">Osama<span style={{ opacity: 0.75 }}>Dives</span></a>
       <nav className="topnav" aria-label="Site">
         {LINKS.map((l) => <a key={l.href} href={l.href}>{l.label}</a>)}

@@ -383,7 +383,7 @@ export default async function Home() {
                   </details>
                 </div>
               </figure>
-              <figure className="exhibit">
+              <figure className="exhibit exhibit--tall">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">O</span>
                 <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="0.06">
                   <img className="exhibit-img--faces" src="/descent/padi-first-fins.webp" alt="A young student in a small wetsuit standing proudly in the street at Assalah, his father beside him" />

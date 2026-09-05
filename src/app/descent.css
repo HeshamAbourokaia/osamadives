@@ -1248,4 +1248,6 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
   .descent #descent-main > section + section { margin-top: -10svh; padding-top: 10svh; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10svh); mask-image: linear-gradient(to bottom, transparent 0, #000 10svh); }
 }
 /* the Open Water photograph: the whole frame, mounted */
-.descent .exhibit-card .exhibit-img--faces { object-fit: contain; object-position: center; height: 330px; background: #e9e2d2; }
+/* a portrait photograph gets a narrow card the shape of the print, no bands beside it */
+.descent .exhibit--tall .exhibit-card { max-width: 19.5rem; margin-inline: auto; }
+.descent .exhibit-card .exhibit-img--faces { object-fit: cover; object-position: center; height: auto; aspect-ratio: 9 / 16; background: none; }

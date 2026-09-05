@@ -22,7 +22,7 @@ export default function CardScreen() {
         <img src="/brand/stamp-512.png" alt="Osama Dives, Dahab, since 1983" className="card__stamp" width={132} height={132} />
         <h1 className="card__title">Write me a review</h1>
 
-        <a className="card__code" href={QR_URL} aria-label="Open the review form">
+        <a className="card__code" href={`${QR_URL}?s=tap`} aria-label="Open the review form">
           <svg viewBox={`0 0 ${box} ${box}`} role="img" aria-label="Code for osamadives.com/review" shapeRendering="crispEdges">
             <rect width={box} height={box} fill="#FFFDF8" />
             <path d={QR_PATH} fill="#171208" />

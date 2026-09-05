@@ -83,6 +83,23 @@ export interface EntryPatch {
 export const REACTIONS = ["👍", "❤️", "😂", "👏", "🤿", "🦈", "🐢", "🐙", "🌊", "🐠"] as const;
 export type Reaction = (typeof REACTIONS)[number];
 
+// One scan of the QR code on Osama's card (or a sticker, a table card: the source names it).
+export interface QrScan {
+  id: string;
+  createdAt: string;
+  source: string;
+  ua: string;
+  ipHash: string;
+}
+
+export interface ScanStats {
+  total: number;
+  week: number;
+  today: number;
+  last: string | null;
+  bySource: Record<string, number>;
+}
+
 export const LIMITS = {
   name: { min: 2, max: 40 },
   country: { max: 40 },

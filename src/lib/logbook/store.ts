@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { EntryPatch, EntryStatus, LogbookEntry, ModeratedBy, StampKey } from "./types";
+import type { EntryPatch, EntryStatus, LogbookEntry, ModeratedBy, QrScan, ScanStats, StampKey } from "./types";
 
 export interface ListOptions {
   status?: EntryStatus;
@@ -26,6 +26,29 @@ export interface LogbookStore {
   reactionsBy(ids: string[], deviceId: string): Promise<Record<string, string[]>>;
   /** Resolves true when the reaction is now on, false when it was taken back. */
   toggleReaction(entryId: string, emoji: string, deviceId: string, createdAt: string): Promise<boolean>;
+
+  // Scans of the QR code: one row per scan, so Osama can see the card working.
+  recordScan(scan: QrScan): Promise<void>;
+  scanStats(nowIso: string): Promise<ScanStats>;
+}
+
+function statsFrom(rows: { createdAt: string; source: string }[], nowIso: string): ScanStats {
+  const now = new Date(nowIso).getTime();
+  const weekAgo = new Date(now - 7 * 86_400_000).toISOString();
+  const dayAgo = new Date(now - 86_400_000).toISOString();
+  const bySource: Record<string, number> = {};
+  let last: string | null = null;
+  for (const r of rows) {
+    bySource[r.source] = (bySource[r.source] ?? 0) + 1;
+    if (!last || r.createdAt > last) last = r.createdAt;
+  }
+  return {
+    total: rows.length,
+    week: rows.filter((r) => r.createdAt >= weekAgo).length,
+    today: rows.filter((r) => r.createdAt >= dayAgo).length,
+    last,
+    bySource,
+  };
 }
 
 interface ReactionRow { entryId: string; emoji: string; deviceId: string; createdAt: string }
@@ -187,6 +210,18 @@ export class FileStore implements LogbookStore {
       return i < 0;
     });
   }
+
+  recordScan(scan: QrScan) {
+    return this.locked(async () => {
+      const all = await this.readJson<QrScan>(this.sibling("scans.json"));
+      all.push(scan);
+      await this.writeJson(this.sibling("scans.json"), all);
+    });
+  }
+
+  async scanStats(nowIso: string) {
+    return statsFrom(await this.readJson<QrScan>(this.sibling("scans.json")), nowIso);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -266,6 +301,13 @@ export class NeonStore implements LogbookStore {
         // Who approved: 'link' (the signed link in the phone notification) or 'admin' (the password page).
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS moderated_by text NOT NULL DEFAULT ''`;
         // Reactions came later. One reaction per (review, emoji, device).
+        await sql`CREATE TABLE IF NOT EXISTS qr_scans (
+          id text PRIMARY KEY,
+          created_at timestamptz NOT NULL,
+          source text NOT NULL DEFAULT 'card',
+          ua text NOT NULL DEFAULT '',
+          ip_hash text NOT NULL DEFAULT ''
+        )`;
         await sql`CREATE TABLE IF NOT EXISTS logbook_reactions (
           entry_id text NOT NULL,
           emoji text NOT NULL,
@@ -373,6 +415,17 @@ export class NeonStore implements LogbookStore {
     if (added.length) return true;
     await sql`DELETE FROM logbook_reactions WHERE entry_id = ${entryId} AND emoji = ${emoji} AND device_id = ${deviceId}`;
     return false;
+  }
+
+  async recordScan(scan: QrScan) {
+    const sql = await this.db();
+    await sql`INSERT INTO qr_scans (id, created_at, source, ua, ip_hash) VALUES (${scan.id}, ${scan.createdAt}, ${scan.source}, ${scan.ua}, ${scan.ipHash})`;
+  }
+
+  async scanStats(nowIso: string) {
+    const sql = await this.db();
+    const rows = (await sql`SELECT created_at, source FROM qr_scans`) as { created_at: string; source: string }[];
+    return statsFrom(rows.map((r) => ({ createdAt: new Date(r.created_at).toISOString(), source: r.source })), nowIso);
   }
 }
 

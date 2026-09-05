@@ -1,10 +1,561 @@
-import HomeClient from "./HomeClient";
+/* eslint-disable @next/next/no-img-element */
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import InstagramFeed from "@/components/InstagramFeed";
+import DescentBoot from "./DescentBoot";
+import OrbitScene from "./OrbitScene";
 import HomeStrip from "./logbook/HomeStrip";
-import FeaturedReel from "@/components/FeaturedReel";
+import DescentNav from "./DescentNav";
+import Bubbles from "./Bubbles";
+import ReturnToPlace from "./ReturnToPlace";
+import SideRail from "./SideRail";
+import RailTravel from "./RailTravel";
+import PeakYears from "./PeakYears";
+import { LENS_MAP } from "./lensMap";
+import AiFeatureRibbon from "@/components/AiFeatureRibbon";
+import LogbookRibbon from "@/components/LogbookRibbon";
+import InstagramRibbon from "@/components/InstagramRibbon";
+import BackToTop from "@/components/BackToTop";
+import { blogPosts } from "@/lib/blog-posts";
+import { galleryPhotos } from "@/lib/gallery-config";
+import { getStore } from "@/lib/logbook/store";
+import type { LogbookEntry } from "@/lib/logbook/types";
+import { buildOrbitItems } from "@/lib/orbit-content";
+import "./descent.css";
+
+const archivo = Archivo({ subsets: ["latin"], weight: ["500", "600", "700", "800", "900"], variable: "--lb-display", display: "swap" });
+const plex = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--lb-mono", display: "swap" });
 
 // The homepage regenerates every minute, and instantly when a logbook page is approved.
 export const revalidate = 60;
 
-export default function Home() {
-  return <HomeClient stories={<HomeStrip />} reel={<FeaturedReel />} />;
+const WHATSAPP = "https://wa.me/201090208050?text=" + encodeURIComponent("Hi Osama! I would love to chat about diving in Dahab.");
+
+// The page is one dive. Markup and copy are the verified descent build (24 Aug 2026),
+// driven by the vendored scrollcraft engine that DescentBoot mounts after hydration.
+// Internal links are plain anchors on purpose: leaving this page is a full load, so the
+// scroll engine never outlives it.
+export default async function Home() {
+  // Real approved reviews only, same source HomeStrip reads. If the store
+  // is not reachable yet (no database configured locally), the orbit just
+  // carries fewer cards rather than inventing a reviewer.
+  let approvedReviews: LogbookEntry[] = [];
+  try {
+    approvedReviews = await getStore().list({ status: "approved" });
+  } catch (e) {
+    console.error("orbit reviews fetch failed", e);
+  }
+  const orbitItems = buildOrbitItems(approvedReviews);
+  // One line from a real review sits beside his introduction: the shortest approved note
+  // that still says something, so the page does not open on a wall of text.
+  const quotable = approvedReviews.filter((r) => r.note.length >= 60).sort((a, b) => a.note.length - b.note.length)[0];
+  const quote = quotable ? { text: quotable.note.length > 170 ? `${quotable.note.slice(0, 167).trimEnd()}...` : quotable.note, who: `${quotable.name}${quotable.country ? `, ${quotable.country}` : ""}` } : null;
+  const posts = [...blogPosts].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 5);
+  const featuredFrames = galleryPhotos.filter((g) => g.featured);
+  const frames = (featuredFrames.length >= 6 ? featuredFrames : galleryPhotos).slice(0, 9);
+
+  return (
+    <div className={`descent ${archivo.variable} ${plex.variable}`}>
+      <a className="skip" href="#descent-main">Skip to main content</a>
+      <span data-sc-progress />
+      {/* the lens for liquid glass: Chrome bends the backdrop through it, other browsers keep the blur */}
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true" focusable="false">
+        <filter id="lg-lens" x="0" y="0" width="1" height="1" filterUnits="objectBoundingBox" colorInterpolationFilters="sRGB">
+          <feImage href={LENS_MAP} x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="lens" />
+          <feGaussianBlur in="lens" stdDeviation="1" result="lensSoft" />
+          <feDisplacementMap in="SourceGraphic" in2="lensSoft" scale="52" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
+      <div className="sc-grain" aria-hidden="true" />
+      <DescentNav whatsapp={WHATSAPP} />
+      <aside className="hud mono" id="hud" aria-hidden="true">
+        <span className="hud__depth"><span id="hud-depth">00.0</span> <small>M</small></span>
+        <span className="hud__label" id="hud-label">Surface</span>
+        <span className="hud__track"><i id="hud-track" /></span>
+      </aside>
+
+      <main id="descent-main">
+        {/* ACT 0 · SURFACE: his name and his face, before the descent begins. Real
+            photo (public/images/OsamaDives.png, Osama teaching a student in the
+            shallows), the same one live on the current production hero, at
+            Hesham's request 4 Sep 2026: "his face is the branding." */}
+        <section className="g-abyss brand-act" id="brand-act">
+          <div className="brand-stage">
+            <img className="brand-stage__photo" data-sc-parallax="-0.12" src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="100vw" alt="Osama teaching a diving student in the crystal-clear shallow water of Dahab, Egypt" />
+            <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
+            <div className="brand-copy" data-sc-in>
+              <h1>Osama.</h1>
+              <p className="sc-body">PADI Master Scuba Diver Trainer. Fourth family in Dahab, on this shore since 1983. In 2011 I took the family&apos;s hospitality underwater.</p>
+              <div className="brand-ribbons">
+                <LogbookRibbon variant="hero" />
+                <InstagramRibbon variant="hero" />
+                <AiFeatureRibbon variant="hero" />
+              </div>
+              <p className="brand-small">Courses and dives are arranged through CDWS-registered dive centres in Dahab.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* ACT 1 · ENTRY: the sea, scrubbing under the wheel from the first pixel */}
+        <section className="g-abyss" id="entry-act" data-sc-act="scrub" data-sc-span="2.3" style={{ "--sc-span": 2.3 } as React.CSSProperties} data-sc-dwell="0.35">
+          <div data-sc-stage>
+            <img className="sc-stage__poster" data-sc-parallax="-0.22" src="/descent/hero-poster.webp" srcSet="/descent/hero-poster-m.webp 800w, /descent/hero-poster.webp 1600w" sizes="100vw" alt="" />
+            <video data-sc-scrub data-sc-parallax="-0.22" data-sc-src="/descent/hero.mp4" data-sc-src-mobile="/descent/hero-m.mp4" muted playsInline />
+            <Bubbles count={36} strength={1} />
+            <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
+            <div className="copy-scrim" aria-hidden="true" />
+            <div className="sea-scrim-m" aria-hidden="true" />
+            <div className="sc-copy sc-copy--lead entry-copy" data-sc-cue="0 0.85 0">
+              <span className="microcopy">Dive log · Dahab, South Sinai · kept since 1983</span>
+              <h2>The sea took him in.</h2>
+              <p className="stand">Osama is a PADI Master Scuba Diver Trainer, born on this shore. His family has lived beside the water since 1983. Scroll to descend.</p>
+              <a className="cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
+            </div>
+            <div className="entry-foot microcopy" data-sc-cue="0 0.5 0 0.3">
+              <span>Red Sea · 28 C in summer</span>
+              <span>Entry · Lighthouse reef</span>
+            </div>
+          </div>
+        </section>
+
+        {/* ACT 2 · THE GUIDE: magazine cover on paper, cursor light on the surface */}
+        <section className="g-bone" id="guide-act" data-sc-act="flow" data-sc-spotlight>
+          <div data-sc-stage className="guide-stage">
+            <div className="guide-back-wrap" data-sc-parallax="-0.45" aria-hidden="true"><img className="guide-back" src="/descent/arch-camels.webp" alt="" /></div>
+            <div className="guide-cover">
+              <div className="guide-panel glass glass--paper" data-sc-parallax="0.12" data-sc-in data-sc-stagger="70">
+                <div className="rule-draw" aria-hidden="true" />
+                <span className="microcopy">On the sand · your guide</span>
+                <h2 data-sc-kinetic="lines">Meet Osama.</h2>
+                <p className="sc-body">Osama Mohamed Hassan was born into a Dahab of fishing boats and palm shelters on the sand. He has spent his life in this water. He briefs slowly, watches closely, and laughs easily.</p>
+                {quote ? (
+                  <blockquote className="guide-quote">
+                    <p>&ldquo;{quote.text}&rdquo;</p>
+                    <cite>{quote.who}</cite>
+                  </blockquote>
+                ) : null}
+                <dl className="ledger">
+                  <div><dt>Rating</dt><dd>PADI Master Scuba Diver Trainer</dd></div>
+                  <div><dt>Family</dt><dd>Fourth family of Dahab, on this shore since 1983</dd></div>
+                  <div><dt>Diving</dt><dd>Teaching since 2011, first breath to first professional step</dd></div>
+                  <div><dt>The kitchen</dt><dd>Shark Restaurant, open since the family arrived. <a href="https://www.tripadvisor.com/Restaurant_Review-g297547-d1645627-Reviews-Shark_Restaurant-Dahab_South_Sinai_Red_Sea_and_Sinai.html" target="_blank" rel="noopener noreferrer">4.5 on TripAdvisor, 1,350 reviews</a></dd></div>
+                </dl>
+                <details className="more guide-more">
+                  <summary>From Shark Restaurant to the deep blue: read his story</summary>
+                  <div className="more__body">
+                    <p>My name is Osama, and my family&apos;s story in Dahab begins in 1983, when we became the fourth family to settle here, moving from Cairo to a remote place where the desert meets the sea. My family opened <a href="https://facebook.com/sharkrest.official" target="_blank" rel="noopener noreferrer">Shark Restaurant</a>, now one of the best-known seafood restaurants in Dahab. For decades we have welcomed visitors to our table. In 2011 I extended that hospitality to a new dimension: underwater.</p>
+                    <p>What makes diving with me different? I do not treat you as a tourist. You are a guest in my home. Just as we serve you at the restaurant with love, I share the underwater world the same way: with patience, with care, and with a local&apos;s knowledge of every reef.</p>
+                    <ul>
+                      <li>Fourth family to settle in Dahab, 1983. Pioneer roots run deep in this community.</li>
+                      <li>Family hospitality since the early days of the town.</li>
+                      <li>PADI Master Scuba Diver Trainer, the highest instructor rating.</li>
+                      <li>From serving guests on land to guiding them underwater.</li>
+                    </ul>
+                  </div>
+                </details>
+              </div>
+              <div className="guide-plate" data-sc-parallax="-0.2">
+                <span className="exhibit-letter" aria-hidden="true" data-sc-parallax="-0.7">O</span>
+                <figure data-sc-reveal="down" data-sc-reveal-at="0 0.16" data-sc-tilt="5">
+                  <img src="/descent/osama-portrait.webp" srcSet="/descent/osama-portrait-m.webp 800w, /descent/osama-portrait.webp 960w" sizes="(max-width: 860px) 92vw, 45vw" width={960} height={956} alt="Osama in his wetsuit on the shore at Dahab, checking his regulator, Sinai mountains behind him" />
+                  <figcaption>Before the morning dive · Lighthouse, Dahab</figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ACT 3 · SILENCE: one ledger line in the dark */}
+        <section className="g-night silence silence--short">
+          <span className="microcopy" data-sc-in>Entry 001 · August 1987</span>
+          <p className="line" data-sc-in>Someone brought a camera to the beach.</p>
+        </section>
+
+        {/* ACT 4 · THE PEAK: the print becomes the man, the year runs behind it */}
+        <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="3.8" style={{ "--sc-span": 3.8 } as React.CSSProperties}>
+          <div data-sc-stage className="peak-stage">
+            <div className="peak-year sc-nums" data-sc-count="1987 2024" data-sc-count-at="0.1 0.86" data-sc-parallax="-1" aria-hidden="true">1987</div>
+            <div className="peak-frame" data-sc-parallax="0.35">
+              <a className="peak-mat" href="/gallery" aria-label="Open the gallery to see every stage">
+                <div className="peak-plate">
+                  <img src="/descent/peak-1987.webp" srcSet="/descent/peak-1987-m.webp 800w, /descent/peak-1987.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="A scratched family photograph from August 1987: four young people arm in arm on the Dahab shore beside an orange Bedouin truck" />
+                  <img className="stage" style={{ "--from": 0.28 } as React.CSSProperties} src="/descent/peak-2012.webp" srcSet="/descent/peak-2012-m.webp 720w, /descent/peak-2012.webp 720w" sizes="(max-width: 860px) 92vw, 78vw" width={720} height={431} alt="Osama in 2012, helping a young boy into a scuba tank almost as big as the boy" />
+                  <img className="stage stage--tall" style={{ "--from": 0.5 } as React.CSSProperties} src="/descent/peak-2021.webp" srcSet="/descent/peak-2021-m.webp 800w, /descent/peak-2021.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={2488} alt="Osama in 2021 holding a certificate beside his instructor Andrzej Kruczkowski" />
+                  <img className="stage" style={{ "--from": 0.72 } as React.CSSProperties} src="/descent/peak-now.webp" srcSet="/descent/peak-now-m.webp 800w, /descent/peak-now.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="Osama on the same shore in 2024, in his wetsuit before a dive, the sea on his left and the Sinai mountains behind" />
+                </div>
+              </a>
+              <div className="peak-captions">
+                <p data-sc-cue="0 0.26 0 0.06">The shore at Assalah · August 1987 · from the family album</p>
+                <p data-sc-cue="0.3 0.48 0.06 0.06">2012 · a tank bigger than the boy · teaching the next generation</p>
+                <p data-sc-cue="0.52 0.7 0.06 0.06">2021 · the handover · with his own instructor, Andrzej</p>
+                <p data-sc-cue="0.74 1 0.06 0.06">2024 · the same shore, decades on · before a morning dive</p>
+              </div>
+              <PeakYears years={[{ year: "1987", at: 0.06 }, { year: "2012", at: 0.36 }, { year: "2021", at: 0.58 }, { year: "2024", at: 0.82 }]} />
+            </div>
+          </div>
+        </section>
+
+        {/* BRIDGE · the seam between the print and the sea carries one line */}
+        <section className="g-abyss silence" style={{ minHeight: "34vh" }}>
+          <span className="microcopy" data-sc-in>Stop 2 · the sites</span>
+          <p className="line" data-sc-in>From the sand, straight into the sea.</p>
+        </section>
+
+        {/* ACT 4b · THE DESCENT: three of Osama's own photographs, shown at the depth they were taken.
+            The dive computer reads those depths, nothing invented. */}
+        <section className="g-abyss" id="descent-act" data-sc-act="pin" data-sc-span="3.2" style={{ "--sc-span": 3.2 } as React.CSSProperties}>
+          <div data-sc-stage className="depth-stage">
+            <img className="depth-photo depth-photo--1" data-sc-parallax="-0.24" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle over the reef at Om El Seed, seven metres down, photographed by Osama" />
+            <img className="depth-photo depth-photo--2" data-sc-parallax="-0.24" src="/descent/depth-8.webp" srcSet="/descent/depth-8-m.webp 800w, /descent/depth-8.webp 1600w" sizes="100vw" alt="Coral on the reef shelf at the edge of the Blue Hole, eight metres down, photographed by Osama" />
+            <img className="depth-photo depth-photo--3" data-sc-parallax="-0.24" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="A diver silhouetted in open blue water at twelve metres, photographed by Osama" />
+            <Bubbles count={22} strength={0.7} />
+            <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
+            <div className="depth-copy">
+              <div className="depth-cue" data-sc-cue="0.02 0.3 0.08 0.06">
+                <span className="microcopy">7 metres · Om El Seed</span>
+                <h2>A turtle that does not hurry.</h2>
+              </div>
+              <div className="depth-cue" data-sc-cue="0.36 0.64 0.06 0.06">
+                <span className="microcopy">8 metres · the edge of the Blue Hole</span>
+                <h2>The reef shelf, where the Blue Hole begins.</h2>
+              </div>
+              <div className="depth-cue" data-sc-cue="0.7 1 0.06 0">
+                <span className="microcopy">12 metres · the blue</span>
+                <h2>Into the blue, within your training, every time.</h2>
+              </div>
+            </div>
+            <div className="depth-credit microcopy" data-sc-cue="0.05">Photographs by Osama, on ordinary working days</div>
+          </div>
+        </section>
+
+        {/* ACT 5 · THE COAST: lateral travel, south to north, five real dives */}
+        <section className="g-abyss" id="coast-act" data-sc-act="pan" data-sc-span="4.4" style={{ "--sc-span": 4.4 } as React.CSSProperties}>
+          <div data-sc-stage className="rail-stage">
+            <div className="coast-rail js-rail">
+              <div className="coast-lead">
+                <span className="microcopy">Stop 2 · the sites · south to north</span>
+                <h2>One shore. Five dives from the sand.</h2>
+                <p className="sc-body">No boat, no schedule. You walk in from the beach, the reef starts at your fins. These are the sites Osama grew up on, in the order the shore road meets them.</p>
+              </div>
+              <a className="station" href="/dive-sites/three-pools-dahab" data-sc-tilt="4">
+                <img className="station__img" src="/descent/arch-lagoon-m.webp" alt="" />
+                <span className="microcopy">South of town</span>
+                <h3>Three Pools</h3>
+                <span className="depth mono">03-25 <small>M</small></span>
+                <p>Three sandy lagoons opening onto coral gardens. Calm, bright, and easy. Open Water and up.</p>
+              </a>
+              <a className="station" href="/dive-sites/lighthouse-reef-dahab" data-sc-tilt="4">
+                <img className="station__img" src="/descent/sea-poster-m.webp" alt="" />
+                <span className="microcopy">In town</span>
+                <h3>Lighthouse</h3>
+                <span className="depth mono">03-30 <small>M</small></span>
+                <p>The house reef. First breaths happen here, and Osama still finds things on it after a lifetime. All levels.</p>
+              </a>
+              <a className="station" href="/dive-sites/eel-garden-dahab" data-sc-tilt="4">
+                <img className="station__img" src="/descent/depth-7-m.webp" alt="" />
+                <span className="microcopy">Town, north end</span>
+                <h3>Eel Garden</h3>
+                <span className="depth mono">05-25 <small>M</small></span>
+                <p>A slope of garden eels swaying out of the sand like sea grass. Open Water and up.</p>
+              </a>
+              <figure className="station-img" data-sc-parallax="-0.5">
+                <img src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="(max-width: 860px) 74vw, 22rem" alt="A diver silhouetted in open blue water, photographed by Osama" />
+                <figcaption>Into the blue, on an ordinary morning</figcaption>
+              </figure>
+              <a className="station" href="/dive-sites/the-canyon-dahab" data-sc-tilt="4">
+                <img className="station__img" src="/descent/canyon-floor-m.webp" alt="" />
+                <span className="microcopy">North of town</span>
+                <h3>The Canyon</h3>
+                <span className="depth mono">10-30 <small>M</small></span>
+                <p>A rift in the reef lit by shafts of sun, full of glassfish. Advanced, properly briefed.</p>
+              </a>
+              <a className="station" href="/dive-sites/blue-hole-dahab" data-sc-tilt="4">
+                <img className="station__img" src="/descent/depth-8-m.webp" alt="" />
+                <span className="microcopy">The famous one</span>
+                <h3>Blue Hole</h3>
+                <span className="depth mono">05-100 <small>M</small></span>
+                <p>The icon. A circle of deep blue punched into the reef. Osama dives it within your training, every time.</p>
+              </a>
+              <div className="coast-note">
+                <span className="microcopy">The rule of the house</span>
+                <p>Every brief starts on the sand, and every dive stays inside your training.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ACT 5b · WHY DAHAB: the three reasons, in his words, carried over from the
+            previous homepage so nothing is lost. */}
+        <section className="g-bone" id="why-act" data-sc-act="flow">
+          <div className="school why">
+            <div className="school-head" data-sc-in data-sc-stagger="60">
+              <span className="microcopy">Why here</span>
+              <h2>Why divers dream of Dahab.</h2>
+              <p className="sc-body">Clear Red Sea water, world-class sites, and a shore you walk into. No boat, no seasickness, no rush.</p>
+            </div>
+            <div className="exhibits exhibits--three" data-sc-in data-sc-stagger="90">
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">B</span>
+                <a className="exhibit-card" href="/dive-sites/blue-hole-dahab" data-sc-tilt="5" data-sc-parallax="-0.08">
+                  <img src="/images/OsamaDives_The_Blue_Hole.jpeg" alt="The Blue Hole in Dahab, the famous vertical drop with the Arch at 55 metres" loading="lazy" />
+                  <div className="row"><h3>Blue Hole</h3><span className="spec">A pilgrimage</span></div>
+                  <p>Divers travel from every corner of the world to descend into this sinkhole. Open Water is the minimum. The Arch is for technical divers only; recreational diving here stops at 40 metres. I have dived it more than a thousand times. I know its moods, and how to show you its magic safely.</p>
+                </a>
+              </figure>
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">C</span>
+                <a className="exhibit-card" href="/dive-sites/the-canyon-dahab" data-sc-tilt="5" data-sc-parallax="0.06">
+                  <img src="/images/OsamDives_The_Canyon.jpg" alt="The Canyon dive site in Dahab, dramatic formations with shafts of light" loading="lazy" />
+                  <div className="row"><h3>The Canyon</h3><span className="spec">A cathedral</span></div>
+                  <p>You descend through a narrow passage as beams of sunlight pierce the water above you. Walls covered in soft coral, home to lionfish, moray eels, and schools of glassfish.</p>
+                </a>
+              </figure>
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">S</span>
+                <a className="exhibit-card" href="/dive-sites" data-sc-tilt="5" data-sc-parallax="-0.08">
+                  <img src="/images/FB_IMG_1621238990084.jpg" alt="Shore diving in Dahab, an easy beach entry with no boats" loading="lazy" />
+                  <div className="row"><h3>Shore diving</h3><span className="spec">No boats</span></div>
+                  <p>Forget crowded boats and rough seas. In Dahab you walk to your dive site. Gear up on the beach, wade in through calm water, and you are diving within minutes. More time underwater, less time commuting.</p>
+                </a>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        {/* ACT 5c · THE JOURNAL: his stories, a rail that pans as the visitor scrolls */}
+        <section className="g-night" id="journal-act" data-sc-act="pan" data-sc-span="3" style={{ "--sc-span": 3 } as React.CSSProperties}>
+          <div data-sc-stage className="rail-stage">
+            <div className="coast-rail journal-rail js-rail">
+              <div className="coast-lead">
+                <span className="microcopy">The journal</span>
+                <h2>Stories from the water.</h2>
+                <p className="sc-body">A thousand dives at one site, why I teach, what the night does to a reef. Written by me, between dives.</p>
+                <a className="cta cta--quiet" href="/blog">Read the journal</a>
+              </div>
+              {posts.map((post) => (
+                <a className="station journal-card" href={`/blog/${post.slug}`} key={post.slug} data-sc-tilt="4">
+                  <img className="station__img" src={post.featuredImage} alt="" loading="lazy" />
+                  <span className="microcopy">{new Date(post.date).getFullYear()} · journal</span>
+                  <h3>{post.title}</h3>
+                  <p>{post.excerpt}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ACT 6 · HIS WORLD: Osama at the centre, a 3D ring of the site's own sites,
+            stories, gallery and reviews orbiting him. Sits here because by this point
+            the visitor has met him (the guide), seen the depths and toured the sites;
+            this is the "everything he's built" beat before the school closes the dive. */}
+        <section className="g-lagoon" id="orbit-act" data-sc-act="pin" data-sc-span="2.6" style={{ "--sc-span": 2.6 } as React.CSSProperties}>
+          <div data-sc-stage className="orbit-stage">
+            <div className="orbit-head">
+              <span className="microcopy">9 m · his world</span>
+              <h2 data-sc-cue="0 1 0 0.1" data-sc-kinetic="lines">Everything he has built around him.</h2>
+              <p className="orbit-tagline">Dive sites, stories, and reviews, one turn at a time.</p>
+            </div>
+            <OrbitScene items={orbitItems} osamaSrc="/descent/osama-cutout.webp" osamaSrcMobile="/descent/osama-cutout-m.webp" osamaAlt="Osama, cut out in his dive gear" />
+          </div>
+        </section>
+
+        {/* ACT 7 · THE SCHOOL: courses mounted as exhibits */}
+        <section className="g-bone" id="school-act" data-sc-act="flow">
+          <div className="school">
+            <div className="school-head" data-sc-in data-sc-stagger="60">
+              <span className="microcopy">Safety stop · 5 metres · the school</span>
+              <h2>Learn it properly.</h2>
+              <p className="sc-body">Small groups, slow briefings, the same reef he learned on. Pick the course that matches where you are, and he takes you the rest of the way.</p>
+            </div>
+            <div className="exhibits" data-sc-in data-sc-stagger="90">
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">I</span>
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="-0.08">
+                  <img src="/descent/arch-lagoon.webp" srcSet="/descent/arch-lagoon-m.webp 800w, /descent/arch-lagoon.webp 1400w" sizes="(max-width: 860px) 92vw, 40vw" alt="The turquoise lagoon at Dahab where first dives happen" />
+                  <div className="row"><h3>Intro Dive</h3><span className="spec">Half a day</span></div>
+                  <p>Never tried it. A pool, then the sea, no certification, just a first breath underwater.</p>
+                  <details className="more exhibit-more">
+                    <summary>Try diving before you commit</summary>
+                    <div className="more__body">
+                      <p>Not sure if diving is for you? The Intro is a simplified demo dive at the Lighthouse, Dahab's authorised location with an easy entry and exit. The water is shallow and confined, but do not let that fool you: fish, marine life and coral are right there. It is the perfect way to see if you love it before committing to the full Open Water course.</p>
+                      <dl className="facts"><div><dt>Where</dt><dd>The Lighthouse, Dahab</dd></div><div><dt>How long</dt><dd>Typically half a day</dd></div><div><dt>Level</dt><dd>No experience needed</dd></div></dl>
+                      <ul><li>Shallow, safe environment</li><li>Real marine life and coral</li><li>Easy entry and exit</li></ul>
+                    </div>
+                  </details>
+                </div>
+              </figure>
+              <figure className="exhibit exhibit--tall">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">O</span>
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="0.06">
+                  <img className="exhibit-img--faces" src="/descent/padi-first-fins.webp" alt="A young student in a small wetsuit standing proudly in the street at Assalah, his father beside him" />
+                  <div className="row"><h3>Open Water</h3><span className="spec">3-4 days · 18 m</span></div>
+                  <p>The certification. You leave able to dive anywhere in the world.</p>
+                  <details className="more exhibit-more">
+                    <summary>The passport to a blue world</summary>
+                    <div className="more__body">
+                      <p>Your Open Water certification unlocks every dive site on the planet down to 18 metres. But the real focus is not depth; it is learning to handle your equipment, deal with malfunctions and perform the essential exercises underwater. By the end you have the buoyancy skills and the confidence to continue your diving anywhere in the world.</p>
+                      <dl className="facts"><div><dt>Where</dt><dd>Dahab</dd></div><div><dt>How long</dt><dd>3 to 4 days</dd></div><div><dt>Level</dt><dd>Perfect for beginners</dd></div></dl>
+                      <ul><li>Certified to 18 m</li><li>Equipment mastery</li><li>Buoyancy foundations</li></ul>
+                    </div>
+                  </details>
+                </div>
+              </figure>
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">A</span>
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="-0.08">
+                  <img src="/descent/bluehole-aerial.webp" alt="The Blue Hole of Dahab seen from above, a deep blue circle in the reef shelf" />
+                  <div className="row"><h3>Advanced</h3><span className="spec">2 days · 30 m</span></div>
+                  <p>Five adventure dives. Opens the deep sites, night diving included.</p>
+                  <details className="more exhibit-more">
+                    <summary>Unlock the world's best dive sites</summary>
+                    <div className="more__body">
+                      <p>The Advanced course is where diving truly opens up. Five dives over two days, including two compulsory dives, Deep Adventure to 30 metres and Underwater Navigation, plus three electives you choose: Boat Diving, Peak Performance Buoyancy, Night Adventure or Fish ID. Navigation is not just a compass; it is learning to read the environment, currents, light, reefs and marine life as your guide, with the compass as backup. This is also where you learn to protect the marine environment.</p>
+                      <dl className="facts"><div><dt>Where</dt><dd>Dahab and North Sinai</dd></div><div><dt>How long</dt><dd>2 days, 5 dives</dd></div><div><dt>Level</dt><dd>Open Water certified</dd></div></dl>
+                      <ul><li>Dive to 30 m</li><li>Protect marine life</li><li>Night and navigation adventures</li></ul>
+                    </div>
+                  </details>
+                </div>
+              </figure>
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">R</span>
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="0.06">
+                  <img src="/descent/osama-truck.webp" srcSet="/descent/osama-truck-m.webp 800w, /descent/osama-truck.webp 960w" sizes="(max-width: 860px) 92vw, 40vw" alt="Osama on the back of a pickup truck in his wetsuit after a dive, talking to divers" />
+                  <div className="row"><h3>Rescue Diver</h3><span className="spec">4 days</span></div>
+                  <p>The course that turns you into a buddy worth diving with.</p>
+                  <details className="more exhibit-more">
+                    <summary>Open Water saves yourself. Rescue saves others.</summary>
+                    <div className="more__body">
+                      <p>Open Water teaches you to rescue yourself. Advanced teaches you to protect the environment. Rescue is about saving others. This course changes how you see diving: awareness sharpens, compassion deepens, and you become a true guardian of the sea. Prerequisites: Advanced certification plus a minimum of 20 logged dives. I am strict on the 20 dives; safety and competence come first.</p>
+                      <dl className="facts"><div><dt>Where</dt><dd>Dahab</dd></div><div><dt>How long</dt><dd>3 to 4 days</dd></div><div><dt>Level</dt><dd>Advanced plus 20 logged dives</dd></div></dl>
+                      <ul><li>Save others</li><li>A real change in how you dive</li><li>Complete confidence</li></ul>
+                    </div>
+                  </details>
+                </div>
+              </figure>
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">D</span>
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="-0.08">
+                  <img src="/descent/seven-tanks.webp" srcSet="/descent/seven-tanks-m.webp 800w, /descent/seven-tanks.webp 1200w" sizes="(max-width: 860px) 92vw, 40vw" alt="Seven scuba tanks laid out on the sea floor" />
+                  <div className="row"><h3>Divemaster</h3><span className="spec">2 weeks to a month</span></div>
+                  <p>Several weeks at my side. The first professional step, if you want one.</p>
+                  <details className="more exhibit-more">
+                    <summary>Turn your passion into a profession</summary>
+                    <div className="more__body">
+                      <p>The Divemaster course is the first professional level in diving. Over two weeks to a month you move from recreational diver to dive professional: learning to lead dives, assist instructors and manage divers of every level. It is a career pathway, and a different way of seeing the reef.</p>
+                      <dl className="facts"><div><dt>Where</dt><dd>Dahab</dd></div><div><dt>How long</dt><dd>2 weeks to 1 month</dd></div><div><dt>Level</dt><dd>Rescue Diver certified</dd></div></dl>
+                      <ul><li>Professional level</li><li>Lead dives</li><li>Career pathway</li></ul>
+                    </div>
+                  </details>
+                </div>
+              </figure>
+              <figure className="exhibit">
+                <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">S</span>
+                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="0.06">
+                  <img src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="(max-width: 860px) 92vw, 40vw" alt="A diver silhouetted in open blue water at twelve metres" />
+                  <div className="row"><h3>Specialties</h3><span className="spec">Varies by specialty</span></div>
+                  <p>Deep, nitrox, night, buoyancy, boat. Picked to fit the reefs you want to dive.</p>
+                  <details className="more exhibit-more">
+                    <summary>Go deeper into what you love</summary>
+                    <div className="more__body">
+                      <p>Want to specialise? Choose from Deep Specialty (three dives, possible in one day), Nitrox (extend your dive time), Night Diving, Peak Performance Buoyancy or Boat Diving. Each one sharpens a skill you already have and opens sites you could not dive before.</p>
+                      <dl className="facts"><div><dt>Where</dt><dd>Dahab</dd></div><div><dt>How long</dt><dd>Varies by specialty</dd></div><div><dt>Level</dt><dd>Open Water and up</dd></div></dl>
+                      <ul><li>Deep Specialty</li><li>Nitrox</li><li>Night and buoyancy</li></ul>
+                    </div>
+                  </details>
+                </div>
+              </figure>
+            </div>
+            <div className="school-head" data-sc-in style={{ marginTop: "clamp(2.6rem, 5vw, 4rem)", marginBottom: "1.2rem" }}>
+              <span className="microcopy">Beyond the courses</span>
+              <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)" }}>Two days out.</h2>
+            </div>
+            <dl className="school-more" data-sc-in>
+              <div>
+                <dt>The Blue Hole</dt>
+                <dd>A half day at the famous one. Open Water at minimum, 40 metres at most; the Arch stays with the technical divers.
+                  <details className="more"><summary>A pilgrimage for divers</summary><div className="more__body"><p>People ask why I never tire of the Blue Hole after thousands of dives. This legendary sinkhole holds more moods than the sea has colours. Anyone diving it needs at least an Open Water certification, and the Arch is strictly for technical divers; recreational diving here stops at 40 metres. Safety first, always.</p><dl className="facts"><div><dt>Where</dt><dd>Blue Hole, Dahab</dd></div><div><dt>How long</dt><dd>Half a day</dd></div><div><dt>Level</dt><dd>Open Water at minimum</dd></div></dl></div></details>
+                </dd>
+              </div>
+              <div>
+                <dt>Ras Abu Galum safari</dt>
+                <dd>By camel through bronze canyons to reefs no speedboat reaches. Advanced divers, and snorkellers with a private guide, always accompanied.
+                  <details className="more"><summary>The old way to the sea</summary><div className="more__body"><p>Before trucks, before cars, Bedouins crossed Sinai by camel. This safari honours that tradition: riding through bronze canyons to reach reefs that speedboats will never find. Best for Advanced divers because of the sites, but snorkellers are welcome with a private guide. We never drop snorkellers off; a guide always stays with you.</p><dl className="facts"><div><dt>Where</dt><dd>Ras Abu Galum, north of Dahab</dd></div><div><dt>How long</dt><dd>A full day</dd></div><div><dt>Level</dt><dd>Advanced recommended; snorkellers with a guide</dd></div></dl></div></details>
+                </dd>
+              </div>
+            </dl>
+            <p className="school-note" data-sc-in>Interested in any of these? I am happy to share recommendations and to connect you with CDWS-registered dive centres in Dahab.</p>
+          </div>
+        </section>
+
+        {/* ACT 7b · THE GALLERY: a rail of his photographs, panning as the visitor scrolls */}
+        <section className="g-abyss" id="gallery-act" data-sc-act="pan" data-sc-span="3.2" style={{ "--sc-span": 3.2 } as React.CSSProperties}>
+          <div data-sc-stage className="rail-stage">
+            <div className="coast-rail gal-rail js-rail">
+              <div className="coast-lead">
+                <span className="microcopy">The gallery</span>
+                <h2>Forty years of photographs.</h2>
+                <p className="sc-body">Students, reefs, the family, the town. The whole archive is on the gallery page; this is a walk past a few frames.</p>
+                <div className="lead-links"><a className="cta cta--quiet" href="/gallery">Open the gallery</a><a className="lead-link" href="https://facebook.com/osamasharks" target="_blank" rel="noopener noreferrer">More on Facebook</a></div>
+              </div>
+              {frames.map((photo, i) => (
+                <a className={`gal-frame gal-frame--${i % 3}`} href="/gallery" key={photo.id} data-sc-tilt="3" data-sc-parallax={i % 2 ? "-0.18" : "0.12"}>
+                  <img src={photo.src} alt={photo.alt} loading="lazy" />
+                  <figcaption className="microcopy">{photo.title}</figcaption>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ACT 8 · SURFACING: the camera breaks the surface, the gauge reads zero */}
+        <section className="g-abyss" id="surface-act" data-sc-act="scrub" data-sc-span="1.4" style={{ "--sc-span": 1.4 } as React.CSSProperties} data-sc-dwell="0.3">
+          <div data-sc-stage>
+            <img className="sc-stage__poster" data-sc-parallax="-0.22" src="/descent/surface-poster.webp" srcSet="/descent/surface-poster-m.webp 800w, /descent/surface-poster.webp 1600w" sizes="100vw" alt="" />
+            <video data-sc-scrub data-sc-parallax="-0.22" data-sc-src="/descent/surface.mp4" data-sc-src-mobile="/descent/surface-m.mp4" muted playsInline />
+            <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
+            <div className="copy-scrim" aria-hidden="true" />
+            <div className="sea-scrim-m" aria-hidden="true" />
+            <div className="sc-copy sc-copy--lead surface-copy" data-sc-cue="0.05">
+              <h2>Come up when you&apos;re ready.</h2>
+              <p className="sc-body">Send a message and start planning your water. He answers himself.</p>
+              <a className="cta" data-sc-magnet="0.26" data-sc-rise="0" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
+              <p className="surface-small">WhatsApp is the fastest way. I usually answer within a few hours.</p>
+              <p className="surface-small">I dive with, and refer to, CDWS-registered dive centres in Dahab. Dahab, South Sinai, Egypt.</p>
+            </div>
+            <div className="surface-foot" data-sc-cue="0.2">
+              <span>OsamaDives · family on this shore since 1983</span>
+              <a href="https://instagram.com/osama_mohamed_hassan" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://facebook.com/osamasharks" target="_blank" rel="noopener noreferrer">Facebook</a>
+              <span className="ar" lang="ar">دهب · جنوب سيناء</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Back on the surface: the logbook, the live feed, the way around the site */}
+      <div className="tail">
+        <HomeStrip />
+        <InstagramFeed />
+        <footer className="tail-foot">
+          <span>OsamaDives · family on this shore since 1983 · Dahab, South Sinai, Egypt</span>
+          <nav aria-label="Footer">
+            <a href="/dive-sites">Dive sites</a>
+            <a href="/blog">Journal</a>
+            <a href="/gallery">Gallery</a>
+            <a href="/review">Reviews</a>
+            <a href="/featured/chatgpt">Featured</a>
+            <a href="https://facebook.com/sharkrest.official" target="_blank" rel="noopener noreferrer">Shark Restaurant</a>
+            <a href="https://instagram.com/osama_mohamed_hassan" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </nav>
+          <p className="tail-legal">This website is a personal portfolio showing Osama&apos;s diving experience and credentials. All diving activities, courses and experiences are conducted through CDWS-registered dive centres in Dahab. For diving enquiries and arrangements contact Osama directly; this site is an informational resource and does not take bookings or payments.</p>
+          <p className="tail-legal">&copy; 2026 OsamaDives.com · Dahab, South Sinai, Egypt · Pioneer family since 1983 · Shark Restaurant legacy · PADI Master Scuba Diver Trainer</p>
+        </footer>
+      </div>
+      <SideRail />
+      <RailTravel />
+      <BackToTop />
+      <ReturnToPlace />
+      <DescentBoot />
+    </div>
+  );
 }

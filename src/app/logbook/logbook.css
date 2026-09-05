@@ -564,3 +564,76 @@
 /* On a phone the open panel is most of the screen, so it scrolls with the page instead of pinning. */
 @media (max-width:680px){.lb-tools.has-panel{position:relative;top:auto}}
 @media (prefers-reduced-motion:reduce){.lb-social__picker,.lb-tools__panel{animation:none}}
+
+
+/* ==========================================================================
+   The memory book: a real page-curl engine (page-flip) turns the pages. Below is
+   only what the pages and the frame around the book look like.
+   ========================================================================== */
+.flipbook { position: relative; display: grid; justify-items: center; gap: 1rem; padding: clamp(2rem, 5vw, 3.5rem) 0 0; outline: none; }
+.flipbook:focus-visible .flipbook__book { outline: 2px solid var(--reef); outline-offset: 10px; }
+.book__ghost { position: absolute; left: 50%; top: 0; transform: translateX(-50%); font: 800 clamp(4rem, 12vw, 9rem)/1 var(--display); letter-spacing: -0.03em; color: rgba(11, 107, 96, 0.26); filter: blur(10px); pointer-events: none; text-transform: uppercase; white-space: nowrap; }
+.flipbook__stage { width: min(100%, 68rem); padding: 0 3.6rem; }
+.flipbook__book { width: 100%; filter: drop-shadow(0 30px 40px rgba(23, 18, 8, 0.24)) drop-shadow(0 4px 8px rgba(23, 18, 8, 0.12)); }
+/* a page: paper, with the ruled lines the cards use, and a soft gutter shadow */
+.fpage { background: var(--paper); overflow: hidden; touch-action: pan-y; }
+.fpage--hard { background: var(--bone-dim); }
+.fpage__paper { position: absolute; inset: 0; }
+.fpage:not(.fpage--hard) .fpage__paper::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, transparent 0 27px, rgba(23, 18, 8, 0.035) 27px 28px); }
+.stf__item.--left .fpage__paper::before, .stf__item.--right .fpage__paper::before { content: ""; position: absolute; inset-block: 0; width: 26px; pointer-events: none; z-index: 2; }
+.stf__item.--left .fpage__paper::before { right: 0; background: linear-gradient(to left, rgba(23,18,8,0.14), transparent); }
+.stf__item.--right .fpage__paper::before { left: 0; background: linear-gradient(to right, rgba(23,18,8,0.14), transparent); }
+.fpage__fit { position: absolute; inset: 0; overflow: hidden; }
+.fpage__fit-inner { position: absolute; left: 0; top: 0; transform-origin: top left; width: 100%; }
+.fpage__fit-inner > .lb-page { border-radius: 0; box-shadow: none; transform: none !important; min-height: 100%; }
+.fpage__fit-inner > .lb-page::before { display: none; }
+.fpage .lb-page__note { display: -webkit-box; -webkit-line-clamp: 10; -webkit-box-orient: vertical; overflow: hidden; }
+.fpage__open { position: absolute; right: 0.7rem; bottom: 0.7rem; z-index: 5; min-height: 40px; padding: 0 0.95rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.6); background: rgba(255,255,255,0.55); color: var(--ink); font: 700 0.78rem/1 var(--display); letter-spacing: 0.04em; cursor: pointer; backdrop-filter: blur(10px) saturate(160%); -webkit-backdrop-filter: blur(10px) saturate(160%); }
+/* covers: the shore behind a lagoon tint, the stamp, one line */
+.book__cover { position: relative; min-height: 100%; height: 100%; display: grid; place-items: center; overflow: hidden; }
+.book__cover-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 60%; }
+.book__cover::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(230,246,243,0.86), rgba(211,239,234,0.72) 55%, rgba(230,246,243,0.9)); }
+.book__cover-ink { position: relative; display: grid; justify-items: center; gap: 0.9rem; padding: 2rem 1.6rem; text-align: center; color: var(--ink); }
+.book__cover-ink img { width: 110px; height: 110px; border-radius: 50%; background: var(--bone); box-shadow: 0 14px 30px -16px rgba(23,18,8,0.5); }
+.book__cover-ink .lb-mono { color: var(--reef); }
+.book__cover-ink .lb-h2 { font-size: clamp(1.25rem, 2.2vw, 1.7rem); max-width: 14ch; color: var(--ink); }
+.book__cover-ink .lb-stand { color: var(--ink-soft); font: 600 1.35rem/1 var(--hand); }
+.book__arrow { position: absolute; top: calc(50% + 0.6rem); transform: translateY(-50%); z-index: 6; width: 52px; height: 52px; border: 0; color: var(--ink); font: 300 2.2rem/1 var(--display); cursor: pointer; transition: transform 140ms, opacity 140ms; }
+.book__arrow--prev { left: max(0.2rem, calc(50% - 34rem + 0.2rem)); }
+.book__arrow--next { right: max(0.2rem, calc(50% - 34rem + 0.2rem)); }
+.book__arrow:disabled { opacity: 0.25; cursor: default; }
+.book__arrow:focus-visible { outline: 2px solid var(--reef); outline-offset: 2px; }
+.book__caption { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.6rem; margin: 0.4rem 0 0; color: var(--ink-soft); text-align: center; }
+.book__count { color: var(--reef); }
+.book__hint { flex-basis: 100%; color: var(--ink-soft); opacity: 0.7; }
+.flipbook__big .lb-page { max-width: 40rem; margin-inline: auto; }
+.flipbook__biglink { text-align: center; margin: 1.2rem 0 0; }
+@media (max-width: 760px) {
+  .flipbook__stage { padding: 0 1.9rem; }
+  .book__arrow { width: 44px; height: 44px; font-size: 2rem; }
+  .book__arrow--prev { left: 0; } .book__arrow--next { right: 0; }
+}
+
+/* covers fill their page: no fitting, no scaling */
+.fpage--hard .fpage__fit, .fpage--hard .fpage__fit-inner { position: absolute; inset: 0; width: 100% !important; transform: none !important; }
+.fpage--hard .book__cover { position: absolute; inset: 0; height: auto; }
+
+/* the tint sits over the photograph, the writing over the tint */
+.book__cover-bg { z-index: 0; }
+.book__cover::before { z-index: 1; }
+.book__cover-ink { z-index: 2; }
+.book__cover::before { background: linear-gradient(180deg, rgba(230,246,243,0.9), rgba(211,239,234,0.82) 55%, rgba(230,246,243,0.94)); }
+/* the Open pill sits at the bottom centre; the corners belong to the page turn */
+.fpage__open { right: auto; left: 50%; transform: translateX(-50%); bottom: 0.55rem; min-height: 36px; padding: 0 0.85rem; font-size: 0.72rem; }
+.descent .fpage__open, .fpage__open { color: var(--ink) !important; }
+
+/* the hidden measuring copy of a page: same width as the page, never seen, never clicked */
+.fpage__fit-measure { position: absolute; left: 0; top: 0; width: 100%; visibility: hidden; pointer-events: none; }
+.fpage__fit-measure > .lb-page { border-radius: 0; box-shadow: none; transform: none !important; }
+
+/* the verified Google review beside the book */
+.google-card { max-width: 46rem; margin: clamp(2rem, 4vw, 3rem) auto 0; padding: 1.4rem 1.6rem; background: var(--paper); border-radius: 6px; box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 22px 50px -26px rgba(23,18,8,0.4); display: grid; gap: 0.8rem; }
+.google-card > .lb-mono { color: var(--reef); }
+.google-card p { margin: 0; font: 500 1rem/1.6 var(--display); color: var(--ink); display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.google-card:hover p, .google-card:focus-within p { -webkit-line-clamp: unset; }
+.google-card a { color: var(--reef); text-decoration: none; }

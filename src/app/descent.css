@@ -1,0 +1,1253 @@
+/* scrollcraft engine styles (vendored) */
+/* ============================================================================
+   scrollcraft.css: the taste floor
+   ----------------------------------------------------------------------------
+   Two layers, and the split matters:
+
+     TOKENS   what you override per brand. Colour roles, the type ramp, the
+              spacing scale, elevation, motion. A brand is ~12 values.
+     DEVICES  what the engine drives. Do not restyle these to taste; they are
+              the mechanism. Style your own markup instead.
+
+   Nothing here draws a "component". There are no card, badge, or pill classes,
+   because a stylesheet that ships those is how every page built on it ends up
+   with the same shapes. You get a floor and a vocabulary; the composition is
+   yours.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- tokens -- */
+:root {
+  /* --- colour roles. Override these six and the page is rebranded. -------- */
+  --sc-canvas:      #08090b;   /* the page ground. Drift interpolates this.   */
+  --sc-surface:     #101217;   /* anything raised off the ground             */
+  --sc-ink:         #f4f2ef;   /* primary text                               */
+  --sc-ink-soft:    #9a9ba1;   /* secondary text. Tinted, never flat gray.   */
+  --sc-accent:      #d8ff3e;   /* ONE accent. It owns a region, not confetti. */
+  --sc-accent-ink:  #08090b;   /* text that sits on the accent               */
+
+  --sc-hairline:    color-mix(in oklab, var(--sc-ink) 12%, transparent);
+  --sc-hairline-strong: color-mix(in oklab, var(--sc-ink) 22%, transparent);
+
+  /* --- type. Two families max. Display carries voice, text carries prose. - */
+  --sc-font-display: "Instrument Sans", "Geist", system-ui, sans-serif;
+  --sc-font-text:    "Geist", system-ui, sans-serif;
+  --sc-font-mono:    "Geist Mono", ui-monospace, monospace;
+
+  /* Fluid ramp. Tracking tightens as size grows because a face set at 6rem
+     with 0 tracking reads loose; this is optical correction, not decoration. */
+  --sc-t-xs:   clamp(0.75rem, 0.72rem + 0.15vw, 0.82rem);
+  --sc-t-sm:   clamp(0.875rem, 0.84rem + 0.18vw, 0.95rem);
+  --sc-t-base: clamp(1rem, 0.96rem + 0.22vw, 1.125rem);
+  --sc-t-lg:   clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --sc-t-xl:   clamp(1.6rem, 1.35rem + 1.2vw, 2.25rem);
+  --sc-t-2xl:  clamp(2.1rem, 1.6rem + 2.4vw, 3.4rem);
+  --sc-t-3xl:  clamp(2.8rem, 1.9rem + 4.2vw, 5rem);
+  --sc-t-4xl:  clamp(3.4rem, 1.9rem + 6.6vw, 7.5rem);
+
+  --sc-track-tight:  -0.035em;
+  --sc-track-snug:   -0.02em;
+  --sc-track-normal: -0.005em;
+  --sc-track-wide:    0.08em;
+
+  --sc-leading-none: 0.94;
+  --sc-leading-tight: 1.06;
+  --sc-leading-body: 1.62;
+
+  --sc-measure: 62ch;
+
+  /* --- space. 4px base: the useful middle steps an 8-only scale misses. --- */
+  --sc-1: 0.25rem;  --sc-2: 0.5rem;   --sc-3: 0.75rem;  --sc-4: 1rem;
+  --sc-5: 1.5rem;   --sc-6: 2rem;     --sc-7: 3rem;     --sc-8: 4rem;
+  --sc-9: 6rem;     --sc-10: 8rem;    --sc-11: 12rem;
+
+  /* Section rhythm is fluid so a phone doesn't inherit desktop air. */
+  --sc-section: clamp(4.5rem, 9vw, 11rem);
+  --sc-gutter:  clamp(1.25rem, 5vw, 5.5rem);
+  --sc-maxw:    82rem;
+
+  /* --- radius. Pick one scale for the page and hold it. ------------------- */
+  --sc-r-sm: 6px;  --sc-r-md: 12px;  --sc-r-lg: 20px;  --sc-r-pill: 999px;
+
+  /* --- elevation. Every shadow has an offset AND a soft blur, and is tinted
+         to the canvas hue. A zero-offset coloured halo is decoration, not
+         depth, so there isn't one here. ---------------------------------- */
+  --sc-shadow-color: 220 40% 2%;
+  --sc-e1: 0 1px 2px hsl(var(--sc-shadow-color) / 0.28),
+           0 2px 6px -1px hsl(var(--sc-shadow-color) / 0.20);
+  --sc-e2: 0 2px 4px hsl(var(--sc-shadow-color) / 0.24),
+           0 8px 18px -4px hsl(var(--sc-shadow-color) / 0.30);
+  --sc-e3: 0 4px 8px hsl(var(--sc-shadow-color) / 0.22),
+           0 18px 40px -8px hsl(var(--sc-shadow-color) / 0.38),
+           0 48px 90px -24px hsl(var(--sc-shadow-color) / 0.30);
+
+  /* Edge light: a 1px top highlight sells a raised surface better than any
+     amount of blur, because real raised things catch light on their lip. */
+  --sc-edge: inset 0 1px 0 color-mix(in oklab, var(--sc-ink) 10%, transparent);
+
+  /* --- motion. Built-in CSS easings are too weak for UI. ------------------ */
+  --sc-ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --sc-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --sc-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --sc-d-fast: 160ms;  --sc-d-base: 240ms;  --sc-d-slow: 420ms;
+
+  --sc-z-stage: 1; --sc-z-copy: 20; --sc-z-chrome: 60;
+}
+
+/* --------------------------------------------------------------- reset -- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--sc-canvas);
+  color: var(--sc-ink);
+  font-family: var(--sc-font-text);
+  font-size: var(--sc-t-base);
+  line-height: var(--sc-leading-body);
+  letter-spacing: var(--sc-track-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-synthesis-weight: none;
+  overflow-x: clip;
+}
+img, video, canvas, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* ------------------------------------------------- the browser surfaces --
+   The parts you did not draw still carry the design. Selection, caret, focus
+   ring, scrollbar and tabular numerals all ship with defaults that belong to no
+   design system. Theming them is the cheapest signal that a page was built
+   rather than assembled, and it is the step that gets skipped most reliably. */
+::selection { background: var(--sc-accent); color: var(--sc-accent-ink); }
+:root { caret-color: var(--sc-accent); accent-color: var(--sc-accent); }
+:focus-visible {
+  outline: 2px solid var(--sc-accent);
+  outline-offset: 3px;
+  border-radius: var(--sc-r-sm);
+}
+:where(a) { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+@supports (scrollbar-color: auto) {
+  html { scrollbar-color: color-mix(in oklab, var(--sc-ink) 26%, transparent) transparent; scrollbar-width: thin; }
+}
+:where(table, .sc-nums, [data-sc-count]) { font-variant-numeric: tabular-nums; }
+
+/* ----------------------------------------------------------- typography -- */
+.sc-display {
+  font-family: var(--sc-font-display);
+  font-weight: 500;
+  line-height: var(--sc-leading-none);
+  letter-spacing: var(--sc-track-tight);
+  text-wrap: balance;
+  margin: 0;
+}
+.sc-display--xl { font-size: var(--sc-t-4xl); }
+.sc-display--lg { font-size: var(--sc-t-3xl); }
+.sc-display--md { font-size: var(--sc-t-2xl); letter-spacing: var(--sc-track-snug); }
+.sc-lede {
+  font-size: var(--sc-t-lg);
+  line-height: 1.44;
+  letter-spacing: var(--sc-track-snug);
+  color: var(--sc-ink);
+  max-width: 46ch;
+  text-wrap: pretty;
+  margin: 0;
+}
+.sc-body { max-width: var(--sc-measure); color: var(--sc-ink-soft); text-wrap: pretty; margin: 0; }
+.sc-label {
+  font-family: var(--sc-font-mono);
+  font-size: var(--sc-t-xs);
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+  color: var(--sc-ink-soft);
+}
+
+/* ---------------------------------------------------------------- layout -- */
+.sc-wrap { width: 100%; max-width: var(--sc-maxw); margin-inline: auto; padding-inline: var(--sc-gutter); }
+.sc-section { padding-block: var(--sc-section); }
+/* More space above a heading than below it: the gap belongs to the boundary,
+   not to the pair. */
+.sc-stack > * + * { margin-top: var(--sc-4); }
+.sc-stack > :is(h1,h2,h3) { margin-top: var(--sc-7); }
+.sc-stack > :is(h1,h2,h3):first-child { margin-top: 0; }
+.sc-rule { height: 1px; border: 0; background: var(--sc-hairline); margin: 0; }
+
+/* =============================================================== DEVICES ==
+   Driven by the engine. Restyle your own markup, not these.                */
+
+.sc-act--pinned { position: relative; }
+.sc-stage {
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: clip;
+  z-index: var(--sc-z-stage);
+}
+
+/* scrub / sequence media */
+.sc-stage :is(video[data-sc-scrub], canvas[data-sc-sequence], .sc-stage__poster) {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+video[data-sc-scrub] { opacity: 0; transition: opacity 380ms var(--sc-ease-out); }
+.sc-has-clip video[data-sc-scrub] { opacity: 1; }
+/* The poster is a live frame-holder, not a placeholder: it stays up until a
+   real video frame has painted, which is what stops the blank-stage flash. */
+.sc-stage__poster { z-index: 0; transition: opacity 380ms var(--sc-ease-out); }
+.sc-has-clip .sc-stage__poster { opacity: 0; }
+
+/* A scrim only where text sits. A full-frame darkening layer flattens the
+   image everywhere to fix contrast in one corner. */
+.sc-scrim {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: linear-gradient(
+    var(--sc-scrim-angle, 180deg),
+    color-mix(in oklab, var(--sc-canvas) var(--sc-scrim-a, 78%), transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 42%,
+    transparent 68%);
+}
+/* Point the scrim at the copy. A scrim gradient that darkens the top while the
+   copy sits at the bottom fixes contrast nowhere and flattens the image
+   everywhere, which is the most common way text-over-video goes wrong. */
+.sc-scrim--bottom { --sc-scrim-angle: 0deg; }
+.sc-scrim--left   { --sc-scrim-angle: 90deg; }
+.sc-scrim--right  { --sc-scrim-angle: 270deg; }
+
+/* Corner scrims, for copy anchored to a corner. An edge gradient has to darken
+   a whole band across the frame to cover one corner; a corner gradient puts the
+   density where the text is and leaves the rest of the image alone. Pair with
+   .sc-copy--lead / .sc-copy--trail. */
+.sc-scrim--lead {
+  background: linear-gradient(to top right,
+    color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 72%, transparent) 30%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 52%,
+    transparent 72%);
+}
+.sc-scrim--trail {
+  background: linear-gradient(to top left,
+    color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 72%, transparent) 30%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 52%,
+    transparent 72%);
+}
+/* A band across the bottom, for copy that spans the full width of the frame.
+   That is what both corner anchors become below 860px, and it is also the right
+   shape whenever the copy block is wider than a corner. */
+.sc-scrim--band {
+  background: linear-gradient(to top,
+    color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 74%, transparent) 22%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 42%,
+    transparent 58%);
+}
+.sc-scrim--vignette {
+  background: radial-gradient(120% 90% at 50% 45%, transparent 40%,
+              color-mix(in oklab, var(--sc-canvas) 70%, transparent) 100%);
+}
+
+/* copy over a stage.
+   max-width is in rem, never ch. A `ch` on this container resolves against the
+   CONTAINER's font-size (body size), not the display size of the heading inside
+   it, so `max-width: 20ch` here silently produces a ~180px column and wraps a
+   hero headline to six lines. Set a ch measure on the text element itself. */
+.sc-copy {
+  position: absolute; z-index: var(--sc-z-copy);
+  inset-inline: var(--sc-gutter);
+  max-width: min(46rem, 76vw);
+  will-change: opacity, transform;
+}
+.sc-copy--lead   { left: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); }
+/* inset-inline FIRST. It is the shorthand for left+right, so declaring it after
+   `left: 50%` resets left to auto and the block drifts off the left edge. */
+.sc-copy--center { inset-inline: auto; left: 50%; top: 50%; translate: -50% -50%; text-align: center; }
+.sc-copy--trail  { inset-inline: auto; right: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); text-align: right; }
+
+/* cue defaults: the engine writes opacity/transform inline, these are the
+   pre-paint state so nothing flashes before the first read() */
+[data-sc-cue] { opacity: 0; will-change: opacity, transform; }
+.sc-ready [data-sc-cue] { transition: none; }
+
+/* kinetic split */
+.sc-split { display: inline-block; overflow: hidden; vertical-align: top; }
+/* Descenders live below the baseline; a line mask clipped to the line box eats
+   the tails off g, y, p, j. The padding buys them room back. */
+.sc-split--line { display: block; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.sc-split__i { display: inline-block; will-change: transform, opacity; }
+.sc-is-split { opacity: 1 !important; }
+
+/* horizontal rail */
+[data-sc-pan] { display: flex; will-change: transform; }
+
+/* reveal + parallax */
+[data-sc-reveal] { will-change: clip-path; }
+[data-sc-parallax] { will-change: transform; }
+
+/* flow reveal (fires once) */
+[data-sc-in], [data-sc-stagger] > * {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 620ms var(--sc-ease-out), transform 620ms var(--sc-ease-out);
+}
+[data-sc-in].sc-in, [data-sc-stagger] > .sc-in { opacity: 1; transform: none; }
+
+/* pointer devices */
+[data-sc-tilt] { transform-style: preserve-3d; will-change: transform; }
+[data-sc-magnet] { will-change: transform; }
+/* isolation always; position only if nothing more specific already set it.
+   Written with :where() (zero specificity) on purpose: a plain `position:
+   relative` here has the same weight as `.sc-stage` and, being later in the
+   file, silently wins. A stage carrying both attributes then stops being
+   sticky and the whole act scrolls away instead of pinning. */
+[data-sc-spotlight] { isolation: isolate; }
+:where([data-sc-spotlight]) { position: relative; }
+[data-sc-spotlight]::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(
+    28rem 28rem at calc(var(--sc-mx, 0.5) * 100%) calc(var(--sc-my, 0.5) * 100%),
+    color-mix(in oklab, var(--sc-accent) 16%, transparent), transparent 70%);
+  opacity: 0; transition: opacity var(--sc-d-slow) var(--sc-ease-out);
+}
+[data-sc-spotlight]:hover::after { opacity: 1; }
+
+/* =========================================================== WORLDFLIGHT ==
+   One fixed stage for the whole page. The only thing in document flow is the
+   spacer, and it is empty. If you find yourself adding a section here, you want
+   act mode instead: the moment a real block scrolls past the fixed stage, the
+   page has a seam again and the whole point is gone.                        */
+
+[data-sc-mode="worldflight"] { position: relative; }
+
+.sc-world {
+  position: fixed; inset: 0;
+  overflow: clip;
+  z-index: var(--sc-z-stage);
+  background: var(--sc-canvas);
+}
+
+/* Every leg is mounted for the life of the page and stacked in the same box.
+   The engine owns opacity, visibility and z-index here; do not set them. */
+.sc-world__seg {
+  position: absolute; inset: 0;
+  opacity: 0;
+  will-change: opacity;
+}
+.sc-world__seg > :is(video, img, canvas) {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+/* The poster is the frame-holder AND the first camera move: the engine pushes
+   it in slowly until a real decoded frame is available to replace it. */
+.sc-world__poster {
+  z-index: 0;
+  transform-origin: 50% 50%;
+  transition: opacity 420ms var(--sc-ease-out);
+}
+.sc-world__seg > video { z-index: 1; }
+.sc-world__seg.sc-has-clip .sc-world__poster { opacity: 0; }
+/* The act stylesheet lights a clip through its ancestor act. A worldflight leg
+   has no act, so match the class the engine also writes on the clip itself. */
+video[data-sc-scrub].sc-has-clip { opacity: 1; }
+
+/* The copy layer is fixed too, and inert by default: the engine hands
+   pointer-events back to a block only while it is actually legible. */
+.sc-world__copy {
+  position: fixed; inset: 0;
+  z-index: var(--sc-z-copy);
+  pointer-events: none;
+}
+.sc-world__scrim { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+[data-sc-copy] {
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.sc-ready [data-sc-copy] { transition: none; }
+
+/* The track. Empty on purpose. */
+.sc-world__spacer { pointer-events: none; }
+
+/* scroll progress */
+[data-sc-progress] {
+  position: fixed; inset: 0 0 auto 0; height: 2px; z-index: var(--sc-z-chrome);
+  background: var(--sc-accent); transform-origin: 0 50%; transform: scaleX(0);
+  will-change: transform;
+}
+
+/* ----------------------------------------------------------- atmosphere --
+   Depth is not only shadow. Grain keeps a flat dark ground from banding, and
+   it is the difference between "a dark page" and "a lit room". */
+.sc-grain { position: fixed; inset: 0; pointer-events: none; z-index: 3; opacity: 0.045; }
+.sc-grain::before {
+  content: ""; position: absolute; inset: -50%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+}
+
+/* -------------------------------------------------------- reduced motion -- */
+@media (prefers-reduced-motion: reduce) {
+  /* Fewer and gentler, not zero. Opacity still carries the reveal so the page
+     is comprehensible; every position change is dropped. */
+  [data-sc-in], [data-sc-stagger] > * { transform: none; transition-duration: 220ms; }
+  [data-sc-parallax], [data-sc-pan], .sc-split__i { transform: none !important; }
+  /* A wipe is a position change too. Show reveal content settled. */
+  [data-sc-reveal] { clip-path: none !important; }
+  /* A rail's transform IS its navigation, not decoration. Zeroing it the way
+     parallax and kinetic type are zeroed parks the act on its first screenful
+     and makes everything past the fold unreachable: a device degrading into
+     missing content. Hand the travel back to the reader as an ordinary scroll
+     region instead, so the same items are all still gettable without motion.
+     A build that would rather re-lay the rail out as a grid can still do that;
+     this is the floor, not the ceiling. */
+  [data-sc-act="pan"] .sc-stage,
+  [data-sc-act="pan"] [data-sc-stage] {
+    overflow-x: auto; overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+  }
+  [data-sc-pan] > * { scroll-snap-align: center; }
+  [data-sc-spotlight]::after { display: none; }
+  /* A worldflight keeps its whole story here. No clip is ever fetched, so the
+     posters are the film, and they cross-dissolve through exactly the same
+     seams at exactly the same scroll positions. The push-in and the copy drift
+     are the only things that go. */
+  .sc-world__poster, [data-sc-copy] { transform: none !important; }
+}
+
+/* --------------------------------------------------------------- mobile -- */
+@media (max-width: 860px) {
+  .sc-copy { inset-inline: var(--sc-gutter); max-width: none; }
+  .sc-copy--trail { text-align: left; }
+  .sc-stage { height: 100svh; }
+  /* .sc-copy--trail re-anchors to the left and spans the full width here, so a
+     bottom-RIGHT corner gradient darkens the one corner the copy just left and
+     guarantees a contrast failure over any bright clip. Point the density at
+     the copy: the same band .sc-scrim--band paints. */
+  .sc-scrim--trail {
+    background: linear-gradient(to top,
+      color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+      color-mix(in oklab, var(--sc-canvas) 74%, transparent) 22%,
+      color-mix(in oklab, var(--sc-canvas) 30%, transparent) 42%,
+      transparent 58%);
+  }
+}
+
+/* ================= page styles, ported from the descent build ================= */
+
+  .descent {
+    --sc-canvas:     #061420;
+    --sc-surface:    #0B2230;
+    --sc-ink:        #EDF4F2;
+    --sc-ink-soft:   #93ABA8;
+    --sc-accent:     #3FD1BE;
+    --sc-accent-ink: #04121A;
+    --sc-font-display: var(--lb-display), "Archivo", system-ui, sans-serif;
+    --sc-font-text: var(--lb-display), "Archivo", system-ui, sans-serif;
+    --mono: var(--lb-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+    --abyss: #061420;
+    --abyss-deep: #04101A;
+    --sand-night: #14100A;
+    --bone: #F2EDE2;
+    --bone-dim: #E9E2D2;
+    --ink-warm: #171208;
+    --reef-deep: #0B6B60;
+    --reef-glow: #3FD1BE;
+  }
+
+  .descent { background: var(--abyss); color: var(--sc-ink); font-family: var(--sc-font-text); -webkit-font-smoothing: antialiased; }
+
+  /* ================= grounds: hard cuts, ink restated ================= */
+  .g-abyss { background: var(--abyss);      --sc-canvas: var(--abyss);      --sc-ink:#EDF4F2; --sc-ink-soft:#93ABA8; --sc-accent:var(--reef-glow); --sc-accent-ink:#04121A; color: var(--sc-ink); }
+  .g-night { background: var(--sand-night); --sc-canvas: var(--sand-night); --sc-ink:#F0E9DC; --sc-ink-soft:#A4967E; --sc-accent:var(--reef-glow); --sc-accent-ink:#04121A; color: var(--sc-ink); }
+  .g-bone  { background: var(--bone);       --sc-canvas: var(--bone);       --sc-ink:var(--ink-warm); --sc-ink-soft:#6E6350; --sc-accent:var(--reef-deep); --sc-accent-ink:var(--bone); color: var(--sc-ink); }
+  /* Light lagoon ground, reused verbatim from the reviews page's light theme
+     (logbook.css) so the two live in the same "ocean Tiffany" palette. */
+  .g-lagoon {
+    background:
+      radial-gradient(70vw 50vh at 100% 0%, rgba(63, 209, 190, 0.22), transparent 70%),
+      radial-gradient(60vw 40vh at 0% 100%, rgba(232, 223, 208, 0.55), transparent 70%),
+      #eaf4f1;
+    --sc-canvas: #eaf4f1; --sc-ink: #171208; --sc-ink-soft: #5f6a66;
+    --sc-accent: #0b8f80; --sc-accent-ink: #eaf4f1; color: var(--sc-ink);
+  }
+
+  .g-abyss .sc-body, .g-night .sc-body { line-height: 1.72; letter-spacing: 0.012em; font-weight: 500; }
+
+  /* ================= instrument chrome ================= */
+  .mono { font-family: var(--mono); font-feature-settings: "tnum"; }
+  .microcopy {
+    font: 500 0.64rem/1 var(--mono);
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+
+  /* the dive HUD: depth follows the page. the signature instrument. */
+  .hud {
+    position: fixed; top: 1.1rem; right: 1.2rem; z-index: 60;
+    display: grid; gap: 0.3rem; justify-items: end;
+    padding: 0.7rem 0.95rem;
+    background: linear-gradient(135deg, rgba(20, 60, 66, 0.55), rgba(4, 14, 20, 0.5) 45%, rgba(20, 60, 66, 0.4));
+    border: 1px solid rgba(190, 240, 232, 0.35);
+    border-radius: 14px;
+    backdrop-filter: blur(16px) saturate(170%); -webkit-backdrop-filter: blur(16px) saturate(170%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -1px 0 rgba(255,255,255,0.08), inset 1px 0 0 rgba(255,255,255,0.18), 0 14px 40px -18px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
+  .hud__depth {
+    font: 500 1.3rem/1 var(--mono); font-feature-settings: "tnum";
+    color: var(--reef-glow); letter-spacing: 0.04em;
+  }
+  .hud__depth small { font-size: 0.62em; color: rgba(63, 209, 190, 0.7); }
+  .hud__label {
+    font: 500 0.56rem/1 var(--mono);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(237, 244, 242, 0.66);
+  }
+  .hud__track { width: 100%; height: 2px; background: rgba(63,209,190,0.18); position: relative; border-radius: 1px; }
+  .hud__track i { position: absolute; inset-block: 0; left: 0; width: 100%; background: var(--reef-glow); border-radius: 1px; transform-origin: left center; transform: scaleX(0); }
+  @media (max-width: 700px) {
+    .hud { top: 0.7rem; right: 0.7rem; padding: 0.5rem 0.65rem; }
+    .hud__depth { font-size: 1.05rem; }
+  }
+
+  /* wordmark, fixed, tiny */
+  .brand {
+    position: fixed; top: 1.35rem; left: 1.4rem; z-index: 60;
+    font: 800 0.82rem/1 var(--sc-font-display); letter-spacing: 0.06em;
+    color: #fff; text-shadow: 0 1px 12px rgba(6,20,32,0.5);
+  }
+
+  /* ================= act 0 · surface: his name, his face ================= */
+  .brand-stage { position: relative; height: 100svh; overflow: hidden; }
+  .brand-stage__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 32%; }
+  .brand-copy { position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); z-index: 2; max-width: min(92vw, 900px); }
+  .brand-copy h1 {
+    font: 800 clamp(3.6rem, 12vw, 9rem)/0.92 var(--sc-font-display);
+    letter-spacing: -0.022em; text-transform: uppercase;
+    margin: 0 0 0.9rem; color: #F4FAF8;
+  }
+  .brand-copy .sc-body { color: rgba(240,247,245,0.92); max-width: 44ch; }
+
+  /* ================= act 1 · entry: full-bleed scrub ================= */
+  .entry-copy { max-width: min(92vw, 1080px); }
+  .entry-copy .microcopy { color: rgba(240,247,245,0.98); margin-bottom: 1.3rem; display: inline-block; background: rgba(4,14,20,0.72); padding: 0.5em 0.75em; border-radius: 3px; border: 1px solid rgba(63,209,190,0.22); }
+  .entry-copy h2 {
+    font: 800 clamp(3rem, 8.6vw, 7.6rem)/0.96 var(--sc-font-display);
+    letter-spacing: -0.022em; text-transform: uppercase;
+    margin: 0 0 1.4rem; max-width: 12ch; text-wrap: balance;
+  }
+  .entry-copy .stand {
+    font: 500 clamp(1rem, 1.5vw, 1.18rem)/1.62 var(--sc-font-text);
+    color: rgba(237,244,242,0.88); max-width: 44ch; text-wrap: pretty;
+    margin: 0 0 2rem;
+  }
+  .cta {
+    display: inline-block; padding: 0.85rem 1.6rem;
+    background: var(--reef-glow); color: var(--sc-accent-ink);
+    font: 700 0.95rem/1 var(--sc-font-display); letter-spacing: 0.02em;
+    text-decoration: none; border-radius: 3px;
+    transition: transform 140ms var(--sc-ease-out), box-shadow 140ms var(--sc-ease-out);
+    box-shadow: 0 10px 30px -12px rgba(63, 209, 190, 0.55);
+  }
+  .cta:hover { transform: translateY(-1px); box-shadow: 0 14px 34px -12px rgba(63,209,190,0.7); }
+  .cta:active { transform: translateY(1px) scale(0.97); }
+  .entry-foot {
+    position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: 1.4rem;
+    display: flex; justify-content: space-between; gap: 1rem;
+    color: rgba(237,244,242,0.55);
+  }
+
+  /* ================= act 2 · the guide: magazine cover on paper ================= */
+  .guide-stage { display: grid; align-content: center; padding: 6vh var(--sc-gutter); }
+  .guide-cover {
+    max-width: var(--sc-maxw); margin-inline: auto; width: 100%;
+    display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(2rem, 5vw, 5.5rem); align-items: center;
+    position: relative;
+  }
+  /* the cursor gives the paper a surface */
+  .guide-stage::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(520px 420px at calc(var(--sc-mx, 0.5) * 100%) calc(var(--sc-my, 0.4) * 100%), rgba(11, 107, 96, 0.10), transparent 68%);
+  }
+  .rule-draw {
+    height: 2px; background: var(--sc-ink);
+    transform-origin: left center;
+    transform: scaleX(clamp(0, calc(var(--sc-p, 0) * 6), 1));
+    margin-bottom: 1.6rem;
+  }
+  .guide-cover .microcopy { color: var(--sc-ink-soft); display: block; margin-bottom: 0.9rem; }
+  .guide-cover h2 {
+    font: 800 clamp(2.6rem, 5.4vw, 4.8rem)/0.98 var(--sc-font-display);
+    letter-spacing: -0.02em; text-transform: uppercase;
+    margin: 0 0 1.5rem; text-wrap: balance;
+  }
+  .guide-cover .sc-body { max-width: 46ch; color: var(--sc-ink); }
+  .ledger { margin: 2rem 0 0; }
+  .ledger div {
+    display: grid; grid-template-columns: minmax(11ch, 0.36fr) 1fr;
+    gap: 1.2rem; align-items: baseline;
+    padding: 0.72rem 0; border-top: 1px solid rgba(23, 18, 8, 0.16);
+  }
+  .ledger div:last-child { border-bottom: 1px solid rgba(23, 18, 8, 0.16); }
+  .ledger dt { font: 500 0.62rem/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--sc-ink-soft); }
+  .ledger dd { margin: 0; font: 600 0.98rem/1.5 var(--sc-font-text); }
+  .guide-plate { position: relative; }
+  .guide-plate figure { margin: 0; position: relative; overflow: hidden; border-radius: 4px; }
+  .guide-plate img { width: 100%; height: auto; display: block; }
+  .guide-plate figcaption {
+    font: 500 0.62rem/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--sc-ink-soft); padding-top: 0.6rem;
+  }
+  .guide-plate .exhibit-letter {
+    position: absolute; top: -0.55em; right: -0.12em; z-index: -1;
+    font: 900 clamp(5rem, 9vw, 8rem)/1 var(--sc-font-display);
+    color: transparent; -webkit-text-stroke: 1.5px rgba(23, 18, 8, 0.22);
+  }
+
+  /* ================= act 3 · silence ================= */
+  .silence {
+    min-height: 34vh; display: grid; place-items: center; align-content: center; gap: 1rem;
+    padding: calc(var(--sc-section) * 0.7) var(--sc-gutter);
+    text-align: center;
+  }
+  .silence .microcopy { color: var(--sc-accent); }
+  .silence p.line {
+    font: 500 clamp(1.2rem, 2.2vw, 1.7rem)/1.5 var(--sc-font-text);
+    color: var(--sc-ink-soft); margin: 0; font-style: italic;
+  }
+
+  /* ================= act 4 · the peak: the mounted print ================= */
+  .peak-stage { display: grid; place-items: center; padding: 5vh var(--sc-gutter); position: relative; }
+  .peak-year {
+    position: absolute; inset-inline: 0; top: 4vh;
+    text-align: center; z-index: 0;
+    font: 900 clamp(7rem, 22vw, 19rem)/1 var(--sc-font-display);
+    font-feature-settings: "tnum";
+    color: transparent; -webkit-text-stroke: 2px rgba(63, 209, 190, 0.34);
+    letter-spacing: 0.01em; pointer-events: none;
+  }
+  .peak-frame { width: min(78vw, 900px); position: relative; z-index: 1; margin-top: 7vh; }
+  .peak-mat {
+    background: var(--bone); padding: clamp(0.7rem, 1.6vw, 1.3rem);
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.16) inset, 0 34px 80px -24px rgba(0,0,0,0.75);
+  }
+  .peak-plate { position: relative; overflow: hidden; aspect-ratio: 3 / 2; }
+  .peak-plate img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    transform: scale(calc(1.02 + var(--sc-p, 0) * 0.06));
+  }
+  .peak-plate img.stage { opacity: clamp(0, (var(--sc-p, 0) - var(--from, 0.3)) / 0.09, 1); }
+  .peak-plate img.stage--tall { object-position: center 18%; }
+  .peak-captions { position: relative; min-height: 3.6rem; margin-top: 1rem; }
+  .peak-captions p {
+    position: absolute; inset-inline: 0; top: 0; margin: 0;
+    font: 500 0.68rem/1.7 var(--mono); letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--sc-ink-soft); text-align: center;
+  }
+
+  /* ================= act 5 · the coast: rail of stations ================= */
+  .coast-rail {
+    display: flex; align-items: stretch; gap: clamp(1.2rem, 2.4vw, 2.2rem);
+    padding: 0 var(--sc-gutter);
+  }
+  .coast-rail::after { content: ""; flex: 0 0 1px; }
+  .coast-lead { flex: 0 0 30rem; display: grid; align-content: center; gap: 1.1rem; }
+  .coast-lead h2 {
+    font: 800 clamp(2.4rem, 4.6vw, 4rem)/1 var(--sc-font-display);
+    letter-spacing: -0.018em; text-transform: uppercase; margin: 0; text-wrap: balance;
+  }
+  .coast-lead .microcopy { color: var(--sc-accent); }
+  .coast-lead .sc-body { max-width: 34ch; color: var(--sc-ink-soft); }
+  .station {
+    flex: 0 0 clamp(17rem, 23vw, 21rem);
+    display: grid; align-content: end; gap: 0.55rem;
+    padding: 1.4rem 1.4rem 1.5rem;
+    background: linear-gradient(180deg, rgba(11, 34, 48, 0.35), rgba(11, 34, 48, 0.85));
+    border: 1px solid rgba(63, 209, 190, 0.16);
+    border-top-color: rgba(63, 209, 190, 0.4);
+    border-radius: 6px;
+    min-height: 56vh;
+    position: relative; overflow: hidden;
+  }
+  .station::before {
+    content: ""; position: absolute; top: 1.35rem; left: 1.4rem;
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--reef-glow);
+    box-shadow: 0 0 14px 2px rgba(63, 209, 190, 0.65);
+  }
+  .station .microcopy { color: rgba(237,244,242,0.55); }
+  .station h3 { font: 800 clamp(1.5rem, 2.1vw, 1.9rem)/1.02 var(--sc-font-display); text-transform: uppercase; letter-spacing: -0.01em; margin: 0; }
+  .station .depth {
+    font: 500 clamp(2.4rem, 4vw, 3.4rem)/1 var(--mono); font-feature-settings: "tnum";
+    color: var(--reef-glow); letter-spacing: -0.02em;
+  }
+  .station .depth small { font-size: 0.42em; letter-spacing: 0.12em; color: rgba(63,209,190,0.72); }
+  .station p { margin: 0; font: 500 0.85rem/1.6 var(--sc-font-text); color: rgba(237,244,242,0.75); max-width: 30ch; }
+  .station-img { flex: 0 0 clamp(18rem, 24vw, 22rem); position: relative; border-radius: 6px; overflow: hidden; min-height: 56vh; }
+  .station-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .station-img figcaption {
+    position: absolute; left: 0.9rem; bottom: 0.8rem;
+    font: 500 0.6rem/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(237,244,242,0.85); background: rgba(4,14,20,0.55); padding: 0.35rem 0.55rem; border-radius: 3px;
+  }
+  .coast-note { flex: 0 0 24rem; display: grid; align-content: center; gap: 0.8rem; }
+  .coast-note p { font: 600 clamp(1.2rem, 1.9vw, 1.6rem)/1.45 var(--sc-font-text); margin: 0; max-width: 24ch; }
+  .coast-note .microcopy { color: var(--sc-accent); }
+
+  /* staggered settle for rail items, driven off act progress */
+  @media (prefers-reduced-motion: no-preference) {
+    .coast-rail > * { opacity: calc(0.55 + var(--sc-p, 0) * 1.4); }
+    .coast-rail > :first-child { opacity: 1; }
+  }
+
+  /* ================= act 6 · his world: Osama orbited by the site =================
+     Osama stands still at the ring's axis, larger than anything that orbits him.
+     The ring is level; the dish tilt is written per card by the scene script
+     (--card-y), so the front of the ring passes low, across his hands, and the
+     back passes high behind his shoulders, never across his face. */
+  .orbit-stage { display: grid; grid-template-rows: auto 1fr; padding: 4vh var(--sc-gutter) 4.5vh; gap: 0; height: 100svh; }
+  .orbit-head { max-width: 46ch; position: relative; z-index: 3; }
+  .orbit-head .microcopy { color: var(--sc-accent); display: block; margin-bottom: 0.7rem; }
+  .orbit-head h2 { font: 700 clamp(1.6rem, 3.4vw, 2.6rem)/1.08 var(--sc-font-display); letter-spacing: var(--sc-track-tight); margin: 0; }
+  .orbit-tagline { font: 500 italic clamp(0.85rem, 1.3vw, 1rem)/1.5 var(--sc-font-text); color: var(--sc-ink-soft); margin: 0.7rem 0 0; }
+  .orbit-wrap { position: relative; min-height: 0; }
+
+  /* the accessible, no-motion floor: real links, real images, always in the DOM */
+  .orbit-grid { display: grid; grid-template-columns: minmax(11rem, 16vw) 1fr; gap: clamp(1.2rem, 3vw, 2.4rem); align-items: center; height: 100%; }
+  .orbit-grid.is-hidden { display: none; }
+  .orbit-grid__figure { margin: 0; }
+  .orbit-grid__figure img { width: 100%; height: auto; display: block; filter: drop-shadow(0 22px 40px rgba(11,111,96,0.28)); }
+  .orbit-grid__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.9rem; max-height: 100%; overflow-y: auto; }
+  .orbit-grid__list a { display: block; text-decoration: none; color: inherit; }
+
+  /* the 3D ring, mounted only once JS confirms reduced-motion is off */
+  .orbit-3d {
+    --ring-r: clamp(17rem, 27vw, 26rem);      /* orbit radius */
+    --ring-cy: 58%;                            /* the ring's centre line, at his waist */
+    --figure-h: 96%;                           /* how much of the stage he fills */
+    position: relative; height: 100%; min-height: 60vh; perspective: clamp(1100px, 110vw, 1900px); perspective-origin: 50% 40%;
+    touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  }
+  /* An ambient wash pooled behind him so the scene reads as lit from within. */
+  .orbit-3d::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(42vw 46vh at 50% 62%, rgba(63, 209, 190, 0.30), transparent 68%),
+      radial-gradient(24vw 26vh at 50% 62%, rgba(255, 255, 255, 0.55), transparent 70%);
+  }
+  .orbit-ring { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateY(var(--ring-deg, 0deg)); will-change: transform; }
+  /* At the axis (translateZ 0) so depth sorting does the rest: cards at +r paint over
+     him, cards at -r paint behind him. rotateY(-deg) is applied by the script so he
+     faces the camera while the ring turns. */
+  .orbit-figure { position: absolute; left: 50%; bottom: 0; height: var(--figure-h); width: auto; z-index: 50; transform: translateX(-50%); pointer-events: none; }
+  .orbit-figure img { height: 100%; width: auto; display: block; filter: drop-shadow(0 30px 50px rgba(11,111,96,0.34)); }
+  .orbit-card {
+    position: absolute; left: 50%; top: var(--ring-cy); width: clamp(8rem, 12.5vw, 11rem);
+    transform: translate(-50%, -50%) translateY(calc(var(--card-rise, 0px) + var(--card-y, 0px)))
+      rotateY(var(--card-angle)) translateZ(var(--ring-r)) scale(calc(var(--card-scale, 1) * var(--hot, 1)));
+    transition: box-shadow 220ms var(--sc-ease-out, ease-out), border-color 220ms;
+    display: block; text-decoration: none; color: var(--sc-ink);
+    background: #fff; border: 1px solid rgba(11,111,96,0.12); border-radius: 10px; overflow: hidden; cursor: pointer;
+    box-shadow: 0 22px 48px -22px rgba(11,111,96,0.45);
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .orbit-card img { width: 100%; height: 5.6rem; object-fit: cover; display: block; transition: transform 400ms var(--sc-ease-out, ease-out); }
+  @media (hover: hover) and (pointer: fine) {
+    .orbit-card:hover img { transform: scale(1.08); }
+  }
+  .orbit-card__kicker, .orbit-card__title, .orbit-card__meta { display: block; padding-inline: 0.7rem; }
+  .orbit-card__kicker { margin-top: 0.55rem; font: 600 0.58rem/1.4 var(--sc-font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--sc-accent); }
+  .orbit-card__title { font: 700 0.85rem/1.25 var(--sc-font-display); color: var(--ink-warm); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .orbit-card__meta { padding-bottom: 0.65rem; font: 500 0.62rem/1.4 var(--sc-font-mono); letter-spacing: 0.06em; color: var(--sc-ink-soft); }
+  .orbit-hint { position: absolute; left: 0; right: 0; bottom: -2.6rem; text-align: center; color: var(--sc-ink-soft); pointer-events: none; z-index: 60; }
+  .orbit-hint::before { content: "\2190\00a0"; }
+  .orbit-hint::after { content: "\00a0\2192"; }
+
+  @media (max-width: 860px) {
+    .orbit-stage { padding-top: 4vh; height: 100svh; }
+    .orbit-head h2 { font-size: clamp(1.4rem, 6.4vw, 1.8rem); }
+    .orbit-grid { grid-template-columns: 1fr; }
+    .orbit-grid__figure { max-width: 12rem; margin-inline: auto; }
+    .orbit-3d { --ring-r: clamp(9rem, 36vw, 11rem); --ring-cy: 56%; --figure-h: 90%; min-height: 62vh; perspective: 900px; }
+    .orbit-card { width: clamp(6.8rem, 30vw, 8rem); }
+    .orbit-card img { height: 4.2rem; }
+    .orbit-card__title { font-size: 0.74rem; }
+  }
+
+  /* ================= act 6 · courses: mounted exhibits ================= */
+  .school { padding: calc(var(--sc-section) * 0.6) var(--sc-gutter); max-width: var(--sc-maxw); margin-inline: auto; }
+  .school-head { max-width: 60ch; margin-bottom: clamp(2.4rem, 5vw, 4rem); }
+  .school-head .microcopy { color: var(--sc-ink-soft); display: block; margin-bottom: 0.9rem; }
+  .school-head h2 {
+    font: 800 clamp(2.6rem, 5.2vw, 4.6rem)/0.98 var(--sc-font-display);
+    letter-spacing: -0.02em; text-transform: uppercase; margin: 0 0 1.2rem; text-wrap: balance;
+  }
+  .school-head .sc-body { color: var(--sc-ink-soft); max-width: 52ch; }
+  .exhibits {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.8rem, 4vw, 3.4rem);
+  }
+  .exhibit { position: relative; margin: 0; }
+  .exhibit:nth-child(even) { transform: translateY(clamp(1.4rem, 3vw, 2.6rem)); }
+  .exhibit .letter {
+    position: absolute; top: -0.52em; left: -0.06em; z-index: 0;
+    font: 900 clamp(5.5rem, 10vw, 8.5rem)/1 var(--sc-font-display);
+    color: transparent; -webkit-text-stroke: 1.5px rgba(23, 18, 8, 0.2);
+    pointer-events: none;
+  }
+  .exhibit-card {
+    position: relative; z-index: 1;
+    background: #FFFDF7; border-radius: 4px;
+    padding: 1.1rem 1.1rem 1.25rem;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 18px 44px -18px rgba(23, 18, 8, 0.4);
+    display: grid; gap: 0.85rem;
+  }
+  .exhibit-card img { width: 100%; height: 210px; object-fit: cover; border-radius: 2px; display: block; }
+  .exhibit-card .row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .exhibit-card h3 { font: 800 1.25rem/1.05 var(--sc-font-display); text-transform: uppercase; letter-spacing: -0.01em; margin: 0; }
+  .exhibit-card .spec { font: 500 0.66rem/1.5 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--sc-ink-soft); white-space: nowrap; }
+  .exhibit-card p { margin: 0; font: 500 0.9rem/1.6 var(--sc-font-text); color: #4B4232; text-wrap: pretty; }
+  .school-more { margin: clamp(2.6rem, 5vw, 4rem) 0 0; }
+  .school-more div {
+    display: grid; grid-template-columns: minmax(11ch, 0.3fr) 1fr; gap: 1.2rem;
+    padding: 0.85rem 0; border-top: 1px solid rgba(23, 18, 8, 0.16); align-items: baseline;
+  }
+  .school-more div:last-child { border-bottom: 1px solid rgba(23, 18, 8, 0.16); }
+  .school-more dt { font: 800 1rem/1.3 var(--sc-font-display); text-transform: uppercase; }
+  .school-more dd { margin: 0; font: 500 0.92rem/1.6 var(--sc-font-text); color: var(--sc-ink-soft); }
+
+  /* ================= act 7 · surfacing: the close ================= */
+  .surface-copy { text-align: left; }
+  .surface-copy h2 {
+    font: 800 clamp(2.6rem, 6.4vw, 5.6rem)/0.96 var(--sc-font-display);
+    letter-spacing: -0.02em; text-transform: uppercase; margin: 0 0 1.2rem; max-width: 12ch; text-wrap: balance;
+  }
+  .surface-copy .sc-body { max-width: 38ch; margin-bottom: 1.8rem; color: #F4FAF8; }
+  .surface-foot {
+    position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: 1.3rem;
+    display: flex; flex-wrap: wrap; gap: 0.4rem 1.8rem; align-items: baseline;
+    color: rgba(240,247,245,0.98);
+    background: rgba(4,14,20,0.66); padding: 0.55rem 0.8rem; border-radius: 4px;
+    font: 500 0.68rem/1.6 var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .surface-foot a { color: #F4FAF8; text-underline-offset: 0.25em; }
+  .surface-foot a:hover { color: var(--reef-glow); }
+  .surface-foot .ar { font-family: var(--sc-font-display); font-weight: 600; letter-spacing: 0; text-transform: none; }
+
+  /* corner scrim behind scrub copy at all widths, sibling of the copy so it is measurable */
+  .copy-scrim {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(88% 130% at 20% 50%, rgba(2, 9, 14, 0.96), rgba(2, 9, 14, 0.74) 46%, rgba(2, 9, 14, 0.3) 68%, transparent 86%);
+  }
+  /* mobile band scrim for scrub copy, sibling of the copy so it is measurable */
+  .sea-scrim-m { display: none; }
+  @media (max-width: 860px) {
+    .sea-scrim-m {
+      display: block; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to top, rgba(4, 14, 20, 0.95) 0%, rgba(4, 14, 20, 0.74) 30%, rgba(4, 14, 20, 0.28) 56%, transparent 74%);
+    }
+    .entry-copy, .surface-copy { top: auto !important; bottom: clamp(1.4rem, 7vw, 2.6rem); }
+  }
+
+  /* ================= responsive ================= */
+  @media (max-width: 860px) {
+    .guide-cover { grid-template-columns: 1fr; }
+    .exhibits { grid-template-columns: 1fr; }
+    .exhibit:nth-child(even) { transform: none; }
+    .coast-lead { flex-basis: 78vw; }
+    .station, .station-img { flex-basis: 74vw; min-height: 52vh; }
+    .coast-note { flex-basis: 70vw; }
+    .entry-copy h2 { font-size: clamp(2.5rem, 12vw, 3.4rem); }
+    .peak-frame { width: 92vw; margin-top: 12vh; }
+    .entry-foot { display: none; }
+  }
+
+/* ================= additions for the Next.js port ================= */
+.descent .topnav {
+  position: fixed; top: 1.2rem; left: 8.6rem; z-index: 60;
+  display: flex; gap: 1.3rem; align-items: center;
+  font: 500 0.6rem/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase;
+}
+.descent .topnav a { color: #e6ecea; text-decoration: none; transition: color 140ms; text-shadow: 0 1px 10px rgba(6,20,32,0.5); }
+.descent .topnav a:hover { color: #fff; }
+@media (max-width: 860px) { .descent .topnav { display: none; } }
+.descent .tail { position: relative; z-index: 1; }
+.descent .tail .lb { font-family: var(--lb-display), system-ui, sans-serif; }
+.descent #instagram-feed { background: var(--bone) !important; color: var(--ink-warm); }
+.descent #instagram-feed h2 { font-family: var(--sc-font-display) !important; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; color: var(--ink-warm); }
+.descent .tail-foot {
+  display: flex; flex-wrap: wrap; gap: 0.6rem 1.8rem; justify-content: space-between; align-items: baseline;
+  padding: 2rem var(--sc-gutter) 2.6rem; background: var(--abyss);
+  font: 500 0.66rem/1.7 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(237, 244, 242, 0.62);
+}
+.descent .tail-foot nav { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; }
+.descent .tail-foot a { color: rgba(237, 244, 242, 0.85); text-decoration: none; }
+.descent .tail-foot a:hover { color: var(--reef-glow); }
+
+/* ================= pre-mount geometry: no layout shift when the engine boots ================= */
+.descent [data-sc-act="scrub"], .descent [data-sc-act="pin"], .descent [data-sc-act="pan"] { position: relative; height: calc(var(--sc-span, 1.5) * 100vh); }
+.descent [data-sc-stage] {position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: clip;
+  z-index: var(--sc-z-stage);}
+.descent /* scrub / sequence media */
+[data-sc-stage] :is(video[data-sc-scrub], canvas[data-sc-sequence], .sc-stage__poster) {position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;}
+.descent /* isolation always; position only if nothing more specific already set it.
+   Written with :where() (zero specificity) on purpose: a plain `position:
+   relative` here has the same weight as `[data-sc-stage]` and, being later in the
+   file, silently wins. A stage carrying both attributes then stops being
+   sticky and the whole act scrolls away instead of pinning. */
+[data-sc-spotlight] {isolation: isolate;}
+.descent /* A rail's transform IS its navigation, not decoration. Zeroing it the way
+     parallax and kinetic type are zeroed parks the act on its first screenful
+     and makes everything past the fold unreachable: a device degrading into
+     missing content. Hand the travel back to the reader as an ordinary scroll
+     region instead, so the same items are all still gettable without motion.
+     A build that would rather re-lay the rail out as a grid can still do that;
+     this is the floor, not the ceiling. */
+  [data-sc-act="pan"] [data-sc-stage], [data-sc-act="pan"] [data-sc-stage] {overflow-x: auto; overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;}
+.descent [data-sc-stage] {height: 100svh;}
+.descent #instagram-feed .text-gray-500, .descent #instagram-feed .text-gray-600 { color: #5a5245; }
+
+/* Before the engine is ready the hero copy is visible, so the first paint carries the
+   headline and the Largest Contentful Paint does not wait for JavaScript. The engine
+   takes over opacity per frame once it mounts. */
+html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: none; }
+
+/* ================= act 4b · the descent: three photographs at their true depths ================= */
+.descent .depth-stage { background: var(--abyss-deep); }
+.descent .depth-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.descent .depth-photo--1 { opacity: clamp(0, 1 - (var(--sc-p, 0) - 0.3) / 0.08, 1); }
+.descent .depth-photo--2 { opacity: calc(clamp(0, (var(--sc-p, 0) - 0.3) / 0.08, 1) * clamp(0, 1 - (var(--sc-p, 0) - 0.64) / 0.08, 1)); }
+.descent .depth-photo--3 { opacity: clamp(0, (var(--sc-p, 0) - 0.64) / 0.08, 1); }
+.descent .depth-copy { position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); z-index: 2; }
+.descent .depth-cue { position: absolute; left: 0; bottom: 0; max-width: 34rem; }
+.descent .depth-cue .microcopy { display: inline-block; color: var(--reef-glow); background: rgba(4,14,20,0.72); padding: 0.5em 0.75em; border-radius: 3px; border: 1px solid rgba(63,209,190,0.22); margin-bottom: 1rem; }
+.descent .depth-cue h2 { font: 800 clamp(2rem, 4.6vw, 4.2rem)/0.98 var(--sc-font-display); letter-spacing: -0.02em; text-transform: uppercase; margin: 0; text-wrap: balance; text-shadow: 0 2px 30px rgba(0,0,0,0.5); }
+.descent .depth-credit { position: absolute; right: var(--sc-gutter); bottom: 1.4rem; z-index: 2; color: rgba(237,244,242,0.6); }
+@media (max-width: 860px) { .descent .depth-credit { display: none; } .descent .depth-cue { max-width: 100%; } }
+
+/* station photographs, behind the ledger text */
+.descent .station__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.38; z-index: 0; }
+.descent .station > *:not(.station__img) { position: relative; z-index: 1; }
+.descent .station::before { z-index: 2; }
+
+/* ================= restored site features (2026-09-05) ================= */
+/* nav: the brand is a link, the phone gets a button and a sheet */
+.descent .brand { text-decoration: none; }
+.descent .navbtn {
+  position: fixed; top: 0.85rem; right: var(--sc-gutter); z-index: 70; display: none;
+  width: 44px; height: 44px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.28);
+  background: rgba(6,20,32,0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); cursor: pointer; padding: 0;
+}
+.descent .navbtn span { position: absolute; left: 12px; right: 12px; height: 2px; background: #fff; border-radius: 2px; transition: transform 200ms var(--sc-ease-out, ease-out), top 200ms; }
+.descent .navbtn span:first-child { top: 17px; }
+.descent .navbtn span:last-child { top: 25px; }
+.descent .navbtn.is-open span:first-child { top: 21px; transform: rotate(45deg); }
+.descent .navbtn.is-open span:last-child { top: 21px; transform: rotate(-45deg); }
+.descent .navsheet {
+  position: fixed; inset: 0; z-index: 65; background: rgba(6,20,32,0.96); color: #edf4f2;
+  display: grid; align-content: center; justify-items: start; padding: 5rem var(--sc-gutter) 3rem; gap: 2rem;
+  animation: navsheet-in 220ms var(--sc-ease-out, ease-out) both;
+}
+@keyframes navsheet-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.descent .navsheet nav { display: grid; gap: 0.2rem; width: 100%; }
+.descent .navsheet nav a {
+  display: block; min-height: 52px; padding: 0.75rem 0; color: #edf4f2; text-decoration: none;
+  font: 800 clamp(1.7rem, 7vw, 2.4rem)/1.1 var(--sc-font-display); text-transform: uppercase; letter-spacing: -0.02em;
+  border-bottom: 1px solid rgba(237,244,242,0.12);
+}
+.descent .navsheet nav a.navsheet__wa { margin-top: 1rem; font: 700 1rem/1.2 var(--sc-font-display); text-transform: none; letter-spacing: 0; color: #3fd1be; border: 0; }
+.descent .navsheet__foot { font: 500 0.6rem/1.6 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(237,244,242,0.55); margin: 0; }
+@media (max-width: 860px) { .descent .navbtn { display: block; } }
+@media (prefers-reduced-motion: reduce) { .descent .navsheet { animation: none; } }
+
+/* hero ribbons: the three pills the previous homepage carried */
+.descent .brand-ribbons { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.3rem; }
+.descent .brand-ribbons a { min-height: 40px; }
+
+/* why act: three exhibits in a row on a desktop */
+.descent .exhibits--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.descent .exhibits--three .exhibit:nth-child(even) { transform: translateY(clamp(1rem, 2vw, 1.8rem)); }
+.descent .exhibit-card:is(a) { text-decoration: none; color: inherit; display: grid; gap: 0.7rem; }
+.descent .exhibit-card:is(a):hover img { transform: scale(1.03); }
+.descent .exhibit-card img { transition: transform 500ms var(--sc-ease-out, ease-out); }
+@media (max-width: 860px) { .descent .exhibits--three { grid-template-columns: 1fr; } }
+
+/* journal rail: stations carrying a story each */
+.descent .journal-card { flex: 0 0 clamp(17rem, 22vw, 21rem); }
+.descent .journal-card h3 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); text-transform: none; letter-spacing: -0.015em; line-height: 1.12; }
+.descent .journal-card p { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; max-width: 34ch; }
+.descent .cta--quiet { background: transparent; color: inherit; border: 1px solid rgba(237,244,242,0.3); box-shadow: none; }
+.descent .cta--quiet:hover { border-color: #3fd1be; color: #3fd1be; }
+
+/* gallery rail: frames of three heights, hung at different levels */
+.descent .gal-rail { align-items: center; }
+.descent .gal-frame { position: relative; flex: 0 0 auto; display: block; border-radius: 4px; overflow: hidden; background: #0b2230; text-decoration: none; color: inherit; box-shadow: 0 30px 60px -30px rgba(0,0,0,0.6); }
+.descent .gal-frame img { display: block; height: 100%; width: 100%; object-fit: cover; transition: transform 600ms var(--sc-ease-out, ease-out); }
+.descent .gal-frame:hover img { transform: scale(1.04); }
+.descent .gal-frame--0 { width: clamp(16rem, 24vw, 24rem); height: clamp(22rem, 34vw, 32rem); }
+.descent .gal-frame--1 { width: clamp(18rem, 28vw, 28rem); height: clamp(14rem, 20vw, 20rem); align-self: flex-start; margin-top: 8vh; }
+.descent .gal-frame--2 { width: clamp(14rem, 20vw, 20rem); height: clamp(18rem, 26vw, 26rem); align-self: flex-end; margin-bottom: 8vh; }
+.descent .gal-frame figcaption { position: absolute; left: 0.8rem; right: 0.8rem; bottom: 0.7rem; color: rgba(237,244,242,0.85); text-shadow: 0 1px 8px rgba(0,0,0,0.6); }
+@media (max-width: 860px) {
+  .descent .gal-frame--0 { width: 62vw; height: 70vw; }
+  .descent .gal-frame--1 { width: 70vw; height: 48vw; margin-top: 4vh; }
+  .descent .gal-frame--2 { width: 54vw; height: 66vw; margin-bottom: 4vh; }
+}
+
+/* school: the compliance line */
+.descent .school-note { margin: 1.6rem 0 0; font: 500 0.88rem/1.6 var(--sc-font-text); color: var(--sc-ink-soft); max-width: 60ch; }
+
+/* surfacing: the small print under the button */
+.descent .surface-small { margin: 0.9rem 0 0; font: 500 0.82rem/1.6 var(--sc-font-text); color: rgba(237,244,242,0.72); max-width: 40ch; }
+.descent .surface-small a { color: #3fd1be; }
+
+/* the phone: the menu button owns the top right, the dive computer moves down a notch */
+@media (max-width: 860px) {
+  .descent .hud { top: 4.6rem !important; }
+}
+
+/* rails fill their stage so frames hung high and low read against the middle */
+.descent .journal-rail, .descent .gal-rail { height: 100svh; align-items: center; }
+.descent .journal-rail .station { align-self: center; }
+/* the orbit heading wraps before it reaches the dive computer on a phone */
+@media (max-width: 860px) { .descent .orbit-head { padding-right: 6.5rem; } }
+
+/* One dark strip behind the fixed chrome so the brand, the links and the dive computer
+   read on every ground, the bone and lagoon acts included. It fades out below, so on
+   the photo hero it is a light hand on the top edge rather than a bar. */
+.descent .topbar {
+  position: fixed; inset-inline: 0; top: 0; height: 4.6rem; z-index: 58; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(6,20,32,0.82) 0%, rgba(6,20,32,0.55) 55%, rgba(6,20,32,0) 100%);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent); mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+@media (max-width: 860px) { .descent .topbar { height: 7.4rem; } }
+
+/* ================= bubbles ================= */
+.descent .bubbles { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; mix-blend-mode: screen; }
+@media (prefers-reduced-motion: reduce) { .descent .bubbles { display: none; } }
+
+/* ================= liquid glass =================
+   One material for the chrome: a blurred, saturated pane with a bright top edge, a soft
+   inner rim and a moving specular. Dark pane by default; --paper for the bone acts. */
+.descent .glass {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06) 42%, rgba(255,255,255,0.14));
+  border: 1px solid rgba(255,255,255,0.38);
+  backdrop-filter: blur(18px) saturate(170%); -webkit-backdrop-filter: blur(18px) saturate(170%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(255,255,255,0.12), inset 1px 0 0 rgba(255,255,255,0.28), inset -1px 0 0 rgba(255,255,255,0.1), 0 18px 50px -24px rgba(0,0,0,0.55);
+}
+.descent .glass::before {
+  content: ""; position: absolute; inset: -40% -30%; z-index: -1; pointer-events: none;
+  background: radial-gradient(55% 45% at 28% 18%, rgba(255,255,255,0.5), transparent 62%);
+  transform: translate(var(--gx, 0px), var(--gy, 0px)); transition: transform 700ms var(--sc-ease-out, ease-out);
+}
+.descent .glass:hover::before { --gx: 6%; --gy: 4%; }
+.descent .glass--paper {
+  background: linear-gradient(135deg, rgba(255,253,247,0.72), rgba(255,253,247,0.46) 45%, rgba(255,253,247,0.62));
+  border-color: rgba(255,255,255,0.75); color: var(--sc-ink);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), inset 1px 0 0 rgba(255,255,255,0.6), 0 30px 70px -30px rgba(23,18,8,0.45);
+}
+.descent .navbtn { background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(6,20,32,0.45)); border-color: rgba(255,255,255,0.4); box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 10px 30px -14px rgba(0,0,0,0.6); backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); }
+.descent .brand-ribbons a { backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 1px 0 0 rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4) !important; }
+.descent .cta { border-radius: 999px; padding: 0.95rem 1.7rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), inset 0 -1px 0 rgba(0,0,0,0.08), 0 14px 34px -14px rgba(63,209,190,0.7); }
+
+/* ================= guide act, layered ================= */
+.descent .guide-stage { position: relative; overflow: hidden; }
+.descent .guide-back { position: absolute; left: -6%; right: -6%; top: -12%; height: 124%; width: 112%; object-fit: cover; object-position: center 40%; opacity: 0.22; z-index: 0; pointer-events: none; filter: saturate(0.6); -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent); }
+.descent .guide-cover { position: relative; z-index: 1; }
+.descent .guide-panel { padding: clamp(1.4rem, 3vw, 2.4rem); border-radius: 18px; }
+.descent .guide-panel .rule-draw { margin-bottom: 1rem; }
+@media (max-width: 860px) { .descent .guide-panel { padding: 1.2rem; border-radius: 14px; } }
+
+/* ================= orbit: the hover frame ================= */
+/* Hover or focus a card and it comes forward with a targeting frame: four corner
+   brackets, a scan line sweeping the picture, a glow, and the word Open. */
+.descent .orbit-card__hud { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 180ms; }
+.descent .orbit-card__hud i { position: absolute; width: 14px; height: 14px; border: 2px solid #3fd1be; transition: transform 260ms var(--sc-ease-out, ease-out); }
+.descent .orbit-card__hud i:nth-child(1) { top: 5px; left: 5px; border-right: 0; border-bottom: 0; transform: translate(8px, 8px); }
+.descent .orbit-card__hud i:nth-child(2) { top: 5px; right: 5px; border-left: 0; border-bottom: 0; transform: translate(-8px, 8px); }
+.descent .orbit-card__hud i:nth-child(3) { bottom: 5px; left: 5px; border-right: 0; border-top: 0; transform: translate(8px, -8px); }
+.descent .orbit-card__hud i:nth-child(4) { bottom: 5px; right: 5px; border-left: 0; border-top: 0; transform: translate(-8px, -8px); }
+.descent .orbit-card__hud b { position: absolute; right: 0.55rem; top: 0.5rem; font: 700 0.58rem/1 var(--sc-font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: #06141b; background: #3fd1be; padding: 0.3rem 0.45rem; border-radius: 3px; }
+.descent .orbit-card__hud::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(to right, transparent, #3fd1be, transparent); opacity: 0.9; animation: orbit-scan 1.4s linear infinite; }
+@keyframes orbit-scan { from { transform: translateY(0); } to { transform: translateY(5.6rem); } }
+.descent .orbit-card:is(:hover, :focus-visible) { --hot: 1.32; border-color: rgba(63,209,190,0.7); box-shadow: 0 0 0 1px rgba(63,209,190,0.6), 0 0 44px rgba(63,209,190,0.35), 0 30px 60px -24px rgba(11,111,96,0.6); z-index: 200 !important; }
+.descent .orbit-card:is(:hover, :focus-visible) .orbit-card__hud { opacity: 1; }
+.descent .orbit-card:is(:hover, :focus-visible) .orbit-card__hud i { transform: translate(0, 0); }
+.descent .orbit-card:focus-visible { outline: none; }
+@media (prefers-reduced-motion: reduce) { .descent .orbit-card__hud::before { animation: none; } }
+
+/* ================= guide act: full bleed, fits the screen ================= */
+.descent .guide-stage { min-height: 100svh; padding: 4vh var(--sc-gutter); }
+.descent .guide-back { left: 0; right: 0; top: 0; width: 100%; height: 100%; opacity: 0.34; filter: saturate(0.75); -webkit-mask-image: none; mask-image: none; }
+.descent .guide-stage::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(242,237,226,0.55), rgba(242,237,226,0.15) 40%, rgba(242,237,226,0.7)); }
+.descent .guide-panel { padding: clamp(1.1rem, 2.2vw, 1.8rem); }
+.descent .guide-panel .sc-body { font-size: clamp(0.95rem, 1.2vw, 1.05rem); }
+.descent .guide-panel .ledger { margin-top: 1.1rem; }
+.descent .guide-panel .ledger div { padding: 0.45rem 0; }
+.descent .guide-quote { margin: 1.1rem 0 0; padding: 0.2rem 0 0 1rem; border-left: 3px solid #3fd1be; }
+.descent .guide-quote p { margin: 0; font: 600 clamp(1.05rem, 1.5vw, 1.25rem)/1.4 var(--sc-font-text); color: var(--sc-ink); text-wrap: pretty; }
+.descent .guide-quote cite { display: block; margin-top: 0.4rem; font: 500 0.62rem/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--sc-ink-soft); font-style: normal; }
+.descent .guide-plate figure { max-height: 62vh; }
+.descent .guide-plate img { max-height: 62vh; object-fit: cover; }
+@media (max-width: 860px) {
+  .descent .guide-stage { min-height: auto; }
+  .descent .guide-plate figure, .descent .guide-plate img { max-height: 40vh; }
+}
+/* the short silence: a breath, not a blank page */
+.descent .silence--short { min-height: 32vh !important; padding-block: 8vh !important; }
+/* hero small print */
+.descent .brand-small { margin: 0.9rem 0 0; font: 500 0.72rem/1.5 var(--sc-font-text); color: rgba(240,247,245,0.72); max-width: 44ch; }
+
+/* ================= liquid glass, the full material =================
+   Every control on the page is a capsule of glass: the backdrop is blurred and
+   saturated, the edge refracts (Chrome bends the backdrop through an SVG filter,
+   others get a bright rim), a specular sits on the top edge, and the whole thing
+   floats on a soft shadow. Applied to nav, gauge, pills, buttons, book arrows. */
+.descent .lg, .descent .cta, .descent .cta--quiet, .descent .navbtn, .descent .brand-ribbons a, .descent .topnav, .descent .hud, .descent .book__arrow, .descent .tail .lb-btn {
+  isolation: isolate; border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.18)) !important;
+  border: 1px solid rgba(255,255,255,0.45) !important;
+  backdrop-filter: blur(18px) saturate(180%) brightness(1.05); -webkit-backdrop-filter: blur(18px) saturate(180%) brightness(1.05);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), inset 0 -1px 0 rgba(255,255,255,0.15), inset 1px 0 0 rgba(255,255,255,0.35), inset -1px 0 0 rgba(255,255,255,0.15), inset 0 0 18px rgba(255,255,255,0.12), 0 18px 44px -20px rgba(0,0,0,0.5) !important;
+  color: #fff;
+}
+@supports (backdrop-filter: url("#lg-refract")) {
+  .descent .cta, .descent .navbtn, .descent .brand-ribbons a, .descent .hud { backdrop-filter: blur(14px) saturate(180%) url("#lg-refract"); -webkit-backdrop-filter: blur(14px) saturate(180%) url("#lg-refract"); }
+}
+.descent .cta { background: linear-gradient(135deg, rgba(63,209,190,0.85), rgba(63,209,190,0.55) 50%, rgba(63,209,190,0.8)) !important; color: #04121a; }
+.descent .cta--quiet { color: #edf4f2; }
+.descent .topnav { padding: 0.55rem 1rem; gap: 1.1rem; left: 8.2rem; top: 0.95rem; }
+.descent .topnav a { color: #f3f8f6; text-shadow: none; }
+.descent .hud { border-radius: 16px; }
+.descent .tail .lb-btn { color: var(--ink, #171208) !important; background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.6)) !important; border-color: rgba(11,107,96,0.35) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), inset 1px 0 0 rgba(255,255,255,0.6), 0 18px 40px -22px rgba(11,107,96,0.5) !important; }
+.descent .tail .lb-btn--paper { background: linear-gradient(135deg, rgba(11,107,96,0.92), rgba(11,107,96,0.7) 50%, rgba(11,107,96,0.9)) !important; color: #fff !important; }
+.descent .book__arrow { width: 52px; height: 52px; color: var(--ink, #171208); font-size: 2rem; background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.6)) !important; border-color: rgba(11,107,96,0.3) !important; }
+.descent .book__arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); }
+@media (max-width: 860px) { .descent .surface-copy { padding-bottom: 5.5rem; } }
+
+.descent .cta, .descent .cta--quiet, .descent .tail .lb-btn { position: relative; }
+
+.descent .orbit-card__hud i { filter: drop-shadow(0 0 4px rgba(63,209,190,0.9)); }
+/* the dive computer keeps a dark tint so its digits read over bright water */
+.descent .hud { background: linear-gradient(135deg, rgba(20,60,66,0.66), rgba(4,14,20,0.6) 45%, rgba(20,60,66,0.52)) !important; }
+
+/* ================= liquid glass, second cut: thick clear glass =================
+   The centre is nearly clear (a whisper of blur), the rim refracts the backdrop
+   outward through a lens map (Chrome), a bright edge and a top highlight give the
+   thickness, and the capsule gives under a press and springs back. */
+.descent .lg, .descent .cta, .descent .cta--quiet, .descent .navbtn, .descent .brand-ribbons a, .descent .topnav, .descent .hud, .descent .book__arrow, .descent .tail .lb-btn, .descent .fpage__open {
+  background: linear-gradient(160deg, rgba(255,255,255,0.34), rgba(255,255,255,0.06) 38%, rgba(255,255,255,0.1) 62%, rgba(255,255,255,0.28)) !important;
+  border: 1px solid rgba(255,255,255,0.55) !important;
+  backdrop-filter: blur(3px) saturate(170%) brightness(1.06); -webkit-backdrop-filter: blur(3px) saturate(170%) brightness(1.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35), inset 0 1.5px 0 rgba(255,255,255,0.95), inset 0 -3px 8px rgba(255,255,255,0.28), inset 0 8px 18px rgba(255,255,255,0.14), inset 0 -10px 22px rgba(0,0,0,0.06), 0 22px 44px -20px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.12) !important;
+  transition: transform 380ms cubic-bezier(0.2, 1.6, 0.4, 1), box-shadow 240ms, background 240ms;
+}
+/* The lens bends the backdrop only where nothing moves underneath. Over the scrubbing
+   clips (the buttons on the entry and surfacing acts, the fixed chrome) Chrome re-renders
+   the SVG filter on every frame and the clip flickers, so those keep blur and rim only. */
+@supports (backdrop-filter: url("#lg-lens")) {
+  .descent .brand-ribbons a, .descent .book__arrow, .descent .tail .lb-btn, .descent .fpage__open {
+    backdrop-filter: url("#lg-lens") blur(2px) saturate(170%) brightness(1.06); -webkit-backdrop-filter: url("#lg-lens") blur(2px) saturate(170%) brightness(1.06);
+  }
+}
+.descent :is(.lg, .cta, .cta--quiet, .navbtn, .brand-ribbons a, .book__arrow, .tail .lb-btn, .fpage__open):hover { transform: scale(1.04); }
+.descent :is(.lg, .cta, .cta--quiet, .navbtn, .brand-ribbons a, .book__arrow, .tail .lb-btn, .fpage__open):active { transform: scale(0.93); }
+.descent .book__arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); }
+.descent .book__arrow:active:not(:disabled) { transform: translateY(-50%) scale(0.92); }
+.descent .cta { background: linear-gradient(160deg, rgba(63,209,190,0.92), rgba(63,209,190,0.6) 40%, rgba(63,209,190,0.7) 65%, rgba(63,209,190,0.95)) !important; }
+.descent .hud { background: linear-gradient(160deg, rgba(20,60,66,0.62), rgba(4,14,20,0.55) 45%, rgba(20,60,66,0.5)) !important; backdrop-filter: blur(10px) saturate(170%); -webkit-backdrop-filter: blur(10px) saturate(170%); }
+.descent .topnav { backdrop-filter: blur(10px) saturate(170%); -webkit-backdrop-filter: blur(10px) saturate(170%); background: linear-gradient(160deg, rgba(255,255,255,0.22), rgba(6,20,32,0.28) 45%, rgba(255,255,255,0.14)) !important; }
+
+/* the two strip buttons keep their reading colours under the glass */
+.descent .tail .lb-btn { color: var(--ink, #171208) !important; }
+.descent .tail .lb-btn--paper { background: linear-gradient(160deg, rgba(11,107,96,0.95), rgba(11,107,96,0.72) 40%, rgba(11,107,96,0.8) 65%, rgba(11,107,96,0.95)) !important; color: #fff !important; }
+
+/* ================= the side rail: the Sinai shore down the right edge =================
+   The line is the coast from Taba to Ras Mohammed; the ticks are the acts; Dahab is named. */
+.descent .siderail { position: fixed; right: 1.4rem; top: 50%; width: 48px; height: 420px; transform: translateY(-50%); z-index: 55; opacity: 0.85; transition: opacity 200ms; }
+.descent .siderail:hover, .descent .siderail:focus-within { opacity: 1; }
+.descent .siderail__coast { position: absolute; inset: 0; pointer-events: none; }
+.descent .siderail__stop { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; text-decoration: none; color: #edf4f2; }
+.descent .siderail__dot { position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; transform: translate(-50%, -50%); border-radius: 50%; border: 1px solid rgba(63,209,190,0.9); background: rgba(6,20,32,0.7); box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 0 0 2px rgba(6,20,32,0.25); transition: transform 220ms var(--sc-ease-out, ease-out), background 220ms, box-shadow 220ms; }
+.descent .siderail__stop.is-active .siderail__dot { background: #3fd1be; box-shadow: 0 0 0 4px rgba(63,209,190,0.22), 0 0 16px rgba(63,209,190,0.8); transform: translate(-50%, -50%) scale(1.25); }
+.descent .siderail__stop:hover .siderail__dot { transform: translate(-50%, -50%) scale(1.35); }
+.descent .siderail__label { position: absolute; right: 28px; top: 50%; transform: translate(6px, -50%); font: 600 0.58rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #06141b; background: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.7); padding: 0.4rem 0.6rem; border-radius: 999px; backdrop-filter: blur(10px) saturate(160%); -webkit-backdrop-filter: blur(10px) saturate(160%); opacity: 0; transition: opacity 180ms, transform 180ms var(--sc-ease-out, ease-out); pointer-events: none; white-space: nowrap; }
+.descent .siderail:hover .siderail__label, .descent .siderail__stop:focus-visible .siderail__label, .descent .siderail__stop.is-active .siderail__label { opacity: 1; transform: translate(0, -50%); }
+.descent .siderail__stop.is-active .siderail__label { background: #3fd1be; border-color: #3fd1be; }
+.descent .siderail__town { position: absolute; left: 24px; top: 50%; transform: translateY(-50%); font: 700 0.5rem/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(63,209,190,0.95); text-shadow: 0 0 8px rgba(63,209,190,0.6); white-space: nowrap; pointer-events: none; }
+.descent .siderail__stop:focus-visible { outline: none; }
+.descent .siderail__stop:focus-visible .siderail__dot { box-shadow: 0 0 0 3px rgba(63,209,190,0.5); }
+@media (max-width: 860px), (max-height: 600px) { .descent .siderail { display: none; } }
+@media (prefers-reduced-motion: reduce) { .descent .siderail__dot, .descent .siderail__label { transition: none; } }
+
+/* buttons that ride the clips (the entry and surfacing calls to action) use solid glass:
+   no backdrop filter, so the clip under them is never re-rendered while they move */
+.descent .cta { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: linear-gradient(160deg, rgba(63,209,190,0.98), rgba(43,178,160,0.92) 45%, rgba(63,209,190,0.9) 70%, rgba(120,232,214,0.98)) !important; }
+
+/* ================= carried over from the previous homepage (5 Sep) ================= */
+.descent .skip { position: absolute; left: 1rem; top: -4rem; z-index: 100; padding: 0.7rem 1rem; background: #3fd1be; color: #04121a; font: 700 0.9rem/1 var(--sc-font-display); border-radius: 4px; }
+.descent .skip:focus { top: 1rem; }
+/* folded write-ups */
+.descent .more { margin-top: 0.7rem; }
+.descent .more summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 40px; padding: 0 0.9rem; border-radius: 999px; border: 1px solid rgba(11,107,96,0.35); color: var(--reef, #0b6b60); font: 700 0.8rem/1 var(--sc-font-display); background: rgba(255,255,255,0.5); }
+.descent .more summary::-webkit-details-marker { display: none; }
+.descent .more summary::after { content: "+"; font-weight: 700; }
+.descent .more[open] summary::after { content: "\2212"; }
+.descent .more__body { margin-top: 0.8rem; display: grid; gap: 0.7rem; font: 500 0.92rem/1.6 var(--sc-font-text); color: #4B4232; }
+.descent .more__body p { margin: 0; }
+.descent .more__body ul { margin: 0; padding-left: 1.1rem; }
+.descent .facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.4rem 1rem; }
+.descent .facts dt { font: 500 0.58rem/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--sc-ink-soft); }
+.descent .facts dd { margin: 0; font: 600 0.9rem/1.4 var(--sc-font-text); }
+.descent .guide-more summary { background: rgba(255,255,255,0.65); }
+.descent .guide-more .more__body { color: var(--sc-ink); }
+.descent .guide-more .more__body a { color: var(--reef, #0b6b60); }
+.descent .ledger dd a { color: var(--reef, #0b6b60); }
+.descent .exhibits { grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.descent .exhibit-card .exhibit-img--faces { object-position: center 8%; height: 250px; }
+.descent .school-more dd .more { margin-top: 0.5rem; }
+/* the guide act, layered: the shore drifts back and creeps in, the panel rides over it */
+.descent .guide-back-wrap { position: absolute; inset: -12% 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.descent .guide-back { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; opacity: 0.34; filter: saturate(0.75); transform: scale(calc(1.06 + var(--sc-p, 0) * 0.12)); transform-origin: 50% 60%; -webkit-mask-image: none; mask-image: none; }
+/* the four photographs: their years, pressable */
+.descent .peak-mat { display: block; text-decoration: none; color: inherit; }
+.descent .peak-years { display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.9rem; flex-wrap: wrap; }
+.descent .peak-year-chip { min-height: 36px; padding: 0 0.85rem; border-radius: 999px; border: 1px solid rgba(63,209,190,0.45); background: rgba(6,20,32,0.5); color: #edf4f2; font: 600 0.62rem/1 var(--mono); letter-spacing: 0.16em; cursor: pointer; }
+.descent .peak-year-chip:hover { border-color: #3fd1be; color: #3fd1be; }
+/* rails: centred in a full-height stage, panning on the act's own progress with a hold at each end */
+.descent .rail-stage { height: 100svh; display: grid; align-items: center; overflow: hidden; }
+.descent .js-rail { --ease-p: clamp(0, (var(--sc-p, 0) - 0.05) / 0.8, 1); transform: translate3d(calc(-1 * var(--rail-travel, 0px) * var(--ease-p)), 0, 0); will-change: transform; align-items: center; }
+.descent .coast-rail .station { min-height: 52vh; }
+.descent .lead-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; }
+.descent .lead-link { color: #3fd1be; font: 600 0.8rem/1 var(--sc-font-display); text-decoration: none; }
+/* the footer's small print */
+.descent .tail-legal { flex-basis: 100%; margin: 0.6rem 0 0; font: 500 0.66rem/1.7 var(--sc-font-text); letter-spacing: 0; text-transform: none; color: rgba(237,244,242,0.55); max-width: 80ch; }
+@media (prefers-reduced-motion: reduce) { .descent .js-rail { transform: none; } .descent .rail-stage { height: auto; overflow: auto; } .descent .guide-back { transform: none; } }
+
+/* ================= seams: acts flow into each other instead of cutting ================= */
+/* Every act after the first overlaps the one before by a slice of the screen and fades in
+   over it, so the previous stage is still there under the next act's top as it slides in.
+   The first act keeps a hard top; the last one keeps a hard bottom. */
+.descent #descent-main > section + section {
+  margin-top: -14svh; padding-top: 14svh;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14svh);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14svh);
+}
+.descent #descent-main > section + section > [data-sc-stage] { top: 0; }
+.descent .tail { position: relative; z-index: 2; }
+@media (max-width: 860px) {
+  .descent #descent-main > section + section { margin-top: -10svh; padding-top: 10svh; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10svh); mask-image: linear-gradient(to bottom, transparent 0, #000 10svh); }
+}
+/* the Open Water photograph: the whole frame, mounted */
+/* a portrait photograph gets a narrow card the shape of the print, no bands beside it */
+.descent .exhibit--tall .exhibit-card { max-width: 19.5rem; margin-inline: auto; }
+.descent .exhibit-card .exhibit-img--faces { object-fit: cover; object-position: center; height: auto; aspect-ratio: 9 / 16; background: none; }

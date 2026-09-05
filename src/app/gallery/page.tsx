@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import {
@@ -1000,6 +1001,7 @@ export default function GalleryPage() {
 
       {/* Floating Heritage Badge */}
       <FloatingBadge />
+      <BackToPlace />
     </div>
   );
 }

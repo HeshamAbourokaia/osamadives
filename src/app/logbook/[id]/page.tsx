@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isValidId } from "@/lib/logbook/ids";
@@ -72,6 +73,7 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
           </p>
         </div>
       </section>
+      <BackToPlace />
     </>
   );
 }

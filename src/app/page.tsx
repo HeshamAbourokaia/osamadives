@@ -117,18 +117,18 @@ export default async function Home() {
           <div data-sc-stage className="guide-stage">
             <img className="guide-back" data-sc-parallax="-0.32" src="/descent/arch-camels.webp" alt="" aria-hidden="true" />
             <div className="guide-cover">
-              <div className="guide-panel glass glass--paper" data-sc-parallax="0.05">
+              <div className="guide-panel glass glass--paper" data-sc-parallax="0.05" data-sc-in data-sc-stagger="70">
                 <div className="rule-draw" aria-hidden="true" />
                 <span className="microcopy">On the sand · your guide</span>
-                <h2 data-sc-cue="0 1 0 0.1" data-sc-kinetic="lines">Meet Osama.</h2>
-                <p className="sc-body" data-sc-cue="0.06 1 0.12 0.1">Osama Mohamed Hassan was born into a Dahab of fishing boats and palm shelters on the sand. He has spent his life in this water. He briefs slowly, watches closely, and laughs easily.</p>
+                <h2 data-sc-kinetic="lines">Meet Osama.</h2>
+                <p className="sc-body">Osama Mohamed Hassan was born into a Dahab of fishing boats and palm shelters on the sand. He has spent his life in this water. He briefs slowly, watches closely, and laughs easily.</p>
                 {quote ? (
-                  <blockquote className="guide-quote" data-sc-cue="0.1 1 0.12 0.1">
+                  <blockquote className="guide-quote">
                     <p>&ldquo;{quote.text}&rdquo;</p>
                     <cite>{quote.who}</cite>
                   </blockquote>
                 ) : null}
-                <dl className="ledger" data-sc-cue="0.12 1 0.14 0.1">
+                <dl className="ledger">
                   <div><dt>Rating</dt><dd>PADI Master Scuba Diver Trainer</dd></div>
                   <div><dt>Family</dt><dd>Fourth family of Dahab, on this shore since 1983</dd></div>
                   <div><dt>The kitchen</dt><dd>Shark Restaurant, open since the family arrived</dd></div>
@@ -137,7 +137,7 @@ export default async function Home() {
               </div>
               <div className="guide-plate" data-sc-parallax="-0.06">
                 <span className="exhibit-letter" aria-hidden="true" data-sc-parallax="-0.7">O</span>
-                <figure data-sc-reveal="down" data-sc-reveal-at="0.02 0.4" data-sc-tilt="5">
+                <figure data-sc-reveal="down" data-sc-reveal-at="0 0.16" data-sc-tilt="5">
                   <img src="/descent/osama-portrait.webp" srcSet="/descent/osama-portrait-m.webp 800w, /descent/osama-portrait.webp 960w" sizes="(max-width: 860px) 92vw, 45vw" width={960} height={956} alt="Osama in his wetsuit on the shore at Dahab, checking his regulator, Sinai mountains behind him" />
                   <figcaption>Before the morning dive · Lighthouse, Dahab</figcaption>
                 </figure>

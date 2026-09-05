@@ -572,7 +572,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .rule-draw {
     height: 2px; background: var(--sc-ink);
     transform-origin: left center;
-    transform: scaleX(clamp(0, calc(var(--sc-p, 0) * 2.4), 1));
+    transform: scaleX(clamp(0, calc(var(--sc-p, 0) * 6), 1));
     margin-bottom: 1.6rem;
   }
   .guide-cover .microcopy { color: var(--sc-ink-soft); display: block; margin-bottom: 0.9rem; }

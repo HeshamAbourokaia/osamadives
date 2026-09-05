@@ -10,6 +10,7 @@ import ReturnToPlace from "./ReturnToPlace";
 import SideRail from "./SideRail";
 import RailTravel from "./RailTravel";
 import PeakYears from "./PeakYears";
+import Words from "./Words";
 import { LENS_MAP } from "./lensMap";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
@@ -106,7 +107,7 @@ export default async function Home() {
             <div className="sea-scrim-m" aria-hidden="true" />
             <div className="sc-copy sc-copy--lead entry-copy" data-sc-cue="0 0.85 0">
               <span className="microcopy">Dive log · Dahab, South Sinai · kept since 1983</span>
-              <h2>The sea took him in.</h2>
+              <h2 className="focus-in">The sea took him in.</h2>
               <p className="stand">Osama is a PADI Master Scuba Diver Trainer, born on this shore. His family has lived beside the water since 1983. Scroll to descend.</p>
               <a className="cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
             </div>
@@ -212,15 +213,15 @@ export default async function Home() {
             <div className="depth-copy">
               <div className="depth-cue" data-sc-cue="0.02 0.3 0.08 0.06">
                 <span className="microcopy">7 metres · Om El Seed</span>
-                <h2>A turtle that does not hurry.</h2>
+                <h2><Words text="A turtle that does not hurry." at={0.02} /></h2>
               </div>
               <div className="depth-cue" data-sc-cue="0.36 0.64 0.06 0.06">
                 <span className="microcopy">8 metres · the edge of the Blue Hole</span>
-                <h2>The reef shelf, where the Blue Hole begins.</h2>
+                <h2><Words text="The reef shelf, where the Blue Hole begins." at={0.36} /></h2>
               </div>
               <div className="depth-cue" data-sc-cue="0.7 1 0.06 0">
                 <span className="microcopy">12 metres · the blue</span>
-                <h2>Into the blue, within your training, every time.</h2>
+                <h2><Words text="Into the blue, within your training, every time." at={0.7} /></h2>
               </div>
             </div>
             <div className="depth-credit microcopy" data-sc-cue="0.05">Photographs by Osama, on ordinary working days</div>
@@ -233,7 +234,7 @@ export default async function Home() {
             <div className="coast-rail js-rail">
               <div className="coast-lead">
                 <span className="microcopy">Stop 2 · the sites · south to north</span>
-                <h2>One shore. Five dives from the sand.</h2>
+                <h2><Words text="One shore. Five dives from the sand." /></h2>
                 <p className="sc-body">No boat, no schedule. You walk in from the beach, the reef starts at your fins. These are the sites Osama grew up on, in the order the shore road meets them.</p>
               </div>
               <a className="station" href="/dive-sites/three-pools-dahab" data-sc-tilt="4">
@@ -289,7 +290,7 @@ export default async function Home() {
           <div className="school why">
             <div className="school-head" data-sc-in data-sc-stagger="60">
               <span className="microcopy">Why here</span>
-              <h2>Why divers dream of Dahab.</h2>
+              <h2><Words text="Why divers dream of Dahab." mode="in" /></h2>
               <p className="sc-body">Clear Red Sea water, world-class sites, and a shore you walk into. No boat, no seasickness, no rush.</p>
             </div>
             <div className="exhibits exhibits--three" data-sc-in data-sc-stagger="90">
@@ -327,7 +328,7 @@ export default async function Home() {
             <div className="coast-rail journal-rail js-rail">
               <div className="coast-lead">
                 <span className="microcopy">The journal</span>
-                <h2>Stories from the water.</h2>
+                <h2><Words text="Stories from the water." /></h2>
                 <p className="sc-body">A thousand dives at one site, why I teach, what the night does to a reef. Written by me, between dives.</p>
                 <a className="cta cta--quiet" href="/blog">Read the journal</a>
               </div>
@@ -363,7 +364,7 @@ export default async function Home() {
           <div className="school">
             <div className="school-head" data-sc-in data-sc-stagger="60">
               <span className="microcopy">Safety stop · 5 metres · the school</span>
-              <h2>Learn it properly.</h2>
+              <h2><Words text="Learn it properly." mode="in" /></h2>
               <p className="sc-body">Small groups, slow briefings, the same reef he learned on. Pick the course that matches where you are, and he takes you the rest of the way.</p>
             </div>
             <div className="exhibits" data-sc-in data-sc-stagger="90">
@@ -492,7 +493,7 @@ export default async function Home() {
             <div className="coast-rail gal-rail js-rail">
               <div className="coast-lead">
                 <span className="microcopy">The gallery</span>
-                <h2>Forty years of photographs.</h2>
+                <h2><Words text="Forty years of photographs." /></h2>
                 <p className="sc-body">Students, reefs, the family, the town. The whole archive is on the gallery page; this is a walk past a few frames.</p>
                 <div className="lead-links"><a className="cta cta--quiet" href="/gallery">Open the gallery</a><a className="lead-link" href="https://facebook.com/osamasharks" target="_blank" rel="noopener noreferrer">More on Facebook</a></div>
               </div>
@@ -515,7 +516,11 @@ export default async function Home() {
             <div className="copy-scrim" aria-hidden="true" />
             <div className="sea-scrim-m" aria-hidden="true" />
             <div className="sc-copy sc-copy--lead surface-copy" data-sc-cue="0.05">
-              <h2>Come up when you&apos;re ready.</h2>
+              <h2 className="wl">
+                <span className="wl__above">Come up when you&apos;re ready.</span>
+                <span className="wl__below" aria-hidden="true">Come up when you&apos;re ready.</span>
+                <i className="wl__line" aria-hidden="true" />
+              </h2>
               <p className="sc-body">Send a message and start planning your water. He answers himself.</p>
               <a className="cta" data-sc-magnet="0.26" data-sc-rise="0" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
               <p className="surface-small">WhatsApp is the fastest way. I usually answer within a few hours.</p>

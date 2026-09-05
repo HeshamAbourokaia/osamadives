@@ -1251,3 +1251,56 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 /* a portrait photograph gets a narrow card the shape of the print, no bands beside it */
 .descent .exhibit--tall .exhibit-card { max-width: 19.5rem; margin-inline: auto; }
 .descent .exhibit-card .exhibit-img--faces { object-fit: cover; object-position: center; height: auto; aspect-ratio: 9 / 16; background: none; }
+
+
+/* ------------------------------------------------------ headline reveals -- */
+/* Each word rises out of a slot cut in its line. In a pinned act the wheel drives
+   it through --sc-p, so scrolling back lowers the words again; in a paper act it
+   fires once with the section. The slot's padding keeps descenders whole. */
+.w { display: inline-block; overflow: hidden; vertical-align: bottom; padding: 0.04em 0 0.14em; margin: -0.04em 0 -0.14em; }
+.w__i { display: inline-block; will-change: transform; transform: translate3d(0, 112%, 0); }
+.w-host--p .w__i {
+  transform: translate3d(0, calc((1 - clamp(0, (var(--sc-p, 1) - var(--w-at) - var(--i) * var(--w-step)) / var(--w-win), 1)) * 112%), 0);
+}
+.w-host--in .w__i { transition: transform 780ms cubic-bezier(0.2, 0.75, 0.15, 1) calc(60ms + var(--i) * 70ms); }
+.sc-in .w-host--in .w__i { transform: none; }
+html:not(.sc-ready) .w__i { transform: none; }
+
+/* The sea comes into focus: the first headline starts soft and large, like a mask
+   clearing, and is sharp within the first fifth of the act. */
+.descent .entry-copy h2.focus-in {
+  --focus: clamp(0, (var(--sc-p, 1) - 0.01) / 0.17, 1);
+  filter: blur(calc((1 - var(--focus)) * 14px));
+  transform: scale(calc(1.06 - var(--focus) * 0.06));
+  transform-origin: 0 100%;
+  opacity: calc(0.3 + var(--focus) * 0.7);
+  will-change: filter, transform, opacity;
+}
+
+/* The last headline sits half under the waterline and comes up with the camera.
+   Above the line the type is clear; below it a second copy is tinted, softened and
+   sways. The line itself is a bright thread that fades once the head is clear. */
+.descent .surface-copy h2.wl { position: relative; --wl: clamp(0%, calc(44% + var(--sc-p, 1) * 90%), 100%); }
+.descent .wl__above { display: block; clip-path: inset(0 0 calc(100% - var(--wl)) 0); }
+.descent .wl__below {
+  position: absolute; inset: 0; display: block; pointer-events: none;
+  clip-path: inset(var(--wl) 0 0 0);
+  color: #9fe8dc; opacity: 0.92; filter: blur(0.7px);
+  transform-origin: 0 0; transform: translateX(0.03em) scaleY(0.96);
+  animation: wl-sway 4.6s ease-in-out infinite;
+}
+.descent .wl__line {
+  position: absolute; left: -3%; right: -3%; top: var(--wl); height: 2px; margin-top: -1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95) 25%, rgba(255,255,255,0.95) 75%, transparent);
+  box-shadow: 0 0 14px rgba(159,232,220,0.85);
+  opacity: calc(1 - clamp(0, (var(--sc-p, 1) - 0.42) / 0.2, 1));
+}
+@keyframes wl-sway {
+  0%, 100% { transform: translateX(0.03em) scaleY(0.96); }
+  50% { transform: translateX(-0.025em) scaleY(0.968); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .w__i { transform: none !important; transition: none !important; }
+  .descent .entry-copy h2.focus-in { filter: none; transform: none; opacity: 1; }
+  .descent .wl__below { animation: none; }
+}

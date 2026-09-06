@@ -72,7 +72,12 @@ function startHud() {
     if (p >= 1) { d = 0; label = "Surface"; }
     if (site && label.endsWith("The sites")) { d = site.depth; label = site.label; }
     depthEl!.textContent = (d < 10 ? "0" : "") + d.toFixed(1);
-    labelEl!.textContent = label;
+    if (labelEl!.textContent !== label) {
+      // A new marker on the profile: the gauge pings once, a ring going out from the pill.
+      labelEl!.textContent = label;
+      const hud = labelEl!.closest(".hud");
+      if (hud) { hud.classList.remove("is-ping"); void (hud as HTMLElement).offsetWidth; hud.classList.add("is-ping"); }
+    }
     trackEl!.style.transform = "scaleX(" + Math.min(1, d / max).toFixed(3) + ")";
   }
   const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };

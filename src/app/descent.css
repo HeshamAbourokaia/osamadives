@@ -1494,3 +1494,40 @@ html:not(.sc-ready) .w__i { transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .descent .depth-ruler__band, .descent .hud__track i { transition: none; }
 }
+
+
+/* ------------------------------------------------------------- caustics -- */
+/* Sunlight focused by the surface into a moving web on whatever is below. One
+   seamless tile drawn twice at different sizes, drifting different ways, so the
+   two webs slide over each other and the light seems to breathe. Plain white
+   lines at low opacity, no blend mode: over a scrubbing clip a blend is a cost
+   on a phone, and pale lines on dark water already read as light. */
+.descent .caustics {
+  position: absolute; inset: -8%; z-index: 1; pointer-events: none;
+  background-image: url("/descent/caustic.webp"), url("/descent/caustic.webp");
+  background-size: 640px 640px, 1040px 1040px;
+  background-position: 0 0, 0 0;
+  opacity: var(--caustic, 0.3);
+  animation: caustic-drift 46s linear infinite, caustic-breathe 9s ease-in-out infinite alternate;
+  will-change: background-position, transform;
+  /* the light comes from the surface: strongest at the top, gone before the copy */
+  mask-image: linear-gradient(to bottom, #000 0, #000 35%, transparent 82%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 35%, transparent 82%);
+}
+@keyframes caustic-drift {
+  to { background-position: 640px 640px, -1040px 1040px; }
+}
+@keyframes caustic-breathe {
+  from { transform: scale(1); } to { transform: scale(1.06); }
+}
+/* At the entry the light is strongest and only eases as the camera goes under.
+   On the way down it is gone by the blue at twelve metres. */
+.descent .caustics--entry { --caustic: calc(0.26 - var(--sc-p, 0) * 0.16); }
+.descent .caustics--depth { --caustic: calc(0.3 * (1 - var(--sc-p, 0))); }
+@media (max-width: 860px) {
+  .descent .caustics { background-size: 420px 420px, 700px 700px; }
+  @keyframes caustic-drift { to { background-position: 420px 420px, -700px 700px; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .descent .caustics { animation: none; opacity: calc(var(--caustic, 0.3) * 0.6); }
+}

@@ -100,7 +100,7 @@ export default async function FeaturedReel() {
   const headline = captionToHeadline(post.caption) ?? GENERIC_HEADLINE;
 
   return (
-    <section className="relative py-20 px-4 bg-gradient-to-b from-[#5a5f4e] via-[#4a4f3e] to-[#2a2e25] text-white overflow-hidden">
+    <section className="relative py-20 px-4 bg-gradient-to-b from-[#061420] via-[#0a2a3a] to-[#04101a] text-white overflow-hidden">
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
           {/* Text side */}

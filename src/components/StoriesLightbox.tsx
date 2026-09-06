@@ -216,7 +216,7 @@ export default function StoriesLightbox({
                 </span>
               )}
               {post.type === "album" && (
-                <span className="bg-[#5a5f4e] text-white text-xs font-bold px-2 py-1 rounded-full">
+                <span className="bg-[#0a7d70] text-white text-xs font-bold px-2 py-1 rounded-full">
                   ALBUM - {post.photoCount} photos
                 </span>
               )}

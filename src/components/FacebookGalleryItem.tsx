@@ -149,7 +149,7 @@ export default function FacebookGalleryItem({
         )}
 
         {post.type === "album" && post.photoCount && (
-          <div className="absolute top-3 left-3 bg-[#5a5f4e] text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 z-10">
+          <div className="absolute top-3 left-3 bg-[#0a7d70] text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 z-10">
             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"

@@ -6,6 +6,7 @@ import Contours from "./Contours";
 import TailFoot from "./TailFoot";
 import TapRipple from "./TapRipple";
 import BackToTop from "@/components/BackToTop";
+import SideRail from "./SideRail";
 import "./descent.css";
 import "./inner.css";
 
@@ -25,6 +26,7 @@ export default function DescentShell({ children }: { children: ReactNode }) {
         <div className="inner-body">{children}</div>
       </div>
       <div className="tail"><TailFoot /></div>
+      <SideRail mode="site" />
       <BackToTop />
       <TapRipple />
     </div>

@@ -1424,3 +1424,32 @@ html:not(.sc-ready) .w__i { transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .descent .surface-name span { transform: none; opacity: 0.4; }
 }
+
+
+/* ------------------------------------------------ rails: focus and edges -- */
+/* Whatever card is nearest the middle is sharp; the rest dim, and on a pointer
+   screen soften a touch. --focus is measured by RailFocus once per scrolled
+   frame. The intro card of each rail is left alone: it has to be readable the
+   moment the reader arrives, before anything has panned. */
+.descent .js-rail.rail-focus > :not(.coast-lead) {
+  opacity: calc(0.48 + var(--focus, 1) * 0.52);
+  will-change: opacity, filter;
+}
+@media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
+  .descent .js-rail.rail-focus > :not(.coast-lead) { filter: blur(calc((1 - var(--focus, 1)) * 1.4px)); }
+}
+
+/* Cards dissolve at the sides of the screen instead of being cut, and never sit
+   at full strength under the top bar's brand on the left or the HUD and the
+   coastline nav on the right. Percentages of the stage width: 4% on the left is
+   inside the gutter so the intro's first letters are never touched. */
+.descent .rail-stage {
+  mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 88%, transparent 100%);
+}
+@media (max-width: 860px) {
+  .descent .rail-stage {
+    mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 93%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 93%, transparent 100%);
+  }
+}

@@ -9,6 +9,7 @@ import Bubbles from "./Bubbles";
 import ReturnToPlace from "./ReturnToPlace";
 import SideRail from "./SideRail";
 import RailTravel from "./RailTravel";
+import RailFocus from "./RailFocus";
 import PeakYears from "./PeakYears";
 import Words from "./Words";
 import ShareCode from "./ShareCode";
@@ -589,6 +590,7 @@ export default async function Home() {
       </div>
       <SideRail />
       <RailTravel />
+      <RailFocus />
       <BackToTop />
       <ReturnToPlace />
       <DescentBoot />

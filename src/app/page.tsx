@@ -14,6 +14,7 @@ import PeakYears from "./PeakYears";
 import Words from "./Words";
 import ShareCode from "./ShareCode";
 import OdometerYear from "./OdometerYear";
+import Contours from "./Contours";
 import { LENS_MAP } from "./lensMap";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
@@ -126,6 +127,7 @@ export default async function Home() {
         {/* ACT 2 · THE GUIDE: magazine cover on paper, cursor light on the surface */}
         <section className="g-bone" id="guide-act" data-sc-act="flow" data-sc-spotlight>
           <div data-sc-stage className="guide-stage">
+            <Contours seed={3} />
             <div className="guide-back-wrap" data-sc-parallax="-0.45" aria-hidden="true"><img className="guide-back" src="/descent/arch-camels.webp" alt="" /></div>
             <div className="guide-cover">
               <div className="guide-panel glass glass--paper" data-sc-parallax="0.12" data-sc-in data-sc-stagger="70">
@@ -331,7 +333,8 @@ export default async function Home() {
 
         {/* ACT 5b · WHY DAHAB: the three reasons, in his words, carried over from the
             previous homepage so nothing is lost. */}
-        <section className="g-bone" id="why-act" data-sc-act="flow">
+        <section className="g-bone" id="why-act" data-sc-act="flow" data-sc-spotlight>
+          <Contours seed={11} />
           <div className="school why">
             <div className="school-head" data-sc-in data-sc-stagger="60">
               <span className="microcopy">Why here</span>
@@ -405,7 +408,8 @@ export default async function Home() {
         </section>
 
         {/* ACT 7 · THE SCHOOL: courses mounted as exhibits */}
-        <section className="g-bone" id="school-act" data-sc-act="flow">
+        <section className="g-bone" id="school-act" data-sc-act="flow" data-sc-spotlight>
+          <Contours seed={27} />
           <div className="school">
             <div className="school-head" data-sc-in data-sc-stagger="60">
               <span className="microcopy">Safety stop · 5 metres · the school</span>

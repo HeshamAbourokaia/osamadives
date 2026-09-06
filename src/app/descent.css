@@ -863,14 +863,16 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .surface-copy .sc-body { max-width: 38ch; margin-bottom: 1.8rem; color: #F4FAF8; }
   .surface-foot {
     position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: 1.3rem;
+    z-index: var(--sc-z-copy, 3); /* it sat under the scrims, which is why it read as grey on grey */
     display: flex; flex-wrap: wrap; gap: 0.4rem 1.8rem; align-items: baseline;
-    color: rgba(240,247,245,0.98);
-    background: rgba(4,14,20,0.66); padding: 0.55rem 0.8rem; border-radius: 4px;
-    font: 500 0.68rem/1.6 var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
+    color: #F4FAF8;
+    background: rgba(4,14,20,0.82); padding: 0.65rem 0.9rem; border-radius: 6px;
+    border: 1px solid rgba(63,209,190,0.22);
+    font: 500 0.74rem/1.6 var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
   }
   .surface-foot a { color: #F4FAF8; text-underline-offset: 0.25em; }
   .surface-foot a:hover { color: var(--reef-glow); }
-  .surface-foot .ar { font-family: var(--sc-font-display); font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .surface-foot .ar { font-family: var(--sc-font-display); font-weight: 600; font-size: 0.95rem; letter-spacing: 0; text-transform: none; }
 
   /* corner scrim behind scrub copy at all widths, sibling of the copy so it is measurable */
   .copy-scrim {
@@ -1455,12 +1457,12 @@ html:not(.sc-ready) .w__i { transform: none; }
    at full strength under the top bar's brand on the left or the HUD and the
    coastline nav on the right. Percentages of the stage width: 4% on the left is
    inside the gutter so the intro's first letters are never touched. */
-.descent .rail-stage {
+.descent .rail-clip {
   mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 88%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 4%, #000 88%, transparent 100%);
 }
 @media (max-width: 860px) {
-  .descent .rail-stage {
+  .descent .rail-clip {
     mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 93%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 93%, transparent 100%);
   }
@@ -1667,4 +1669,43 @@ html:not(.sc-ready) .w__i { transform: none; }
   .descent .orbit-card__dot { animation: none; }
   .descent .hud.is-ping::after { animation: none; }
   .ripple { display: none; }
+}
+
+
+/* ------------------------------------------- rails: the lead stays put -- */
+/* The intro of each rail no longer rides the rail. On a desk it stands on the
+   left of the stage while the cards slide past behind it, dissolving as they
+   reach it, smaller in type and in its button so the cards keep the stage.
+   On a phone it sits above the rail and the rail scrolls beneath it. */
+/* the stage is sticky already (a positioned box), so the fixed lead can sit on it;
+   giving it position: relative here would undo the pin and empty the act mid-way */
+.descent .rail-clip { position: relative; min-width: 0; overflow: hidden; }
+/* The stage's one column is the screen, never the rail: sized by its content the
+   column took the rail's whole width, stretched the intro to match, and on a phone
+   pushed everything off the top. */
+.descent .rail-stage { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 861px) {
+  .descent .coast-lead.lead-fixed {
+    position: absolute; left: var(--sc-gutter); top: 50%; transform: translateY(-50%);
+    width: 21rem; z-index: 3; gap: 0.8rem; flex: none;
+  }
+  .descent .coast-lead.lead-fixed h2 { font-size: clamp(1.7rem, 2.6vw, 2.5rem); }
+  .descent .coast-lead.lead-fixed .sc-body { font-size: 0.92rem; max-width: 30ch; }
+  .descent .coast-lead.lead-fixed .cta { padding: 0.62rem 1.15rem; font-size: 0.82rem; width: max-content; }
+  /* the rail starts past the lead and the cards dissolve as they come under it */
+  .descent .rail-clip .coast-rail { padding-left: calc(var(--sc-gutter) + 24rem); }
+  .descent .rail-clip {
+    mask-image: linear-gradient(to right, transparent calc(var(--sc-gutter) + 19rem), #000 calc(var(--sc-gutter) + 25rem), #000 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent calc(var(--sc-gutter) + 19rem), #000 calc(var(--sc-gutter) + 25rem), #000 88%, transparent 100%);
+  }
+}
+@media (max-width: 860px) {
+  .descent .rail-stage { align-content: center; row-gap: 0.9rem; padding-top: 7.4rem; box-sizing: border-box; }
+  .descent .rail-clip .coast-rail { height: auto; }
+  .descent .rail-clip .coast-rail .station, .descent .rail-clip .coast-rail .station-img { min-height: 44vh; }
+  .descent .coast-lead.lead-fixed { padding: 0 var(--sc-gutter); flex: none; gap: 0.6rem; }
+  .descent .coast-lead.lead-fixed h2 { font-size: clamp(1.6rem, 7vw, 2.1rem); }
+  .descent .coast-lead.lead-fixed .sc-body { font-size: 0.9rem; }
+  .descent .coast-lead.lead-fixed .cta { padding: 0.6rem 1.1rem; font-size: 0.82rem; width: max-content; }
+  .descent .rail-clip .coast-rail .station:first-child, .descent .rail-clip .coast-rail > :first-child { margin-left: 0; }
 }

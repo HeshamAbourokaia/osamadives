@@ -263,12 +263,13 @@ export default async function Home() {
         {/* ACT 5 · THE COAST: lateral travel, south to north, five real dives */}
         <section className="g-abyss" id="coast-act" data-sc-act="pan" data-sc-span="4.4" style={{ "--sc-span": 4.4 } as React.CSSProperties}>
           <div data-sc-stage className="rail-stage">
-            <div className="coast-rail js-rail" data-ruler="depth-ruler">
-              <div className="coast-lead">
+                        <div className="coast-lead lead-fixed">
                 <span className="microcopy">Stop 2 · the sites · south to north</span>
                 <h2><Words text="One shore. Five dives from the sand." /></h2>
                 <p className="sc-body">No boat, no schedule. You walk in from the beach, the reef starts at your fins. These are the sites Osama grew up on, in the order the shore road meets them.</p>
               </div>
+            <div className="rail-clip">
+<div className="coast-rail js-rail" data-ruler="depth-ruler">
               <a className="station" data-sc-spotlight href="/dive-sites/three-pools-dahab" data-sc-tilt="4" data-depth="3 25">
                 <img className="station__img" src="/descent/arch-lagoon-m.webp" alt="" />
                 <span className="microcopy">South of town</span>
@@ -312,6 +313,7 @@ export default async function Home() {
                 <span className="microcopy">The rule of the house</span>
                 <p>Every brief starts on the sand, and every dive stays inside your training.</p>
               </div>
+            </div>
             </div>
             {/* The ruler under the sites: the band lights the depth of whichever site is
                 in focus, and the dive computer reads the same site while this rail is on
@@ -373,13 +375,14 @@ export default async function Home() {
         {/* ACT 5c · THE JOURNAL: his stories, a rail that pans as the visitor scrolls */}
         <section className="g-night" id="journal-act" data-sc-act="pan" data-sc-span="3" style={{ "--sc-span": 3 } as React.CSSProperties}>
           <div data-sc-stage className="rail-stage">
-            <div className="coast-rail journal-rail js-rail">
-              <div className="coast-lead">
+                        <div className="coast-lead lead-fixed">
                 <span className="microcopy">The journal</span>
                 <h2><Words text="Stories from the water." /></h2>
                 <p className="sc-body">A thousand dives at one site, why I teach, what the night does to a reef. Written by me, between dives.</p>
                 <a className="cta cta--quiet" href="/blog">Read the journal</a>
               </div>
+            <div className="rail-clip">
+<div className="coast-rail journal-rail js-rail">
               {posts.map((post) => (
                 <a className="station journal-card" href={`/blog/${post.slug}`} key={post.slug} data-sc-tilt="4">
                   <img className="station__img" src={post.featuredImage} alt="" loading="lazy" />
@@ -388,6 +391,7 @@ export default async function Home() {
                   <p>{post.excerpt}</p>
                 </a>
               ))}
+            </div>
             </div>
           </div>
         </section>
@@ -539,19 +543,21 @@ export default async function Home() {
         {/* ACT 7b · THE GALLERY: a rail of his photographs, panning as the visitor scrolls */}
         <section className="g-abyss" id="gallery-act" data-sc-act="pan" data-sc-span="3.2" style={{ "--sc-span": 3.2 } as React.CSSProperties}>
           <div data-sc-stage className="rail-stage">
-            <div className="coast-rail gal-rail js-rail">
-              <div className="coast-lead">
+                        <div className="coast-lead lead-fixed">
                 <span className="microcopy">The gallery</span>
                 <h2><Words text="Forty years of photographs." /></h2>
                 <p className="sc-body">Students, reefs, the family, the town. The whole archive is on the gallery page; this is a walk past a few frames.</p>
                 <div className="lead-links"><a className="cta cta--quiet" href="/gallery">Open the gallery</a><a className="lead-link" href="https://facebook.com/osamasharks" target="_blank" rel="noopener noreferrer">More on Facebook</a></div>
               </div>
+            <div className="rail-clip">
+<div className="coast-rail gal-rail js-rail">
               {frames.map((photo, i) => (
                 <a className={`gal-frame gal-frame--${i % 3}`} href="/gallery" key={photo.id} data-sc-tilt="3" data-sc-parallax={i % 2 ? "-0.18" : "0.12"}>
                   <img src={photo.src} alt={photo.alt} loading="lazy" />
                   <figcaption className="microcopy">{photo.title}</figcaption>
                 </a>
               ))}
+            </div>
             </div>
           </div>
         </section>

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { WHATSAPP } from "@/lib/contact";
 
 // The acts, north to south along the shore. The line the ticks sit on is the west coast of
 // the Gulf of Aqaba, Taba at the top down to Ras Mohammed at the tip: home, drawn small.
@@ -18,7 +20,67 @@ const STOPS = [
 // Taba, Nuweiba, Ras Shaitan, Dahab, Sharm el Sheikh, Ras Mohammed: the shore as a line.
 const COAST = "M30 6 C24 30 22 52 27 78 C31 96 38 106 33 124 C28 142 20 160 22 186 C24 210 36 224 36 246 C36 270 24 290 24 314 C24 338 32 356 26 376 C22 390 16 402 12 414";
 
-export default function SideRail() {
+// On the inner pages the same shore carries the site itself: one stop per page.
+const SITE_STOPS = [
+  { href: "/", label: "Home", at: 0.05 },
+  { href: "/dive-sites", label: "Sites", at: 0.2 },
+  { href: "/blog", label: "Journal", at: 0.35 },
+  { href: "/gallery", label: "Gallery", at: 0.5, town: "Dahab" },
+  { href: "/review", label: "Reviews", at: 0.65 },
+  { href: "/featured/chatgpt", label: "Featured", at: 0.8 },
+  { href: WHATSAPP, label: "Contact", at: 0.95 },
+];
+
+export default function SideRail({ mode = "home" }: { mode?: "home" | "site" }) {
+  if (mode === "site") return <SiteRail />;
+  return <HomeRail />;
+}
+
+function SiteRail() {
+  const pathname = usePathname() || "/";
+  const [points, setPoints] = useState<{ x: number; y: number }[]>([]);
+  const pathRef = useRef<SVGPathElement>(null);
+  const drawRef = useRef<SVGPathElement>(null);
+  const activeIndex = Math.max(0, SITE_STOPS.findIndex((s) => s.href !== "/" && !s.href.startsWith("http") && pathname.startsWith(s.href)));
+  useEffect(() => {
+    const path = pathRef.current, line = drawRef.current;
+    if (!path || !line) return;
+    const L = path.getTotalLength();
+    setPoints(SITE_STOPS.map((s) => { const p = path.getPointAtLength(L * s.at); return { x: p.x, y: p.y }; }));
+    line.style.strokeDasharray = `${L}`;
+    line.style.strokeDashoffset = `${L * (1 - SITE_STOPS[activeIndex].at)}`;
+  }, [activeIndex]);
+  return (
+    <nav className="siderail" aria-label="Pages of the site, laid along the Sinai shore">
+      <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false">
+        <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
+        <path d={COAST} fill="none" stroke="rgba(63,209,190,0.12)" strokeWidth="6" strokeLinecap="round" />
+        <path ref={drawRef} d={COAST} className="siderail__drawn" fill="none" stroke="#3fd1be" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+      {SITE_STOPS.map((s, i) => {
+        const p = points[i];
+        const external = s.href.startsWith("http");
+        return (
+          <a
+            key={s.href}
+            href={s.href}
+            target={external ? "_blank" : undefined}
+            rel={external ? "noopener noreferrer" : undefined}
+            className={`siderail__stop${i === activeIndex ? " is-active" : ""}${i < activeIndex ? " is-reached" : ""}${s.town ? " has-town" : ""}`}
+            style={p ? { left: `${p.x}px`, top: `${p.y}px` } : undefined}
+            aria-current={i === activeIndex ? "page" : undefined}
+          >
+            <span className="siderail__dot" aria-hidden="true" />
+            <span className="siderail__label mono">{s.label}</span>
+            {s.town ? <span className="siderail__town mono" aria-hidden="true">{s.town}</span> : null}
+          </a>
+        );
+      })}
+    </nav>
+  );
+}
+
+function HomeRail() {
   const [active, setActive] = useState("brand-act");
   const [reached, setReached] = useState(0); // how many stops the drawn coast has passed
   const [points, setPoints] = useState<{ x: number; y: number }[]>([]);

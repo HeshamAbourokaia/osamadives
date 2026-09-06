@@ -8,6 +8,8 @@ interface BeholdMediaSize {
 
 interface BeholdPost {
   id: string;
+  /** For a video post, the video file itself; the sizes hold only its stills. */
+  mediaUrl?: string;
   timestamp: string;
   permalink: string;
   mediaType: "VIDEO" | "IMAGE" | "CAROUSEL_ALBUM";
@@ -148,8 +150,23 @@ export default async function FeaturedReel() {
                 sizes="(max-width: 640px) 280px, 320px"
                 unoptimized
               />
-              {/* Play icon overlay — only on videos */}
-              {isVideo && (
+              {/* A reel plays here, muted and looping, the still underneath as its poster;
+                  the press still goes to Instagram for the sound and the rest. */}
+              {isVideo && post.mediaUrl ? (
+                <video
+                  className="absolute inset-0 h-full w-full object-cover"
+                  src={post.mediaUrl}
+                  poster={imgUrl}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-hidden="true"
+                />
+              ) : null}
+              {/* Play icon overlay, only when the video itself is not here */}
+              {isVideo && !post.mediaUrl && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xl group-hover:scale-105 transition-transform">
                     <svg className="w-8 h-8 text-gray-900 ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

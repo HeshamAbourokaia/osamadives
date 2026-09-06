@@ -1,3 +1,4 @@
+import DescentShell from "@/app/DescentShell";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
@@ -37,39 +38,12 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <DescentShell>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(placeSchema) }}
       />
 
-      {/* Navigation */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 bg-[#5a5f4e]/95 backdrop-blur-sm"
-        role="navigation"
-        aria-label="Main navigation"
-      >
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-white font-bold text-xl group-hover:text-white/90 transition">
-              OsamaDives
-            </span>
-            <span className="text-white/60 text-sm hidden sm:inline">- Dahab Since 1983</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-8 text-white/90">
-            <Link href="/#why-dahab" className="hover:text-white transition">Why Dahab</Link>
-            <Link href="/dive-sites" className="text-white font-semibold">Dive Sites</Link>
-            <Link href="/gallery" className="hover:text-white transition">Gallery</Link>
-            <Link href="/blog" className="hover:text-white transition">Journal</Link>
-            <Link
-              href="/#contact"
-              className="bg-white text-[#5a5f4e] px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition"
-            >
-              Contact
-            </Link>
-          </div>
-        </div>
-      </nav>
 
       {/* Hero */}
       <header className="relative h-[55vh] min-h-[420px] mt-14">
@@ -98,7 +72,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
             <span className="inline-block bg-white/20 backdrop-blur text-white text-sm px-3 py-1 rounded-full mb-4">
               {site.level} &middot; {site.depthMin}-{site.depthMax}m
             </span>
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-3" style={{ fontFamily: "serif" }}>
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-3">
               {site.name}
             </h1>
             <p className="text-white/90 text-lg max-w-3xl">{site.tagline}</p>
@@ -109,7 +83,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
       <main className="py-12 px-4">
         <article className="max-w-3xl mx-auto">
           {/* Quick facts */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 p-6 bg-[#5a5f4e]/5 rounded-xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 p-6 bg-[#0a7d70]/5 rounded-xl">
             <div>
               <p className="text-xs uppercase text-gray-500 tracking-wide">Depth</p>
               <p className="font-semibold text-gray-900">{site.depthMin}-{site.depthMax}m</p>
@@ -158,7 +132,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
           </div>
 
           {/* CTA */}
-          <div className="mt-10 p-6 bg-[#5a5f4e]/5 rounded-xl">
+          <div className="mt-10 p-6 bg-[#0a7d70]/5 rounded-xl">
             <p className="text-gray-700 mb-4">
               Want to dive {site.shortName} with me? Send me a message and I will set it up - whether you are a first-time diver or an experienced one looking for a guide who knows the site cold.
             </p>
@@ -195,7 +169,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     </div>
                     <div className="p-4">
-                      <h3 className="font-bold text-gray-900 group-hover:text-[#5a5f4e] transition-colors">
+                      <h3 className="font-bold text-gray-900 group-hover:text-[#0a7d70] transition-colors">
                         {r.name}
                       </h3>
                       <p className="text-sm text-gray-600 mt-1 line-clamp-2">{r.tagline}</p>
@@ -224,23 +198,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
         </section>
       </main>
 
-      <footer className="py-12 px-4 bg-gray-900 text-gray-400">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-white font-bold text-2xl">OsamaDives</span>
-            <span className="text-gray-500 text-sm">- Since 1983</span>
-          </div>
-          <div className="border-t border-gray-800 pt-6 text-sm">
-            <p>&copy; 2026 OsamaDives.com - Dahab, Egypt</p>
-            <div className="flex justify-center gap-4 mt-2">
-              <Link href="/" className="text-[#5a5f4e] hover:underline">Home</Link>
-              <Link href="/dive-sites" className="text-[#5a5f4e] hover:underline">Dive Sites</Link>
-              <Link href="/blog" className="text-[#5a5f4e] hover:underline">Journal</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
       <BackToPlace />
-    </div>
+    </DescentShell>
   );
 }

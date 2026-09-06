@@ -1,3 +1,4 @@
+import DescentShell from "@/app/DescentShell";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
@@ -5,41 +6,12 @@ import { diveSites } from "@/lib/dive-sites";
 
 export default function DiveSitesPage() {
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 bg-[#5a5f4e]/95 backdrop-blur-sm"
-        role="navigation"
-        aria-label="Main navigation"
-      >
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-white font-bold text-xl group-hover:text-white/90 transition">
-              OsamaDives
-            </span>
-            <span className="text-white/60 text-sm hidden sm:inline">
-              - Dahab Since 1983
-            </span>
-          </Link>
-          <div className="hidden md:flex items-center gap-8 text-white/90">
-            <Link href="/#why-dahab" className="hover:text-white transition">Why Dahab</Link>
-            <Link href="/dive-sites" className="text-white font-semibold">Dive Sites</Link>
-            <Link href="/gallery" className="hover:text-white transition">Gallery</Link>
-            <Link href="/blog" className="hover:text-white transition">Journal</Link>
-            <Link
-              href="/#contact"
-              className="bg-white text-[#5a5f4e] px-4 py-2 rounded-full font-semibold hover:bg-gray-100 transition"
-            >
-              Contact
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <DescentShell>
 
       {/* Hero */}
-      <header className="pt-28 pb-12 px-4 bg-gradient-to-b from-[#5a5f4e] to-[#6a6f5e]">
+      <header className="pt-28 pb-12 px-4 bg-gradient-to-b from-[#061420] to-[#0a2a3a]">
         <div className="max-w-4xl mx-auto text-center text-white">
-          <h1 className="text-4xl md:text-5xl font-light mb-4" style={{ fontFamily: "serif" }}>
+          <h1 className="text-4xl md:text-5xl font-light mb-4">
             Dive Sites in Dahab
           </h1>
           <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
@@ -77,7 +49,7 @@ export default function DiveSitesPage() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#5a5f4e] transition-colors">
+                    <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#0a7d70] transition-colors">
                       {site.name}
                     </h2>
                     <p className="text-gray-600 text-sm mb-3 line-clamp-3">
@@ -95,7 +67,7 @@ export default function DiveSitesPage() {
           </div>
 
           {/* CTA */}
-          <div className="mt-16 bg-gradient-to-r from-[#5a5f4e]/10 via-[#5a5f4e]/5 to-[#5a5f4e]/10 rounded-2xl p-8 text-center">
+          <div className="mt-16 bg-gradient-to-r from-[#0a7d70]/10 via-[#0a7d70]/5 to-[#0a7d70]/10 rounded-2xl p-8 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Want to dive these sites?</h2>
             <p className="text-gray-600 mb-6 max-w-xl mx-auto">
               I take guests to all of these sites - from first-time divers to technical divers training for the Blue Hole arch. Reach out and let me know what you are after.
@@ -116,26 +88,7 @@ export default function DiveSitesPage() {
       </main>
 
       {/* Footer */}
-      <footer className="py-12 px-4 bg-gray-900 text-gray-400">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-white font-bold text-2xl">OsamaDives</span>
-            <span className="text-gray-500 text-sm">- Since 1983</span>
-          </div>
-          <p className="text-sm mb-4 max-w-xl mx-auto">
-            Diving sites of Dahab, written from my own logbook. Every reef I describe, I have dived hundreds of times.
-          </p>
-          <div className="border-t border-gray-800 pt-6 text-sm">
-            <p>&copy; 2026 OsamaDives.com - Dahab, Egypt</p>
-            <div className="flex justify-center gap-4 mt-2">
-              <Link href="/" className="text-[#5a5f4e] hover:underline">Home</Link>
-              <Link href="/blog" className="text-[#5a5f4e] hover:underline">Journal</Link>
-              <Link href="/gallery" className="text-[#5a5f4e] hover:underline">Gallery</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
       <BackToPlace />
-    </div>
+    </DescentShell>
   );
 }

@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import { archivo, plex } from "./fonts";
+import { WHATSAPP } from "@/lib/contact";
+import TailFoot from "./TailFoot";
 import InstagramFeed from "@/components/InstagramFeed";
 import DescentBoot from "./DescentBoot";
 import OrbitScene from "./OrbitScene";
@@ -28,13 +30,10 @@ import type { LogbookEntry } from "@/lib/logbook/types";
 import { buildOrbitItems } from "@/lib/orbit-content";
 import "./descent.css";
 
-const archivo = Archivo({ subsets: ["latin"], weight: ["500", "600", "700", "800", "900"], variable: "--lb-display", display: "swap" });
-const plex = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--lb-mono", display: "swap" });
 
 // The homepage regenerates every minute, and instantly when a logbook page is approved.
 export const revalidate = 60;
 
-const WHATSAPP = "https://wa.me/201090208050?text=" + encodeURIComponent("Hi Osama! I would love to chat about diving in Dahab.");
 
 // The page is one dive. Markup and copy are the verified descent build (24 Aug 2026),
 // driven by the vendored scrollcraft engine that DescentBoot mounts after hydration.
@@ -596,22 +595,7 @@ export default async function Home() {
       <div className="tail">
         <HomeStrip />
         <InstagramFeed />
-        <footer className="tail-foot">
-          <span>OsamaDives · family on this shore since 1983 · Dahab, South Sinai, Egypt</span>
-          <nav aria-label="Footer">
-            <a href="/dive-sites">Dive sites</a>
-            <a href="/blog">Journal</a>
-            <a href="/gallery">Gallery</a>
-            <a href="/review">Reviews</a>
-            <a href="/featured/chatgpt">Featured</a>
-            <a href="https://facebook.com/sharkrest.official" target="_blank" rel="noopener noreferrer">Shark Restaurant</a>
-            <a href="https://instagram.com/osama_mohamed_hassan" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-          </nav>
-          <ShareCode path="/" caption="Point a camera at this and the site opens on their phone, no typing." />
-          <p className="tail-legal">This website is a personal portfolio showing Osama&apos;s diving experience and credentials. All diving activities, courses and experiences are conducted through CDWS-registered dive centres in Dahab. For diving enquiries and arrangements contact Osama directly; this site is an informational resource and does not take bookings or payments.</p>
-          <p className="tail-legal">&copy; 2026 OsamaDives.com · Dahab, South Sinai, Egypt · Pioneer family since 1983 · Shark Restaurant legacy · PADI Master Scuba Diver Trainer</p>
-        </footer>
+        <TailFoot />
       </div>
       <SideRail />
       <RailTravel />

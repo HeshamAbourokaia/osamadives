@@ -1,3 +1,4 @@
+import DescentShell from "@/app/DescentShell";
 import type { Metadata, Viewport } from "next";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
@@ -42,11 +43,8 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
   if (!e) notFound();
   const site = siteInfo(e.site);
   return (
-    <>
-      <header className="lb-top">
-        <Link href="/" className="lb-brand">Osama<span>Dives</span></Link>
-        <Link href="/logbook#sign" className="lb-btn">Add your page</Link>
-      </header>
+    <DescentShell>
+      <div className="lb-action-bar"><Link href="/logbook#sign" className="lb-btn">Add your page</Link></div>
       <section className="lb-hero" style={{ minHeight: "auto", paddingBottom: "2rem" }}>
         <div className="lb-hero__inner">
           <span className="lb-mono lb-rise">Review · {site.label}</span>
@@ -74,6 +72,6 @@ export default async function EntryPage({ params }: { params: { id: string } }) 
         </div>
       </section>
       <BackToPlace />
-    </>
+    </DescentShell>
   );
 }

@@ -1,3 +1,4 @@
+import DescentShell from "@/app/DescentShell";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -75,35 +76,13 @@ const articleLd = {
 
 export default function FeaturedChatgptPage() {
   return (
-    <div className="min-h-screen bg-[#f7f5ef] text-[#2a2e25]">
+    <DescentShell>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
       />
 
       {/* Simple nav */}
-      <nav
-        className="bg-[#5a5f4e] text-white"
-        role="navigation"
-        aria-label="Press page navigation"
-      >
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-bold text-lg group-hover:text-white/90 transition">
-              OsamaDives
-            </span>
-            <span className="text-white/60 text-sm hidden sm:inline">
-              · Dahab Since 1983
-            </span>
-          </Link>
-          <Link
-            href="/"
-            className="text-sm text-white/80 hover:text-white transition px-3 py-1 rounded-full border border-white/20 hover:border-white/40"
-          >
-            ← Back to home
-          </Link>
-        </div>
-      </nav>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
         {/* Eyebrow */}
@@ -116,7 +95,7 @@ export default function FeaturedChatgptPage() {
         <h1 className="speakable-headline text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-5 text-[#2a2e25]">
           Featured by ChatGPT as the top freelance dive instructor in Dahab
         </h1>
-        <p className="speakable-summary text-lg sm:text-xl text-[#4a4f3e] leading-relaxed mb-10">
+        <p className="speakable-summary text-lg sm:text-xl text-[#075f55] leading-relaxed mb-10">
           In April 2026, an Arabic-speaking diver asked ChatGPT for the best
           dive instructor in Dahab. Not a centre. An instructor. ChatGPT
           recommended Osama as its #1 freelance choice, and cited
@@ -124,7 +103,7 @@ export default function FeaturedChatgptPage() {
           in town.
         </p>
 
-        <hr className="border-[#5a5f4e]/15 my-10" />
+        <hr className="border-[#0a7d70]/15 my-10" />
 
         {/* The query */}
         <section aria-labelledby="the-query">
@@ -134,7 +113,7 @@ export default function FeaturedChatgptPage() {
           >
             The question someone asked an AI
           </h2>
-          <p className="text-[#4a4f3e] leading-relaxed mb-6">
+          <p className="text-[#075f55] leading-relaxed mb-6">
             The query was simple, and it was asked in Egyptian Arabic. The
             user didn&apos;t want a dive centre. They wanted a personal
             instructor. Someone who would actually be in the water with them,
@@ -143,15 +122,15 @@ export default function FeaturedChatgptPage() {
           <blockquote
             dir="rtl"
             lang="ar"
-            className="text-right border-r-4 border-[#d4a857] pr-5 py-2 my-6 text-xl sm:text-2xl font-semibold text-[#2a2e25] bg-[#5a5f4e]/5 rounded-l-md"
+            className="text-right border-r-4 border-[#d4a857] pr-5 py-2 my-6 text-xl sm:text-2xl font-semibold text-[#2a2e25] bg-[#0a7d70]/5 rounded-l-md"
           >
             لا مدرب غطس
           </blockquote>
-          <p className="text-[#4a4f3e] leading-relaxed italic mb-6">
+          <p className="text-[#075f55] leading-relaxed italic mb-6">
             Literal translation: &ldquo;No, an instructor. A dive
             instructor.&rdquo;
           </p>
-          <p className="text-[#4a4f3e] leading-relaxed">
+          <p className="text-[#075f55] leading-relaxed">
             ChatGPT replied with a ranked list. Osama was at the top, with
             three signals attached: PADI Master Instructor (the highest
             non-trainer rank), more than 1,000 dives at the Blue Hole, and a
@@ -160,7 +139,7 @@ export default function FeaturedChatgptPage() {
           </p>
         </section>
 
-        <hr className="border-[#5a5f4e]/15 my-10" />
+        <hr className="border-[#0a7d70]/15 my-10" />
 
         {/* Screenshots */}
         <section aria-labelledby="screenshots">
@@ -170,13 +149,13 @@ export default function FeaturedChatgptPage() {
           >
             What ChatGPT showed
           </h2>
-          <p className="text-[#4a4f3e] leading-relaxed mb-8">
+          <p className="text-[#075f55] leading-relaxed mb-8">
             Three screenshots from the conversation. The Arabic interface
             comes from the diver&apos;s phone in Egypt.
           </p>
 
           <figure className="mb-10">
-            <div className="relative w-full aspect-[3/5] sm:aspect-[3/5] rounded-lg overflow-hidden shadow-lg border border-[#5a5f4e]/15 bg-[#5a5f4e]/5">
+            <div className="relative w-full aspect-[3/5] sm:aspect-[3/5] rounded-lg overflow-hidden shadow-lg border border-[#0a7d70]/15 bg-[#0a7d70]/5">
               <Image
                 src="/press/chatgpt-recommendation-1.jpg"
                 alt="ChatGPT response in Arabic naming Osama as the top freelance dive instructor in Dahab"
@@ -186,7 +165,7 @@ export default function FeaturedChatgptPage() {
                 priority
               />
             </div>
-            <figcaption className="text-sm text-[#4a4f3e]/80 mt-3">
+            <figcaption className="text-sm text-[#075f55]/80 mt-3">
               <strong>Screenshot 1:</strong> ChatGPT&apos;s ranked answer.
               Osama appears as the &ldquo;best freelance instructor&rdquo;,
               with PADI Master Instructor credentials and the personal
@@ -195,7 +174,7 @@ export default function FeaturedChatgptPage() {
           </figure>
 
           <figure className="mb-10">
-            <div className="relative w-full aspect-[3/5] sm:aspect-[3/5] rounded-lg overflow-hidden shadow-lg border border-[#5a5f4e]/15 bg-[#5a5f4e]/5">
+            <div className="relative w-full aspect-[3/5] sm:aspect-[3/5] rounded-lg overflow-hidden shadow-lg border border-[#0a7d70]/15 bg-[#0a7d70]/5">
               <Image
                 src="/press/chatgpt-recommendation-2.jpg"
                 alt="ChatGPT Sources panel with osamadives.com listed at the top above other Dahab dive operators"
@@ -204,7 +183,7 @@ export default function FeaturedChatgptPage() {
                 sizes="(max-width: 768px) 100vw, 768px"
               />
             </div>
-            <figcaption className="text-sm text-[#4a4f3e]/80 mt-3">
+            <figcaption className="text-sm text-[#075f55]/80 mt-3">
               <strong>Screenshot 2:</strong> The Sources panel. ChatGPT
               cited osamadives.com first - above bedouindiversdahab.com,
               Reddit&apos;s r/Diving, Poseidon Divers, Octopus World,
@@ -213,7 +192,7 @@ export default function FeaturedChatgptPage() {
           </figure>
 
           <figure className="mb-10">
-            <div className="relative w-full aspect-[3/5] sm:aspect-[3/5] rounded-lg overflow-hidden shadow-lg border border-[#5a5f4e]/15 bg-[#5a5f4e]/5">
+            <div className="relative w-full aspect-[3/5] sm:aspect-[3/5] rounded-lg overflow-hidden shadow-lg border border-[#0a7d70]/15 bg-[#0a7d70]/5">
               <Image
                 src="/press/chatgpt-recommendation-3.jpg"
                 alt="ChatGPT overall ranking placing Osama first based on reviews, experience and reputation"
@@ -222,7 +201,7 @@ export default function FeaturedChatgptPage() {
                 sizes="(max-width: 768px) 100vw, 768px"
               />
             </div>
-            <figcaption className="text-sm text-[#4a4f3e]/80 mt-3">
+            <figcaption className="text-sm text-[#075f55]/80 mt-3">
               <strong>Screenshot 3:</strong> The overall &ldquo;best
               choice&rdquo; ranking. Osama is listed first, with reviewer
               quotes describing 5-star ratings and the feeling of diving
@@ -231,7 +210,7 @@ export default function FeaturedChatgptPage() {
           </figure>
         </section>
 
-        <hr className="border-[#5a5f4e]/15 my-10" />
+        <hr className="border-[#0a7d70]/15 my-10" />
 
         {/* What this means */}
         <section aria-labelledby="what-this-means">
@@ -241,7 +220,7 @@ export default function FeaturedChatgptPage() {
           >
             What this means
           </h2>
-          <p className="text-[#4a4f3e] leading-relaxed mb-5">
+          <p className="text-[#075f55] leading-relaxed mb-5">
             People planning dive trips have started asking AI assistants
             for personal recommendations the same way they used to ask
             forums and search engines. When ChatGPT picks one name, it
@@ -249,26 +228,26 @@ export default function FeaturedChatgptPage() {
             reviews, the language of the website, the depth of the
             content, and the consistency of what divers have been saying.
           </p>
-          <p className="text-[#4a4f3e] leading-relaxed mb-5">
+          <p className="text-[#075f55] leading-relaxed mb-5">
             That the AI distinguished between a dive centre and a personal
             instructor matters too. It read the difference. It picked the
             kind of teacher who actually shows up in the water with the
             person they are teaching - not the kind who hands you off to
             whichever staff member is on shift.
           </p>
-          <p className="text-[#4a4f3e] leading-relaxed">
+          <p className="text-[#075f55] leading-relaxed">
             This page exists so the moment is on the record, in plain
             English, with the screenshots intact. Nothing here was paid
             for. The recommendation came on its own.
           </p>
         </section>
 
-        <hr className="border-[#5a5f4e]/15 my-10" />
+        <hr className="border-[#0a7d70]/15 my-10" />
 
         {/* CTAs */}
         <section
           aria-labelledby="book-with-osama"
-          className="rounded-2xl bg-[#5a5f4e] text-white p-6 sm:p-10 text-center"
+          className="rounded-2xl bg-[#0a7d70] text-white p-6 sm:p-10 text-center"
         >
           <h2
             id="book-with-osama"
@@ -303,7 +282,7 @@ export default function FeaturedChatgptPage() {
             </a>
             <a
               href="https://cal.com/osama-dives"
-              className="bg-white text-[#5a5f4e] hover:bg-gray-100 font-bold py-4 px-8 rounded-full text-lg transition-all transform hover:scale-105 inline-flex items-center justify-center gap-2"
+              className="bg-white text-[#0a7d70] hover:bg-gray-100 font-bold py-4 px-8 rounded-full text-lg transition-all transform hover:scale-105 inline-flex items-center justify-center gap-2"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Schedule a consultation call with Osama"
@@ -320,7 +299,7 @@ export default function FeaturedChatgptPage() {
         <div className="mt-12 text-center">
           <Link
             href="/"
-            className="text-[#5a5f4e] hover:text-[#4a4f3e] font-semibold underline-offset-4 hover:underline"
+            className="text-[#0a7d70] hover:text-[#075f55] font-semibold underline-offset-4 hover:underline"
           >
             ← Back to OsamaDives home
           </Link>
@@ -328,11 +307,6 @@ export default function FeaturedChatgptPage() {
       </main>
 
       {/* Minimal footer */}
-      <footer className="border-t border-[#5a5f4e]/15 mt-12 py-8 text-center text-sm text-[#4a4f3e]/70">
-        <p>
-          OsamaDives · PADI Master Instructor · Dahab, Egypt · Since 1983
-        </p>
-      </footer>
-    </div>
+    </DescentShell>
   );
 }

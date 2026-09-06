@@ -1,3 +1,4 @@
+import DescentShell from "@/app/DescentShell";
 import type { Metadata, Viewport } from "next";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
@@ -71,15 +72,8 @@ export default async function LogbookPage() {
     : `${total} ${total === 1 ? "review" : "reviews"}${countries > 1 ? ` from ${countries} countries` : ""} · since ${firstYear}`;
 
   return (
-    <>
-      <header className="lb-top lb-top--bar">
-        <Link href="/" className="lb-back" aria-label="Back to the Osama Dives website">
-          <span aria-hidden="true">&larr;</span>
-          <img src="/brand/stamp-512.png" alt="" width={30} height={30} />
-          <span className="lb-back__text">osamadives<span>.com</span></span>
-        </Link>
-        <a href={addHref} className="lb-btn">{addLabel}</a>
-      </header>
+    <DescentShell>
+      <div className="lb-action-bar"><a href={addHref} className="lb-btn">{addLabel}</a></div>
 
       <section className="lb-hero">
         <svg className="lb-hero__year" viewBox="0 0 1000 260" aria-hidden="true" focusable="false">
@@ -141,15 +135,7 @@ export default async function LogbookPage() {
         </div>
       </section>
 
-      <footer className="lb-foot lb-mono">
-        <span>OsamaDives · family on this shore since 1983</span>
-        <span>
-          <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp Osama</a>
-          {" · "}
-          <Link href="/">Home</Link>
-        </span>
-      </footer>
       <BackToPlace />
-    </>
+    </DescentShell>
   );
 }

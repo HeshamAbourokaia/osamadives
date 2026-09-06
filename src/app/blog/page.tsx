@@ -116,6 +116,10 @@ export default function BlogPage() {
       {/* Floating Heritage Badge */}
       <FloatingBadge />
       <BackToPlace />
+      {/* The journal's closing line, as the old page had it */}
+      <p className="mx-auto max-w-xl px-4 pb-14 text-center text-sm text-[#075f55]">
+        Writing about diving is almost as hard as diving itself. The sea speaks a language that does not translate well to words. But I keep trying, because some stories deserve to be told.
+      </p>
     </DescentShell>
   );
 }

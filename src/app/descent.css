@@ -382,6 +382,15 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
 .sc-grain::before {
   content: ""; position: absolute; inset: -50%;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+  /* Film grain moves. The sheet is twice the screen, so it can jump by a fifth of
+     itself in any direction and never show an edge; stepped, not eased, so each
+     frame is a fresh grain rather than a drifting one. */
+  animation: grain-jump 0.9s steps(1) infinite;
+}
+@keyframes grain-jump {
+  0% { transform: translate(0, 0); } 12% { transform: translate(-7%, -9%); } 25% { transform: translate(5%, -14%); }
+  37% { transform: translate(-11%, 6%); } 50% { transform: translate(9%, 11%); } 62% { transform: translate(-3%, 14%); }
+  75% { transform: translate(13%, -4%); } 87% { transform: translate(-13%, -12%); } 100% { transform: translate(0, 0); }
 }
 
 /* -------------------------------------------------------- reduced motion -- */
@@ -1530,4 +1539,26 @@ html:not(.sc-ready) .w__i { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .descent .caustics { animation: none; opacity: calc(var(--caustic, 0.3) * 0.6); }
+}
+
+
+/* ------------------------------------------ the water column and its light -- */
+/* Behind each clip, instead of a flat dark, the column of water: lit near the
+   surface, the abyss below. It is what shows while a clip is still on its way,
+   and it sets the tone the clip then lands on. */
+.descent .water-column { background: linear-gradient(180deg, #123f50 0%, #0a2a3a 30%, var(--abyss) 62%, var(--abyss-deep) 100%); }
+
+/* A soft band of surface light lying across the clip. On the way down it slides
+   down and away as the camera goes under; on the way up it comes down to meet the
+   camera as it rises. Tied to the act's own progress, no timer. */
+.descent .light-band {
+  position: absolute; left: -10%; right: -10%; height: 34%; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(190, 240, 232, 0) 0%, rgba(190, 240, 232, 0.13) 45%, rgba(190, 240, 232, 0) 100%);
+  will-change: top;
+}
+.descent .light-band--down { top: calc(-12% + var(--sc-p, 0) * 78%); }
+.descent .light-band--up { top: calc(64% - var(--sc-p, 0) * 78%); }
+@media (prefers-reduced-motion: reduce) {
+  .sc-grain::before { animation: none; }
+  .descent .light-band { top: 10%; }
 }

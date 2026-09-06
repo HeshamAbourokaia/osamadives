@@ -101,9 +101,10 @@ export default async function Home() {
 
         {/* ACT 1 · ENTRY: the sea, scrubbing under the wheel from the first pixel */}
         <section className="g-abyss" id="entry-act" data-sc-act="scrub" data-sc-span="2.3" style={{ "--sc-span": 2.3 } as React.CSSProperties} data-sc-dwell="0.35">
-          <div data-sc-stage>
+          <div data-sc-stage className="water-column">
             <img className="sc-stage__poster" data-sc-parallax="-0.22" src="/descent/hero-poster.webp" srcSet="/descent/hero-poster-m.webp 800w, /descent/hero-poster.webp 1600w" sizes="100vw" alt="" />
             <video data-sc-scrub data-sc-parallax="-0.22" data-sc-src="/descent/hero.mp4" data-sc-src-mobile="/descent/hero-m.mp4" muted playsInline />
+            <div className="light-band light-band--down" aria-hidden="true" />
             <div className="caustics caustics--entry" aria-hidden="true" />
             <Bubbles count={36} strength={1} />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
@@ -235,6 +236,7 @@ export default async function Home() {
             <img className="depth-photo depth-photo--1" data-sc-parallax="-0.24" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle over the reef at Om El Seed, seven metres down, photographed by Osama" />
             <img className="depth-photo depth-photo--2" data-sc-parallax="-0.24" src="/descent/depth-8.webp" srcSet="/descent/depth-8-m.webp 800w, /descent/depth-8.webp 1600w" sizes="100vw" alt="Coral on the reef shelf at the edge of the Blue Hole, eight metres down, photographed by Osama" />
             <img className="depth-photo depth-photo--3" data-sc-parallax="-0.24" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="A diver silhouetted in open blue water at twelve metres, photographed by Osama" />
+            <div className="light-band light-band--down" aria-hidden="true" />
             <div className="caustics caustics--depth" aria-hidden="true" />
             <Bubbles count={22} strength={0.7} />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
@@ -552,9 +554,10 @@ export default async function Home() {
 
         {/* ACT 8 · SURFACING: the camera breaks the surface, the gauge reads zero */}
         <section className="g-abyss" id="surface-act" data-sc-act="scrub" data-sc-span="1.4" style={{ "--sc-span": 1.4 } as React.CSSProperties} data-sc-dwell="0.3">
-          <div data-sc-stage>
+          <div data-sc-stage className="water-column">
             <img className="sc-stage__poster" data-sc-parallax="-0.22" src="/descent/surface-poster.webp" srcSet="/descent/surface-poster-m.webp 800w, /descent/surface-poster.webp 1600w" sizes="100vw" alt="" />
             <video data-sc-scrub data-sc-parallax="-0.22" data-sc-src="/descent/surface.mp4" data-sc-src-mobile="/descent/surface-m.mp4" muted playsInline />
+            <div className="light-band light-band--up" aria-hidden="true" />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="copy-scrim" aria-hidden="true" />
             <div className="sea-scrim-m" aria-hidden="true" />

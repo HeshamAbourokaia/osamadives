@@ -51,7 +51,7 @@ export default function InstagramFeed() {
             href={IG_PROFILE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-[#5a5f4e] font-semibold hover:underline"
+            className="inline-flex items-center gap-2 text-[#0a7d70] font-semibold hover:underline"
           >
             Follow {HANDLE} on Instagram
             <svg

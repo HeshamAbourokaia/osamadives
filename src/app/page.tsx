@@ -3,6 +3,7 @@ import { archivo, plex } from "./fonts";
 import { WHATSAPP } from "@/lib/contact";
 import TailFoot from "./TailFoot";
 import InstagramFeed from "@/components/InstagramFeed";
+import FeaturedReel from "@/components/FeaturedReel";
 import DescentBoot from "./DescentBoot";
 import OrbitScene from "./OrbitScene";
 import HomeStrip from "./logbook/HomeStrip";
@@ -593,6 +594,8 @@ export default async function Home() {
       {/* Back on the surface: the logbook, the live feed, the way around the site */}
       <div className="tail">
         <HomeStrip />
+        {/* The latest reel, as the old homepage had it: wherever Osama was on his most recent dive */}
+        <FeaturedReel />
         <InstagramFeed />
         <TailFoot />
       </div>

@@ -257,27 +257,27 @@ export default async function Home() {
         {/* ACT 5 · THE COAST: lateral travel, south to north, five real dives */}
         <section className="g-abyss" id="coast-act" data-sc-act="pan" data-sc-span="4.4" style={{ "--sc-span": 4.4 } as React.CSSProperties}>
           <div data-sc-stage className="rail-stage">
-            <div className="coast-rail js-rail">
+            <div className="coast-rail js-rail" data-ruler="depth-ruler">
               <div className="coast-lead">
                 <span className="microcopy">Stop 2 · the sites · south to north</span>
                 <h2><Words text="One shore. Five dives from the sand." /></h2>
                 <p className="sc-body">No boat, no schedule. You walk in from the beach, the reef starts at your fins. These are the sites Osama grew up on, in the order the shore road meets them.</p>
               </div>
-              <a className="station" href="/dive-sites/three-pools-dahab" data-sc-tilt="4">
+              <a className="station" href="/dive-sites/three-pools-dahab" data-sc-tilt="4" data-depth="3 25">
                 <img className="station__img" src="/descent/arch-lagoon-m.webp" alt="" />
                 <span className="microcopy">South of town</span>
                 <h3>Three Pools</h3>
                 <span className="depth mono">03-25 <small>M</small></span>
                 <p>Three sandy lagoons opening onto coral gardens. Calm, bright, and easy. Open Water and up.</p>
               </a>
-              <a className="station" href="/dive-sites/lighthouse-reef-dahab" data-sc-tilt="4">
+              <a className="station" href="/dive-sites/lighthouse-reef-dahab" data-sc-tilt="4" data-depth="3 30">
                 <img className="station__img" src="/descent/sea-poster-m.webp" alt="" />
                 <span className="microcopy">In town</span>
                 <h3>Lighthouse</h3>
                 <span className="depth mono">03-30 <small>M</small></span>
                 <p>The house reef. First breaths happen here, and Osama still finds things on it after a lifetime. All levels.</p>
               </a>
-              <a className="station" href="/dive-sites/eel-garden-dahab" data-sc-tilt="4">
+              <a className="station" href="/dive-sites/eel-garden-dahab" data-sc-tilt="4" data-depth="5 25">
                 <img className="station__img" src="/descent/depth-7-m.webp" alt="" />
                 <span className="microcopy">Town, north end</span>
                 <h3>Eel Garden</h3>
@@ -288,14 +288,14 @@ export default async function Home() {
                 <img src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="(max-width: 860px) 74vw, 22rem" alt="A diver silhouetted in open blue water, photographed by Osama" />
                 <figcaption>Into the blue, on an ordinary morning</figcaption>
               </figure>
-              <a className="station" href="/dive-sites/the-canyon-dahab" data-sc-tilt="4">
+              <a className="station" href="/dive-sites/the-canyon-dahab" data-sc-tilt="4" data-depth="10 30">
                 <img className="station__img" src="/descent/canyon-floor-m.webp" alt="" />
                 <span className="microcopy">North of town</span>
                 <h3>The Canyon</h3>
                 <span className="depth mono">10-30 <small>M</small></span>
                 <p>A rift in the reef lit by shafts of sun, full of glassfish. Advanced, properly briefed.</p>
               </a>
-              <a className="station" href="/dive-sites/blue-hole-dahab" data-sc-tilt="4">
+              <a className="station" href="/dive-sites/blue-hole-dahab" data-sc-tilt="4" data-depth="5 100">
                 <img className="station__img" src="/descent/depth-8-m.webp" alt="" />
                 <span className="microcopy">The famous one</span>
                 <h3>Blue Hole</h3>
@@ -305,6 +305,21 @@ export default async function Home() {
               <div className="coast-note">
                 <span className="microcopy">The rule of the house</span>
                 <p>Every brief starts on the sand, and every dive stays inside your training.</p>
+              </div>
+            </div>
+            {/* The ruler under the sites: the band lights the depth of whichever site is
+                in focus, and the dive computer reads the same site while this rail is on
+                screen. The Blue Hole runs past the end of the scale. */}
+            <div className="depth-ruler" id="depth-ruler" aria-hidden="true" style={{ "--lo": 3, "--hi": 25 } as React.CSSProperties}>
+              <span className="depth-ruler__site mono" id="depth-ruler-site">Three Pools</span>
+              <div className="depth-ruler__scale">
+                <i className="depth-ruler__band" />
+                {[0, 5, 10, 15, 20, 25, 30].map((m) => (
+                  <b key={m} className={m % 10 === 0 ? "is-major" : undefined} style={{ left: `${(m / 30) * 100}%` }}>
+                    {m % 10 === 0 ? <small>{m}</small> : null}
+                  </b>
+                ))}
+                <em className="depth-ruler__deep mono">to 100 m</em>
               </div>
             </div>
           </div>

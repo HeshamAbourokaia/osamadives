@@ -50,6 +50,11 @@ function startHud() {
   };
   const max = 30;
   let raf: number | null = null;
+  // While the sites rail is on screen, the card in focus sets the reading (RailFocus
+  // says which). The keyframes hold 12 m for that stretch; the site's own depth replaces it.
+  let site: { depth: number; label: string } | null = null;
+  const onSite = (e: Event) => { site = (e as CustomEvent).detail ?? null; onScroll(); };
+  addEventListener("od:site", onSite);
   function update() {
     raf = null;
     const K = build();
@@ -65,14 +70,15 @@ function startHud() {
       }
     }
     if (p >= 1) { d = 0; label = "Surface"; }
+    if (site && label.endsWith("The sites")) { d = site.depth; label = site.label; }
     depthEl!.textContent = (d < 10 ? "0" : "") + d.toFixed(1);
     labelEl!.textContent = label;
-    trackEl!.style.transform = "scaleX(" + (d / max).toFixed(3) + ")";
+    trackEl!.style.transform = "scaleX(" + Math.min(1, d / max).toFixed(3) + ")";
   }
   const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
   addEventListener("scroll", onScroll, { passive: true });
   update();
-  return () => removeEventListener("scroll", onScroll);
+  return () => { removeEventListener("scroll", onScroll); removeEventListener("od:site", onSite); };
 }
 
 export default function DescentBoot() {

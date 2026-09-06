@@ -17,6 +17,7 @@ export default function RailFocus() {
     if (!rails.length) return;
     rails.forEach((r) => r.classList.add("rail-focus"));
     let frame = 0;
+    let shown: string | null = null; // which ruler currently holds the dive computer
 
     const measure = () => {
       frame = 0;
@@ -25,7 +26,14 @@ export default function RailFocus() {
       const mid = vw / 2;
       for (const rail of rails) {
         const box = rail.getBoundingClientRect();
-        if (box.bottom < 0 || box.top > vh) continue; // off screen: leave as it was
+        const rulerId = rail.getAttribute("data-ruler");
+        if (box.bottom < 0 || box.top > vh) {
+          // off screen: leave the cards as they were, and give the dive computer back
+          if (rulerId && shown === rulerId) { shown = null; window.dispatchEvent(new CustomEvent("od:site", { detail: null })); }
+          continue;
+        }
+        let best: HTMLElement | null = null;
+        let bestFocus = 0;
         for (const card of Array.from(rail.children) as HTMLElement[]) {
           if (card.classList.contains("coast-lead")) continue; // the intro is always readable
           const r = card.getBoundingClientRect();
@@ -39,6 +47,25 @@ export default function RailFocus() {
           const t = Math.min(1, Math.max(0, (d - 0.25) / 0.6));
           const focus = 1 - t * t * (3 - 2 * t);
           card.style.setProperty("--focus", focus.toFixed(3));
+          if (focus > bestFocus) { bestFocus = focus; best = card; }
+        }
+        // The site in focus lights its depth on the ruler and on the dive computer.
+        // A card with no depth (the morning photograph) keeps the previous site lit.
+        if (rulerId && best && bestFocus > 0.3) {
+          const depth = best.getAttribute("data-depth");
+          const name = best.querySelector("h3")?.textContent?.trim();
+          const ruler = document.getElementById(rulerId);
+          if (depth && name && ruler && ruler.getAttribute("data-site") !== name) {
+            const [lo, hi] = depth.split(" ").map(Number);
+            ruler.style.setProperty("--lo", String(lo));
+            ruler.style.setProperty("--hi", String(Math.min(hi, 30)));
+            ruler.setAttribute("data-site", name);
+            ruler.setAttribute("data-deep", hi > 30 ? "1" : "0");
+            const site = document.getElementById(rulerId + "-site");
+            if (site) site.textContent = name;
+            shown = rulerId;
+            window.dispatchEvent(new CustomEvent("od:site", { detail: { depth: hi, label: `${hi} m · ${name}` } }));
+          }
         }
       }
     };

@@ -173,9 +173,13 @@ export default function OrbitScene({ items: allItems, osamaSrc, osamaSrcMobile, 
         el.style.setProperty("--card-y", `${(depth * DISH * ringR).toFixed(1)}px`);
         el.style.setProperty("--card-scale", (eased * (0.82 + 0.18 * front)).toFixed(3));
         el.style.opacity = (introOpacity * Math.pow(front, 1.7)).toFixed(3);
-        el.style.filter = `blur(${((1 - front) * 3.4).toFixed(2)}px) brightness(${(0.62 + 0.38 * front).toFixed(2)})`;
+        // The card facing the reader gets no filter at all. A filter, even blur(0px),
+        // makes the browser re-rasterise the card on every animation frame inside it,
+        // and with the hover scale and the dot's pulse that read as flicker.
+        el.style.filter = front > 0.97 ? "" : `blur(${((1 - front) * 3.4).toFixed(2)}px) brightness(${(0.62 + 0.38 * front).toFixed(2)})`;
         el.style.zIndex = String(Math.round(front * 100));
         el.style.setProperty("--front", front.toFixed(3)); // the tracking dot lives on the card facing the reader
+        el.classList.toggle("is-front", front > 0.97); // the one card square on, the only one with no filter
         el.style.pointerEvents = front > 0.16 && localT > 0.9 ? "auto" : "none";
       }
     };

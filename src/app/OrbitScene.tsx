@@ -175,6 +175,7 @@ export default function OrbitScene({ items: allItems, osamaSrc, osamaSrcMobile, 
         el.style.opacity = (introOpacity * Math.pow(front, 1.7)).toFixed(3);
         el.style.filter = `blur(${((1 - front) * 3.4).toFixed(2)}px) brightness(${(0.62 + 0.38 * front).toFixed(2)})`;
         el.style.zIndex = String(Math.round(front * 100));
+        el.style.setProperty("--front", front.toFixed(3)); // the tracking dot lives on the card facing the reader
         el.style.pointerEvents = front > 0.16 && localT > 0.9 ? "auto" : "none";
       }
     };
@@ -308,6 +309,7 @@ export default function OrbitScene({ items: allItems, osamaSrc, osamaSrcMobile, 
                 <span className="orbit-card__title">{item.title}</span>
                 <span className="orbit-card__meta">{item.meta}</span>
                 <span className="orbit-card__hud" aria-hidden="true"><i /><i /><i /><i /><b>Open</b></span>
+                <span className="orbit-card__dot" aria-hidden="true" />
               </a>
             ))}
           </div>

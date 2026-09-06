@@ -15,6 +15,7 @@ import Words from "./Words";
 import ShareCode from "./ShareCode";
 import OdometerYear from "./OdometerYear";
 import Contours from "./Contours";
+import TapRipple from "./TapRipple";
 import { LENS_MAP } from "./lensMap";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
@@ -130,7 +131,7 @@ export default async function Home() {
             <Contours seed={3} />
             <div className="guide-back-wrap" data-sc-parallax="-0.45" aria-hidden="true"><img className="guide-back" src="/descent/arch-camels.webp" alt="" /></div>
             <div className="guide-cover">
-              <div className="guide-panel glass glass--paper" data-sc-parallax="0.12" data-sc-in data-sc-stagger="70">
+              <div className="guide-panel glass glass--paper" data-sc-parallax="0.12" data-sc-in data-sc-stagger="70" data-sc-spotlight data-sc-tilt="2.5">
                 <div className="rule-draw" aria-hidden="true" />
                 <span className="microcopy">On the sand · your guide</span>
                 <h2 data-sc-kinetic="lines">Meet Osama.</h2>
@@ -269,21 +270,21 @@ export default async function Home() {
                 <h2><Words text="One shore. Five dives from the sand." /></h2>
                 <p className="sc-body">No boat, no schedule. You walk in from the beach, the reef starts at your fins. These are the sites Osama grew up on, in the order the shore road meets them.</p>
               </div>
-              <a className="station" href="/dive-sites/three-pools-dahab" data-sc-tilt="4" data-depth="3 25">
+              <a className="station" data-sc-spotlight href="/dive-sites/three-pools-dahab" data-sc-tilt="4" data-depth="3 25">
                 <img className="station__img" src="/descent/arch-lagoon-m.webp" alt="" />
                 <span className="microcopy">South of town</span>
                 <h3>Three Pools</h3>
                 <span className="depth mono">03-25 <small>M</small></span>
                 <p>Three sandy lagoons opening onto coral gardens. Calm, bright, and easy. Open Water and up.</p>
               </a>
-              <a className="station" href="/dive-sites/lighthouse-reef-dahab" data-sc-tilt="4" data-depth="3 30">
+              <a className="station" data-sc-spotlight href="/dive-sites/lighthouse-reef-dahab" data-sc-tilt="4" data-depth="3 30">
                 <img className="station__img" src="/descent/sea-poster-m.webp" alt="" />
                 <span className="microcopy">In town</span>
                 <h3>Lighthouse</h3>
                 <span className="depth mono">03-30 <small>M</small></span>
                 <p>The house reef. First breaths happen here, and Osama still finds things on it after a lifetime. All levels.</p>
               </a>
-              <a className="station" href="/dive-sites/eel-garden-dahab" data-sc-tilt="4" data-depth="5 25">
+              <a className="station" data-sc-spotlight href="/dive-sites/eel-garden-dahab" data-sc-tilt="4" data-depth="5 25">
                 <img className="station__img" src="/descent/depth-7-m.webp" alt="" />
                 <span className="microcopy">Town, north end</span>
                 <h3>Eel Garden</h3>
@@ -294,14 +295,14 @@ export default async function Home() {
                 <img src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="(max-width: 860px) 74vw, 22rem" alt="A diver silhouetted in open blue water, photographed by Osama" />
                 <figcaption>Into the blue, on an ordinary morning</figcaption>
               </figure>
-              <a className="station" href="/dive-sites/the-canyon-dahab" data-sc-tilt="4" data-depth="10 30">
+              <a className="station" data-sc-spotlight href="/dive-sites/the-canyon-dahab" data-sc-tilt="4" data-depth="10 30">
                 <img className="station__img" src="/descent/canyon-floor-m.webp" alt="" />
                 <span className="microcopy">North of town</span>
                 <h3>The Canyon</h3>
                 <span className="depth mono">10-30 <small>M</small></span>
                 <p>A rift in the reef lit by shafts of sun, full of glassfish. Advanced, properly briefed.</p>
               </a>
-              <a className="station" href="/dive-sites/blue-hole-dahab" data-sc-tilt="4" data-depth="5 100">
+              <a className="station" data-sc-spotlight href="/dive-sites/blue-hole-dahab" data-sc-tilt="4" data-depth="5 100">
                 <img className="station__img" src="/descent/depth-8-m.webp" alt="" />
                 <span className="microcopy">The famous one</span>
                 <h3>Blue Hole</h3>
@@ -344,7 +345,7 @@ export default async function Home() {
             <div className="exhibits exhibits--three" data-sc-in data-sc-stagger="90">
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">B</span>
-                <a className="exhibit-card" href="/dive-sites/blue-hole-dahab" data-sc-tilt="5" data-sc-parallax="-0.08">
+                <a className="exhibit-card" data-sc-spotlight href="/dive-sites/blue-hole-dahab" data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/images/OsamaDives_The_Blue_Hole.jpeg" alt="The Blue Hole in Dahab, the famous vertical drop with the Arch at 55 metres" loading="lazy" />
                   <div className="row"><h3>Blue Hole</h3><span className="spec">A pilgrimage</span></div>
                   <p>Divers travel from every corner of the world to descend into this sinkhole. Open Water is the minimum. The Arch is for technical divers only; recreational diving here stops at 40 metres. I have dived it more than a thousand times. I know its moods, and how to show you its magic safely.</p>
@@ -352,7 +353,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">C</span>
-                <a className="exhibit-card" href="/dive-sites/the-canyon-dahab" data-sc-tilt="5" data-sc-parallax="0.06">
+                <a className="exhibit-card" data-sc-spotlight href="/dive-sites/the-canyon-dahab" data-sc-tilt="5" data-sc-parallax="0.06">
                   <img src="/images/OsamDives_The_Canyon.jpg" alt="The Canyon dive site in Dahab, dramatic formations with shafts of light" loading="lazy" />
                   <div className="row"><h3>The Canyon</h3><span className="spec">A cathedral</span></div>
                   <p>You descend through a narrow passage as beams of sunlight pierce the water above you. Walls covered in soft coral, home to lionfish, moray eels, and schools of glassfish.</p>
@@ -360,7 +361,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">S</span>
-                <a className="exhibit-card" href="/dive-sites" data-sc-tilt="5" data-sc-parallax="-0.08">
+                <a className="exhibit-card" data-sc-spotlight href="/dive-sites" data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/images/FB_IMG_1621238990084.jpg" alt="Shore diving in Dahab, an easy beach entry with no boats" loading="lazy" />
                   <div className="row"><h3>Shore diving</h3><span className="spec">No boats</span></div>
                   <p>Forget crowded boats and rough seas. In Dahab you walk to your dive site. Gear up on the beach, wade in through calm water, and you are diving within minutes. More time underwater, less time commuting.</p>
@@ -419,7 +420,7 @@ export default async function Home() {
             <div className="exhibits" data-sc-in data-sc-stagger="90">
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">I</span>
-                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="-0.08">
+                <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/descent/arch-lagoon.webp" srcSet="/descent/arch-lagoon-m.webp 800w, /descent/arch-lagoon.webp 1400w" sizes="(max-width: 860px) 92vw, 40vw" alt="The turquoise lagoon at Dahab where first dives happen" />
                   <div className="row"><h3>Intro Dive</h3><span className="spec">Half a day</span></div>
                   <p>Never tried it. A pool, then the sea, no certification, just a first breath underwater.</p>
@@ -435,7 +436,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit exhibit--tall">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">O</span>
-                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="0.06">
+                <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="0.06">
                   <img className="exhibit-img--faces" src="/descent/padi-first-fins.webp" alt="A young student in a small wetsuit standing proudly in the street at Assalah, his father beside him" />
                   <div className="row"><h3>Open Water</h3><span className="spec">3-4 days · 18 m</span></div>
                   <p>The certification. You leave able to dive anywhere in the world.</p>
@@ -451,7 +452,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">A</span>
-                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="-0.08">
+                <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/descent/bluehole-aerial.webp" alt="The Blue Hole of Dahab seen from above, a deep blue circle in the reef shelf" />
                   <div className="row"><h3>Advanced</h3><span className="spec">2 days · 30 m</span></div>
                   <p>Five adventure dives. Opens the deep sites, night diving included.</p>
@@ -467,7 +468,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">R</span>
-                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="0.06">
+                <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="0.06">
                   <img src="/descent/osama-truck.webp" srcSet="/descent/osama-truck-m.webp 800w, /descent/osama-truck.webp 960w" sizes="(max-width: 860px) 92vw, 40vw" alt="Osama on the back of a pickup truck in his wetsuit after a dive, talking to divers" />
                   <div className="row"><h3>Rescue Diver</h3><span className="spec">4 days</span></div>
                   <p>The course that turns you into a buddy worth diving with.</p>
@@ -483,7 +484,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">D</span>
-                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="-0.08">
+                <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/descent/seven-tanks.webp" srcSet="/descent/seven-tanks-m.webp 800w, /descent/seven-tanks.webp 1200w" sizes="(max-width: 860px) 92vw, 40vw" alt="Seven scuba tanks laid out on the sea floor" />
                   <div className="row"><h3>Divemaster</h3><span className="spec">2 weeks to a month</span></div>
                   <p>Several weeks at my side. The first professional step, if you want one.</p>
@@ -499,7 +500,7 @@ export default async function Home() {
               </figure>
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">S</span>
-                <div className="exhibit-card" data-sc-tilt="5" data-sc-parallax="0.06">
+                <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="0.06">
                   <img src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="(max-width: 860px) 92vw, 40vw" alt="A diver silhouetted in open blue water at twelve metres" />
                   <div className="row"><h3>Specialties</h3><span className="spec">Varies by specialty</span></div>
                   <p>Deep, nitrox, night, buoyancy, boat. Picked to fit the reefs you want to dive.</p>
@@ -615,6 +616,7 @@ export default async function Home() {
       <SideRail />
       <RailTravel />
       <RailFocus />
+      <TapRipple />
       <BackToTop />
       <ReturnToPlace />
       <DescentBoot />

@@ -633,12 +633,39 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     box-shadow: 0 1px 0 rgba(255,255,255,0.16) inset, 0 34px 80px -24px rgba(0,0,0,0.75);
   }
   .peak-plate { position: relative; overflow: hidden; aspect-ratio: 3 / 2; }
-  .peak-plate img {
+
+  /* A contact sheet of four prints. Each one holds its scattered position and full
+     colour until its own window opens (--w0 to --w1 of the act), so the sheet reads
+     as four distinct photographs before anything moves. --pt is that window's own
+     0-1 progress, shared by both kinds of print below. */
+  .peak-plate img.peak-photo {
     position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    transform: scale(calc(1.02 + var(--sc-p, 0) * 0.06));
+    z-index: var(--pz, 1);
+    --pt: clamp(0, (var(--sc-p, 0) - var(--w0)) / max(calc(var(--w1) - var(--w0)), 0.001), 1);
   }
-  .peak-plate img.stage { opacity: clamp(0, (var(--sc-p, 0) - var(--from, 0.3)) / 0.09, 1); }
-  .peak-plate img.stage--tall { object-position: center 18%; }
+  .peak-photo--tall { object-position: center 18%; }
+
+  /* Three prints fly off the sheet in their turn: translating and turning away from
+     the centre, along the same line they were already leaning on, holding until
+     past the middle of their own window before they start to fade so the motion
+     reads before the disappearance does. */
+  .peak-photo--fly {
+    transform:
+      translate(calc(var(--x0) + (var(--x1) - var(--x0)) * var(--pt)), calc(var(--y0) + (var(--y1) - var(--y0)) * var(--pt)))
+      rotate(calc(var(--r0) + (var(--r1) - var(--r0)) * var(--pt)))
+      scale(calc(var(--s0) + (var(--s1) - var(--s0)) * var(--pt)));
+    opacity: clamp(0, calc(1 - (var(--pt) - 0.55) / 0.45), 1);
+  }
+
+  /* The fourth print, 2024, never leaves: it un-scatters and grows to fill the
+     whole sheet over most of the act, then keeps a slow, continuing zoom for as
+     long as the sheet stays bare, so the plate is never quite still. */
+  .peak-photo--grow {
+    transform:
+      translate(calc(var(--x0) * (1 - var(--pt))), calc(var(--y0) * (1 - var(--pt))))
+      rotate(calc(var(--r0) * (1 - var(--pt))))
+      scale(calc(var(--s0) + (1 - var(--s0)) * var(--pt) + max(0, calc(var(--sc-p, 0) - var(--w1))) * 0.12));
+  }
   .peak-captions { position: relative; min-height: 3.6rem; margin-top: 1rem; }
   .peak-captions p {
     position: absolute; inset-inline: 0; top: 0; margin: 0;

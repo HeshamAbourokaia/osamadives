@@ -180,10 +180,33 @@ export default async function Home() {
             <div className="peak-frame" data-sc-parallax="0.35">
               <a className="peak-mat" href="/gallery" aria-label="Open the gallery to see every stage">
                 <div className="peak-plate">
-                  <img src="/descent/peak-1987.webp" srcSet="/descent/peak-1987-m.webp 800w, /descent/peak-1987.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="A scratched family photograph from August 1987: four young people arm in arm on the Dahab shore beside an orange Bedouin truck" />
-                  <img className="stage" style={{ "--from": 0.28 } as React.CSSProperties} src="/descent/peak-2012.webp" srcSet="/descent/peak-2012-m.webp 720w, /descent/peak-2012.webp 720w" sizes="(max-width: 860px) 92vw, 78vw" width={720} height={431} alt="Osama in 2012, helping a young boy into a scuba tank almost as big as the boy" />
-                  <img className="stage stage--tall" style={{ "--from": 0.5 } as React.CSSProperties} src="/descent/peak-2021.webp" srcSet="/descent/peak-2021-m.webp 800w, /descent/peak-2021.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={2488} alt="Osama in 2021 holding a certificate beside his instructor Andrzej Kruczkowski" />
-                  <img className="stage" style={{ "--from": 0.72 } as React.CSSProperties} src="/descent/peak-now.webp" srcSet="/descent/peak-now-m.webp 800w, /descent/peak-now.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933} alt="Osama on the same shore in 2024, in his wetsuit before a dive, the sea on his left and the Sinai mountains behind" />
+                  {/* Four prints on a contact sheet. Three fly off in their turn as their own
+                      years pass; 2024, the one Osama is holding a course on today, grows the
+                      whole time and is the only one still there when the sheet is bare. */}
+                  <img
+                    className="peak-photo peak-photo--fly"
+                    style={{ "--pz": 1, "--x0": "-19%", "--y0": "-17%", "--r0": "-7deg", "--s0": 0.52, "--x1": "-150%", "--y1": "-118%", "--r1": "-28deg", "--s1": 0.5, "--w0": 0.015, "--w1": 0.23 } as React.CSSProperties}
+                    src="/descent/peak-1987.webp" srcSet="/descent/peak-1987-m.webp 800w, /descent/peak-1987.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933}
+                    alt="A scratched family photograph from August 1987: four young people arm in arm on the Dahab shore beside an orange Bedouin truck"
+                  />
+                  <img
+                    className="peak-photo peak-photo--fly"
+                    style={{ "--pz": 2, "--x0": "20%", "--y0": "-19%", "--r0": "6deg", "--s0": 0.5, "--x1": "148%", "--y1": "-128%", "--r1": "25deg", "--s1": 0.48, "--w0": 0.28, "--w1": 0.47 } as React.CSSProperties}
+                    src="/descent/peak-2012.webp" srcSet="/descent/peak-2012-m.webp 720w, /descent/peak-2012.webp 720w" sizes="(max-width: 860px) 92vw, 78vw" width={720} height={431}
+                    alt="Osama in 2012, helping a young boy into a scuba tank almost as big as the boy"
+                  />
+                  <img
+                    className="peak-photo peak-photo--fly peak-photo--tall"
+                    style={{ "--pz": 3, "--x0": "-18%", "--y0": "20%", "--r0": "5deg", "--s0": 0.5, "--x1": "-145%", "--y1": "132%", "--r1": "22deg", "--s1": 0.48, "--w0": 0.5, "--w1": 0.69 } as React.CSSProperties}
+                    src="/descent/peak-2021.webp" srcSet="/descent/peak-2021-m.webp 800w, /descent/peak-2021.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={2488}
+                    alt="Osama in 2021 holding a certificate beside his instructor Andrzej Kruczkowski"
+                  />
+                  <img
+                    className="peak-photo peak-photo--grow"
+                    style={{ "--pz": 4, "--x0": "19%", "--y0": "18%", "--r0": "-5deg", "--s0": 0.52, "--w0": 0.7, "--w1": 0.87 } as React.CSSProperties}
+                    src="/descent/peak-now.webp" srcSet="/descent/peak-now-m.webp 800w, /descent/peak-now.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933}
+                    alt="Osama on the same shore in 2024, in his wetsuit before a dive, the sea on his left and the Sinai mountains behind"
+                  />
                 </div>
               </a>
               <div className="peak-captions">

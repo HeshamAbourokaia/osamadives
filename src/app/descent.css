@@ -380,17 +380,18 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
    it is the difference between "a dark page" and "a lit room". */
 .sc-grain { position: fixed; inset: 0; pointer-events: none; z-index: 3; opacity: 0.045; }
 .sc-grain::before {
-  content: ""; position: absolute; inset: -50%;
+  content: ""; position: absolute; inset: -20%;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
-  /* Film grain moves. The sheet is twice the screen, so it can jump by a fifth of
-     itself in any direction and never show an edge; stepped, not eased, so each
-     frame is a fresh grain rather than a drifting one. */
-  animation: grain-jump 0.9s steps(1) infinite;
+  /* Film grain moves: the sheet is a fifth larger than the screen and jumps by up
+     to a tenth of itself, stepped so each frame is a fresh grain. Six jumps a
+     second is enough to read as film without asking the compositor for more. */
+  will-change: transform;
+  animation: grain-jump 1.2s steps(1) infinite;
 }
 @keyframes grain-jump {
-  0% { transform: translate(0, 0); } 12% { transform: translate(-7%, -9%); } 25% { transform: translate(5%, -14%); }
-  37% { transform: translate(-11%, 6%); } 50% { transform: translate(9%, 11%); } 62% { transform: translate(-3%, 14%); }
-  75% { transform: translate(13%, -4%); } 87% { transform: translate(-13%, -12%); } 100% { transform: translate(0, 0); }
+  0% { transform: translate3d(0, 0, 0); } 14% { transform: translate3d(-5%, -7%, 0); } 28% { transform: translate3d(4%, -9%, 0); }
+  42% { transform: translate3d(-8%, 4%, 0); } 57% { transform: translate3d(7%, 8%, 0); } 71% { transform: translate3d(-2%, 9%, 0); }
+  85% { transform: translate3d(9%, -3%, 0); } 100% { transform: translate3d(0, 0, 0); }
 }
 
 /* -------------------------------------------------------- reduced motion -- */
@@ -1509,40 +1510,41 @@ html:not(.sc-ready) .w__i { transform: none; }
 
 /* ------------------------------------------------------------- caustics -- */
 /* Sunlight focused by the surface into a moving web on whatever is below. One
-   seamless tile drawn twice at different sizes, drifting different ways, so the
-   two webs slide over each other and the light seems to breathe. Plain white
-   lines at low opacity, no blend mode: over a scrubbing clip a blend is a cost
-   on a phone, and pale lines on dark water already read as light. */
+   seamless tile on two layers at different sizes, each drifting on a transform
+   only (a composited property: nothing over a scrubbing clip is ever repainted
+   per frame, which is what tore the picture before). The parent holds the mask
+   and the opacity and never changes. */
 .descent .caustics {
-  position: absolute; inset: -8%; z-index: 1; pointer-events: none;
-  background-image: url("/descent/caustic.webp"), url("/descent/caustic.webp");
-  background-size: 640px 640px, 1040px 1040px;
-  background-position: 0 0, 0 0;
+  position: absolute; inset: -8%; z-index: 1; pointer-events: none; overflow: hidden;
   opacity: var(--caustic, 0.3);
-  animation: caustic-drift 46s linear infinite, caustic-breathe 9s ease-in-out infinite alternate;
-  will-change: background-position, transform;
-  /* the light comes from the surface: strongest at the top, gone before the copy */
   mask-image: linear-gradient(to bottom, #000 0, #000 35%, transparent 82%);
   -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 35%, transparent 82%);
 }
-@keyframes caustic-drift {
-  to { background-position: 640px 640px, -1040px 1040px; }
+.descent .caustics::before, .descent .caustics::after {
+  content: ""; position: absolute; inset: -640px -640px 0 0; /* room to travel one tile */
+  background: url("/descent/caustic.webp") 0 0 / 640px 640px repeat;
+  will-change: transform;
+  animation: caustic-a 46s linear infinite;
 }
-@keyframes caustic-breathe {
-  from { transform: scale(1); } to { transform: scale(1.06); }
+.descent .caustics::after {
+  inset: 0 0 -1040px -1040px;
+  background-size: 1040px 1040px;
+  animation: caustic-b 61s linear infinite;
 }
-/* At the entry the light is strongest and only eases as the camera goes under.
-   On the way down it is gone by the blue at twelve metres. */
+@keyframes caustic-a { to { transform: translate3d(640px, 640px, 0); } }
+@keyframes caustic-b { to { transform: translate3d(-1040px, 1040px, 0); } }
 .descent .caustics--entry { --caustic: calc(0.26 - var(--sc-p, 0) * 0.16); }
 .descent .caustics--depth { --caustic: calc(0.3 * (1 - var(--sc-p, 0))); }
 @media (max-width: 860px) {
-  .descent .caustics { background-size: 420px 420px, 700px 700px; }
-  @keyframes caustic-drift { to { background-position: 420px 420px, -700px 700px; } }
+  .descent .caustics::before { inset: -420px -420px 0 0; background-size: 420px 420px; }
+  .descent .caustics::after { inset: 0 0 -700px -700px; background-size: 700px 700px; }
+  @keyframes caustic-a { to { transform: translate3d(420px, 420px, 0); } }
+  @keyframes caustic-b { to { transform: translate3d(-700px, 700px, 0); } }
 }
 @media (prefers-reduced-motion: reduce) {
-  .descent .caustics { animation: none; opacity: calc(var(--caustic, 0.3) * 0.6); }
+  .descent .caustics::before, .descent .caustics::after { animation: none; }
+  .descent .caustics { opacity: calc(var(--caustic, 0.3) * 0.6); }
 }
-
 
 /* ------------------------------------------ the water column and its light -- */
 /* Behind each clip, instead of a flat dark, the column of water: lit near the
@@ -1556,13 +1558,14 @@ html:not(.sc-ready) .w__i { transform: none; }
 .descent .light-band {
   position: absolute; left: -10%; right: -10%; height: 34%; z-index: 1; pointer-events: none;
   background: linear-gradient(180deg, rgba(190, 240, 232, 0) 0%, rgba(190, 240, 232, 0.13) 45%, rgba(190, 240, 232, 0) 100%);
-  will-change: top;
+  will-change: transform;
 }
-.descent .light-band--down { top: calc(-12% + var(--sc-p, 0) * 78%); }
-.descent .light-band--up { top: calc(64% - var(--sc-p, 0) * 78%); }
+/* 78% of the stage is 229% of the band's own height; a transform keeps it off the layout */
+.descent .light-band--down { top: -12%; transform: translate3d(0, calc(var(--sc-p, 0) * 229%), 0); }
+.descent .light-band--up { top: 64%; transform: translate3d(0, calc(var(--sc-p, 0) * -229%), 0); }
 @media (prefers-reduced-motion: reduce) {
   .sc-grain::before { animation: none; }
-  .descent .light-band { top: 10%; }
+  .descent .light-band { transform: none; top: 10%; }
 }
 
 

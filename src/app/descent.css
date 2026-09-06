@@ -1395,3 +1395,32 @@ html:not(.sc-ready) .w__i { transform: none; }
     transform: translate3d(0, calc((var(--od-min) - round(down, calc((var(--od-from) + var(--od-span)) / var(--od-place)), 1)) * 1em), 0) !important;
   }
 }
+
+
+/* --------------------------------------------- the surfacing act's depths -- */
+/* The name is the middle layer: above the sea and its scrims, below the copy.
+   The engine moves it on the wheel (rate 1.2, so roughly 120px of travel over the
+   act against the sea's 22px, and downward, sinking, where the sea drifts up).
+   The fade and the slight shrink are on the inner span so they never fight the
+   engine's own transform on the outer element. */
+.descent .surface-name {
+  position: absolute; inset-inline: 0; top: 10svh; z-index: 2; pointer-events: none;
+  text-align: center; white-space: nowrap;
+  /* 12.2vw keeps the ten letters inside the screen at every width: this face runs
+     about 0.74em per letter, so the word is 7.4em, and 7.4 x 12.2vw is 90vw. */
+  font: 900 clamp(2.8rem, 12.2vw, 11rem)/1 var(--sc-font-display); letter-spacing: -0.025em;
+  color: transparent; -webkit-text-stroke: 2px rgba(63, 209, 190, 0.32);
+  will-change: transform;
+}
+.descent .surface-name span {
+  display: inline-block;
+  opacity: calc(0.95 - var(--sc-p, 0) * 0.8);
+  transform: scale(calc(1.04 - var(--sc-p, 0) * 0.1));
+  transform-origin: 50% 0;
+}
+@media (max-width: 860px) {
+  .descent .surface-name { top: 15svh; -webkit-text-stroke-width: 1.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .descent .surface-name span { transform: none; opacity: 0.4; }
+}

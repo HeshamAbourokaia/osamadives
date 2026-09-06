@@ -540,6 +540,11 @@ export default async function Home() {
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="copy-scrim" aria-hidden="true" />
             <div className="sea-scrim-m" aria-hidden="true" />
+            {/* Three depths. The sea drifts slowly (the poster and clip above carry -0.22).
+                The name sinks faster and fades, the deep being left behind as the camera
+                comes up. The copy and its pill button do not move at all: they are the
+                thing the reader holds on to. */}
+            <div className="surface-name" data-sc-parallax="1.2" aria-hidden="true"><span>OsamaDives</span></div>
             <div className="sc-copy sc-copy--lead surface-copy" data-sc-cue="0.05">
               <h2 className="wl">
                 <span className="wl__above">Come up when you&apos;re ready.</span>

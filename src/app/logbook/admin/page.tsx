@@ -46,7 +46,7 @@ function ago(iso: string | null): string {
 }
 
 // " (card 11, taps on the screen 3)" once scans come from more than one place
-const SOURCE_LABEL: Record<string, string> = { card: "card", tap: "taps on the screen", sticker: "stickers", table: "table cards" };
+const SOURCE_LABEL: Record<string, string> = { card: "card", tap: "taps on the screen", screen: "shown on a screen", sticker: "stickers", table: "table cards" };
 function sourcesNote(bySource: Record<string, number>): string {
   const parts = Object.entries(bySource).sort((a, b) => b[1] - a[1]);
   if (parts.length < 2) return "";

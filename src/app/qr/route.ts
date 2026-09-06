@@ -16,12 +16,20 @@ function sourceOf(url: URL) {
   return (url.searchParams.get("s") || "card").replace(/[^a-z0-9-]/gi, "").slice(0, 24) || "card";
 }
 
+// The card goes to the review form. A code shown on a screen carries ?to=, the page
+// being looked at, so the friend lands on the same page. Only a path on this site.
+function destination(url: URL) {
+  const to = url.searchParams.get("to") || "";
+  return /^\/(?!\/)[a-z0-9\-\/]{0,120}$/i.test(to) ? to : "/review";
+}
+
 function onward(url: URL, source: string) {
-  const to = new URL("/review", url.origin);
+  const path = destination(url);
+  const to = new URL(path, url.origin);
   to.searchParams.set("utm_source", "qr");
   to.searchParams.set("utm_medium", source);
-  to.searchParams.set("utm_campaign", "review");
-  to.hash = "sign";
+  to.searchParams.set("utm_campaign", path === "/review" ? "review" : "share");
+  if (path === "/review") to.hash = "sign";
   return NextResponse.redirect(to, { status: 307, headers: { "cache-control": "no-store" } });
 }
 

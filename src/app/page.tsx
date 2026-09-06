@@ -14,7 +14,6 @@ import RailTravel from "./RailTravel";
 import RailFocus from "./RailFocus";
 import PeakYears from "./PeakYears";
 import Words from "./Words";
-import ShareCode from "./ShareCode";
 import OdometerYear from "./OdometerYear";
 import Contours from "./Contours";
 import TapRipple from "./TapRipple";
@@ -426,7 +425,7 @@ export default async function Home() {
                   <details className="more exhibit-more">
                     <summary>Try diving before you commit</summary>
                     <div className="more__body">
-                      <p>Not sure if diving is for you? The Intro is a simplified demo dive at the Lighthouse, Dahab's authorised location with an easy entry and exit. The water is shallow and confined, but do not let that fool you: fish, marine life and coral are right there. It is the perfect way to see if you love it before committing to the full Open Water course.</p>
+                      <p>Not sure if diving is for you? The Intro is a simplified demo dive at the Lighthouse, Dahab&apos;s authorised location with an easy entry and exit. The water is shallow and confined, but do not let that fool you: fish, marine life and coral are right there. It is the perfect way to see if you love it before committing to the full Open Water course.</p>
                       <dl className="facts"><div><dt>Where</dt><dd>The Lighthouse, Dahab</dd></div><div><dt>How long</dt><dd>Typically half a day</dd></div><div><dt>Level</dt><dd>No experience needed</dd></div></dl>
                       <ul><li>Shallow, safe environment</li><li>Real marine life and coral</li><li>Easy entry and exit</li></ul>
                     </div>
@@ -456,7 +455,7 @@ export default async function Home() {
                   <div className="row"><h3>Advanced</h3><span className="spec">2 days · 30 m</span></div>
                   <p>Five adventure dives. Opens the deep sites, night diving included.</p>
                   <details className="more exhibit-more">
-                    <summary>Unlock the world's best dive sites</summary>
+                    <summary>Unlock the world&apos;s best dive sites</summary>
                     <div className="more__body">
                       <p>The Advanced course is where diving truly opens up. Five dives over two days, including two compulsory dives, Deep Adventure to 30 metres and Underwater Navigation, plus three electives you choose: Boat Diving, Peak Performance Buoyancy, Night Adventure or Fish ID. Navigation is not just a compass; it is learning to read the environment, currents, light, reefs and marine life as your guide, with the compass as backup. This is also where you learn to protect the marine environment.</p>
                       <dl className="facts"><div><dt>Where</dt><dd>Dahab and North Sinai</dd></div><div><dt>How long</dt><dd>2 days, 5 dives</dd></div><div><dt>Level</dt><dd>Open Water certified</dd></div></dl>

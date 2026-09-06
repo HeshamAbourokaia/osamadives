@@ -3,7 +3,6 @@
 import DescentShell from "@/app/DescentShell";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
-import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import {
   galleryPhotos,

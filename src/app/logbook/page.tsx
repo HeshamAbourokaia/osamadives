@@ -1,7 +1,6 @@
 import DescentShell from "@/app/DescentShell";
 import type { Metadata, Viewport } from "next";
 import BackToPlace from "@/components/BackToPlace";
-import Link from "next/link";
 import { storageReady } from "@/lib/logbook/config";
 import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";

@@ -69,7 +69,7 @@ const GENERIC_HEADLINE = "From the Red Sea.";
 /**
  * Extract a clean Apple-style headline from the first line of an IG caption.
  * Strips hashtags, @mentions, URLs. Capitalizes first letter. Ends with punctuation.
- * Returns null if no usable text — caller falls back to GENERIC_HEADLINE.
+ * Returns null if no usable text; the caller falls back to GENERIC_HEADLINE.
  */
 function captionToHeadline(caption: string | undefined | null): string | null {
   if (!caption) return null;

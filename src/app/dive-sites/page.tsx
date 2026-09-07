@@ -4,6 +4,12 @@ import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
 import { diveSites } from "@/lib/dive-sites";
 
+export const metadata = {
+  title: "Dive sites in Dahab, from the shore | Osama, PADI instructor",
+  description: "The Blue Hole, the Canyon, Lighthouse, Eel Garden and Three Pools, described by Osama, a PADI Master Scuba Diver Trainer who grew up on this shore: depths, routes, marine life, the best time to dive.",
+  alternates: { canonical: "https://www.osamadives.com/dive-sites" },
+};
+
 export default function DiveSitesPage() {
   return (
     <DescentShell>

@@ -2,6 +2,7 @@
 import { archivo, plex } from "./fonts";
 import { WHATSAPP } from "@/lib/contact";
 import TailFoot from "./TailFoot";
+import MobileDock from "./MobileDock";
 import InstagramFeed from "@/components/InstagramFeed";
 import FeaturedReel from "@/components/FeaturedReel";
 import DescentBoot from "./DescentBoot";
@@ -88,8 +89,9 @@ export default async function Home() {
             <img className="brand-stage__photo" data-sc-parallax="-0.12" src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="100vw" alt="Osama teaching a diving student in the crystal-clear shallow water of Dahab, Egypt" />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="brand-copy" data-sc-in>
-              <h1>Osama.</h1>
-              <p className="sc-body">PADI Master Scuba Diver Trainer. Fourth family in Dahab, on this shore since 1983. In 2011 I took the family&apos;s hospitality underwater.</p>
+              <h1>Osama<span className="sr-only">, PADI Master Scuba Diver Trainer in Dahab, Egypt</span>.</h1>
+              <p className="sc-body">PADI Master Scuba Diver Trainer. Guided dives and courses from the shore in Dahab, South Sinai. Fourth family here, on this beach since 1983; in 2011 I took the family&apos;s hospitality underwater.</p>
+              <a className="cta brand-cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama on WhatsApp</a>
               <div className="brand-ribbons">
                 <LogbookRibbon variant="hero" />
                 <InstagramRibbon variant="hero" />
@@ -244,16 +246,16 @@ export default async function Home() {
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="depth-copy">
               <div className="depth-cue" data-sc-cue="0.02 0.3 0.08 0.06">
-                <span className="microcopy">7 metres · Om El Seed</span>
-                <h2><Words text="A turtle that does not hurry." at={0.02} /></h2>
+                <span className="microcopy">7 metres · Om El Seed · where he teaches</span>
+                <h2><Words text="His classroom. Every first breath starts here." at={0.02} /></h2>
               </div>
               <div className="depth-cue" data-sc-cue="0.36 0.64 0.06 0.06">
-                <span className="microcopy">8 metres · the edge of the Blue Hole</span>
-                <h2><Words text="The reef shelf, where the Blue Hole begins." at={0.36} /></h2>
+                <span className="microcopy">8 metres · the edge of the Blue Hole · where he guides</span>
+                <h2><Words text="A thousand descents here. He knows its every mood." at={0.36} /></h2>
               </div>
               <div className="depth-cue" data-sc-cue="0.7 1 0.06 0">
-                <span className="microcopy">12 metres · the blue</span>
-                <h2><Words text="Into the blue, within your training, every time." at={0.7} /></h2>
+                <span className="microcopy">12 metres · the blue · how he dives</span>
+                <h2><Words text="He guides. You dive within your training, every time." at={0.7} /></h2>
               </div>
             </div>
             <div className="depth-credit microcopy" data-sc-cue="0.05">Photographs by Osama, on ordinary working days</div>
@@ -606,6 +608,7 @@ export default async function Home() {
         <TailFoot />
       </div>
       <SideRail />
+      <MobileDock />
       <RailTravel />
       <RailFocus />
       <TapRipple />

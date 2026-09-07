@@ -92,6 +92,17 @@ export default function DescentBoot() {
     let stopHud: (() => void) | null = null;
     const boot = () => {
       if (cancelled || !window.ScrollCraft) return;
+      // On a phone a rail that pans on the vertical wheel is a puzzle: you cannot go
+      // back to a card, and the page stops moving while the cards do. There the three
+      // rails become ordinary acts and the cards are swiped sideways, natively.
+      if (matchMedia("(max-width: 860px)").matches) {
+        document.querySelectorAll<HTMLElement>("section:has(.js-rail)").forEach((sec) => {
+          sec.setAttribute("data-sc-act", "flow");
+          sec.removeAttribute("data-sc-span");
+          sec.style.removeProperty("--sc-span");
+          sec.classList.add("rail-swipe");
+        });
+      }
       window.ScrollCraft.mount(document.body);
       stopHud = startHud();
     };

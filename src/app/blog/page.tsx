@@ -1,11 +1,15 @@
-"use client";
-
 import DescentShell from "@/app/DescentShell";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
 import { getAllPosts, formatDate } from "@/lib/blog-posts";
 import FloatingBadge from "@/components/FloatingBadge";
+
+export const metadata = {
+  title: "Diving journal from Dahab | Osama, PADI instructor",
+  description: "Stories from beneath the surface by Osama, a PADI Master Scuba Diver Trainer in Dahab: a thousand dives at the Blue Hole, why he teaches, what the night does to a reef.",
+  alternates: { canonical: "https://www.osamadives.com/blog" },
+};
 
 export default function BlogPage() {
   const posts = getAllPosts();

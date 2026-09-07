@@ -74,6 +74,12 @@ const articleLd = {
   ],
 };
 
+export const metadata = {
+  title: "Featured by ChatGPT as the top freelance dive instructor in Dahab | Osama",
+  description: "In April 2026 ChatGPT recommended Osama as the number one freelance dive instructor in Dahab and cited osamadives.com as its top source. What was asked, and what it answered.",
+  alternates: { canonical: "https://www.osamadives.com/featured/chatgpt" },
+};
+
 export default function FeaturedChatgptPage() {
   return (
     <DescentShell>

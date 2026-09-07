@@ -1709,3 +1709,53 @@ html:not(.sc-ready) .w__i { transform: none; }
   .descent .coast-lead.lead-fixed .cta { padding: 0.6rem 1.1rem; font-size: 0.82rem; width: max-content; }
   .descent .rail-clip .coast-rail .station:first-child, .descent .rail-clip .coast-rail > :first-child { margin-left: 0; }
 }
+
+
+/* ----------------------------------------------------------- the phone -- */
+/* A hero that can be answered at once. */
+.descent .brand-cta { margin: 1.1rem 0 1.2rem; }
+
+/* The guide's ledger was being covered by the next act sliding up over the seam. */
+@media (max-width: 860px) {
+  .descent .guide-stage { padding-bottom: 24svh; }
+  /* the year numeral sat under the gauge */
+  .descent .peak-year { top: 13svh; font-size: clamp(4.4rem, 19vw, 6.6rem); }
+}
+
+/* Rails on a phone: ordinary acts, cards swiped sideways with a snap, the intro above
+   them with a hint, the ruler in the flow underneath. */
+@media (max-width: 860px) {
+  .descent .rail-swipe .rail-stage { height: auto; min-height: 0; position: static; display: grid; gap: 0.9rem; padding: 7.4rem 0 3rem; }
+  .descent .rail-swipe .rail-clip {
+    overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory; scroll-padding-inline: var(--sc-gutter);
+    scrollbar-width: none; mask-image: none; -webkit-mask-image: none;
+  }
+  .descent .rail-swipe .rail-clip::-webkit-scrollbar { display: none; }
+  .descent .rail-swipe .js-rail { transform: none !important; height: auto; }
+  .descent .rail-swipe .js-rail > * { scroll-snap-align: center; }
+  .descent .rail-swipe .coast-lead.lead-fixed::after {
+    content: "Swipe the cards sideways"; display: block; margin-top: 0.4rem;
+    font: 500 0.62rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--reef-glow, #3fd1be);
+  }
+  .descent .rail-swipe .depth-ruler { position: static; margin: 0.4rem var(--sc-gutter) 0; }
+  .descent .rail-swipe .coast-rail > * { opacity: 1; filter: none; }
+}
+
+/* The dock: two pills at the bottom of a phone screen, above the home bar. */
+.descent .dock { display: none; }
+@media (max-width: 860px) {
+  .descent .dock {
+    position: fixed; left: 50%; bottom: calc(0.9rem + env(safe-area-inset-bottom)); transform: translateX(-50%);
+    z-index: 57; display: flex; gap: 0.5rem; padding: 0.35rem; border-radius: 999px;
+    background: rgba(6, 20, 32, 0.78); border: 1px solid rgba(190, 240, 232, 0.28);
+    box-shadow: 0 14px 40px -16px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%);
+  }
+  .descent .dock a {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 1.1rem; border-radius: 999px;
+    font: 700 0.86rem/1 var(--sc-font-display); letter-spacing: 0.01em; text-decoration: none; white-space: nowrap;
+  }
+  .descent .dock__wa { background: var(--reef-glow, #3fd1be); color: #04121a; }
+  .descent .dock__more { color: #edf4f2; border: 1px solid rgba(237, 244, 242, 0.3); }
+}

@@ -7,8 +7,9 @@ import TailFoot from "./TailFoot";
 import TapRipple from "./TapRipple";
 import BackToTop from "@/components/BackToTop";
 import SideRail from "./SideRail";
-import MobileDock from "./MobileDock";
+import MobileTabs from "./MobileTabs";
 import "./descent.css";
+import "./mobile.css";
 import "./inner.css";
 
 /**
@@ -28,7 +29,7 @@ export default function DescentShell({ children }: { children: ReactNode }) {
       </div>
       <div className="tail"><TailFoot /></div>
       <SideRail mode="site" />
-      <MobileDock />
+      <MobileTabs />
       <BackToTop />
       <TapRipple />
     </div>

@@ -1,4 +1,5 @@
 import DescentShell from "@/app/DescentShell";
+import StoryDeck from "@/app/StoryDeck";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
@@ -15,7 +16,7 @@ export default function DiveSitesPage() {
     <DescentShell>
 
       {/* Hero */}
-      <header className="pt-28 pb-12 px-4 bg-gradient-to-b from-[#061420] to-[#0a2a3a]">
+      <header className="only-desktop pt-28 pb-12 px-4 bg-gradient-to-b from-[#061420] to-[#0a2a3a]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h1 className="text-4xl md:text-5xl font-light mb-4">
             Dive Sites in Dahab
@@ -32,7 +33,11 @@ export default function DiveSitesPage() {
       {/* Dive Sites Grid */}
       <main className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    <StoryDeck
+            share="The dive sites"
+            items={diveSites.map((site) => ({ href: `/dive-sites/${site.slug}`, title: site.name, kicker: `${site.depthMin} to ${site.depthMax} m · from the shore`, text: site.description.length > 130 ? site.description.slice(0, 130).replace(/\s+\S*$/, "") + "." : site.description, image: site.featuredImage, alt: site.imageAlt }))}
+          />
+<div className="only-desktop grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {diveSites.map((site) => (
               <article
                 key={site.slug}

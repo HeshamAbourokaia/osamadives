@@ -1,0 +1,159 @@
+/* ===================================================================== phone
+   The phone is the product. These rules are the base for anything under 861px;
+   the desktop keeps every rule it already has in descent.css and inner.css. Type
+   at least 16px for reading text, taps at least 44px with room between them,
+   nothing that needs a hover, movement on transform and opacity only. */
+@media (max-width: 860px) {
+  /* ---- reading text and taps ---- */
+  .descent .sc-body, .descent p.sc-body, .descent .station p, .descent .exhibit-card p, .descent .surface-small,
+  .descent .depth-cue p, .descent .guide-panel p, .descent-inner .inner-body p, .descent .facts dd { font-size: 16px; line-height: 1.55; }
+  .descent .tail-legal { font-size: 14px; line-height: 1.5; }
+  .descent .brand-small { font-size: 14px; }
+  .descent a.brand { min-height: 44px; display: inline-flex; align-items: center; padding: 0 0.4rem; }
+  .descent .skip { min-height: 44px; }
+  .descent .surface-foot a, .descent .guide-ledger a, .descent .ledger a, .descent dd a { display: inline-flex; align-items: center; min-height: 44px; }
+  .descent details.more > summary, .descent details > summary { min-height: 44px; display: flex; align-items: center; }
+  .descent .cta, .descent .cta--quiet { min-height: 46px; display: inline-flex; align-items: center; }
+  .descent .lb-consent input, .descent .lb-consent input[type="checkbox"] { width: 24px; height: 24px; }
+  .descent .lb-consent { min-height: 44px; align-items: center; }
+  .descent .lb-page__video, .descent a.lb-page__video, .descent .lb-watch { min-height: 44px; display: inline-flex; align-items: center; }
+  .descent-inner .inner-body p.text-sm, .descent-inner .inner-body li.text-sm { font-size: 16px; }
+  /* reading text everywhere on a phone, whatever the desk set */
+  .descent .sc-body, .descent .stand, .descent .coast-lead .sc-body, .descent .school-head .sc-body, .descent .orbit-head .sc-body, .descent .orbit-tagline,
+  .descent .surface-copy .sc-body, .descent .entry-copy .stand, .descent .guide-panel li, .descent .guide-panel p, .descent .why .sc-body, .descent .exhibit-card p,
+  .descent .station p, .descent .school-more dd, .descent .facts dd { font-size: 16px !important; line-height: 1.55 !important; }
+  .descent .tail-foot nav { gap: 0.25rem 0.5rem; }
+  .descent .tail-foot nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.6rem; }
+  .descent .peak-year-chip { min-height: 44px; padding: 0 1rem; }
+  .descent .peak-years { gap: 0.5rem; }
+  .descent .lead-link, .descent .sharecode__wa { display: inline-flex; align-items: center; min-height: 44px; }
+  .descent-inner .inner-body button, .descent-inner .inner-body a.rounded-full, .descent-inner .inner-body a[class*="px-"] { min-height: 44px; }
+  .descent .guide-ledger a, .descent .guide-panel a { display: inline-block; padding: 0.4rem 0; }
+  .descent .exhibit-more summary, .descent .guide-more summary { min-height: 44px; display: flex; align-items: center; }
+
+  /* ---- the tab bar owns the foot of the screen ---- */
+  .descent { padding-bottom: calc(4.4rem + env(safe-area-inset-bottom)); }
+  .descent .backtotop, .descent button[aria-label="Back to top"] { display: none !important; }
+  .descent .surface-foot { bottom: 5.6rem; }
+  .descent .surface-copy { bottom: 10.6rem !important; }
+  .descent .depth-copy { bottom: 6.4rem; }
+  .descent .entry-copy { bottom: 6.2rem !important; }
+  /* one action per screen: the tab bar carries Message, so the copy does not repeat it */
+  .descent .entry-copy .cta, .descent .surface-copy .cta { display: none; }
+  /* the year numeral sits under the gauge, measured from the top, not the viewport */
+  .descent .peak-year { top: 8.6rem; }
+
+  /* ---- the hero: one image, one sentence, one action ---- */
+  .descent .brand-ribbons, .descent .brand-small { display: none; }
+  .descent .brand-copy { bottom: 6.4rem; padding-bottom: 0; }
+  .descent .brand-copy h1 { font-size: clamp(3rem, 15vw, 4.4rem); }
+  .descent .brand-copy .sc-body { font-size: 17px; max-width: 30ch; }
+  .descent .brand-cta { display: inline-flex; align-items: center; min-height: 52px; padding: 0 1.5rem; font-size: 1.02rem; margin: 1rem 0 0.9rem; }
+  .descent .brand-start { display: inline-flex; align-items: center; min-height: 44px; gap: 0.5rem; color: rgba(237,244,242,0.85); text-decoration: none; font: 600 0.8rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
+  .descent .brand-start i { width: 8px; height: 8px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); animation: start-nudge 1.6s ease-in-out infinite; }
+  @keyframes start-nudge { 0%, 100% { transform: rotate(45deg) translateY(-2px); } 50% { transform: rotate(45deg) translateY(2px); } }
+
+  /* ---- tab bar ---- */
+  .tabbar {
+    position: fixed; inset-inline: 0; bottom: 0; z-index: 57;
+    display: grid; grid-template-columns: 1fr 1fr 1.25fr 1fr 1fr; align-items: end;
+    padding: 0.35rem 0.4rem calc(0.45rem + env(safe-area-inset-bottom));
+    background: rgba(6, 20, 32, 0.86); border-top: 1px solid rgba(190, 240, 232, 0.16);
+    backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%);
+  }
+  .tabbar__tab { display: grid; justify-items: center; gap: 0.25rem; min-height: 48px; padding-top: 0.3rem; color: rgba(237, 244, 242, 0.62); text-decoration: none; font: 600 0.62rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
+  .tabbar__tab svg { width: 22px; height: 22px; fill: currentColor; }
+  .tabbar__tab.is-active { color: #3fd1be; }
+  .tabbar__wa {
+    justify-self: center; display: grid; justify-items: center; gap: 0.25rem; text-decoration: none;
+    color: #04121a; font: 700 0.62rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase;
+    transform: translateY(-10px);
+  }
+  .tabbar__wa svg { width: 60px; height: 60px; padding: 15px; border-radius: 50%; background: #3fd1be; fill: #04121a; box-shadow: 0 10px 28px -10px rgba(63, 209, 190, 0.9), inset 0 1px 0 rgba(255,255,255,0.5); }
+  .tabbar__wa span { color: #3fd1be; }
+
+  /* ---- the shore, flat, in the drawer ---- */
+  .shore { position: relative; width: 100%; margin: 3.6rem 0 1.2rem; }
+  .descent .navsheet .shore__stop { font: 600 0.5rem/1 var(--mono) !important; letter-spacing: 0.1em !important; text-transform: uppercase; padding: 0; border: 0; min-height: 44px; width: 44px; }
+  .shore__coast { display: block; width: 100%; height: 48px; overflow: visible; }
+  .shore__drawn { filter: drop-shadow(0 0 3px rgba(63,209,190,0.8)); }
+  .shore__stops { position: relative; height: 3.6rem; }
+  .shore__stop { position: absolute; top: -34px; transform: translateX(-50%); width: 44px; min-height: 44px; display: grid; justify-items: center; gap: 0.35rem; text-decoration: none; color: rgba(237,244,242,0.6); font: 600 0.5rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+  .shore__stop i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(63,209,190,0.9); background: rgba(6,20,32,0.8); }
+  .shore__stop.is-reached i { background: rgba(63,209,190,0.55); }
+  .shore__stop.is-active i { background: #3fd1be; box-shadow: 0 0 0 4px rgba(63,209,190,0.22), 0 0 12px rgba(63,209,190,0.8); }
+  .shore__stop.is-active { color: #3fd1be; }
+  .descent .navsheet nav a { min-height: 48px; }
+
+  /* ---- decks: the pattern used by stories, sites and reviews ---- */
+  .deck { display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 0.75rem; padding: 0 var(--sc-gutter, 1.25rem); scroll-padding-inline: var(--sc-gutter, 1.25rem); }
+  .deck::-webkit-scrollbar { display: none; }
+  .deck > * { flex: 0 0 86vw; scroll-snap-align: center; }
+  .deck__dots { display: flex; justify-content: center; gap: 6px; padding: 0.6rem 0 0; }
+  .deck__dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(63,209,190,0.3); transition: transform 200ms, background 200ms; }
+  .deck__dots i.is-on { background: #3fd1be; transform: scale(1.3); }
+
+  /* stories: full-screen cards */
+  /* the deck is the first screen: it climbs under the transparent top bar */
+  .story-deck { position: relative; height: calc(100svh - 4.4rem - env(safe-area-inset-bottom)); margin-top: -7.4rem; }
+  .story-deck .deck { height: 100%; gap: 0; padding: 0; scroll-padding-inline: 0; }
+  .story-deck .deck > * { flex: 0 0 100%; scroll-snap-align: start; }
+  .story { position: relative; height: 100%; overflow: hidden; background: #061420; color: #edf4f2; }
+  .story__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .story__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(4,14,20,0.94) 0%, rgba(4,14,20,0.6) 38%, rgba(4,14,20,0.05) 62%, rgba(4,14,20,0.35) 100%); }
+  .story__copy { position: absolute; left: var(--sc-gutter, 1.25rem); right: var(--sc-gutter, 1.25rem); bottom: 1.4rem; display: grid; gap: 0.6rem; }
+  .story__kicker { font: 600 0.62rem/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: #3fd1be; }
+  .story__title { font: 800 clamp(1.8rem, 8vw, 2.4rem)/1.02 var(--sc-font-display); letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+  .story__text { margin: 0; font-size: 16px; line-height: 1.5; color: rgba(237,244,242,0.86); max-width: 34ch; }
+  .story__row { display: flex; gap: 0.6rem; align-items: center; margin-top: 0.4rem; }
+  .story__open { display: inline-flex; align-items: center; min-height: 48px; padding: 0 1.4rem; border-radius: 999px; background: #3fd1be; color: #04121a; font: 700 0.95rem/1 var(--sc-font-display); text-decoration: none; }
+  .story__share { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(237,244,242,0.35); color: #edf4f2; text-decoration: none; }
+  .story__share svg { width: 20px; height: 20px; fill: currentColor; }
+  .story-deck__bar { position: absolute; top: 4.9rem; left: var(--sc-gutter, 1.25rem); right: var(--sc-gutter, 1.25rem); display: flex; gap: 4px; z-index: 2; }
+  .story-deck__bar i { flex: 1; height: 3px; border-radius: 2px; background: rgba(237,244,242,0.28); overflow: hidden; }
+  .story-deck__bar i.is-on { background: #3fd1be; }
+  .story-deck__bar i.is-done { background: rgba(63,209,190,0.6); }
+  .story-deck__tap { position: absolute; top: 0; bottom: 30%; width: 30%; z-index: 1; background: transparent; border: 0; padding: 0; }
+  .story-deck__tap--prev { left: 0; } .story-deck__tap--next { right: 0; }
+  .story-deck__hint { position: absolute; top: 6.2rem; right: var(--sc-gutter, 1.25rem); z-index: 2; font: 600 0.58rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(237,244,242,0.7); }
+  .only-desktop { display: none !important; }
+
+  /* reviews as a deck */
+  .review-deck .deck > * { flex-basis: 84vw; }
+  .review-deck__card { display: block; }
+  .review-deck__link { display: block; color: inherit; text-decoration: none; }
+  .review-deck .book__caption { text-align: center; margin: 0.6rem 0 0; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(23,18,8,0.6); }
+  .review-deck .lb-page { min-height: 0; }
+
+  /* the tail of a story */
+  .story-tail { display: grid; gap: 0.8rem; margin: 2rem var(--sc-gutter, 1.25rem) 0; }
+  .story-tail__share { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 48px; padding: 0 1.2rem; border-radius: 999px; border: 1px solid rgba(10,125,112,0.4); color: #075f55; text-decoration: none; font: 700 0.95rem/1 var(--sc-font-display); width: max-content; }
+  .story-tail__nudge { padding: 1rem 1.1rem; border-radius: 12px; background: rgba(10,125,112,0.08); border: 1px solid rgba(10,125,112,0.2); }
+  .story-tail__nudge p { margin: 0 0 0.6rem; font-size: 16px; }
+  .story-tail__nudge a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 1.1rem; border-radius: 999px; background: #0a7d70; color: #fff; text-decoration: none; font: 700 0.9rem/1 var(--sc-font-display); }
+
+  /* the gallery: edge to edge, and a viewer you swipe */
+  .descent-inner .gallery-grid { column-count: 2 !important; column-gap: 3px !important; margin: 0 calc(-1 * var(--sc-gutter, 1.25rem)) !important; }
+  .descent-inner .gallery-grid > div { margin-bottom: 3px !important; }
+  .descent-inner .gallery-grid > div > div { border-radius: 0 !important; }
+  .viewer { position: fixed; inset: 0; z-index: 70; background: #000; display: grid; grid-template-rows: 1fr auto; }
+  .viewer__strip { display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; height: 100%; }
+  .viewer__strip::-webkit-scrollbar { display: none; }
+  .viewer__strip > figure { flex: 0 0 100%; margin: 0; scroll-snap-align: center; display: grid; place-items: center; overflow: auto; touch-action: pan-x pan-y pinch-zoom; }
+  .viewer__strip img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .viewer__foot { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.6rem; padding: 0.6rem var(--sc-gutter, 1.25rem) calc(0.8rem + env(safe-area-inset-bottom)); color: #edf4f2; }
+  .viewer__caption { margin: 0; font-size: 14px; color: rgba(237,244,242,0.8); }
+  .viewer__close { min-height: 48px; padding: 0 1.3rem; border-radius: 999px; border: 1px solid rgba(237,244,242,0.4); background: rgba(6,20,32,0.7); color: #edf4f2; font: 700 0.95rem/1 var(--sc-font-display); }
+}
+@media (min-width: 861px) {
+  .tabbar, .shore, .only-mobile { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .descent .brand-start i { animation: none; }
+  .deck, .viewer__strip { scroll-behavior: auto; }
+}
+@media (max-width: 860px) {
+  /* the last small taps: links inside the reviews, the ledger and the feed */
+  .descent .lb-page a, .descent .review-deck a, .descent .lb a.lb-mono, .descent .tail a.inline-flex, .descent-inner .inner-body a.inline-flex, .descent .guide-panel dd a { display: inline-flex; align-items: center; min-height: 44px; }
+  .descent .guide-panel li, .descent .school-note, .descent .school-more dd, .descent .lb-stand, .descent .lb-page__note { font-size: 16px; line-height: 1.55; }
+}

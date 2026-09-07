@@ -1,4 +1,5 @@
 import DescentShell from "@/app/DescentShell";
+import StoryTail from "@/app/StoryTail";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
@@ -224,6 +225,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           </div>
         </article>
 
+        <StoryTail title={post.title} url={`https://www.osamadives.com/blog/${post.slug}`} />
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
           <section className="max-w-6xl mx-auto mt-16 pt-12 border-t border-gray-200">

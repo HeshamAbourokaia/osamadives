@@ -2,7 +2,7 @@
 import { archivo, plex } from "./fonts";
 import { WHATSAPP } from "@/lib/contact";
 import TailFoot from "./TailFoot";
-import MobileDock from "./MobileDock";
+import MobileTabs from "./MobileTabs";
 import InstagramFeed from "@/components/InstagramFeed";
 import FeaturedReel from "@/components/FeaturedReel";
 import DescentBoot from "./DescentBoot";
@@ -30,6 +30,7 @@ import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import { buildOrbitItems } from "@/lib/orbit-content";
 import "./descent.css";
+import "./mobile.css";
 
 
 // The homepage regenerates every minute, and instantly when a logbook page is approved.
@@ -90,8 +91,10 @@ export default async function Home() {
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="brand-copy" data-sc-in>
               <h1>Osama<span className="sr-only">, PADI Master Scuba Diver Trainer in Dahab, Egypt</span>.</h1>
-              <p className="sc-body">PADI Master Scuba Diver Trainer. Guided dives and courses from the shore in Dahab, South Sinai. Fourth family here, on this beach since 1983; in 2011 I took the family&apos;s hospitality underwater.</p>
+              <p className="sc-body only-desktop">PADI Master Scuba Diver Trainer. Guided dives and courses from the shore in Dahab, South Sinai. Fourth family here, on this beach since 1983; in 2011 I took the family&apos;s hospitality underwater.</p>
+              <p className="sc-body only-mobile">I am a PADI Master Scuba Diver Trainer. I take you into the Red Sea from the beach in Dahab, the water I grew up in.</p>
               <a className="cta brand-cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama on WhatsApp</a>
+              <a className="brand-start only-mobile" href="#guide-act">Start here <i aria-hidden="true" /></a>
               <div className="brand-ribbons">
                 <LogbookRibbon variant="hero" />
                 <InstagramRibbon variant="hero" />
@@ -608,7 +611,7 @@ export default async function Home() {
         <TailFoot />
       </div>
       <SideRail />
-      <MobileDock />
+      <MobileTabs />
       <RailTravel />
       <RailFocus />
       <TapRipple />

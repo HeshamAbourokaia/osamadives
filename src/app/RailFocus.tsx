@@ -71,11 +71,12 @@ export default function RailFocus() {
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
     measure();
-    window.addEventListener("scroll", schedule, { passive: true });
+    // capture: a swiped rail scrolls itself, and that scroll never reaches window
+    document.addEventListener("scroll", schedule, { passive: true, capture: true });
     window.addEventListener("resize", schedule);
     const t = window.setTimeout(measure, 900); // after fonts and images settle
     return () => {
-      window.removeEventListener("scroll", schedule);
+      document.removeEventListener("scroll", schedule, { capture: true } as EventListenerOptions);
       window.removeEventListener("resize", schedule);
       if (frame) cancelAnimationFrame(frame);
       clearTimeout(t);

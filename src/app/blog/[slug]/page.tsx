@@ -1,16 +1,13 @@
-"use client";
-
 import DescentShell from "@/app/DescentShell";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import {
   getPostBySlug,
   getAllPosts,
   formatDate,
-  type BlogPost,
 } from "@/lib/blog-posts";
 import FloatingBadge from "@/components/FloatingBadge";
 
@@ -74,56 +71,29 @@ function renderContent(content: string) {
   return elements;
 }
 
-export default function BlogPostPage() {
-  const params = useParams();
-  const slug = params?.slug as string;
+export function generateStaticParams() {
+  return getAllPosts().map((p) => ({ slug: p.slug }));
+}
 
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
-  const [notFound, setNotFound] = useState(false);
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const post = getPostBySlug(params.slug);
+  if (!post) return { title: "Story not found | OsamaDives" };
+  const title = `${post.title} | Osama's diving journal, Dahab`;
+  return {
+    title,
+    description: post.excerpt,
+    alternates: { canonical: `https://www.osamadives.com/blog/${post.slug}` },
+    openGraph: { type: "article", title, description: post.excerpt, url: `https://www.osamadives.com/blog/${post.slug}`, publishedTime: post.date },
+  };
+}
 
-  useEffect(() => {
-    if (slug) {
-      const foundPost = getPostBySlug(slug);
-      if (foundPost) {
-        setPost(foundPost);
-        // Get related posts (other posts, excluding current)
-        const allPosts = getAllPosts();
-        setRelatedPosts(allPosts.filter((p) => p.slug !== slug).slice(0, 2));
-      } else {
-        setNotFound(true);
-      }
-    }
-  }, [slug]);
-
-  if (notFound) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center px-4">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Story Not Found
-          </h1>
-          <p className="text-gray-600 mb-8">
-            This story may have drifted away with the current.
-          </p>
-          <Link
-            href="/blog"
-            className="inline-block bg-[#0a7d70] hover:bg-[#075f55] text-white font-bold py-3 px-6 rounded-full transition"
-          >
-            Back to Journal
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (!post) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-pulse text-gray-500">Loading...</div>
-      </div>
-    );
-  }
+// Rendered on the server: the whole story is in the page a search engine reads, not
+// loaded afterwards in the browser, which left it nearly empty to a crawler.
+export default function BlogPostPage({ params }: { params: { slug: string } }) {
+  const slug = params.slug;
+  const post = getPostBySlug(slug);
+  if (!post) notFound();
+  const relatedPosts = getAllPosts().filter((p) => p.slug !== slug).slice(0, 2);
 
   return (
     <DescentShell>

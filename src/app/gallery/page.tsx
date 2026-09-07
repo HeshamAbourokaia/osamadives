@@ -21,6 +21,7 @@ import {
 } from "@/lib/facebook-content";
 import FacebookGalleryItem from "@/components/FacebookGalleryItem";
 import StoriesLightbox from "@/components/StoriesLightbox";
+import SwipeViewer from "@/components/SwipeViewer";
 import FloatingBadge from "@/components/FloatingBadge";
 
 // Tab options for the gallery
@@ -153,8 +154,11 @@ export default function GalleryPage() {
   const videoStories = getVideoStories();
 
   // Lightbox navigation
+  const [viewerOpen, setViewerOpen] = useState(false);
   const openLightbox = (index: number) => {
     setCurrentPhotoIndex(index);
+    // on a phone the viewer is a swiped strip with a pinch to zoom, not the lightbox
+    if (window.matchMedia("(max-width: 860px)").matches) { setViewerOpen(true); return; }
     setLightboxOpen(true);
     document.body.style.overflow = "hidden";
   };
@@ -388,7 +392,7 @@ export default function GalleryPage() {
           </div>
 
           {/* Masonry Grid */}
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
+          <div className="gallery-grid columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
             {filteredPhotos.map((photo, index) => (
               <GalleryItem
                 key={photo.id}
@@ -565,6 +569,9 @@ export default function GalleryPage() {
       </main>
 
       {/* Lightbox */}
+      {viewerOpen && (
+        <SwipeViewer photos={filteredPhotos} index={currentPhotoIndex} onClose={() => setViewerOpen(false)} />
+      )}
       {lightboxOpen && currentPhoto && (
         <div
           className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"

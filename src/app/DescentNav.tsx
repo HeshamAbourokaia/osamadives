@@ -1,6 +1,7 @@
 "use client";
 
 import ShareCode from "./ShareCode";
+import ShoreStrip from "./ShoreStrip";
 import { useEffect, useState } from "react";
 
 const LINKS = [
@@ -52,9 +53,12 @@ export default function DescentNav({ whatsapp }: Props) {
       </button>
       {open ? (
         <div className="navsheet" id="navsheet" role="dialog" aria-modal="true" aria-label="Menu" onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}>
+          <ShoreStrip onPick={() => setOpen(false)} />
           <nav aria-label="Site, on a phone">
             <a href="/" onClick={() => setOpen(false)}>Home</a>
             {LINKS.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>)}
+            <a href="/review#sign" onClick={() => setOpen(false)}>Write me a review</a>
+            <a href="https://instagram.com/osama_mohamed_hassan" target="_blank" rel="noopener noreferrer">Latest dives on Instagram</a>
             <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="navsheet__wa">Message Osama on WhatsApp</a>
           </nav>
           <ShareCode caption="Point a camera at this and the same page opens on their phone." />

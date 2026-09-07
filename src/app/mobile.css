@@ -141,9 +141,19 @@
   .viewer__strip::-webkit-scrollbar { display: none; }
   .viewer__strip > figure { flex: 0 0 100%; margin: 0; scroll-snap-align: center; display: grid; place-items: center; overflow: auto; touch-action: pan-x pan-y pinch-zoom; }
   .viewer__strip img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .viewer__foot { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.6rem; padding: 0.6rem var(--sc-gutter, 1.25rem) calc(0.8rem + env(safe-area-inset-bottom)); color: #edf4f2; }
-  .viewer__caption { margin: 0; font-size: 14px; color: rgba(237,244,242,0.8); }
-  .viewer__close { min-height: 48px; padding: 0 1.3rem; border-radius: 999px; border: 1px solid rgba(237,244,242,0.4); background: rgba(6,20,32,0.7); color: #edf4f2; font: 700 0.95rem/1 var(--sc-font-display); }
+  .viewer__foot { display: grid; gap: 0.7rem; padding: 0.7rem var(--sc-gutter, 1.25rem) calc(0.8rem + env(safe-area-inset-bottom)); color: #edf4f2; max-height: 42svh; overflow: auto; }
+  .viewer__words { display: grid; gap: 0.25rem; }
+  .viewer__title { font: 700 1rem/1.2 var(--sc-font-display); }
+  .viewer__caption { margin: 0; font-size: 16px; line-height: 1.5; color: rgba(237,244,242,0.84); }
+  .viewer__actions { display: flex; gap: 0.6rem; }
+  .viewer__share, .viewer__close { display: inline-flex; align-items: center; min-height: 48px; padding: 0 1.3rem; border-radius: 999px; font: 700 0.95rem/1 var(--sc-font-display); text-decoration: none; }
+  .viewer__share { background: #3fd1be; color: #04121a; }
+  .viewer__close { border: 1px solid rgba(237,244,242,0.4); background: rgba(6,20,32,0.7); color: #edf4f2; }
+  /* the floating stamp badge sat over the bottom left of every inner page and took
+     the taps meant for the photos and the tab bar; the tab bar carries its job now */
+  .descent-inner a[aria-label^="OsamaDives - Dahab"] { display: none !important; }
+  /* inline links in prose get a taller hit area without leaving the line */
+  .descent-inner .inner-body p a, .descent .guide-panel dd a, .descent .guide-panel p a { padding-block: 0.6rem; }
 }
 @media (min-width: 861px) {
   .tabbar, .shore, .only-mobile { display: none !important; }

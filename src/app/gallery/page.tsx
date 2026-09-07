@@ -187,10 +187,13 @@ export default function GalleryPage() {
       const index = list.findIndex((p) => p.id === post.id);
       setStoriesList(list);
       setCurrentStoryIndex(index >= 0 ? index : 0);
+      // on a phone a photo story opens in the swiped viewer; a video keeps the lightbox that plays it
+      if (post.type !== "video" && window.matchMedia("(max-width: 860px)").matches) { setStoriesViewerOpen(true); return; }
       setStoriesLightboxOpen(true);
     },
     [allStories]
   );
+  const [storiesViewerOpen, setStoriesViewerOpen] = useState(false);
 
   const closeStoriesLightbox = useCallback(() => {
     setStoriesLightboxOpen(false);
@@ -571,6 +574,13 @@ export default function GalleryPage() {
       {/* Lightbox */}
       {viewerOpen && (
         <SwipeViewer photos={filteredPhotos} index={currentPhotoIndex} onClose={() => setViewerOpen(false)} />
+      )}
+      {storiesViewerOpen && (
+        <SwipeViewer
+          photos={storiesList.map((post) => ({ src: post.thumbnail, alt: post.title, title: post.title, description: post.caption, date: post.date, location: post.location?.name }))}
+          index={currentStoryIndex}
+          onClose={() => setStoriesViewerOpen(false)}
+        />
       )}
       {lightboxOpen && currentPhoto && (
         <div

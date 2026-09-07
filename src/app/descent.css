@@ -1310,11 +1310,12 @@ html:not(.sc-ready) .w__i { transform: none; }
 /* The sea comes into focus: the first headline starts soft and large, like a mask
    clearing, and is sharp within the first fifth of the act. */
 .descent .entry-copy h2.focus-in {
-  --focus: clamp(0, (var(--sc-p, 1) - 0.01) / 0.17, 1);
-  filter: blur(calc((1 - var(--focus)) * 14px));
-  transform: scale(calc(1.06 - var(--focus) * 0.06));
+  --focus: clamp(0, (var(--sc-p, 0) - 0.01) / 0.14, 1);
+  /* readable from the first pixel: a soft edge that sharpens, never a hidden line */
+  filter: blur(calc((1 - var(--focus)) * 3px));
+  transform: scale(calc(1.03 - var(--focus) * 0.03));
   transform-origin: 0 100%;
-  opacity: calc(0.3 + var(--focus) * 0.7);
+  opacity: calc(0.82 + var(--focus) * 0.18);
   will-change: filter, transform, opacity;
 }
 
@@ -1758,4 +1759,29 @@ html:not(.sc-ready) .w__i { transform: none; }
   }
   .descent .dock__wa { background: var(--reef-glow, #3fd1be); color: #04121a; }
   .descent .dock__more { color: #edf4f2; border: 1px solid rgba(237, 244, 242, 0.3); }
+}
+
+
+/* ------------------------------------------------ the phone, second pass -- */
+@media (max-width: 860px) {
+  /* The dive computer was a large pill covering the top right of every screen: the
+     last digits of the year, the top of the guide's quote. It is a single line now. */
+  .descent .hud { top: 4.9rem !important; right: 0.7rem; padding: 0.38rem 0.6rem; gap: 0.15rem; border-radius: 10px; }
+  .descent .hud__depth { font-size: 0.95rem; }
+  .descent .hud__label { font-size: 0.48rem; letter-spacing: 0.14em; }
+  .descent .hud__track { height: 1.5px; }
+  /* the year sits below the gauge, not under it */
+  .descent .peak-year { top: 17svh; font-size: clamp(4rem, 17vw, 6rem); }
+  /* the guide's panel starts below the gauge too */
+  .descent .guide-stage { padding-top: 9.5rem; }
+  /* the hero's last line was under the dock */
+  .descent .brand-copy { padding-bottom: 5.2rem; }
+}
+@media (max-width: 860px) {
+  /* The dock sits at the foot of the screen, so nothing else may: the copy of the
+     clip acts and the surfacing act's foot line move up above it. */
+  .descent .entry-copy { bottom: 8.2rem !important; }
+  .descent .surface-foot { bottom: 6.4rem; }
+  .descent .surface-copy { bottom: 11.6rem !important; padding-bottom: 0; }
+  .descent .depth-copy { bottom: 7rem; }
 }

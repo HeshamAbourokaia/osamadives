@@ -32,7 +32,7 @@
   .descent .exhibit-more summary, .descent .guide-more summary { min-height: 44px; display: flex; align-items: center; }
 
   /* ---- the tab bar owns the foot of the screen ---- */
-  .descent { padding-bottom: calc(4.4rem + env(safe-area-inset-bottom)); }
+  .descent { padding-bottom: calc(5.2rem + env(safe-area-inset-bottom)); }
   .descent .backtotop, .descent button[aria-label="Back to top"] { display: none !important; }
   .descent .surface-foot { bottom: 5.6rem; }
   .descent .surface-copy { bottom: 10.6rem !important; }
@@ -53,24 +53,39 @@
   .descent .brand-start i { width: 8px; height: 8px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); animation: start-nudge 1.6s ease-in-out infinite; }
   @keyframes start-nudge { 0%, 100% { transform: rotate(45deg) translateY(-2px); } 50% { transform: rotate(45deg) translateY(2px); } }
 
-  /* ---- tab bar ---- */
+  /* ---- tab bar: a floating capsule, not a slab ----
+     It sits clear of the very bottom edge, because some phone browsers keep their
+     own toolbar down there and it was covering the labels. Only the tab you are on
+     shows its word, so five destinations fit without shouting. */
   .tabbar {
-    position: fixed; inset-inline: 0; bottom: 0; z-index: 57;
-    display: grid; grid-template-columns: 1fr 1fr 1.25fr 1fr 1fr; align-items: end;
-    padding: 0.35rem 0.4rem calc(0.45rem + env(safe-area-inset-bottom));
-    background: rgba(6, 20, 32, 0.86); border-top: 1px solid rgba(190, 240, 232, 0.16);
-    backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%);
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(0.85rem + env(safe-area-inset-bottom)); z-index: 57;
+    width: calc(100% - 1.6rem); max-width: 27rem;
+    display: flex; align-items: center; gap: 0.2rem; padding: 0.35rem;
+    border-radius: 999px;
+    background: rgba(6, 20, 32, 0.74); border: 1px solid rgba(190, 240, 232, 0.18);
+    box-shadow: 0 16px 36px -16px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
   }
-  .tabbar__tab { display: grid; justify-items: center; gap: 0.25rem; min-height: 48px; padding-top: 0.3rem; color: rgba(237, 244, 242, 0.62); text-decoration: none; font: 600 0.62rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
-  .tabbar__tab svg { width: 22px; height: 22px; fill: currentColor; }
-  .tabbar__tab.is-active { color: #3fd1be; }
+  .tabbar__tab {
+    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    min-height: 46px; padding: 0 0.4rem; border-radius: 999px;
+    color: rgba(237, 244, 242, 0.66); text-decoration: none;
+    font: 700 0.64rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
+    transition: flex-grow 220ms ease, background-color 220ms ease, color 220ms ease;
+  }
+  .tabbar__tab svg { width: 21px; height: 21px; fill: currentColor; flex: none; }
+  .tabbar__tab span { display: none; }
+  .tabbar__tab.is-active { flex-grow: 2.1; color: #3fd1be; background: rgba(63, 209, 190, 0.16); }
+  .tabbar__tab.is-active span { display: inline; }
   .tabbar__wa {
-    justify-self: center; display: grid; justify-items: center; gap: 0.25rem; text-decoration: none;
-    color: #04121a; font: 700 0.62rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase;
-    transform: translateY(-10px);
+    flex: none; display: inline-flex; align-items: center; justify-content: center;
+    width: 50px; height: 50px; margin: 0 0.15rem; border-radius: 50%;
+    background: #3fd1be; color: #04121a; text-decoration: none;
+    box-shadow: 0 8px 20px -8px rgba(63, 209, 190, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.45);
   }
-  .tabbar__wa svg { width: 60px; height: 60px; padding: 15px; border-radius: 50%; background: #3fd1be; fill: #04121a; box-shadow: 0 10px 28px -10px rgba(63, 209, 190, 0.9), inset 0 1px 0 rgba(255,255,255,0.5); }
-  .tabbar__wa span { color: #3fd1be; }
+  .tabbar__wa svg { width: 26px; height: 26px; fill: #04121a; }
+  .tabbar__wa span { display: none; }
 
   /* ---- the shore, flat, in the drawer ---- */
   .shore { position: relative; width: 100%; margin: 3.6rem 0 1.2rem; }
@@ -93,29 +108,32 @@
   .deck__dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(63,209,190,0.3); transition: transform 200ms, background 200ms; }
   .deck__dots i.is-on { background: #3fd1be; transform: scale(1.3); }
 
-  /* stories: full-screen cards */
-  /* the deck is the first screen: it climbs under the transparent top bar */
-  .story-deck { position: relative; height: calc(100svh - 4.4rem - env(safe-area-inset-bottom)); margin-top: -7.4rem; }
-  .story-deck .deck { height: 100%; gap: 0; padding: 0; scroll-padding-inline: 0; }
-  .story-deck .deck > * { flex: 0 0 100%; scroll-snap-align: start; }
-  .story { position: relative; height: 100%; overflow: hidden; background: #061420; color: #edf4f2; }
-  .story__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .story__scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(4,14,20,0.94) 0%, rgba(4,14,20,0.6) 38%, rgba(4,14,20,0.05) 62%, rgba(4,14,20,0.35) 100%); }
-  .story__copy { position: absolute; left: var(--sc-gutter, 1.25rem); right: var(--sc-gutter, 1.25rem); bottom: 1.4rem; display: grid; gap: 0.6rem; }
-  .story__kicker { font: 600 0.62rem/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: #3fd1be; }
-  .story__title { font: 800 clamp(1.8rem, 8vw, 2.4rem)/1.02 var(--sc-font-display); letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
-  .story__text { margin: 0; font-size: 16px; line-height: 1.5; color: rgba(237,244,242,0.86); max-width: 34ch; }
-  .story__row { display: flex; gap: 0.6rem; align-items: center; margin-top: 0.4rem; }
-  .story__open { display: inline-flex; align-items: center; min-height: 48px; padding: 0 1.4rem; border-radius: 999px; background: #3fd1be; color: #04121a; font: 700 0.95rem/1 var(--sc-font-display); text-decoration: none; }
-  .story__share { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(237,244,242,0.35); color: #edf4f2; text-decoration: none; }
-  .story__share svg { width: 20px; height: 20px; fill: currentColor; }
-  .story-deck__bar { position: absolute; top: 4.9rem; left: var(--sc-gutter, 1.25rem); right: var(--sc-gutter, 1.25rem); display: flex; gap: 4px; z-index: 2; }
-  .story-deck__bar i { flex: 1; height: 3px; border-radius: 2px; background: rgba(237,244,242,0.28); overflow: hidden; }
-  .story-deck__bar i.is-on { background: #3fd1be; }
-  .story-deck__bar i.is-done { background: rgba(63,209,190,0.6); }
-  .story-deck__tap { position: absolute; top: 0; bottom: 30%; width: 30%; z-index: 1; background: transparent; border: 0; padding: 0; }
-  .story-deck__tap--prev { left: 0; } .story-deck__tap--next { right: 0; }
-  .story-deck__hint { position: absolute; top: 6.2rem; right: var(--sc-gutter, 1.25rem); z-index: 2; font: 600 0.58rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(237,244,242,0.7); }
+  /* the fixed depth gauge sits at this height, and the copyright line below
+     repeats these words anyway */
+  .descent .tail-foot > span:first-of-type { display: none; }
+  .descent .tail-foot > nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0.1rem 1rem; }
+
+  /* ---- a list on a phone looks like a list ---- */
+  .pcards { list-style: none; display: grid; gap: 0.9rem; margin: 0; padding: 0; }
+  .pcard { position: relative; background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid rgba(23,18,8,0.08); box-shadow: 0 6px 20px -12px rgba(6,20,32,0.5); }
+  .pcard__img { display: block; width: 100%; height: 11.5rem; object-fit: cover; }
+  .pcard__body { display: grid; gap: 0.4rem; padding: 0.9rem 1rem 1rem; }
+  .pcard__kicker { font: 600 0.62rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #0a7d70; }
+  .pcard__title { margin: 0; font: 800 1.35rem/1.15 var(--sc-font-display); letter-spacing: -0.01em; color: #171208; text-wrap: balance; }
+  .pcard__link { color: inherit; text-decoration: none; }
+  /* the whole card is the tap target, which leaves Share free to be its own control */
+  .pcard__link::after { content: ""; position: absolute; inset: 0; }
+  .pcard__text { margin: 0; font-size: 16px; line-height: 1.5; color: rgba(23,18,8,0.72); }
+  .pcard__share { position: absolute; z-index: 2; top: 0.6rem; right: 0.6rem; display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.95rem; border-radius: 999px; background: rgba(6,20,32,0.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #edf4f2; font: 700 0.78rem/1 var(--sc-font-display); text-decoration: none; }
+
+  /* ---- the page header, compact on a phone ---- */
+  /* a page that opens on its own dark header clears the top bar with that header's
+     own padding, instead of stacking it on the bone paper's gap above */
+  .descent-inner .inner:has(.site-head) { padding-top: 0 !important; }
+  .descent-inner .site-head { padding: calc(4.4rem + env(safe-area-inset-top)) var(--sc-gutter, 1.25rem) 1.5rem !important; text-align: left !important; }
+  .descent-inner .site-head h1 { font: 800 clamp(2rem, 9vw, 2.6rem)/1.03 var(--sc-font-display) !important; letter-spacing: -0.02em; margin-bottom: 0.7rem !important; text-align: left !important; text-wrap: balance; }
+  .descent-inner .site-head p { font-size: 16px !important; line-height: 1.55 !important; text-align: left !important; margin-inline: 0 !important; max-width: 40ch; }
+  .descent-inner .site-head p + p { margin-top: 0.7rem !important; font-size: 15px !important; color: rgba(255,255,255,0.72) !important; }
   .only-desktop { display: none !important; }
 
   /* reviews as a deck */
@@ -196,8 +214,8 @@
   .tapqr__stamp { position: absolute; left: 50%; top: 50%; width: 22%; height: auto; transform: translate(-50%,-50%); border-radius: 50%; background: #FFFDF8; padding: 3px; }
   .tapqr__where { margin: 0; font: 500 15px/1.35 var(--sc-font-text); color: rgba(23,18,8,0.72); text-align: center; word-break: break-word; }
   .tapqr__actions { display: flex; gap: 0.6rem; width: 100%; margin-top: 0.2rem; }
-  .tapqr__wa, .tapqr__close { flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1rem; border-radius: 999px; font: 700 0.95rem/1 var(--sc-font-display); text-decoration: none; white-space: nowrap; }
-  .tapqr__wa { background: #0a7d70; color: #fff; }
+  .tapqr__share, .tapqr__close { flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1rem; border-radius: 999px; font: 700 0.95rem/1 var(--sc-font-display); text-decoration: none; white-space: nowrap; }
+  .tapqr__share { background: #0a7d70; color: #fff; }
   .tapqr__close { border: 1px solid rgba(23,18,8,0.25); background: transparent; color: #171208; }
   @keyframes tapqr-in { from { opacity: 0; } to { opacity: 1; } }
   @keyframes tapqr-rise { from { opacity: 0; transform: translateY(16px) scale(0.96); } to { opacity: 1; transform: none; } }

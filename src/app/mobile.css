@@ -149,7 +149,7 @@
      scaling the picture would slide them off the line. */
   .descent .siderail:not(.siderail--sheet) {
     display: block; position: fixed; right: 0.15rem; top: 50%; transform: translateY(-50%);
-    width: 48px; height: 420px; z-index: 54; opacity: 1;
+    width: 48px; height: 420px; z-index: 54; opacity: 1; touch-action: none;
   }
   .descent .siderail:not(.siderail--sheet) .siderail__stop { width: 30px; height: 44px; margin: -22px 0 0 -15px; }
   .descent .siderail:not(.siderail--sheet) .siderail__dot { width: 9px; height: 9px; }
@@ -157,6 +157,12 @@
   /* the name of the stop you have just reached says itself and then gets out of the
      way, so the rail tells you where you are without sitting on the words */
   .descent .siderail:not(.siderail--sheet) .siderail__stop.is-active .siderail__label { animation: rail-name 2.4s ease-out both; }
+  /* while a thumb is on the line, the stop under it says its name and the others
+     step back, so the slide reads as choosing rather than scrolling */
+  .descent .siderail.is-scrubbing { touch-action: none; }
+  .descent .siderail:not(.siderail--sheet) .siderail__stop.is-scrub .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); background: #3fd1be; border-color: #3fd1be; }
+  .descent .siderail:not(.siderail--sheet) .siderail__stop.is-scrub .siderail__dot { background: #3fd1be; transform: translate(-50%, -50%) scale(1.6); box-shadow: 0 0 0 5px rgba(63,209,190,0.24), 0 0 18px rgba(63,209,190,0.85); }
+  .descent .siderail.is-scrubbing .siderail__stop:not(.is-scrub) .siderail__label { animation: none; opacity: 0; }
   .descent .siderail:not(.siderail--sheet) .siderail__stop:active .siderail__label,
   .descent .siderail:not(.siderail--sheet) .siderail__stop:focus-visible .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); }
   @keyframes rail-name { 0%, 62% { opacity: 1; transform: translate(0, -50%); } 100% { opacity: 0; transform: translate(8px, -50%); } }

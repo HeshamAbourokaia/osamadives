@@ -5,6 +5,7 @@ import ShoreStrip from "./ShoreStrip";
 import { useEffect, useState } from "react";
 
 const LINKS = [
+  { href: "/diving-with-osama", label: "Teaching" },
   { href: "/dive-sites", label: "Sites" },
   { href: "/blog", label: "Journal" },
   { href: "/gallery", label: "Gallery" },

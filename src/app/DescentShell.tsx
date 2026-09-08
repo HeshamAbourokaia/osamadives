@@ -8,7 +8,7 @@ import TapRipple from "./TapRipple";
 import TripleTapQR from "./TripleTapQR";
 import BackToTop from "@/components/BackToTop";
 import SideRail from "./SideRail";
-import MobileTabs from "./MobileTabs";
+import MessageButton from "./MessageButton";
 import "./descent.css";
 import "./mobile.css";
 import "./inner.css";
@@ -30,7 +30,7 @@ export default function DescentShell({ children }: { children: ReactNode }) {
       </div>
       <div className="tail"><TailFoot /></div>
       <SideRail mode="site" />
-      <MobileTabs />
+      <MessageButton />
       <BackToTop />
       <TapRipple />
       <TripleTapQR />

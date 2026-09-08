@@ -1,7 +1,6 @@
 "use client";
 
 import ShareCode from "./ShareCode";
-import SideRail from "./SideRail";
 import { useEffect, useState } from "react";
 
 const LINKS = [
@@ -46,15 +45,17 @@ export default function DescentNav({ whatsapp }: Props) {
         className={`navbtn${open ? " is-open" : ""}`}
         aria-expanded={open}
         aria-controls="navsheet"
-        aria-label={open ? "Close the menu" : "Open the menu"}
+        aria-label={open ? "Close" : "More"}
         onClick={() => setOpen((o) => !o)}
       >
         <span aria-hidden="true" />
         <span aria-hidden="true" />
       </button>
       {open ? (
-        <div className="navsheet" id="navsheet" role="dialog" aria-modal="true" aria-label="Menu" onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}>
-          <SideRail mode="sheet" onPick={() => setOpen(false)} />
+        <>
+        <div className="navsheet__scrim" onClick={() => setOpen(false)} aria-hidden="true" />
+        <div className="navsheet" id="navsheet" role="dialog" aria-modal="true" aria-label="More">
+          <p className="navsheet__kicker mono">More</p>
           <nav className="navsheet__more" aria-label="More">
             <a href="/review#sign" onClick={() => setOpen(false)}>Write me a review</a>
             <a href="https://instagram.com/osama_mohamed_hassan" target="_blank" rel="noopener noreferrer">Latest dives on Instagram</a>
@@ -63,6 +64,7 @@ export default function DescentNav({ whatsapp }: Props) {
           <ShareCode caption="Point a camera at this and the same page opens on their phone." />
           <p className="navsheet__foot mono">OsamaDives · Dahab, South Sinai · since 1983</p>
         </div>
+        </>
       ) : null}
     </>
   );

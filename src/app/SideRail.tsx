@@ -88,13 +88,12 @@ function useScrub(points: { x: number; y: number }[], onPick: (i: number) => voi
   return { rail, scrub, handlers };
 }
 
-export default function SideRail({ mode = "home", onPick }: { mode?: "home" | "site" | "sheet"; onPick?: () => void }) {
-  if (mode === "sheet") return <SiteRail stops={SITE_STOPS} sheet onPick={onPick} />;
+export default function SideRail({ mode = "home" }: { mode?: "home" | "site" }) {
   if (mode === "site") return <SiteRail stops={SITE_STOPS} />;
   return <HomeRail />;
 }
 
-function SiteRail({ stops, sheet = false, onPick }: { stops: typeof SITE_STOPS; sheet?: boolean; onPick?: () => void }) {
+function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
   const pathname = usePathname() || "/";
   const [points, setPoints] = useState<{ x: number; y: number }[]>([]);
   const pathRef = useRef<SVGPathElement>(null);
@@ -116,9 +115,9 @@ function SiteRail({ stops, sheet = false, onPick }: { stops: typeof SITE_STOPS; 
   return (
     <nav
       ref={rail as React.RefObject<HTMLElement>}
-      className={`siderail${sheet ? " siderail--sheet" : ""}${scrub !== null ? " is-scrubbing" : ""}`}
+      className={`siderail${scrub !== null ? " is-scrubbing" : ""}`}
       aria-label="Pages of the site, laid along the Sinai shore"
-      {...(sheet ? {} : handlers)}
+      {...handlers}
     >
       <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false">
         <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
@@ -137,7 +136,6 @@ function SiteRail({ stops, sheet = false, onPick }: { stops: typeof SITE_STOPS; 
             className={`siderail__stop${i === activeIndex ? " is-active" : ""}${i < activeIndex ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
             style={p ? { left: `${p.x}px`, top: `${p.y}px` } : undefined}
             aria-current={i === activeIndex ? "page" : undefined}
-            onClick={onPick}
           >
             <span className="siderail__dot" aria-hidden="true" />
             <span className="siderail__label mono">{s.label}</span>

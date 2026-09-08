@@ -2,7 +2,7 @@
 import { archivo, plex } from "./fonts";
 import { WHATSAPP } from "@/lib/contact";
 import TailFoot from "./TailFoot";
-import MobileTabs from "./MobileTabs";
+import MessageButton from "./MessageButton";
 import InstagramFeed from "@/components/InstagramFeed";
 import FeaturedReel from "@/components/FeaturedReel";
 import DescentBoot from "./DescentBoot";
@@ -663,7 +663,7 @@ export default async function Home() {
         <TailFoot />
       </div>
       <SideRail />
-      <MobileTabs />
+      <MessageButton />
       <RailTravel />
       <RailFocus />
       <TapRipple />

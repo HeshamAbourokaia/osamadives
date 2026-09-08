@@ -1229,7 +1229,7 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .siderail__stop:focus-visible .siderail__dot { box-shadow: 0 0 0 3px rgba(63,209,190,0.5); }
 /* The rail rides the edge on a phone too; only a short viewport, meaning landscape,
    has no room for it. The sheet copy inside the drawer is never hidden. */
-@media (max-height: 600px) { .descent .siderail:not(.siderail--sheet) { display: none; } }
+@media (max-height: 600px) { .descent .siderail { display: none; } }
 @media (prefers-reduced-motion: reduce) { .descent .siderail__dot, .descent .siderail__label, .descent .siderail__drawn { transition: none; } }
 
 /* buttons that ride the clips (the entry and surfacing calls to action) use solid glass:

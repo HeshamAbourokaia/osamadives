@@ -21,6 +21,7 @@ import Contours from "./Contours";
 import TapRipple from "./TapRipple";
 import TripleTapQR from "./TripleTapQR";
 import { LENS_MAP } from "./lensMap";
+import { diveSites } from "@/lib/dive-sites";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
 import InstagramRibbon from "@/components/InstagramRibbon";
@@ -104,6 +105,41 @@ export default async function Home() {
               <p className="brand-small">Courses and dives are arranged through CDWS-registered dive centres in Dahab.</p>
             </div>
           </div>
+        </section>
+
+        {/* A phone lands here cold, often from a link somebody sent. Who he is, where
+            he is, and every way into the site, before the descent below takes thirty
+            screens to tell the same story properly. Phones only: a desk sees the whole
+            page at a glance and does not need the shortcut. */}
+        <section className="g-abyss quickstart only-mobile" aria-label="Where to start">
+          <p className="quickstart__line">PADI Master Scuba Diver Trainer · Dahab, South Sinai · on this beach since 1983</p>
+          <ul className="quickstart__grid">
+            <li>
+              <a href="/dive-sites">
+                <span className="quickstart__k">{diveSites.length} dive sites</span>
+                <span className="quickstart__d">Where he takes people, from the beach</span>
+              </a>
+            </li>
+            <li>
+              <a href="/gallery">
+                <span className="quickstart__k">{galleryPhotos.length} photographs</span>
+                <span className="quickstart__d">His own pictures of this water</span>
+              </a>
+            </li>
+            <li>
+              <a href="/blog">
+                <span className="quickstart__k">{blogPosts.length} stories</span>
+                <span className="quickstart__d">Notes from the journal</span>
+              </a>
+            </li>
+            <li>
+              <a href="/review">
+                <span className="quickstart__k">Reviews</span>
+                <span className="quickstart__d">What divers wrote afterwards</span>
+              </a>
+            </li>
+          </ul>
+          <p className="quickstart__note">Courses and dives are arranged through CDWS-registered dive centres in Dahab.</p>
         </section>
 
         {/* ACT 1 · ENTRY: the sea, scrubbing under the wheel from the first pixel */}

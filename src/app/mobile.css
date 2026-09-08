@@ -126,6 +126,50 @@
   .pcard__text { margin: 0; font-size: 16px; line-height: 1.5; color: rgba(23,18,8,0.72); }
   .pcard__share { position: absolute; z-index: 2; top: 0.6rem; right: 0.6rem; display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.95rem; border-radius: 999px; background: rgba(6,20,32,0.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #edf4f2; font: 700 0.78rem/1 var(--sc-font-display); text-decoration: none; }
 
+  /* ---- the way in, before the long descent ---- */
+  .quickstart { padding: 1.5rem var(--sc-gutter, 1.25rem) 2.1rem; background: #061420; color: #edf4f2; display: grid; gap: 0.95rem; }
+  .quickstart__line { margin: 0; font: 600 0.66rem/1.55 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: rgba(63,209,190,0.9); }
+  .quickstart__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .quickstart__grid a { display: grid; gap: 0.3rem; align-content: start; min-height: 96px; padding: 0.85rem; border-radius: 14px; background: rgba(237,244,242,0.06); border: 1px solid rgba(190,240,232,0.16); color: inherit; text-decoration: none; }
+  .quickstart__k { font: 800 1.05rem/1.15 var(--sc-font-display); color: #f4faf8; letter-spacing: -0.01em; }
+  .quickstart__d { font-size: 13px; line-height: 1.38; color: rgba(237,244,242,0.66); }
+  .quickstart__note { margin: 0; font-size: 13px; line-height: 1.5; color: rgba(237,244,242,0.55); }
+
+  /* a page that opens on a full bleed photo meets the dark cap, with no stripe of
+     bone paper between the two */
+  .descent-inner .inner-body > header.mt-14 { margin-top: 0 !important; }
+
+  /* ---- the gallery: photographs first ----
+     One control names the album you are in and opens a sheet with all of them,
+     instead of thirteen buttons filling the screen above the pictures. */
+  .albums { margin: 0 0 0.9rem; }
+  .albums__trigger { display: flex; align-items: center; gap: 0.6rem; width: 100%; min-height: 48px; padding: 0 0.9rem; border-radius: 12px; border: 1px solid rgba(23,18,8,0.14); background: rgba(255,253,247,0.85); color: #171208; font: 700 0.95rem/1 var(--sc-font-display); }
+  .albums__label { flex: 1; text-align: left; }
+  .albums__count { font: 600 0.78rem/1 var(--mono); color: #0a7d70; }
+  .albums__trigger svg { width: 20px; height: 20px; fill: rgba(23,18,8,0.5); flex: none; }
+  .sheet { position: fixed; inset: 0; z-index: 75; display: flex; align-items: flex-end; background: rgba(4,18,26,0.55); animation: tapqr-in 180ms ease-out both; }
+  .sheet__panel { width: 100%; max-height: 78svh; overflow: auto; background: #FFFDF8; border-radius: 20px 20px 0 0; padding: 0.6rem 1rem calc(1rem + env(safe-area-inset-bottom)); animation: sheet-up 280ms cubic-bezier(0.2,0.8,0.2,1) both; }
+  .sheet__grip { display: block; width: 40px; height: 4px; border-radius: 999px; background: rgba(23,18,8,0.2); margin: 0.2rem auto 0.8rem; }
+  .sheet__title { margin: 0 0 0.4rem; font: 700 0.7rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(23,18,8,0.5); }
+  .sheet__list { list-style: none; margin: 0; padding: 0; }
+  .sheet__list button { display: flex; align-items: center; gap: 0.8rem; width: 100%; min-height: 52px; padding: 0 0.2rem; background: none; border: 0; border-bottom: 1px solid rgba(23,18,8,0.07); color: #171208; font: 600 16px/1.3 var(--sc-font-text); text-align: left; }
+  .sheet__list button span { flex: 1; }
+  .sheet__list button em { font: 600 0.78rem/1 var(--mono); font-style: normal; color: rgba(23,18,8,0.45); }
+  .sheet__list button.is-on, .sheet__list button.is-on em { color: #0a7d70; }
+  .sheet__list button.is-on { font-weight: 800; }
+  .sheet__close { display: block; width: 100%; min-height: 48px; margin-top: 0.9rem; border-radius: 999px; border: 1px solid rgba(23,18,8,0.2); background: none; color: #171208; font: 700 0.95rem/1 var(--sc-font-display); }
+  @keyframes sheet-up { from { transform: translateY(14%); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  /* the three media tabs span the width and stop shouting */
+  .descent-inner #gallery-content { padding-top: 1.1rem !important; }
+  .descent-inner #gallery-content .inline-flex.rounded-full { width: 100%; }
+  .descent-inner #gallery-content .inline-flex.rounded-full button { flex: 1; min-height: 44px; padding-left: 0.3rem !important; padding-right: 0.3rem !important; font-size: 0.82rem !important; }
+  .descent-inner #gallery-content > div > .flex.justify-center { margin-bottom: 0.9rem !important; }
+
+  /* a link out is a small pill, not half the screen */
+  .descent-inner .site-head .flex { justify-content: flex-start !important; gap: 0.6rem !important; flex-wrap: wrap; }
+  .descent-inner .site-head .flex a { min-height: 44px; padding: 0 1rem !important; font-size: 0.9rem !important; }
+
   /* ---- the page header, compact on a phone ---- */
   /* a page that opens on its own dark header clears the top bar with that header's
      own padding, instead of stacking it on the bone paper's gap above */

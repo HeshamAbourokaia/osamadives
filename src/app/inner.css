@@ -3,7 +3,7 @@
    house ground, type and rhythm, and the old accents are remapped to the reef. */
 .descent-inner { min-height: 100svh; background: var(--bone, #f4f0e6); color: var(--sc-ink, #171208); font-family: var(--sc-font-text); }
 .descent-inner .inner { position: relative; padding-top: 4.6rem; }
-@media (max-width: 860px) { .descent-inner .inner { padding-top: 7.4rem; } }
+@media (max-width: 860px) { .descent-inner .inner { padding-top: 5.4rem; } }
 .descent-inner .inner-body { position: relative; z-index: 1; }
 .descent-inner .contours { inset: 0; }
 .descent-inner h1, .descent-inner h2, .descent-inner h3 { font-family: var(--sc-font-display); letter-spacing: -0.02em; }
@@ -19,9 +19,9 @@
 /* Under the top bar the page starts in the sea: a dark cap the hero bands join
    without a seam, and a header bar on pages that open on paper. */
 .descent-inner .inner { background: linear-gradient(#061420 0 4.6rem, transparent 4.6rem); }
-@media (max-width: 860px) { .descent-inner .inner { background: linear-gradient(#061420 0 7.4rem, transparent 7.4rem); } }
+@media (max-width: 860px) { .descent-inner .inner { background: linear-gradient(#061420 0 5.4rem, transparent 5.4rem); } }
 
 /* The reviews keep their lagoon; only their own bar and foot go, the shell has both.
    The one action they carried, write a review, sits under the top bar on the right. */
 .descent-inner .lb-action-bar { position: absolute; right: var(--sc-gutter); top: 5.4rem; z-index: 3; }
-@media (max-width: 860px) { .descent-inner .lb-action-bar { top: 8.2rem; } }
+@media (max-width: 860px) { .descent-inner .lb-action-bar { top: 6.2rem; } }

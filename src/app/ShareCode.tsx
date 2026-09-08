@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
-import qrcode from "qrcode-generator";
+import { qrPath } from "./qr-svg";
 
 /**
  * "Show a friend": a code for the page being looked at, so the person next to you
@@ -14,22 +14,7 @@ export default function ShareCode({ path, caption = "Point a camera at this to o
   const target = path ?? here;
   const { size, d, url } = useMemo(() => {
     const url = `https://www.osamadives.com/qr?s=screen&to=${target}`;
-    const qr = qrcode(0, "H");
-    qr.addData(url);
-    qr.make();
-    const n = qr.getModuleCount();
-    const runs: string[] = [];
-    for (let r = 0; r < n; r++) {
-      let c = 0;
-      while (c < n) {
-        if (qr.isDark(r, c)) {
-          const start = c;
-          while (c < n && qr.isDark(r, c)) c++;
-          runs.push(`M${start + 2} ${r + 2}h${c - start}v1h-${c - start}z`);
-        } else c++;
-      }
-    }
-    return { size: n + 4, d: runs.join(""), url };
+    return { ...qrPath(url), url };
   }, [target]);
 
   return (

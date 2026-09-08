@@ -19,6 +19,7 @@ import Words from "./Words";
 import OdometerYear from "./OdometerYear";
 import Contours from "./Contours";
 import TapRipple from "./TapRipple";
+import TripleTapQR from "./TripleTapQR";
 import { LENS_MAP } from "./lensMap";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
 import LogbookRibbon from "@/components/LogbookRibbon";
@@ -615,6 +616,7 @@ export default async function Home() {
       <RailTravel />
       <RailFocus />
       <TapRipple />
+      <TripleTapQR />
       <BackToTop />
       <ReturnToPlace />
       <DescentBoot />

@@ -5,6 +5,7 @@ import DescentNav from "./DescentNav";
 import Contours from "./Contours";
 import TailFoot from "./TailFoot";
 import TapRipple from "./TapRipple";
+import TripleTapQR from "./TripleTapQR";
 import BackToTop from "@/components/BackToTop";
 import SideRail from "./SideRail";
 import MobileTabs from "./MobileTabs";
@@ -32,6 +33,7 @@ export default function DescentShell({ children }: { children: ReactNode }) {
       <MobileTabs />
       <BackToTop />
       <TapRipple />
+      <TripleTapQR />
     </div>
   );
 }

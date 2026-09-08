@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import ShareButton from "@/app/ShareButton";
 
 interface Photo { src: string; alt: string; title?: string; location?: string; description?: string; date?: string }
 
@@ -45,7 +46,6 @@ export default function SwipeViewer({ photos, index, onClose }: { photos: Photo[
   }, [onClose]);
   if (!ready) return null;
   const ph = photos[on] || photos[index];
-  const shareText = `${ph?.title ? ph.title + " " : ""}${SITE}${ph?.src || "/gallery"}`;
   return createPortal(
     <div className="viewer" role="dialog" aria-modal="true" aria-label="Photos">
       <div
@@ -71,7 +71,7 @@ export default function SwipeViewer({ photos, index, onClose }: { photos: Photo[
           <p className="viewer__caption">{ph ? captionFor(ph) : ""}</p>
         </div>
         <div className="viewer__actions">
-          <a className="viewer__share" href={`https://wa.me/?text=${encodeURIComponent(shareText)}`} target="_blank" rel="noopener noreferrer" aria-label="Share this photo on WhatsApp">Share</a>
+          <ShareButton className="viewer__share" url={`${SITE}${ph?.src || "/gallery"}`} title={ph?.title} label="Share" />
           <button type="button" className="viewer__close" onClick={onClose}>Close</button>
         </div>
       </div>

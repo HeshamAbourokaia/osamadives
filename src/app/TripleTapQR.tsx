@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { qrPath } from "./qr-svg";
+import ShareButton from "./ShareButton";
 
 const SITE = "https://www.osamadives.com";
 const PHONE = 860;   // the phone breakpoint the rest of the site uses
@@ -83,7 +84,7 @@ export default function TripleTapQR() {
         </div>
         <p className="tapqr__where">{plain.replace(/^https:\/\/www\./, "")}</p>
         <div className="tapqr__actions">
-          <a className="tapqr__wa" href={`https://wa.me/?text=${encodeURIComponent(plain)}`} target="_blank" rel="noopener noreferrer" aria-label="Send this page on WhatsApp">WhatsApp</a>
+          <ShareButton className="tapqr__share" url={plain} label="Share" />
           <button type="button" className="tapqr__close" ref={closer} onClick={close}>Close</button>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { qrPath } from "./qr-svg";
+import ShareButton from "./ShareButton";
 
 /**
  * "Show a friend": a code for the page being looked at, so the person next to you
@@ -28,7 +29,7 @@ export default function ShareCode({ path, caption = "Point a camera at this to o
       </a>
       <figcaption>
         <strong>Show a friend.</strong> {caption}
-        <a className="sharecode__wa" href={`https://wa.me/?text=${encodeURIComponent(`https://www.osamadives.com${target}`)}`} target="_blank" rel="noopener noreferrer">Or send it by WhatsApp</a>
+        <ShareButton className="sharecode__wa" url={`https://www.osamadives.com${target}`} label="Or send it to someone" fallbackLabel="Or send it by WhatsApp" />
       </figcaption>
     </figure>
   );

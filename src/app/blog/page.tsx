@@ -1,5 +1,5 @@
 import DescentShell from "@/app/DescentShell";
-import StoryDeck from "@/app/StoryDeck";
+import PhoneCards from "@/app/PhoneCards";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
@@ -27,7 +27,7 @@ export default function BlogPage() {
 
 
       {/* Hero Section */}
-      <header className="only-desktop pt-24 pb-12 px-4 bg-gradient-to-b from-[#061420] to-[#0a2a3a]">
+      <header className="site-head pt-24 pb-12 px-4 bg-gradient-to-b from-[#061420] to-[#0a2a3a]">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h1
             className="text-4xl md:text-5xl font-light mb-4"
@@ -46,8 +46,8 @@ export default function BlogPage() {
       <main id="blog-content" className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Blog Posts Grid */}
-                    <StoryDeck
-            share="Stories from the water"
+                    <PhoneCards
+            label="Stories from the water"
             items={posts.map((post) => ({ href: `/blog/${post.slug}`, title: post.title, kicker: `${new Date(post.date).getFullYear()} · Journal`, text: post.excerpt, image: post.featuredImage, alt: post.title }))}
           />
 <div className="only-desktop grid gap-8 md:grid-cols-2 lg:grid-cols-3">

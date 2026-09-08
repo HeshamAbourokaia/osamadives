@@ -31,33 +31,44 @@ const SITE_STOPS = [
   { href: WHATSAPP, label: "Contact", at: 0.95 },
 ];
 
-export default function SideRail({ mode = "home" }: { mode?: "home" | "site" }) {
-  if (mode === "site") return <SiteRail />;
+const SHEET_STOPS = [
+  { href: "/", label: "Home", at: 0.04 },
+  { href: "/diving-with-osama", label: "Teaching", at: 0.19 },
+  { href: "/dive-sites", label: "Sites", at: 0.34 },
+  { href: "/blog", label: "Journal", at: 0.49, town: "Dahab" },
+  { href: "/gallery", label: "Gallery", at: 0.64 },
+  { href: "/review", label: "Reviews", at: 0.79 },
+  { href: "/featured/chatgpt", label: "Featured", at: 0.94 },
+];
+
+export default function SideRail({ mode = "home", onPick }: { mode?: "home" | "site" | "sheet"; onPick?: () => void }) {
+  if (mode === "sheet") return <SiteRail stops={SHEET_STOPS} sheet onPick={onPick} />;
+  if (mode === "site") return <SiteRail stops={SITE_STOPS} />;
   return <HomeRail />;
 }
 
-function SiteRail() {
+function SiteRail({ stops, sheet = false, onPick }: { stops: typeof SITE_STOPS; sheet?: boolean; onPick?: () => void }) {
   const pathname = usePathname() || "/";
   const [points, setPoints] = useState<{ x: number; y: number }[]>([]);
   const pathRef = useRef<SVGPathElement>(null);
   const drawRef = useRef<SVGPathElement>(null);
-  const activeIndex = Math.max(0, SITE_STOPS.findIndex((s) => s.href !== "/" && !s.href.startsWith("http") && pathname.startsWith(s.href)));
+  const activeIndex = Math.max(0, stops.findIndex((s) => s.href !== "/" && !s.href.startsWith("http") && pathname.startsWith(s.href)));
   useEffect(() => {
     const path = pathRef.current, line = drawRef.current;
     if (!path || !line) return;
     const L = path.getTotalLength();
-    setPoints(SITE_STOPS.map((s) => { const p = path.getPointAtLength(L * s.at); return { x: p.x, y: p.y }; }));
+    setPoints(stops.map((s) => { const p = path.getPointAtLength(L * s.at); return { x: p.x, y: p.y }; }));
     line.style.strokeDasharray = `${L}`;
-    line.style.strokeDashoffset = `${L * (1 - SITE_STOPS[activeIndex].at)}`;
-  }, [activeIndex]);
+    line.style.strokeDashoffset = `${L * (1 - stops[activeIndex].at)}`;
+  }, [activeIndex, stops]);
   return (
-    <nav className="siderail" aria-label="Pages of the site, laid along the Sinai shore">
+    <nav className={`siderail${sheet ? " siderail--sheet" : ""}`} aria-label="Pages of the site, laid along the Sinai shore">
       <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false">
         <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
         <path d={COAST} fill="none" stroke="rgba(63,209,190,0.12)" strokeWidth="6" strokeLinecap="round" />
         <path ref={drawRef} d={COAST} className="siderail__drawn" fill="none" stroke="#3fd1be" strokeWidth="1.8" strokeLinecap="round" />
       </svg>
-      {SITE_STOPS.map((s, i) => {
+      {stops.map((s, i) => {
         const p = points[i];
         const external = s.href.startsWith("http");
         return (
@@ -69,6 +80,7 @@ function SiteRail() {
             className={`siderail__stop${i === activeIndex ? " is-active" : ""}${i < activeIndex ? " is-reached" : ""}${s.town ? " has-town" : ""}`}
             style={p ? { left: `${p.x}px`, top: `${p.y}px` } : undefined}
             aria-current={i === activeIndex ? "page" : undefined}
+            onClick={onPick}
           >
             <span className="siderail__dot" aria-hidden="true" />
             <span className="siderail__label mono">{s.label}</span>

@@ -87,19 +87,6 @@
   .tabbar__wa svg { width: 26px; height: 26px; fill: #04121a; }
   .tabbar__wa span { display: none; }
 
-  /* ---- the shore, flat, in the drawer ---- */
-  .shore { position: relative; width: 100%; margin: 3.6rem 0 1.2rem; }
-  .descent .navsheet .shore__stop { font: 600 0.5rem/1 var(--mono) !important; letter-spacing: 0.1em !important; text-transform: uppercase; padding: 0; border: 0; min-height: 44px; width: 44px; }
-  .shore__coast { display: block; width: 100%; height: 48px; overflow: visible; }
-  .shore__drawn { filter: drop-shadow(0 0 3px rgba(63,209,190,0.8)); }
-  .shore__stops { position: relative; height: 3.6rem; }
-  .shore__stop { position: absolute; top: -34px; transform: translateX(-50%); width: 44px; min-height: 44px; display: grid; justify-items: center; gap: 0.35rem; text-decoration: none; color: rgba(237,244,242,0.6); font: 600 0.5rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
-  .shore__stop i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(63,209,190,0.9); background: rgba(6,20,32,0.8); }
-  .shore__stop.is-reached i { background: rgba(63,209,190,0.55); }
-  .shore__stop.is-active i { background: #3fd1be; box-shadow: 0 0 0 4px rgba(63,209,190,0.22), 0 0 12px rgba(63,209,190,0.8); }
-  .shore__stop.is-active { color: #3fd1be; }
-  .descent .navsheet nav a { min-height: 48px; }
-
   /* ---- decks: the pattern used by stories, sites and reviews ---- */
   .deck { display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 0.75rem; padding: 0 var(--sc-gutter, 1.25rem); scroll-padding-inline: var(--sc-gutter, 1.25rem); }
   .deck::-webkit-scrollbar { display: none; }
@@ -139,6 +126,23 @@
   /* a page that opens on a full bleed photo meets the dark cap, with no stripe of
      bone paper between the two */
   .descent-inner .inner-body > header.mt-14 { margin-top: 0 !important; }
+
+  /* the sheet is a room of its own, not a scrim over the page behind it */
+  .descent .navsheet { background: rgba(6,20,32,0.985); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); align-content: start; overflow-y: auto; padding: 4.6rem var(--sc-gutter) 2.4rem; gap: 1.1rem; }
+
+  /* ---- the drawer carries the coastline, not a wall of words ----
+     The same rail the desk shows down its right edge, laid out inside the sheet with
+     its labels always on, because a phone has no hover to reveal them. */
+  .descent .navsheet .siderail--sheet { display: block; position: relative; width: 48px; height: 420px; margin: 1.6rem 0.6rem 1.2rem auto; opacity: 1; }
+  .descent .navsheet .siderail--sheet .siderail__label { opacity: 1; transform: translate(0, -50%); font-size: 0.72rem; padding: 0.55rem 0.85rem; }
+  .descent .navsheet .siderail--sheet .siderail__stop { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
+  .descent .navsheet .siderail--sheet .siderail__stop::after { content: ""; position: absolute; right: 26px; top: 50%; height: 44px; width: 10rem; transform: translateY(-50%); }
+  .descent .navsheet .siderail--sheet .siderail__town { left: 26px; font-size: 0.5rem; }
+
+  /* what is left is three quiet lines, not slabs */
+  .descent .navsheet__more { display: grid; gap: 0.1rem; width: 100%; }
+  .descent .navsheet .navsheet__more a { min-height: 48px; display: flex; align-items: center; font: 600 0.95rem/1.3 var(--sc-font-text); letter-spacing: 0; text-transform: none; color: rgba(237,244,242,0.82); }
+  .descent .navsheet .navsheet__more a.navsheet__wa { margin-top: 0.6rem; color: #3fd1be; font-weight: 700; }
 
   /* what I do in the water, on a phone */
   .descent-inner .site-head .wiw__mark img { width: 54px; height: 54px; }
@@ -229,7 +233,7 @@
   .descent-inner .inner-body p a, .descent .guide-panel dd a, .descent .guide-panel p a { padding-block: 0.6rem; }
 }
 @media (min-width: 861px) {
-  .tabbar, .shore, .only-mobile { display: none !important; }
+  .tabbar, .only-mobile { display: none !important; }
 }
 @media (prefers-reduced-motion: reduce) {
   .descent .brand-start i { animation: none; }

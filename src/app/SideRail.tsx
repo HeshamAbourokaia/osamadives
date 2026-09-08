@@ -20,29 +20,22 @@ const STOPS = [
 // Taba, Nuweiba, Ras Shaitan, Dahab, Sharm el Sheikh, Ras Mohammed: the shore as a line.
 const COAST = "M30 6 C24 30 22 52 27 78 C31 96 38 106 33 124 C28 142 20 160 22 186 C24 210 36 224 36 246 C36 270 24 290 24 314 C24 338 32 356 26 376 C22 390 16 402 12 414";
 
-// On the inner pages the same shore carries the site itself: one stop per page.
+// On the inner pages the same shore carries the site itself: one stop per page. The
+// rail on the edge and the one in the drawer read from this single list, so a page
+// added here appears in both without anything else being touched.
 const SITE_STOPS = [
-  { href: "/", label: "Home", at: 0.05 },
-  { href: "/dive-sites", label: "Sites", at: 0.2 },
-  { href: "/blog", label: "Journal", at: 0.35 },
-  { href: "/gallery", label: "Gallery", at: 0.5, town: "Dahab" },
-  { href: "/review", label: "Reviews", at: 0.65 },
-  { href: "/featured/chatgpt", label: "Featured", at: 0.8 },
+  { href: "/", label: "Home", at: 0.04 },
+  { href: "/diving-with-osama", label: "Teaching", at: 0.17 },
+  { href: "/dive-sites", label: "Sites", at: 0.3 },
+  { href: "/blog", label: "Journal", at: 0.43 },
+  { href: "/gallery", label: "Gallery", at: 0.56, town: "Dahab" },
+  { href: "/review", label: "Reviews", at: 0.69 },
+  { href: "/featured/chatgpt", label: "Featured", at: 0.82 },
   { href: WHATSAPP, label: "Contact", at: 0.95 },
 ];
 
-const SHEET_STOPS = [
-  { href: "/", label: "Home", at: 0.04 },
-  { href: "/diving-with-osama", label: "Teaching", at: 0.19 },
-  { href: "/dive-sites", label: "Sites", at: 0.34 },
-  { href: "/blog", label: "Journal", at: 0.49, town: "Dahab" },
-  { href: "/gallery", label: "Gallery", at: 0.64 },
-  { href: "/review", label: "Reviews", at: 0.79 },
-  { href: "/featured/chatgpt", label: "Featured", at: 0.94 },
-];
-
 export default function SideRail({ mode = "home", onPick }: { mode?: "home" | "site" | "sheet"; onPick?: () => void }) {
-  if (mode === "sheet") return <SiteRail stops={SHEET_STOPS} sheet onPick={onPick} />;
+  if (mode === "sheet") return <SiteRail stops={SITE_STOPS} sheet onPick={onPick} />;
   if (mode === "site") return <SiteRail stops={SITE_STOPS} />;
   return <HomeRail />;
 }

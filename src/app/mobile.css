@@ -127,6 +127,41 @@
      bone paper between the two */
   .descent-inner .inner-body > header.mt-14 { margin-top: 0 !important; }
 
+  /* The gauge printed the same words the panel underneath it was already saying, and
+     it sat on them. On a phone it keeps the depth and drops the label; the rail on the
+     edge names the act now. */
+  .descent .hud__label { display: none; }
+  .descent .hud { padding: 0.4rem 0.6rem; }
+
+  /* ---- the guide reads from its own top ----
+     The panel is taller than a phone screen, and the stage was a fixed screen high
+     with a bar's worth of padding on top of that, so arriving at the section put you
+     a third of the way down a card whose heading had already gone. The stage is as
+     tall as what is in it now, and you meet Osama at the word Meet. */
+  .descent .guide-stage { min-height: 0 !important; height: auto !important; align-content: start !important; padding-top: 6.4rem !important; padding-bottom: 3.4rem !important; }
+  .descent .guide-stage::after { background: linear-gradient(to bottom, rgba(242,237,226,0.5), rgba(242,237,226,0.12) 34%, rgba(242,237,226,0.6)); }
+
+  /* ---- the coastline rides the edge on a phone as well ----
+     The desk keeps this rail pinned to the right and lights the stop you are on.
+     Same here. The labels stay hidden except the active one, because there is no
+     hover to ask for them and no room to show nine at once. The coast is drawn at
+     its own size: the dots are placed from getPointAtLength in user units, so
+     scaling the picture would slide them off the line. */
+  .descent .siderail:not(.siderail--sheet) {
+    display: block; position: fixed; right: 0.15rem; top: 50%; transform: translateY(-50%);
+    width: 48px; height: 420px; z-index: 54; opacity: 1;
+  }
+  .descent .siderail:not(.siderail--sheet) .siderail__stop { width: 30px; height: 44px; margin: -22px 0 0 -15px; }
+  .descent .siderail:not(.siderail--sheet) .siderail__dot { width: 9px; height: 9px; }
+  .descent .siderail:not(.siderail--sheet) .siderail__label { right: 22px; font-size: 0.58rem; padding: 0.34rem 0.56rem; }
+  /* the name of the stop you have just reached says itself and then gets out of the
+     way, so the rail tells you where you are without sitting on the words */
+  .descent .siderail:not(.siderail--sheet) .siderail__stop.is-active .siderail__label { animation: rail-name 2.4s ease-out both; }
+  .descent .siderail:not(.siderail--sheet) .siderail__stop:active .siderail__label,
+  .descent .siderail:not(.siderail--sheet) .siderail__stop:focus-visible .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); }
+  @keyframes rail-name { 0%, 62% { opacity: 1; transform: translate(0, -50%); } 100% { opacity: 0; transform: translate(8px, -50%); } }
+  .descent .siderail:not(.siderail--sheet) .siderail__town { display: none; }
+
   /* the sheet is a room of its own, not a scrim over the page behind it */
   .descent .navsheet { background: rgba(6,20,32,0.985); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); align-content: start; overflow-y: auto; padding: 4.6rem var(--sc-gutter) 2.4rem; gap: 1.1rem; }
 
@@ -236,6 +271,7 @@
   .tabbar, .only-mobile { display: none !important; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .descent .siderail:not(.siderail--sheet) .siderail__stop.is-active .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); }
   .descent .brand-start i { animation: none; }
   .deck, .viewer__strip { scroll-behavior: auto; }
 }

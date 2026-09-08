@@ -43,6 +43,15 @@ export const revalidate = 60;
 // driven by the vendored scrollcraft engine that DescentBoot mounts after hydration.
 // Internal links are plain anchors on purpose: leaving this page is a full load, so the
 // scroll engine never outlives it.
+// A pulled quote stops at a word, never mid-word: "when I was stru..." reads like a
+// fault rather than an excerpt.
+function trimToWord(text: string, max: number) {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:.]+$/, "")}...`;
+}
+
 export default async function Home() {
   // Real approved reviews only, same source HomeStrip reads. If the store
   // is not reachable yet (no database configured locally), the orbit just
@@ -57,7 +66,7 @@ export default async function Home() {
   // One line from a real review sits beside his introduction: the shortest approved note
   // that still says something, so the page does not open on a wall of text.
   const quotable = approvedReviews.filter((r) => r.note.length >= 60).sort((a, b) => a.note.length - b.note.length)[0];
-  const quote = quotable ? { text: quotable.note.length > 170 ? `${quotable.note.slice(0, 167).trimEnd()}...` : quotable.note, who: `${quotable.name}${quotable.country ? `, ${quotable.country}` : ""}` } : null;
+  const quote = quotable ? { text: trimToWord(quotable.note, 170), who: `${quotable.name}${quotable.country ? `, ${quotable.country}` : ""}` } : null;
   const posts = [...blogPosts].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 5);
   const featuredFrames = galleryPhotos.filter((g) => g.featured);
   const frames = (featuredFrames.length >= 6 ? featuredFrames : galleryPhotos).slice(0, 9);

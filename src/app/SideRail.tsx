@@ -34,6 +34,60 @@ const SITE_STOPS = [
   { href: WHATSAPP, label: "Contact", at: 0.95 },
 ];
 
+/**
+ * Slide along the coast to choose. Press anywhere on the line, keep the finger down
+ * and run it up or down: whichever stop is under your thumb becomes the one, and says
+ * its name. Lift to go there. Land back on the stop you started from and nothing
+ * happens, because that is where you already are. A plain tap is left alone, so the
+ * link underneath still does its own job.
+ */
+function useScrub(points: { x: number; y: number }[], onPick: (i: number) => void) {
+  const [scrub, setScrub] = useState<number | null>(null);
+  const rail = useRef<HTMLElement>(null);
+  const from = useRef<{ i: number; y: number; moved: boolean } | null>(null);
+  const at = useRef<number | null>(null);
+
+  const nearest = (clientY: number) => {
+    const box = rail.current?.getBoundingClientRect();
+    if (!box || !points.length) return 0;
+    const y = clientY - box.top;
+    let best = 0, bestD = Infinity;
+    points.forEach((p, i) => { const d = Math.abs(p.y - y); if (d < bestD) { bestD = d; best = i; } });
+    return best;
+  };
+
+  const handlers = {
+    onTouchStart: (e: React.TouchEvent) => {
+      const t = e.touches[0];
+      const i = nearest(t.clientY);
+      from.current = { i, y: t.clientY, moved: false };
+      at.current = i;
+      setScrub(i);
+    },
+    onTouchMove: (e: React.TouchEvent) => {
+      const f = from.current;
+      if (!f) return;
+      const t = e.touches[0];
+      if (Math.abs(t.clientY - f.y) > 8) f.moved = true;
+      const i = nearest(t.clientY);
+      at.current = i;
+      setScrub(i);
+    },
+    onTouchEnd: (e: React.TouchEvent) => {
+      const f = from.current, i = at.current;
+      from.current = null; at.current = null;
+      setScrub(null);
+      if (!f || i === null || !f.moved) return; // a tap: let the anchor follow itself
+      e.preventDefault();                        // a slide: no ghost click on the anchor
+      if (i === f.i) return;                     // slid away and came home: stay put
+      onPick(i);
+    },
+    onTouchCancel: () => { from.current = null; at.current = null; setScrub(null); },
+  };
+
+  return { rail, scrub, handlers };
+}
+
 export default function SideRail({ mode = "home", onPick }: { mode?: "home" | "site" | "sheet"; onPick?: () => void }) {
   if (mode === "sheet") return <SiteRail stops={SITE_STOPS} sheet onPick={onPick} />;
   if (mode === "site") return <SiteRail stops={SITE_STOPS} />;
@@ -46,6 +100,11 @@ function SiteRail({ stops, sheet = false, onPick }: { stops: typeof SITE_STOPS; 
   const pathRef = useRef<SVGPathElement>(null);
   const drawRef = useRef<SVGPathElement>(null);
   const activeIndex = Math.max(0, stops.findIndex((s) => s.href !== "/" && !s.href.startsWith("http") && pathname.startsWith(s.href)));
+  const { rail, scrub, handlers } = useScrub(points, (i) => {
+    const href = stops[i].href;
+    if (href.startsWith("http")) window.open(href, "_blank", "noopener,noreferrer");
+    else window.location.href = href;
+  });
   useEffect(() => {
     const path = pathRef.current, line = drawRef.current;
     if (!path || !line) return;
@@ -55,7 +114,12 @@ function SiteRail({ stops, sheet = false, onPick }: { stops: typeof SITE_STOPS; 
     line.style.strokeDashoffset = `${L * (1 - stops[activeIndex].at)}`;
   }, [activeIndex, stops]);
   return (
-    <nav className={`siderail${sheet ? " siderail--sheet" : ""}`} aria-label="Pages of the site, laid along the Sinai shore">
+    <nav
+      ref={rail as React.RefObject<HTMLElement>}
+      className={`siderail${sheet ? " siderail--sheet" : ""}${scrub !== null ? " is-scrubbing" : ""}`}
+      aria-label="Pages of the site, laid along the Sinai shore"
+      {...(sheet ? {} : handlers)}
+    >
       <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false">
         <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
         <path d={COAST} fill="none" stroke="rgba(63,209,190,0.12)" strokeWidth="6" strokeLinecap="round" />
@@ -70,7 +134,7 @@ function SiteRail({ stops, sheet = false, onPick }: { stops: typeof SITE_STOPS; 
             href={s.href}
             target={external ? "_blank" : undefined}
             rel={external ? "noopener noreferrer" : undefined}
-            className={`siderail__stop${i === activeIndex ? " is-active" : ""}${i < activeIndex ? " is-reached" : ""}${s.town ? " has-town" : ""}`}
+            className={`siderail__stop${i === activeIndex ? " is-active" : ""}${i < activeIndex ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
             style={p ? { left: `${p.x}px`, top: `${p.y}px` } : undefined}
             aria-current={i === activeIndex ? "page" : undefined}
             onClick={onPick}
@@ -171,8 +235,7 @@ function HomeRail() {
     return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); if (raf) cancelAnimationFrame(raf); };
   }, []);
 
-  const go = (id: string) => (e: React.MouseEvent) => {
-    e.preventDefault();
+  const jump = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -184,9 +247,16 @@ function HomeRail() {
     const top = r.top + window.scrollY + into + 2;
     window.scrollTo({ top: Math.min(top, document.documentElement.scrollHeight - window.innerHeight), behavior: reduced ? "auto" : "smooth" });
   };
+  const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); jump(id); };
+  const { rail, scrub, handlers } = useScrub(points, (i) => jump(STOPS[i].id));
 
   return (
-    <nav className="siderail" aria-label="Sections of the dive, laid along the Sinai shore from Taba to Ras Mohammed">
+    <nav
+      ref={rail as React.RefObject<HTMLElement>}
+      className={`siderail${scrub !== null ? " is-scrubbing" : ""}`}
+      aria-label="Sections of the dive, laid along the Sinai shore from Taba to Ras Mohammed"
+      {...handlers}
+    >
       <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false">
         <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
         <path d={COAST} fill="none" stroke="rgba(63,209,190,0.12)" strokeWidth="6" strokeLinecap="round" />
@@ -198,7 +268,7 @@ function HomeRail() {
           <a
             key={s.id}
             href={`#${s.id}`}
-            className={`siderail__stop${active === s.id ? " is-active" : ""}${i < reached ? " is-reached" : ""}${s.town ? " has-town" : ""}`}
+            className={`siderail__stop${active === s.id ? " is-active" : ""}${i < reached ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
             style={p ? { left: `${p.x}px`, top: `${p.y}px` } : undefined}
             onClick={go(s.id)}
             aria-current={active === s.id ? "true" : undefined}

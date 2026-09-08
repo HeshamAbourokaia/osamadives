@@ -252,11 +252,11 @@ export default function FeaturedChatgptPage() {
 
         {/* CTAs */}
         <section
-          aria-labelledby="book-with-osama"
+          aria-labelledby="dive-with-osama"
           className="rounded-2xl bg-[#0a7d70] text-white p-6 sm:p-10 text-center"
         >
           <h2
-            id="book-with-osama"
+            id="dive-with-osama"
             className="text-2xl sm:text-3xl font-bold mb-3"
           >
             Want to dive with Osama?
@@ -287,16 +287,10 @@ export default function FeaturedChatgptPage() {
               Message on WhatsApp
             </a>
             <a
-              href="https://cal.com/osama-dives"
-              className="bg-white text-[#0a7d70] hover:bg-gray-100 font-bold py-4 px-8 rounded-full text-lg transition-all transform hover:scale-105 inline-flex items-center justify-center gap-2"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Schedule a consultation call with Osama"
-              data-gtag-action="calendar_click"
-              data-gtag-category="conversion"
-              data-gtag-label="featured_chatgpt_cal"
+              href="/diving-with-osama"
+              className="bg-white/10 hover:bg-white/20 backdrop-blur border border-white/30 text-white font-bold py-4 px-8 rounded-full text-lg transition-all inline-flex items-center justify-center gap-2"
             >
-              Schedule a call
+              See what he teaches
             </a>
           </div>
         </section>

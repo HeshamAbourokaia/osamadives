@@ -25,3 +25,29 @@
    The one action they carried, write a review, sits under the top bar on the right. */
 .descent-inner .lb-action-bar { position: absolute; right: var(--sc-gutter); top: 5.4rem; z-index: 3; }
 @media (max-width: 860px) { .descent-inner .lb-action-bar { top: 6.2rem; } }
+
+/* --------------------------------------------- what I do in the water --------
+   A person's account, set as prose on the bone paper. The one statement about the
+   centres sits in the header where it governs the page, marked off by a rule so it
+   reads as a plain fact about how diving works here rather than as small print. */
+.descent-inner .site-head .wiw__eyebrow { margin: 0 0 0.7rem; font: 600 0.7rem/1 var(--sc-font-mono, ui-monospace, monospace); letter-spacing: 0.18em; text-transform: uppercase; color: #3fd1be; }
+.descent-inner .site-head .wiw__legal { margin-top: 1.4rem; padding-left: 0.9rem; border-left: 2px solid rgba(63, 209, 190, 0.5); font-size: 0.95rem; line-height: 1.6; color: rgba(255, 255, 255, 0.74); }
+
+.wiw { max-width: 46rem; margin: 0 auto; padding: 3rem var(--sc-gutter, 1.25rem) 4rem; }
+.wiw section + section { margin-top: 3rem; }
+.wiw h2 { font: 800 clamp(1.5rem, 3.2vw, 2.1rem)/1.1 var(--sc-font-display); letter-spacing: -0.02em; margin: 0 0 1rem; color: #171208; }
+.wiw__lead { margin: 0 0 1.4rem; font-size: 1.05rem; line-height: 1.6; color: rgba(23, 18, 8, 0.78); }
+.wiw__list { margin: 0; display: grid; gap: 1.6rem; }
+.wiw__list > div { padding-top: 1.3rem; border-top: 1px solid rgba(23, 18, 8, 0.12); }
+.wiw__list dt { font: 800 1.2rem/1.2 var(--sc-font-display); color: #171208; margin-bottom: 0.35rem; }
+.wiw__list dd { margin: 0; font-size: 1rem; line-height: 1.62; color: rgba(23, 18, 8, 0.76); }
+.wiw__meta { display: block; margin-bottom: 0.5rem; font: 600 0.68rem/1.4 var(--sc-font-mono, ui-monospace, monospace); letter-spacing: 0.13em; text-transform: uppercase; color: #0a7d70; }
+.wiw__end { margin-top: 3.2rem; padding-top: 1.7rem; border-top: 2px solid rgba(10, 125, 112, 0.3); }
+.wiw__end p { margin: 0 0 1.3rem; font-size: 1rem; line-height: 1.62; color: rgba(23, 18, 8, 0.78); }
+.wiw__act { display: inline-flex; align-items: center; min-height: 52px; padding: 0 1.6rem; border-radius: 999px; background: #0a7d70; color: #fff; font: 700 1rem/1 var(--sc-font-display); text-decoration: none; }
+.wiw__act:hover { background: #086a5f; }
+.wiw__also { margin-top: 1.6rem !important; font-size: 0.95rem !important; color: rgba(23, 18, 8, 0.62) !important; }
+.wiw__also a { color: #0a7d70; text-decoration: underline; text-underline-offset: 0.2em; }
+.descent-inner .site-head .wiw__mark { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1rem; }
+.descent-inner .site-head .wiw__mark img { width: 64px; height: 64px; flex: none; }
+.descent-inner .site-head .wiw__mark .wiw__eyebrow { margin: 0; }

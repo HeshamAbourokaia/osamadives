@@ -138,6 +138,12 @@ export default async function Home() {
                 <span className="quickstart__d">What divers wrote afterwards</span>
               </a>
             </li>
+            <li className="quickstart__wide">
+              <a href="/diving-with-osama">
+                <span className="quickstart__k">What he does in the water</span>
+                <span className="quickstart__d">The training he runs, and how a day with him actually goes</span>
+              </a>
+            </li>
           </ul>
           <p className="quickstart__note">Courses and dives are arranged through CDWS-registered dive centres in Dahab.</p>
         </section>

@@ -112,6 +112,14 @@
   .descent .hud__label { display: none; }
   .descent .hud { padding: 0.4rem 0.6rem; }
 
+  /* ---- the rail says it is there ----
+     A little more line and a little more dot, so it reads against a photograph
+     without becoming furniture. */
+  .descent .siderail__coast path { stroke-width: 2.2; }
+  .descent .siderail__coast path:nth-of-type(2) { stroke-width: 10; }
+  .descent .siderail__drawn { stroke-width: 3; }
+  .descent .siderail .siderail__dot { width: 11px; height: 11px; border-width: 1.5px; }
+
   /* ---- the guide reads from its own top ----
      The panel is taller than a phone screen, and the stage was a fixed screen high
      with a bar's worth of padding on top of that, so arriving at the section put you

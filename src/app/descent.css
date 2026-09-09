@@ -491,6 +491,10 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   }
 
   /* the dive HUD: depth follows the page. the signature instrument. */
+  /* The gauge stands down while the reading is zero, which is the whole first third of
+     the page and the last of it. It is a dive computer, not a badge. */
+  .hud { opacity: 0; transform: translateY(-6px); pointer-events: none; transition: opacity 320ms ease-out, transform 320ms ease-out; }
+  .hud.is-under { opacity: 1; transform: none; pointer-events: auto; }
   .hud {
     position: fixed; top: 1.1rem; right: 1.2rem; z-index: 60;
     display: grid; gap: 0.3rem; justify-items: end;

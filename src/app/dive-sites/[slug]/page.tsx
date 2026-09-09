@@ -1,3 +1,4 @@
+import { whatsapp, theName } from "@/lib/contact";
 import DescentShell from "@/app/DescentShell";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
@@ -137,7 +138,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
               Want to dive {site.shortName} with me? Send me a message and I will set it up - whether you are a first-time diver or an experienced one looking for a guide who knows the site cold.
             </p>
             <a
-              href={`https://wa.me/201090208050?text=Hi%20Osama!%20I%20want%20to%20dive%20${encodeURIComponent(site.shortName)}%20with%20you.%20Tell%20me%20more!`}
+              href={whatsapp(theName(site.shortName))}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition"

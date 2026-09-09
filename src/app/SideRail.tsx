@@ -41,6 +41,77 @@ const SITE_STOPS = [
  * happens, because that is where you already are. A plain tap is left alone, so the
  * link underneath still does its own job.
  */
+/**
+ * Two things a fixed element cannot do on its own.
+ *
+ * It cannot stay where the reader can see it: "fixed" is anchored to the layout
+ * viewport, so the moment somebody pinches to zoom and pans, the rail slides off the
+ * side of what is actually on screen and is very hard to find again. visualViewport
+ * reports the window the reader is really looking at, so the rail is placed against
+ * that instead, and scaled back down so it keeps its size on the glass.
+ *
+ * And the coast is drawn at a fixed 48 wide because the dots are placed from
+ * getPointAtLength in the path's own units. On a phone that band is too wide to sit
+ * beside the words, so it is squeezed horizontally by the same factor the dots are,
+ * which keeps every dot on the line.
+ */
+const NARROW = 0.55;
+
+function useEdge(railRef: React.RefObject<HTMLElement>) {
+  const [narrow, setNarrow] = useState(false);
+  // Nobody is born knowing that a line of dots is a menu. The first time this device
+  // sees the site, the rail says every name it holds, then settles down to one.
+  useEffect(() => {
+    const node = railRef.current;
+    if (!node || !window.matchMedia("(max-width: 860px)").matches) return;
+    let seen = true;
+    try { seen = localStorage.getItem("od_rail_seen") === "1"; } catch { /* private window */ }
+    if (seen) return;
+    const t1 = window.setTimeout(() => node.classList.add("is-hello"), 700);
+    const t2 = window.setTimeout(() => {
+      node.classList.remove("is-hello");
+      try { localStorage.setItem("od_rail_seen", "1"); } catch { /* nothing to remember it with */ }
+    }, 4200);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [railRef]);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 860px)");
+    const onMq = () => setNarrow(mq.matches);
+    onMq();
+    mq.addEventListener("change", onMq);
+    const vv = window.visualViewport;
+    const el = railRef.current;
+    let raf = 0;
+    const place = () => {
+      raf = 0;
+      const node = railRef.current;
+      if (!node || !vv || !mq.matches) return;
+      const s = vv.scale || 1;
+      // The rail rests against the right edge, vertically centred, anchored by CSS with
+      // no transform of its own and its origin on that right edge, so a scale here moves
+      // neither. All this has to do is say how far the visible window has drifted.
+      const dx = vv.offsetLeft + vv.width - 2 / s - (window.innerWidth - 2);
+      const dy = vv.offsetTop + vv.height / 2 - window.innerHeight / 2;
+      node.style.transform = `translate(${dx}px, ${dy}px) scale(${1 / s})`;
+    };
+    const onMove = () => { if (!raf) raf = requestAnimationFrame(place); };
+    if (vv) {
+      place();
+      vv.addEventListener("resize", onMove);
+      vv.addEventListener("scroll", onMove);
+    }
+    window.addEventListener("resize", onMove);
+    return () => {
+      mq.removeEventListener("change", onMq);
+      if (vv) { vv.removeEventListener("resize", onMove); vv.removeEventListener("scroll", onMove); }
+      window.removeEventListener("resize", onMove);
+      if (raf) cancelAnimationFrame(raf);
+      if (el) el.style.transform = "";
+    };
+  }, [railRef]);
+  return narrow ? NARROW : 1;
+}
+
 function useScrub(points: { x: number; y: number }[], onPick: (i: number) => void) {
   const [scrub, setScrub] = useState<number | null>(null);
   const rail = useRef<HTMLElement>(null);
@@ -104,6 +175,7 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
     if (href.startsWith("http")) window.open(href, "_blank", "noopener,noreferrer");
     else window.location.href = href;
   });
+  const sx = useEdge(rail);
   useEffect(() => {
     const path = pathRef.current, line = drawRef.current;
     if (!path || !line) return;
@@ -119,7 +191,7 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
       aria-label="Pages of the site, laid along the Sinai shore"
       {...handlers}
     >
-      <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false">
+      <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false" style={{ transform: `scaleX(${sx})`, transformOrigin: "left center" }}>
         <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
         <path d={COAST} fill="none" stroke="rgba(63,209,190,0.12)" strokeWidth="6" strokeLinecap="round" />
         <path ref={drawRef} d={COAST} className="siderail__drawn" fill="none" stroke="#3fd1be" strokeWidth="1.8" strokeLinecap="round" />
@@ -134,7 +206,7 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
             target={external ? "_blank" : undefined}
             rel={external ? "noopener noreferrer" : undefined}
             className={`siderail__stop${i === activeIndex ? " is-active" : ""}${i < activeIndex ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
-            style={p ? { left: `${p.x}px`, top: `${p.y}px` } : undefined}
+            style={p ? { left: `${p.x * sx}px`, top: `${p.y}px` } : undefined}
             aria-current={i === activeIndex ? "page" : undefined}
           >
             <span className="siderail__dot" aria-hidden="true" />
@@ -247,6 +319,7 @@ function HomeRail() {
   };
   const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); jump(id); };
   const { rail, scrub, handlers } = useScrub(points, (i) => jump(STOPS[i].id));
+  const sx = useEdge(rail);
 
   return (
     <nav
@@ -255,7 +328,7 @@ function HomeRail() {
       aria-label="Sections of the dive, laid along the Sinai shore from Taba to Ras Mohammed"
       {...handlers}
     >
-      <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false">
+      <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false" style={{ transform: `scaleX(${sx})`, transformOrigin: "left center" }}>
         <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
         <path d={COAST} fill="none" stroke="rgba(63,209,190,0.12)" strokeWidth="6" strokeLinecap="round" />
         <path ref={drawRef} d={COAST} className="siderail__drawn" fill="none" stroke="#3fd1be" strokeWidth="1.8" strokeLinecap="round" />
@@ -267,7 +340,7 @@ function HomeRail() {
             key={s.id}
             href={`#${s.id}`}
             className={`siderail__stop${active === s.id ? " is-active" : ""}${i < reached ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
-            style={p ? { left: `${p.x}px`, top: `${p.y}px` } : undefined}
+            style={p ? { left: `${p.x * sx}px`, top: `${p.y}px` } : undefined}
             onClick={go(s.id)}
             aria-current={active === s.id ? "true" : undefined}
           >

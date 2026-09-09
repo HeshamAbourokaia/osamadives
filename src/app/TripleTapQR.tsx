@@ -16,7 +16,7 @@ const SPREAD = 44;   // pixels the taps may wander, one thumb's width
  * and three taps inside the photo viewer would close it, so the gesture only counts
  * taps that land on the page itself and would otherwise do nothing.
  */
-const BUSY = 'a, button, input, textarea, select, label, summary, video, [role="button"], [contenteditable="true"], .viewer, .navsheet, .tapqr';
+const BUSY = 'a, button, input, textarea, select, label, summary, video, [role="button"], [contenteditable="true"], .viewer, .siderail, .siderail__scrim, .tapqr';
 
 /**
  * Osama holds the phone out, taps the screen three times, and the code for the page

@@ -1,8 +1,5 @@
 "use client";
 
-import ShareCode from "./ShareCode";
-import { useEffect, useState } from "react";
-
 const LINKS = [
   { href: "/diving-with-osama", label: "Teaching" },
   { href: "/dive-sites", label: "Sites" },
@@ -12,27 +9,14 @@ const LINKS = [
   { href: "/featured/chatgpt", label: "Featured" },
 ];
 
-interface Props {
-  whatsapp: string;
-}
-
-// The brand at the top left, the links along the top on a desktop, and on a phone a
-// single button that opens a full sheet. One hand, sun on the screen: big targets.
-export default function DescentNav({ whatsapp }: Props) {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
-    document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [open]);
-
+/**
+ * The brand at the top left and the links along the top on a desk. On a phone, one
+ * button: the menu sign everybody already knows, and it opens the same coast the
+ * handle on the edge does, so there is one menu with two doors and nothing that lives
+ * behind only one of them. The sheet it used to open held nothing the foot of every
+ * page does not hold as well.
+ */
+export default function DescentNav() {
   return (
     <>
       <div className="topbar" aria-hidden="true" />
@@ -42,30 +26,13 @@ export default function DescentNav({ whatsapp }: Props) {
       </nav>
       <button
         type="button"
-        className={`navbtn${open ? " is-open" : ""}`}
-        aria-expanded={open}
-        aria-controls="navsheet"
-        aria-label={open ? "Close" : "More"}
-        onClick={() => setOpen((o) => !o)}
+        className="navbtn"
+        aria-label="Menu"
+        onClick={() => window.dispatchEvent(new Event("od:rail"))}
       >
         <span aria-hidden="true" />
         <span aria-hidden="true" />
       </button>
-      {open ? (
-        <>
-        <div className="navsheet__scrim" onClick={() => setOpen(false)} aria-hidden="true" />
-        <div className="navsheet" id="navsheet" role="dialog" aria-modal="true" aria-label="More">
-          <p className="navsheet__kicker mono">More</p>
-          <nav className="navsheet__more" aria-label="More">
-            <a href="/review#sign" onClick={() => setOpen(false)}>Write me a review</a>
-            <a href="https://instagram.com/osama_mohamed_hassan" target="_blank" rel="noopener noreferrer">Latest dives on Instagram</a>
-            <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="navsheet__wa">Message Osama on WhatsApp</a>
-          </nav>
-          <ShareCode caption="Point a camera at this and the same page opens on their phone." />
-          <p className="navsheet__foot mono">OsamaDives · Dahab, South Sinai · since 1983</p>
-        </div>
-        </>
-      ) : null}
     </>
   );
 }

@@ -160,14 +160,19 @@ function useScrub(points: Point[], onPick: (i: number) => void, onDismiss?: () =
   return { rail, scrub, handlers };
 }
 
-/** The handle on the edge: tap it, or pull it in, and the coast follows. */
-function Handle({ open, onToggle, onOpen }: { open: boolean; onToggle: () => void; onOpen: () => void }) {
+/**
+ * The handle on the edge: tap it, or pull it in, and the coast follows. It carries the
+ * name of where you are, written up its length the way a tab on the side of a page
+ * does, so it answers both questions before it is touched: this is a control, and you
+ * are on Gallery.
+ */
+function Handle({ open, name, onToggle, onOpen }: { open: boolean; name: string; onToggle: () => void; onOpen: () => void }) {
   const drag = useRef<{ x: number; opened: boolean } | null>(null);
   return (
     <button
       type="button"
       className="siderail__handle"
-      aria-label={open ? "Close the menu" : "Open the menu"}
+      aria-label={open ? "Close the menu" : `Menu. You are on ${name}`}
       aria-expanded={open}
       onClick={onToggle}
       onTouchStart={(e) => { drag.current = { x: e.touches[0].clientX, opened: false }; }}
@@ -181,13 +186,23 @@ function Handle({ open, onToggle, onOpen }: { open: boolean; onToggle: () => voi
         drag.current = null;
       }}
     >
+      <span className="siderail__handle-name mono" aria-hidden="true">{name}</span>
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6" /></svg>
     </button>
   );
 }
 
-/** While the coast is in over the page, the page waits behind a scrim and does not scroll. */
-function useSheet(open: boolean, narrow: boolean, close: () => void) {
+/**
+ * While the coast is in over the page, the page waits behind a scrim and does not
+ * scroll. The menu button at the top left asks for the coast through one event, so
+ * the two doors open the same room.
+ */
+function useSheet(open: boolean, narrow: boolean, close: () => void, toggle: () => void) {
+  useEffect(() => {
+    if (!narrow) return;
+    window.addEventListener("od:rail", toggle);
+    return () => window.removeEventListener("od:rail", toggle);
+  }, [narrow, toggle]);
   useEffect(() => {
     if (!open || !narrow) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
@@ -234,7 +249,7 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
     else window.location.href = href;
   }, () => setOpen(false));
   const { sx, narrow } = useEdge(rail);
-  useSheet(open, narrow, () => setOpen(false));
+  useSheet(open, narrow, () => setOpen(false), () => setOpen((o) => !o));
   useEffect(() => {
     const path = pathRef.current, line = drawRef.current;
     if (!path || !line) return;
@@ -251,7 +266,7 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
         className={`siderail${open ? " is-open" : ""}${scrub !== null ? " is-scrubbing" : ""}`}
         aria-label="Pages of the site, laid along the Sinai shore"
       >
-        <Handle open={open} onToggle={() => setOpen((o) => !o)} onOpen={() => setOpen(true)} />
+        <Handle open={open} name={stops[activeIndex].label} onToggle={() => setOpen((o) => !o)} onOpen={() => setOpen(true)} />
         <div className="siderail__panel" {...handlers}>
           <Coast sx={sx} pathRef={pathRef} drawRef={drawRef} />
           {stops.map((s, i) => {
@@ -380,7 +395,7 @@ function HomeRail() {
   const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); setOpen(false); jump(id); };
   const { rail, scrub, handlers } = useScrub(points, (i) => { setOpen(false); jump(STOPS[i].id); }, () => setOpen(false));
   const { sx, narrow } = useEdge(rail);
-  useSheet(open, narrow, () => setOpen(false));
+  useSheet(open, narrow, () => setOpen(false), () => setOpen((o) => !o));
 
   return (
     <>
@@ -390,7 +405,7 @@ function HomeRail() {
         className={`siderail${open ? " is-open" : ""}${scrub !== null ? " is-scrubbing" : ""}`}
         aria-label="Sections of the dive, laid along the Sinai shore from Taba to Ras Mohammed"
       >
-        <Handle open={open} onToggle={() => setOpen((o) => !o)} onOpen={() => setOpen(true)} />
+        <Handle open={open} name={STOPS.find((s) => s.id === active)?.label ?? STOPS[0].label} onToggle={() => setOpen((o) => !o)} onOpen={() => setOpen(true)} />
         <div className="siderail__panel" {...handlers}>
           <Coast sx={sx} pathRef={pathRef} drawRef={drawRef} />
           {STOPS.map((s, i) => (

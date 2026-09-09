@@ -159,17 +159,20 @@
   .descent .siderail.is-open .siderail__panel { transform: none; pointer-events: auto; }
 
   .descent .siderail__handle {
-    display: grid; place-items: center; position: absolute; right: 0; top: 50%; z-index: 2;
-    width: 22px; height: 108px; margin-top: -54px; padding: 0; border: 0; border-radius: 12px 0 0 12px;
-    background: rgba(6, 20, 32, 0.84); border-left: 1px solid rgba(63, 209, 190, 0.7);
+    display: grid; grid-auto-flow: row; justify-items: center; align-content: center; gap: 9px;
+    position: absolute; right: 0; top: 50%; z-index: 2; transform: translateY(-50%);
+    width: 24px; min-height: 120px; padding: 13px 0 11px; border: 0; border-radius: 12px 0 0 12px;
+    background: rgba(6, 20, 32, 0.86); border-left: 1px solid rgba(63, 209, 190, 0.7);
     box-shadow: -4px 0 18px rgba(63, 209, 190, 0.28); color: #3fd1be; pointer-events: auto;
     transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   /* the thumb gets more than the sliver you can see */
   .descent .siderail__handle::before { content: ""; position: absolute; top: -12px; bottom: -12px; left: -22px; right: 0; }
-  .descent .siderail__handle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(63, 209, 190, 0.8)); animation: rail-beckon 1.15s ease-in-out 0.6s 3; }
+  /* the name of where you are, read up the tab like the spine of a book */
+  .descent .siderail__handle-name { writing-mode: vertical-rl; transform: rotate(180deg); font: 700 0.58rem/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: #3fd1be; white-space: nowrap; }
+  .descent .siderail__handle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(63, 209, 190, 0.8)); animation: rail-beckon 1.15s ease-in-out 0.6s 3; }
   /* open, the handle rides on the panel's outer edge and points the other way */
-  .descent .siderail.is-open .siderail__handle { transform: translateX(calc(-1 * var(--rail-w))); }
+  .descent .siderail.is-open .siderail__handle { transform: translate(calc(-1 * var(--rail-w)), -50%); }
   .descent .siderail.is-open .siderail__handle svg { animation: none; transform: rotate(180deg); }
   @keyframes rail-beckon { 0%, 100% { transform: translateX(0); opacity: 0.7; } 50% { transform: translateX(-4px); opacity: 1; } }
   .descent .siderail__scrim { display: block; position: fixed; inset: 0; z-index: 65; background: rgba(4, 18, 26, 0.5); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); animation: tapqr-in 180ms ease-out both; }
@@ -198,14 +201,6 @@
   /* the sheet is a room of its own, not a scrim over the page behind it */
   /* the sheet is only as tall as what is in it, and drops from the bar it belongs to;
      the page behind stays visible under a scrim, which is what makes it feel small */
-  .descent .navsheet__scrim { position: fixed; inset: 0; z-index: 64; background: rgba(4,18,26,0.6); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); animation: tapqr-in 180ms ease-out both; }
-  .descent .navsheet { inset: 0 0 auto 0; height: auto; max-height: 88svh; overflow-y: auto; border-radius: 0 0 22px 22px; background: rgba(6,20,32,0.985); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); align-content: start; padding: 4.6rem var(--sc-gutter) 1.8rem; gap: 1.1rem; box-shadow: 0 24px 50px -20px rgba(0,0,0,0.8); }
-
-  /* the sheet is what lives nowhere else: three lines and the code */
-  .descent .navsheet__kicker { margin: 0.4rem 0 0.2rem; font: 700 0.62rem/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(63,209,190,0.85); }
-  .descent .navsheet__more { display: grid; gap: 0.1rem; width: 100%; }
-  .descent .navsheet .navsheet__more a { min-height: 48px; display: flex; align-items: center; font: 600 0.95rem/1.3 var(--sc-font-text); letter-spacing: 0; text-transform: none; color: rgba(237,244,242,0.82); }
-  .descent .navsheet .navsheet__more a.navsheet__wa { margin-top: 0.6rem; color: #3fd1be; font-weight: 700; }
 
   /* what I do in the water, on a phone */
   .descent-inner .site-head .wiw__mark img { width: 54px; height: 54px; }

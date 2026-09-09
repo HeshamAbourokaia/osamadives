@@ -84,7 +84,7 @@ export default async function Home() {
         </filter>
       </svg>
       <div className="sc-grain" aria-hidden="true" />
-      <DescentNav whatsapp={WHATSAPP} />
+      <DescentNav />
       <aside className="hud mono" id="hud" aria-hidden="true">
         <span className="hud__depth"><span id="hud-depth">00.0</span> <small>M</small></span>
         <span className="hud__label" id="hud-label">Surface</span>

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { archivo, plex } from "./fonts";
-import { WHATSAPP } from "@/lib/contact";
 import DescentNav from "./DescentNav";
 import Contours from "./Contours";
 import TailFoot from "./TailFoot";
@@ -23,7 +22,7 @@ export default function DescentShell({ children }: { children: ReactNode }) {
   return (
     <div className={`descent descent-inner ${archivo.variable} ${plex.variable}`}>
       <div className="sc-grain" aria-hidden="true" />
-      <DescentNav whatsapp={WHATSAPP} />
+      <DescentNav />
       <div className="inner g-bone" data-sc-spotlight>
         <Contours seed={5} glow={false} />
         <div className="inner-body">{children}</div>

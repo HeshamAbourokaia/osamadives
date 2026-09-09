@@ -49,7 +49,6 @@
   .descent .brand-copy { bottom: 6.4rem; padding-bottom: 0; }
   .descent .brand-copy h1 { font-size: clamp(3rem, 15vw, 4.4rem); }
   .descent .brand-copy .sc-body { font-size: 17px; max-width: 30ch; }
-  .descent .brand-cta { display: inline-flex; align-items: center; min-height: 52px; padding: 0 1.5rem; font-size: 1.02rem; margin: 1rem 0 0.9rem; }
   .descent .brand-start { display: inline-flex; align-items: center; min-height: 44px; gap: 0.5rem; color: rgba(237,244,242,0.85); text-decoration: none; font: 600 0.8rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
   .descent .brand-start i { width: 8px; height: 8px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); animation: start-nudge 1.6s ease-in-out infinite; }
   @keyframes start-nudge { 0%, 100% { transform: rotate(45deg) translateY(-2px); } 50% { transform: rotate(45deg) translateY(2px); } }
@@ -135,6 +134,9 @@
      hover to ask for them and no room to show nine at once. The coast is drawn at
      its own size: the dots are placed from getPointAtLength in user units, so
      scaling the picture would slide them off the line. */
+  /* Every stop says its name, all the time. That is the most obvious a menu can be,
+     and it costs the width the names take, which the page gives back below. */
+  .descent { --rail-w: 92px; }
   .descent .siderail {
     /* nudged down so the first stop clears the top bar on a short screen */
     display: block; position: fixed; right: 2px; top: calc(50% - 210px + 1.4rem);
@@ -144,36 +146,39 @@
   /* the strip: a piece of the screen that belongs to the rail, so it reads as a control
      and not as a mark somebody drew on the page */
   .descent .siderail::before {
-    content: ""; position: fixed; right: 0; top: 0; bottom: 0; width: 30px; z-index: -1;
-    background: linear-gradient(to right, rgba(6,20,32,0) 0%, rgba(6,20,32,0.5) 45%, rgba(6,20,32,0.62) 100%);
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    content: ""; position: fixed; right: 0; top: 0; bottom: 0; width: var(--rail-w); z-index: -1;
+    background: linear-gradient(to right, rgba(6,20,32,0.86) 0%, rgba(6,20,32,0.94) 26%, #061420 100%);
     border-left: 1px solid rgba(190, 240, 232, 0.16);
   }
   .descent .siderail .siderail__stop { width: 28px; height: 44px; margin: -22px 0 0 -14px; }
   .descent .siderail .siderail__dot { width: 10px; height: 10px; border-width: 1.5px; }
-  .descent .siderail .siderail__label { right: 20px; font-size: 0.58rem; padding: 0.34rem 0.56rem; }
   .descent .siderail .siderail__town { display: none; }
 
-  /* the name of the stop you have just reached says itself and then gets out of the
-     way, so the rail tells you where you are without sitting on the words */
-  .descent .siderail .siderail__stop.is-active .siderail__label { animation: rail-name 2.4s ease-out both; }
-  .descent .siderail .siderail__stop:active .siderail__label,
-  .descent .siderail .siderail__stop:focus-visible .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); }
-  @keyframes rail-name { 0%, 62% { opacity: 1; transform: translate(0, -50%); } 100% { opacity: 0; transform: translate(8px, -50%); } }
-
-  /* the one time introduction: nobody is born knowing a line of dots is a menu, so on
-     this device's first visit the rail says every name it holds, then settles to one */
-  .descent .siderail.is-hello .siderail__label,
-  .descent .siderail.is-hello .siderail__stop.is-active .siderail__label {
-    animation: none; opacity: 1; transform: translate(0, -50%); transition: opacity 420ms ease-out;
+  .descent .siderail .siderail__label {
+    right: 20px; opacity: 1; transform: translate(0, -50%); animation: none;
+    font: 700 0.56rem/1 var(--mono); letter-spacing: 0.1em; padding: 0.4rem 0.52rem;
+    background: rgba(6, 20, 32, 0.66); border: 1px solid rgba(190, 240, 232, 0.22);
+    color: rgba(237, 244, 242, 0.82); backdrop-filter: none; -webkit-backdrop-filter: none;
+    transition: background-color 200ms, color 200ms;
   }
-  .descent .siderail.is-hello .siderail__dot { background: rgba(63, 209, 190, 0.55); }
-
-  /* while a thumb is on the line, the stop under it says its name and the others step
-     back, so the slide reads as choosing rather than scrolling */
-  .descent .siderail .siderail__stop.is-scrub .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); background: #3fd1be; border-color: #3fd1be; }
+  .descent .siderail .siderail__stop.is-active .siderail__label {
+    background: #3fd1be; border-color: #3fd1be; color: #04121a; animation: none; opacity: 1; transform: translate(0, -50%);
+  }
+  /* while a thumb is on the line, the stop under it lights up and grows */
+  .descent .siderail .siderail__stop.is-scrub .siderail__label { background: #3fd1be; border-color: #3fd1be; color: #04121a; }
   .descent .siderail .siderail__stop.is-scrub .siderail__dot { background: #3fd1be; transform: translate(-50%, -50%) scale(1.6); box-shadow: 0 0 0 5px rgba(63,209,190,0.24), 0 0 18px rgba(63,209,190,0.85); }
-  .descent .siderail.is-scrubbing .siderail__stop:not(.is-scrub) .siderail__label { animation: none; opacity: 0; }
+
+  /* The phone screen keeps a column on the right for the rail, and the site lives in
+     what is left. Padding the page once is the only way this holds: chasing individual
+     blocks leaves something behind every time, and a caption read through the strip is
+     worse than a narrower page. Fixed things, the bar and the button, are unaffected. */
+  .descent { padding-right: var(--rail-w); }
+  .descent .topbar, .descent .brand, .descent .navbtn { right: var(--rail-w); }
+  /* the 1987 act pins a stage that reaches past the page box, so its captions need
+     telling separately */
+  .descent .peak-frame, .descent .peak-captions { padding-right: var(--rail-w) !important; }
+  /* the back pill sat on top of the Message button; it goes above it and clears the column */
+  .backplace { left: var(--sc-gutter, 1.25rem); right: calc(var(--rail-w) + 0.9rem); transform: none; bottom: calc(4.6rem + env(safe-area-inset-bottom)); justify-content: center; }
 
   /* the sheet is a room of its own, not a scrim over the page behind it */
   /* the sheet is only as tall as what is in it, and drops from the bar it belongs to;

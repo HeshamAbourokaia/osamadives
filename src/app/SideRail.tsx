@@ -10,9 +10,9 @@ const STOPS = [
   { id: "brand-act", label: "Surface", at: 0.04 },
   { id: "guide-act", label: "Osama", at: 0.15 },
   { id: "peak-act", label: "1987", at: 0.26 },
-  { id: "coast-act", label: "The sites", at: 0.37 },
-  { id: "orbit-act", label: "His world", at: 0.5, town: "Dahab" },
-  { id: "school-act", label: "The school", at: 0.62 },
+  { id: "coast-act", label: "Sites", at: 0.37 },
+  { id: "orbit-act", label: "World", at: 0.5, town: "Dahab" },
+  { id: "school-act", label: "School", at: 0.62 },
   { id: "gallery-act", label: "Gallery", at: 0.73 },
   { id: "stories", label: "Reviews", at: 0.84 },
   { id: "surface-act", label: "Contact", at: 0.95 },
@@ -59,21 +59,6 @@ const NARROW = 0.55;
 
 function useEdge(railRef: React.RefObject<HTMLElement>) {
   const [narrow, setNarrow] = useState(false);
-  // Nobody is born knowing that a line of dots is a menu. The first time this device
-  // sees the site, the rail says every name it holds, then settles down to one.
-  useEffect(() => {
-    const node = railRef.current;
-    if (!node || !window.matchMedia("(max-width: 860px)").matches) return;
-    let seen = true;
-    try { seen = localStorage.getItem("od_rail_seen") === "1"; } catch { /* private window */ }
-    if (seen) return;
-    const t1 = window.setTimeout(() => node.classList.add("is-hello"), 700);
-    const t2 = window.setTimeout(() => {
-      node.classList.remove("is-hello");
-      try { localStorage.setItem("od_rail_seen", "1"); } catch { /* nothing to remember it with */ }
-    }, 4200);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [railRef]);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 860px)");
     const onMq = () => setNarrow(mq.matches);
@@ -87,9 +72,17 @@ function useEdge(railRef: React.RefObject<HTMLElement>) {
       const node = railRef.current;
       if (!node || !vv || !mq.matches) return;
       const s = vv.scale || 1;
-      // The rail rests against the right edge, vertically centred, anchored by CSS with
-      // no transform of its own and its origin on that right edge, so a scale here moves
-      // neither. All this has to do is say how far the visible window has drifted.
+      // Nothing to correct while the page sits at its natural size, and the transform has
+      // to come off rather than be set to none: any transform makes this element the
+      // containing block for the fixed strip behind it, which would then be the height of
+      // the rail instead of the height of the screen.
+      if (s < 1.01 && Math.abs(vv.offsetLeft) < 0.5 && Math.abs(vv.offsetTop) < 0.5) {
+        node.style.removeProperty("transform");
+        return;
+      }
+      // The rail rests against the right edge, vertically centred, with its origin on that
+      // right edge, so a scale here moves neither. All this says is how far the window the
+      // reader can actually see has drifted from the one the page thinks it has.
       const dx = vv.offsetLeft + vv.width - 2 / s - (window.innerWidth - 2);
       const dy = vv.offsetTop + vv.height / 2 - window.innerHeight / 2;
       node.style.transform = `translate(${dx}px, ${dy}px) scale(${1 / s})`;

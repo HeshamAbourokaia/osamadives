@@ -79,6 +79,11 @@ function startHud() {
       if (hud) { hud.classList.remove("is-ping"); void (hud as HTMLElement).offsetWidth; hud.classList.add("is-ping"); }
     }
     trackEl!.style.transform = "scaleX(" + Math.min(1, d / max).toFixed(3) + ")";
+    // The gauge reads zero for the whole first third of the page and again at the end,
+    // where it says nothing. It shows itself once there is a depth to show and stands
+    // down when the diver is back on the surface.
+    const hudEl = depthEl!.closest(".hud");
+    if (hudEl) hudEl.classList.toggle("is-under", d > 0.05);
   }
   const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
   addEventListener("scroll", onScroll, { passive: true });

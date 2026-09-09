@@ -38,8 +38,9 @@
   .descent .surface-copy { bottom: 10.6rem !important; }
   .descent .depth-copy { bottom: 6.4rem; }
   .descent .entry-copy { bottom: 6.2rem !important; }
-  /* one action per screen: the tab bar carries Message, so the copy does not repeat it */
-  .descent .entry-copy .cta, .descent .surface-copy .cta { display: none; }
+  /* one action per screen: the floating Message button carries it on every screen, so
+     the copy never repeats it, the hero included */
+  .descent .entry-copy .cta, .descent .surface-copy .cta, .descent .brand-cta { display: none; }
   /* the year numeral sits under the gauge, measured from the top, not the viewport */
   .descent .peak-year { top: 8.6rem; }
 
@@ -135,25 +136,44 @@
      its own size: the dots are placed from getPointAtLength in user units, so
      scaling the picture would slide them off the line. */
   .descent .siderail {
-    display: block; position: fixed; right: 0.15rem; top: 50%; transform: translateY(-50%);
-    width: 48px; height: 420px; z-index: 54; opacity: 1; touch-action: none;
+    /* nudged down so the first stop clears the top bar on a short screen */
+    display: block; position: fixed; right: 2px; top: calc(50% - 210px + 1.4rem);
+    width: 28px; height: 420px; z-index: 54; opacity: 1; touch-action: none;
+    transform: none; transform-origin: 100% 50%;
   }
-  .descent .siderail .siderail__stop { width: 30px; height: 44px; margin: -22px 0 0 -15px; }
-  .descent .siderail .siderail__dot { width: 9px; height: 9px; }
-  .descent .siderail .siderail__label { right: 22px; font-size: 0.58rem; padding: 0.34rem 0.56rem; }
+  /* the strip: a piece of the screen that belongs to the rail, so it reads as a control
+     and not as a mark somebody drew on the page */
+  .descent .siderail::before {
+    content: ""; position: fixed; right: 0; top: 0; bottom: 0; width: 30px; z-index: -1;
+    background: linear-gradient(to right, rgba(6,20,32,0) 0%, rgba(6,20,32,0.5) 45%, rgba(6,20,32,0.62) 100%);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    border-left: 1px solid rgba(190, 240, 232, 0.16);
+  }
+  .descent .siderail .siderail__stop { width: 28px; height: 44px; margin: -22px 0 0 -14px; }
+  .descent .siderail .siderail__dot { width: 10px; height: 10px; border-width: 1.5px; }
+  .descent .siderail .siderail__label { right: 20px; font-size: 0.58rem; padding: 0.34rem 0.56rem; }
+  .descent .siderail .siderail__town { display: none; }
+
   /* the name of the stop you have just reached says itself and then gets out of the
      way, so the rail tells you where you are without sitting on the words */
   .descent .siderail .siderail__stop.is-active .siderail__label { animation: rail-name 2.4s ease-out both; }
-  /* while a thumb is on the line, the stop under it says its name and the others
-     step back, so the slide reads as choosing rather than scrolling */
-  .descent .siderail.is-scrubbing { touch-action: none; }
-  .descent .siderail .siderail__stop.is-scrub .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); background: #3fd1be; border-color: #3fd1be; }
-  .descent .siderail .siderail__stop.is-scrub .siderail__dot { background: #3fd1be; transform: translate(-50%, -50%) scale(1.6); box-shadow: 0 0 0 5px rgba(63,209,190,0.24), 0 0 18px rgba(63,209,190,0.85); }
-  .descent .siderail.is-scrubbing .siderail__stop:not(.is-scrub) .siderail__label { animation: none; opacity: 0; }
   .descent .siderail .siderail__stop:active .siderail__label,
   .descent .siderail .siderail__stop:focus-visible .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); }
   @keyframes rail-name { 0%, 62% { opacity: 1; transform: translate(0, -50%); } 100% { opacity: 0; transform: translate(8px, -50%); } }
-  .descent .siderail .siderail__town { display: none; }
+
+  /* the one time introduction: nobody is born knowing a line of dots is a menu, so on
+     this device's first visit the rail says every name it holds, then settles to one */
+  .descent .siderail.is-hello .siderail__label,
+  .descent .siderail.is-hello .siderail__stop.is-active .siderail__label {
+    animation: none; opacity: 1; transform: translate(0, -50%); transition: opacity 420ms ease-out;
+  }
+  .descent .siderail.is-hello .siderail__dot { background: rgba(63, 209, 190, 0.55); }
+
+  /* while a thumb is on the line, the stop under it says its name and the others step
+     back, so the slide reads as choosing rather than scrolling */
+  .descent .siderail .siderail__stop.is-scrub .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); background: #3fd1be; border-color: #3fd1be; }
+  .descent .siderail .siderail__stop.is-scrub .siderail__dot { background: #3fd1be; transform: translate(-50%, -50%) scale(1.6); box-shadow: 0 0 0 5px rgba(63,209,190,0.24), 0 0 18px rgba(63,209,190,0.85); }
+  .descent .siderail.is-scrubbing .siderail__stop:not(.is-scrub) .siderail__label { animation: none; opacity: 0; }
 
   /* the sheet is a room of its own, not a scrim over the page behind it */
   /* the sheet is only as tall as what is in it, and drops from the bar it belongs to;

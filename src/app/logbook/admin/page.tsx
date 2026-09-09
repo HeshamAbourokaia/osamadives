@@ -46,7 +46,25 @@ function ago(iso: string | null): string {
 }
 
 // " (card 11, taps on the screen 3)" once scans come from more than one place
-const SOURCE_LABEL: Record<string, string> = { card: "card", tap: "taps on the screen", screen: "shown on a screen", sticker: "stickers", table: "table cards" };
+const SOURCE_LABEL: Record<string, string> = { card: "card", tap: "taps on the screen", screen: "shown on a screen", sticker: "stickers", table: "table cards", wa: "WhatsApp" };
+
+// "the gallery", "the Blue Hole page": where a WhatsApp tap came from, in words
+function pageName(path: string): string {
+  if (!path || path === "/") return "the homepage";
+  if (path.startsWith("/dive-sites/")) return "a dive site page";
+  if (path.startsWith("/dive-sites")) return "the dive sites";
+  if (path.startsWith("/blog/")) return "a journal story";
+  if (path.startsWith("/blog")) return "the journal";
+  if (path.startsWith("/gallery")) return "the gallery";
+  if (path.startsWith("/diving-with-osama")) return "the teaching page";
+  if (path.startsWith("/review") || path.startsWith("/logbook")) return "the reviews";
+  if (path.startsWith("/featured")) return "the featured page";
+  return path;
+}
+// Dahab's clock, so the time can be held against the one on the WhatsApp message
+function clock(iso: string): string {
+  return new Date(iso).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Cairo" });
+}
 function sourcesNote(bySource: Record<string, number>): string {
   const parts = Object.entries(bySource).sort((a, b) => b[1] - a[1]);
   if (parts.length < 2) return "";
@@ -73,7 +91,13 @@ export default async function AdminPage({
   if (!key) return <SignIn wrong={searchParams.wrong === "1"} />;
 
   const store = getStore({ fresh: true });
-  const [entries, scans] = await Promise.all([store.list(), store.scanStats(new Date().toISOString()).catch(() => null)]);
+  const now = new Date().toISOString();
+  const [entries, scans, wa, recent] = await Promise.all([
+    store.list(),
+    store.scanStats(now, { except: ["wa"] }).catch(() => null),
+    store.scanStats(now, { only: ["wa"] }).catch(() => null),
+    store.recentScans("wa", 5).catch(() => [] as { createdAt: string; page: string }[]),
+  ]);
   const base = siteUrl();
   const card = (e: LogbookEntry, print: boolean) =>
     `${base}/api/logbook/${e.id}/card?t=${signToken("share", e.id, TTL.share)}${print ? "&format=print" : ""}`;
@@ -206,6 +230,12 @@ export default async function AdminPage({
               {scans.total === 0
                 ? "Your card has not been scanned yet."
                 : `Your card has been scanned ${scans.total} ${scans.total === 1 ? "time" : "times"}${sourcesNote(scans.bySource)}: ${scans.week} this week, ${scans.today} in the last day, the last one ${ago(scans.last)}.`}
+            </p>
+          ) : null}
+          {wa && wa.total > 0 ? (
+            <p className="lb-stand">
+            {`The site has sent ${wa.total} ${wa.total === 1 ? "person" : "people"} to your WhatsApp: ${wa.week} this week, ${wa.today} in the last day. `}
+            {recent.length ? `The latest, on Dahab's clock: ${recent.map((r) => `${clock(r.createdAt)} from ${pageName(r.page)}`).join("; ")}. A new message that lands a minute after one of these came from the site.` : ""}
             </p>
           ) : null}
         </div>

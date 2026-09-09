@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { EntryPatch, EntryStatus, LogbookEntry, ModeratedBy, QrScan, ScanStats, StampKey } from "./types";
+import type { EntryPatch, EntryStatus, LogbookEntry, ModeratedBy, QrScan, RecentScan, ScanPick, ScanStats, StampKey } from "./types";
 
 export interface ListOptions {
   status?: EntryStatus;
@@ -29,10 +29,17 @@ export interface LogbookStore {
 
   // Scans of the QR code: one row per scan, so Osama can see the card working.
   recordScan(scan: QrScan): Promise<void>;
-  scanStats(nowIso: string): Promise<ScanStats>;
+  scanStats(nowIso: string, pick?: ScanPick): Promise<ScanStats>;
+  /** The latest taps from one source, newest first. */
+  recentScans(source: string, limit: number): Promise<RecentScan[]>;
 }
 
-function statsFrom(rows: { createdAt: string; source: string }[], nowIso: string): ScanStats {
+function statsFrom(all: { createdAt: string; source: string }[], nowIso: string, pick?: ScanPick): ScanStats {
+  // A subset when asked: the card sentence on the moderation page leaves WhatsApp taps
+  // out, and the WhatsApp sentence wants only those.
+  let rows = all;
+  if (pick?.only) rows = rows.filter((r) => pick.only!.includes(r.source));
+  if (pick?.except) rows = rows.filter((r) => !pick.except!.includes(r.source));
   const now = new Date(nowIso).getTime();
   const weekAgo = new Date(now - 7 * 86_400_000).toISOString();
   const dayAgo = new Date(now - 86_400_000).toISOString();
@@ -222,8 +229,13 @@ export class FileStore implements LogbookStore {
     });
   }
 
-  async scanStats(nowIso: string) {
-    return statsFrom(await this.readJson<QrScan>(this.sibling("scans.json")), nowIso);
+  async scanStats(nowIso: string, pick?: ScanPick) {
+    return statsFrom(await this.readJson<QrScan>(this.sibling("scans.json")), nowIso, pick);
+  }
+  async recentScans(source: string, limit: number) {
+    const all = await this.readJson<QrScan>(this.sibling("scans.json"));
+    return all.filter((x) => x.source === source).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, limit)
+      .map((x) => ({ createdAt: x.createdAt, page: x.page ?? "" }));
   }
 }
 
@@ -319,6 +331,8 @@ export class NeonStore implements LogbookStore {
           ua text NOT NULL DEFAULT '',
           ip_hash text NOT NULL DEFAULT ''
         )`;
+        // A WhatsApp tap remembers the page it came from, so a message can be matched to it by the clock.
+        await sql`ALTER TABLE qr_scans ADD COLUMN IF NOT EXISTS page text NOT NULL DEFAULT ''`;
         await sql`CREATE TABLE IF NOT EXISTS logbook_reactions (
           entry_id text NOT NULL,
           emoji text NOT NULL,
@@ -431,13 +445,18 @@ export class NeonStore implements LogbookStore {
 
   async recordScan(scan: QrScan) {
     const sql = await this.db();
-    await sql`INSERT INTO qr_scans (id, created_at, source, ua, ip_hash) VALUES (${scan.id}, ${scan.createdAt}, ${scan.source}, ${scan.ua}, ${scan.ipHash})`;
+    await sql`INSERT INTO qr_scans (id, created_at, source, ua, ip_hash, page) VALUES (${scan.id}, ${scan.createdAt}, ${scan.source}, ${scan.ua}, ${scan.ipHash}, ${scan.page ?? ""})`;
   }
 
-  async scanStats(nowIso: string) {
+  async scanStats(nowIso: string, pick?: ScanPick) {
     const sql = await this.db();
     const rows = (await sql`SELECT created_at, source FROM qr_scans`) as { created_at: string; source: string }[];
-    return statsFrom(rows.map((r) => ({ createdAt: new Date(r.created_at).toISOString(), source: r.source })), nowIso);
+    return statsFrom(rows.map((r) => ({ createdAt: new Date(r.created_at).toISOString(), source: r.source })), nowIso, pick);
+  }
+  async recentScans(source: string, limit: number) {
+    const sql = await this.db();
+    const rows = (await sql`SELECT created_at, page FROM qr_scans WHERE source = ${source} ORDER BY created_at DESC LIMIT ${limit}`) as { created_at: string; page: string | null }[];
+    return rows.map((r) => ({ createdAt: new Date(r.created_at).toISOString(), page: r.page ?? "" }));
   }
 }
 

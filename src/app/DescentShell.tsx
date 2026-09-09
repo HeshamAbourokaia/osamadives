@@ -5,6 +5,7 @@ import Contours from "./Contours";
 import TailFoot from "./TailFoot";
 import TapRipple from "./TapRipple";
 import TripleTapQR from "./TripleTapQR";
+import WhatsAppCount from "./WhatsAppCount";
 import BackToTop from "@/components/BackToTop";
 import SideRail from "./SideRail";
 import MessageButton from "./MessageButton";
@@ -33,6 +34,7 @@ export default function DescentShell({ children }: { children: ReactNode }) {
       <BackToTop />
       <TapRipple />
       <TripleTapQR />
+      <WhatsAppCount />
     </div>
   );
 }

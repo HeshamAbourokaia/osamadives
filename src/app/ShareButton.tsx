@@ -26,7 +26,7 @@ export default function ShareButton({ url, title, label = "Share", fallbackLabel
 
   const wa = `https://wa.me/?text=${encodeURIComponent(title ? `${title} ${url}` : url)}`;
   return (
-    <a className={className} href={wa} target="_blank" rel="noopener noreferrer" onClick={share} aria-label={title ? `Share ${title}` : "Share this page"}>
+    <a className={className} href={wa} target="_blank" rel="noopener noreferrer" onClick={share} data-share="1" aria-label={title ? `Share ${title}` : "Share this page"}>
       {native ? label : fallbackLabel ?? label}
     </a>
   );

@@ -20,9 +20,7 @@ const STOPS = [
 // Taba, Nuweiba, Ras Shaitan, Dahab, Sharm el Sheikh, Ras Mohammed: the shore as a line.
 const COAST = "M30 6 C24 30 22 52 27 78 C31 96 38 106 33 124 C28 142 20 160 22 186 C24 210 36 224 36 246 C36 270 24 290 24 314 C24 338 32 356 26 376 C22 390 16 402 12 414";
 
-// On the inner pages the same shore carries the site itself: one stop per page. The
-// rail on the edge and the one in the drawer read from this single list, so a page
-// added here appears in both without anything else being touched.
+// On the inner pages the same shore carries the site itself: one stop per page.
 const SITE_STOPS = [
   { href: "/", label: "Home", at: 0.04 },
   { href: "/diving-with-osama", label: "Teaching", at: 0.17 },
@@ -34,25 +32,21 @@ const SITE_STOPS = [
   { href: WHATSAPP, label: "Contact", at: 0.95 },
 ];
 
+type Point = { x: number; y: number };
+
 /**
- * Slide along the coast to choose. Press anywhere on the line, keep the finger down
- * and run it up or down: whichever stop is under your thumb becomes the one, and says
- * its name. Lift to go there. Land back on the stop you started from and nothing
- * happens, because that is where you already are. A plain tap is left alone, so the
- * link underneath still does its own job.
- */
-/**
- * Two things a fixed element cannot do on its own.
+ * On a phone the rail lives off the edge of the screen and comes in when asked, the
+ * way the Edge Panel does on the Samsung phones most people here carry: a slim handle
+ * on the right, pulsing a little when a page arrives, and the whole coast slides in
+ * over the page at a tap or a pull. The page keeps its full width. On a desk none of
+ * this applies and the rail simply sits where it always has.
  *
- * It cannot stay where the reader can see it: "fixed" is anchored to the layout
- * viewport, so the moment somebody pinches to zoom and pans, the rail slides off the
- * side of what is actually on screen and is very hard to find again. visualViewport
- * reports the window the reader is really looking at, so the rail is placed against
- * that instead, and scaled back down so it keeps its size on the glass.
- *
- * And the coast is drawn at a fixed 48 wide because the dots are placed from
- * getPointAtLength in the path's own units. On a phone that band is too wide to sit
- * beside the words, so it is squeezed horizontally by the same factor the dots are,
+ * Two things a fixed element cannot do on its own are handled here as well. It cannot
+ * stay where the reader can see it: "fixed" is anchored to the layout viewport, so a
+ * pinch and a pan slide it off the glass. visualViewport reports the window the reader
+ * really sees, so the rail is placed against that while zoomed and scaled back down.
+ * And the coast is drawn at a fixed 48 wide because the dots come from getPointAtLength
+ * in the path's own units; on a phone it is squeezed by the same factor as the dots,
  * which keeps every dot on the line.
  */
 const NARROW = 0.55;
@@ -72,18 +66,15 @@ function useEdge(railRef: React.RefObject<HTMLElement>) {
       const node = railRef.current;
       if (!node || !vv || !mq.matches) return;
       const s = vv.scale || 1;
-      // Nothing to correct while the page sits at its natural size, and the transform has
-      // to come off rather than be set to none: any transform makes this element the
-      // containing block for the fixed strip behind it, which would then be the height of
-      // the rail instead of the height of the screen.
+      // At the page's natural size there is nothing to correct, and the transform has to
+      // come off rather than be set to none: any transform makes this element the
+      // containing block for anything fixed inside it.
       if (s < 1.01 && Math.abs(vv.offsetLeft) < 0.5 && Math.abs(vv.offsetTop) < 0.5) {
         node.style.removeProperty("transform");
         return;
       }
-      // The rail rests against the right edge, vertically centred, with its origin on that
-      // right edge, so a scale here moves neither. All this says is how far the window the
-      // reader can actually see has drifted from the one the page thinks it has.
-      const dx = vv.offsetLeft + vv.width - 2 / s - (window.innerWidth - 2);
+      const rightPx = parseFloat(getComputedStyle(node).right) || 0;
+      const dx = vv.offsetLeft + vv.width - rightPx / s - (window.innerWidth - rightPx);
       const dy = vv.offsetTop + vv.height / 2 - window.innerHeight / 2;
       node.style.transform = `translate(${dx}px, ${dy}px) scale(${1 / s})`;
     };
@@ -99,16 +90,23 @@ function useEdge(railRef: React.RefObject<HTMLElement>) {
       if (vv) { vv.removeEventListener("resize", onMove); vv.removeEventListener("scroll", onMove); }
       window.removeEventListener("resize", onMove);
       if (raf) cancelAnimationFrame(raf);
-      if (el) el.style.transform = "";
+      if (el) el.style.removeProperty("transform");
     };
   }, [railRef]);
-  return narrow ? NARROW : 1;
+  return { sx: narrow ? NARROW : 1, narrow };
 }
 
-function useScrub(points: { x: number; y: number }[], onPick: (i: number) => void) {
+/**
+ * Slide along the coast to choose. Press the line, keep the finger down and run it up
+ * or down: whichever stop is under the thumb becomes the one and says its name. Lift
+ * to go there. Land back on the stop you started from and nothing happens. A plain tap
+ * is left alone, so the link underneath still does its own job. A clear pull to the
+ * right is not a choice at all: it puts the rail away.
+ */
+function useScrub(points: Point[], onPick: (i: number) => void, onDismiss?: () => void) {
   const [scrub, setScrub] = useState<number | null>(null);
   const rail = useRef<HTMLElement>(null);
-  const from = useRef<{ i: number; y: number; moved: boolean } | null>(null);
+  const from = useRef<{ i: number; x: number; y: number; moved: boolean; gone: boolean } | null>(null);
   const at = useRef<number | null>(null);
 
   const nearest = (clientY: number) => {
@@ -124,15 +122,23 @@ function useScrub(points: { x: number; y: number }[], onPick: (i: number) => voi
     onTouchStart: (e: React.TouchEvent) => {
       const t = e.touches[0];
       const i = nearest(t.clientY);
-      from.current = { i, y: t.clientY, moved: false };
+      from.current = { i, x: t.clientX, y: t.clientY, moved: false, gone: false };
       at.current = i;
       setScrub(i);
     },
     onTouchMove: (e: React.TouchEvent) => {
       const f = from.current;
-      if (!f) return;
+      if (!f || f.gone) return;
       const t = e.touches[0];
-      if (Math.abs(t.clientY - f.y) > 8) f.moved = true;
+      const dx = t.clientX - f.x, dy = t.clientY - f.y;
+      if (dx > 44 && dx > Math.abs(dy)) {
+        f.gone = true;
+        at.current = null;
+        setScrub(null);
+        onDismiss?.();
+        return;
+      }
+      if (Math.abs(dy) > 8) f.moved = true;
       const i = nearest(t.clientY);
       at.current = i;
       setScrub(i);
@@ -141,9 +147,11 @@ function useScrub(points: { x: number; y: number }[], onPick: (i: number) => voi
       const f = from.current, i = at.current;
       from.current = null; at.current = null;
       setScrub(null);
-      if (!f || i === null || !f.moved) return; // a tap: let the anchor follow itself
-      e.preventDefault();                        // a slide: no ghost click on the anchor
-      if (i === f.i) return;                     // slid away and came home: stay put
+      if (!f) return;
+      if (f.gone) { e.preventDefault(); return; }
+      if (i === null || !f.moved) return;    // a tap: let the anchor follow itself
+      e.preventDefault();                     // a slide: no ghost click on the anchor
+      if (i === f.i) return;                  // slid away and came home: stay put
       onPick(i);
     },
     onTouchCancel: () => { from.current = null; at.current = null; setScrub(null); },
@@ -152,6 +160,61 @@ function useScrub(points: { x: number; y: number }[], onPick: (i: number) => voi
   return { rail, scrub, handlers };
 }
 
+/** The handle on the edge: tap it, or pull it in, and the coast follows. */
+function Handle({ open, onToggle, onOpen }: { open: boolean; onToggle: () => void; onOpen: () => void }) {
+  const drag = useRef<{ x: number; opened: boolean } | null>(null);
+  return (
+    <button
+      type="button"
+      className="siderail__handle"
+      aria-label={open ? "Close the menu" : "Open the menu"}
+      aria-expanded={open}
+      onClick={onToggle}
+      onTouchStart={(e) => { drag.current = { x: e.touches[0].clientX, opened: false }; }}
+      onTouchMove={(e) => {
+        const d = drag.current;
+        if (!d || d.opened || open) return;
+        if (d.x - e.touches[0].clientX > 22) { d.opened = true; onOpen(); }
+      }}
+      onTouchEnd={(e) => {
+        if (drag.current?.opened) e.preventDefault(); // the pull opened it; no tap to close it again
+        drag.current = null;
+      }}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6" /></svg>
+    </button>
+  );
+}
+
+/** While the coast is in over the page, the page waits behind a scrim and does not scroll. */
+function useSheet(open: boolean, narrow: boolean, close: () => void) {
+  useEffect(() => {
+    if (!open || !narrow) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [open, narrow, close]);
+}
+
+function Coast({ sx, pathRef, drawRef }: { sx: number; pathRef: React.RefObject<SVGPathElement>; drawRef: React.RefObject<SVGPathElement> }) {
+  return (
+    <svg
+      className="siderail__coast"
+      viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false"
+      style={{ left: "var(--rail-x, 0px)", transform: `scaleX(${sx})`, transformOrigin: "left center" }}
+    >
+      <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
+      <path d={COAST} fill="none" stroke="rgba(63,209,190,0.12)" strokeWidth="6" strokeLinecap="round" />
+      <path ref={drawRef} d={COAST} className="siderail__drawn" fill="none" stroke="#3fd1be" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const stopStyle = (p: Point | undefined, sx: number) =>
+  p ? { left: `calc(var(--rail-x, 0px) + ${p.x * sx}px)`, top: `${p.y}px` } : undefined;
+
 export default function SideRail({ mode = "home" }: { mode?: "home" | "site" }) {
   if (mode === "site") return <SiteRail stops={SITE_STOPS} />;
   return <HomeRail />;
@@ -159,16 +222,19 @@ export default function SideRail({ mode = "home" }: { mode?: "home" | "site" }) 
 
 function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
   const pathname = usePathname() || "/";
-  const [points, setPoints] = useState<{ x: number; y: number }[]>([]);
+  const [points, setPoints] = useState<Point[]>([]);
+  const [open, setOpen] = useState(false);
   const pathRef = useRef<SVGPathElement>(null);
   const drawRef = useRef<SVGPathElement>(null);
   const activeIndex = Math.max(0, stops.findIndex((s) => s.href !== "/" && !s.href.startsWith("http") && pathname.startsWith(s.href)));
   const { rail, scrub, handlers } = useScrub(points, (i) => {
     const href = stops[i].href;
+    setOpen(false);
     if (href.startsWith("http")) window.open(href, "_blank", "noopener,noreferrer");
     else window.location.href = href;
-  });
-  const sx = useEdge(rail);
+  }, () => setOpen(false));
+  const { sx, narrow } = useEdge(rail);
+  useSheet(open, narrow, () => setOpen(false));
   useEffect(() => {
     const path = pathRef.current, line = drawRef.current;
     if (!path || !line) return;
@@ -178,44 +244,45 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
     line.style.strokeDashoffset = `${L * (1 - stops[activeIndex].at)}`;
   }, [activeIndex, stops]);
   return (
-    <nav
-      ref={rail as React.RefObject<HTMLElement>}
-      className={`siderail${scrub !== null ? " is-scrubbing" : ""}`}
-      aria-label="Pages of the site, laid along the Sinai shore"
-      {...handlers}
-    >
-      <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false" style={{ transform: `scaleX(${sx})`, transformOrigin: "left center" }}>
-        <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
-        <path d={COAST} fill="none" stroke="rgba(63,209,190,0.12)" strokeWidth="6" strokeLinecap="round" />
-        <path ref={drawRef} d={COAST} className="siderail__drawn" fill="none" stroke="#3fd1be" strokeWidth="1.8" strokeLinecap="round" />
-      </svg>
-      {stops.map((s, i) => {
-        const p = points[i];
-        const external = s.href.startsWith("http");
-        return (
-          <a
-            key={s.href}
-            href={s.href}
-            target={external ? "_blank" : undefined}
-            rel={external ? "noopener noreferrer" : undefined}
-            className={`siderail__stop${i === activeIndex ? " is-active" : ""}${i < activeIndex ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
-            style={p ? { left: `${p.x * sx}px`, top: `${p.y}px` } : undefined}
-            aria-current={i === activeIndex ? "page" : undefined}
-          >
-            <span className="siderail__dot" aria-hidden="true" />
-            <span className="siderail__label mono">{s.label}</span>
-            {s.town ? <span className="siderail__town mono" aria-hidden="true">{s.town}</span> : null}
-          </a>
-        );
-      })}
-    </nav>
+    <>
+      {open && narrow ? <div className="siderail__scrim" onClick={() => setOpen(false)} aria-hidden="true" /> : null}
+      <nav
+        ref={rail as React.RefObject<HTMLElement>}
+        className={`siderail${open ? " is-open" : ""}${scrub !== null ? " is-scrubbing" : ""}`}
+        aria-label="Pages of the site, laid along the Sinai shore"
+      >
+        <Handle open={open} onToggle={() => setOpen((o) => !o)} onOpen={() => setOpen(true)} />
+        <div className="siderail__panel" {...handlers}>
+          <Coast sx={sx} pathRef={pathRef} drawRef={drawRef} />
+          {stops.map((s, i) => {
+            const external = s.href.startsWith("http");
+            return (
+              <a
+                key={s.href}
+                href={s.href}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
+                className={`siderail__stop${i === activeIndex ? " is-active" : ""}${i < activeIndex ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
+                style={stopStyle(points[i], sx)}
+                aria-current={i === activeIndex ? "page" : undefined}
+              >
+                <span className="siderail__dot" aria-hidden="true" />
+                <span className="siderail__label mono">{s.label}</span>
+                {s.town ? <span className="siderail__town mono" aria-hidden="true">{s.town}</span> : null}
+              </a>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }
 
 function HomeRail() {
   const [active, setActive] = useState("brand-act");
   const [reached, setReached] = useState(0); // how many stops the drawn coast has passed
-  const [points, setPoints] = useState<{ x: number; y: number }[]>([]);
+  const [points, setPoints] = useState<Point[]>([]);
+  const [open, setOpen] = useState(false);
   const pathRef = useRef<SVGPathElement>(null);
   const drawRef = useRef<SVGPathElement>(null);
   const lengthRef = useRef(0);
@@ -310,39 +377,38 @@ function HomeRail() {
     const top = r.top + window.scrollY + into + 2;
     window.scrollTo({ top: Math.min(top, document.documentElement.scrollHeight - window.innerHeight), behavior: reduced ? "auto" : "smooth" });
   };
-  const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); jump(id); };
-  const { rail, scrub, handlers } = useScrub(points, (i) => jump(STOPS[i].id));
-  const sx = useEdge(rail);
+  const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); setOpen(false); jump(id); };
+  const { rail, scrub, handlers } = useScrub(points, (i) => { setOpen(false); jump(STOPS[i].id); }, () => setOpen(false));
+  const { sx, narrow } = useEdge(rail);
+  useSheet(open, narrow, () => setOpen(false));
 
   return (
-    <nav
-      ref={rail as React.RefObject<HTMLElement>}
-      className={`siderail${scrub !== null ? " is-scrubbing" : ""}`}
-      aria-label="Sections of the dive, laid along the Sinai shore from Taba to Ras Mohammed"
-      {...handlers}
-    >
-      <svg className="siderail__coast" viewBox="0 0 48 420" width="48" height="420" aria-hidden="true" focusable="false" style={{ transform: `scaleX(${sx})`, transformOrigin: "left center" }}>
-        <path ref={pathRef} d={COAST} fill="none" stroke="rgba(63,209,190,0.3)" strokeWidth="1.4" strokeLinecap="round" />
-        <path d={COAST} fill="none" stroke="rgba(63,209,190,0.12)" strokeWidth="6" strokeLinecap="round" />
-        <path ref={drawRef} d={COAST} className="siderail__drawn" fill="none" stroke="#3fd1be" strokeWidth="1.8" strokeLinecap="round" />
-      </svg>
-      {STOPS.map((s, i) => {
-        const p = points[i];
-        return (
-          <a
-            key={s.id}
-            href={`#${s.id}`}
-            className={`siderail__stop${active === s.id ? " is-active" : ""}${i < reached ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
-            style={p ? { left: `${p.x * sx}px`, top: `${p.y}px` } : undefined}
-            onClick={go(s.id)}
-            aria-current={active === s.id ? "true" : undefined}
-          >
-            <span className="siderail__dot" aria-hidden="true" />
-            <span className="siderail__label mono">{s.label}</span>
-            {s.town ? <span className="siderail__town mono" aria-hidden="true">{s.town}</span> : null}
-          </a>
-        );
-      })}
-    </nav>
+    <>
+      {open && narrow ? <div className="siderail__scrim" onClick={() => setOpen(false)} aria-hidden="true" /> : null}
+      <nav
+        ref={rail as React.RefObject<HTMLElement>}
+        className={`siderail${open ? " is-open" : ""}${scrub !== null ? " is-scrubbing" : ""}`}
+        aria-label="Sections of the dive, laid along the Sinai shore from Taba to Ras Mohammed"
+      >
+        <Handle open={open} onToggle={() => setOpen((o) => !o)} onOpen={() => setOpen(true)} />
+        <div className="siderail__panel" {...handlers}>
+          <Coast sx={sx} pathRef={pathRef} drawRef={drawRef} />
+          {STOPS.map((s, i) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className={`siderail__stop${active === s.id ? " is-active" : ""}${i < reached ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
+              style={stopStyle(points[i], sx)}
+              onClick={go(s.id)}
+              aria-current={active === s.id ? "true" : undefined}
+            >
+              <span className="siderail__dot" aria-hidden="true" />
+              <span className="siderail__label mono">{s.label}</span>
+              {s.town ? <span className="siderail__town mono" aria-hidden="true">{s.town}</span> : null}
+            </a>
+          ))}
+        </div>
+      </nav>
+    </>
   );
 }

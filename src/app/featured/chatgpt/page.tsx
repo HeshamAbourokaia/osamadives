@@ -1,3 +1,4 @@
+import { whatsapp } from "@/lib/contact";
 import DescentShell from "@/app/DescentShell";
 import Image from "next/image";
 import Link from "next/link";
@@ -267,7 +268,7 @@ export default function FeaturedChatgptPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="https://wa.me/201090208050?text=Hi%20Osama!%20I%20saw%20the%20ChatGPT%20feature%20on%20your%20website%20and%20would%20love%20to%20learn%20more%20about%20diving%20in%20Dahab!"
+              href={whatsapp("the ChatGPT feature")}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full text-lg transition-all transform hover:scale-105 inline-flex items-center justify-center gap-3"
               target="_blank"
               rel="noopener noreferrer"

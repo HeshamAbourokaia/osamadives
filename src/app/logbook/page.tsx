@@ -1,3 +1,4 @@
+import { whatsapp } from "@/lib/contact";
 import DescentShell from "@/app/DescentShell";
 import type { Metadata, Viewport } from "next";
 import BackToPlace from "@/components/BackToPlace";
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "Write me a review | OsamaDives", images: ["https://www.osamadives.com/og/review-card.png"] },
 };
 
-const WHATSAPP = "https://wa.me/201090208050?text=" + encodeURIComponent("Hi Osama! I would love to chat about diving in Dahab.");
+const WHATSAPP = whatsapp("the logbook");
 
 const WALL_PAGE = 24;
 

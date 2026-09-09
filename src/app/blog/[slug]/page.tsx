@@ -1,3 +1,4 @@
+import { whatsapp } from "@/lib/contact";
 import DescentShell from "@/app/DescentShell";
 import StoryTail from "@/app/StoryTail";
 import Image from "next/image";
@@ -208,7 +209,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               underwater world yourself? I would love to hear from you.
             </p>
             <a
-              href="https://wa.me/201090208050?text=Hi%20Osama!%20I%20just%20read%20your%20story%20and%20would%20love%20to%20chat%20about%20diving%20in%20Dahab!"
+              href={whatsapp("your journal")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition"

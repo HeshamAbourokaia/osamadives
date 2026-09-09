@@ -1,3 +1,4 @@
+import { whatsapp } from "@/lib/contact";
 import DescentShell from "@/app/DescentShell";
 import PhoneCards from "@/app/PhoneCards";
 import Image from "next/image";
@@ -84,7 +85,7 @@ export default function DiveSitesPage() {
               I take guests to all of these sites - from first-time divers to technical divers training for the Blue Hole arch. Reach out and let me know what you are after.
             </p>
             <a
-              href="https://wa.me/201090208050?text=Hi%20Osama!%20I%20saw%20your%20dive%20sites%20page%20and%20would%20love%20to%20chat%20about%20diving%20in%20Dahab!"
+              href={whatsapp("the dive sites")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition"

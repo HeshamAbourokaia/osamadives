@@ -134,22 +134,46 @@
      hover to ask for them and no room to show nine at once. The coast is drawn at
      its own size: the dots are placed from getPointAtLength in user units, so
      scaling the picture would slide them off the line. */
-  /* Every stop says its name, all the time. That is the most obvious a menu can be,
-     and it costs the width the names take, which the page gives back below. */
-  .descent { --rail-w: 92px; }
+  /* ---- the rail waits off the edge and comes in when asked ----
+     A slim handle on the right, pulsing when a page arrives, the way the Edge Panel
+     does on the Samsung phones most people here carry. Tap it or pull it and the whole
+     coast slides in over the page with every name, and the page keeps its full width.
+     The names sit to the left of the coast inside the panel; --rail-x moves the coast
+     over to make that room. */
+  .descent { --rail-w: 108px; --rail-x: 78px; }
   .descent .siderail {
-    /* nudged down so the first stop clears the top bar on a short screen */
-    display: block; position: fixed; right: 2px; top: calc(50% - 210px + 1.4rem);
-    width: 28px; height: 420px; z-index: 54; opacity: 1; touch-action: none;
-    transform: none; transform-origin: 100% 50%;
+    display: block; position: fixed; right: 0; top: calc(50% - 210px + 1.4rem);
+    width: var(--rail-w); height: 420px; z-index: 66; opacity: 1;
+    transform: none; transform-origin: 100% 50%; pointer-events: none;
   }
-  /* the strip: a piece of the screen that belongs to the rail, so it reads as a control
-     and not as a mark somebody drew on the page */
-  .descent .siderail::before {
-    content: ""; position: fixed; right: 0; top: 0; bottom: 0; width: var(--rail-w); z-index: -1;
-    background: linear-gradient(to right, rgba(6,20,32,0.86) 0%, rgba(6,20,32,0.94) 26%, #061420 100%);
-    border-left: 1px solid rgba(190, 240, 232, 0.16);
+  .descent .siderail__panel {
+    transform: translateX(calc(100% + 8px)); pointer-events: none; touch-action: none;
+    transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
+  .descent .siderail__panel::before {
+    content: ""; position: absolute; inset: -16px 0 -16px 0; z-index: -1; border-radius: 16px 0 0 16px;
+    background: linear-gradient(to right, rgba(6,20,32,0.9) 0%, #061420 100%);
+    border: 1px solid rgba(190, 240, 232, 0.16); border-right: 0;
+    box-shadow: -14px 0 40px -18px rgba(0, 0, 0, 0.8);
+  }
+  .descent .siderail.is-open .siderail__panel { transform: none; pointer-events: auto; }
+
+  .descent .siderail__handle {
+    display: grid; place-items: center; position: absolute; right: 0; top: 50%; z-index: 2;
+    width: 22px; height: 108px; margin-top: -54px; padding: 0; border: 0; border-radius: 12px 0 0 12px;
+    background: rgba(6, 20, 32, 0.84); border-left: 1px solid rgba(63, 209, 190, 0.7);
+    box-shadow: -4px 0 18px rgba(63, 209, 190, 0.28); color: #3fd1be; pointer-events: auto;
+    transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  /* the thumb gets more than the sliver you can see */
+  .descent .siderail__handle::before { content: ""; position: absolute; top: -12px; bottom: -12px; left: -22px; right: 0; }
+  .descent .siderail__handle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(63, 209, 190, 0.8)); animation: rail-beckon 1.15s ease-in-out 0.6s 3; }
+  /* open, the handle rides on the panel's outer edge and points the other way */
+  .descent .siderail.is-open .siderail__handle { transform: translateX(calc(-1 * var(--rail-w))); }
+  .descent .siderail.is-open .siderail__handle svg { animation: none; transform: rotate(180deg); }
+  @keyframes rail-beckon { 0%, 100% { transform: translateX(0); opacity: 0.7; } 50% { transform: translateX(-4px); opacity: 1; } }
+  .descent .siderail__scrim { display: block; position: fixed; inset: 0; z-index: 65; background: rgba(4, 18, 26, 0.5); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); animation: tapqr-in 180ms ease-out both; }
+
   .descent .siderail .siderail__stop { width: 28px; height: 44px; margin: -22px 0 0 -14px; }
   .descent .siderail .siderail__dot { width: 10px; height: 10px; border-width: 1.5px; }
   .descent .siderail .siderail__town { display: none; }
@@ -168,17 +192,8 @@
   .descent .siderail .siderail__stop.is-scrub .siderail__label { background: #3fd1be; border-color: #3fd1be; color: #04121a; }
   .descent .siderail .siderail__stop.is-scrub .siderail__dot { background: #3fd1be; transform: translate(-50%, -50%) scale(1.6); box-shadow: 0 0 0 5px rgba(63,209,190,0.24), 0 0 18px rgba(63,209,190,0.85); }
 
-  /* The phone screen keeps a column on the right for the rail, and the site lives in
-     what is left. Padding the page once is the only way this holds: chasing individual
-     blocks leaves something behind every time, and a caption read through the strip is
-     worse than a narrower page. Fixed things, the bar and the button, are unaffected. */
-  .descent { padding-right: var(--rail-w); }
-  .descent .topbar, .descent .brand, .descent .navbtn { right: var(--rail-w); }
-  /* the 1987 act pins a stage that reaches past the page box, so its captions need
-     telling separately */
-  .descent .peak-frame, .descent .peak-captions { padding-right: var(--rail-w) !important; }
-  /* the back pill sat on top of the Message button; it goes above it and clears the column */
-  .backplace { left: var(--sc-gutter, 1.25rem); right: calc(var(--rail-w) + 0.9rem); transform: none; bottom: calc(4.6rem + env(safe-area-inset-bottom)); justify-content: center; }
+  /* the back pill sits above the Message button, not on it */
+  .backplace { left: var(--sc-gutter, 1.25rem); right: var(--sc-gutter, 1.25rem); transform: none; bottom: calc(4.6rem + env(safe-area-inset-bottom)); justify-content: center; }
 
   /* the sheet is a room of its own, not a scrim over the page behind it */
   /* the sheet is only as tall as what is in it, and drops from the bar it belongs to;

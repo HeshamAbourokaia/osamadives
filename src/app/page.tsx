@@ -20,6 +20,7 @@ import OdometerYear from "./OdometerYear";
 import Contours from "./Contours";
 import TapRipple from "./TapRipple";
 import TripleTapQR from "./TripleTapQR";
+import WhatsAppCount from "./WhatsAppCount";
 import { LENS_MAP } from "./lensMap";
 import { diveSites } from "@/lib/dive-sites";
 import AiFeatureRibbon from "@/components/AiFeatureRibbon";
@@ -668,6 +669,7 @@ export default async function Home() {
       <RailFocus />
       <TapRipple />
       <TripleTapQR />
+      <WhatsAppCount />
       <BackToTop />
       <ReturnToPlace />
       <DescentBoot />

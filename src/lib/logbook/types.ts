@@ -109,7 +109,15 @@ export interface QrScan {
   source: string;
   ua: string;
   ipHash: string;
+  /** For a WhatsApp tap, the page it was tapped on, so a message can be matched to it by the clock. */
+  page?: string;
 }
+
+/** Which sources a count should cover. Left out, it covers all of them. */
+export interface ScanPick { only?: string[]; except?: string[] }
+
+/** One recent tap, for the list on the moderation page. */
+export interface RecentScan { createdAt: string; page: string }
 
 export interface ScanStats {
   total: number;

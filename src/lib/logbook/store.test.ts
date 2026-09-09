@@ -92,6 +92,28 @@ describe("FileStore", () => {
     expect(await store.reactionsBy(["a"], "phone1")).toEqual({ a: ["❤️"] });
   });
 
+  it("counts WhatsApp taps apart from card scans, and lists the latest with their page", async () => {
+    const now = "2026-09-09T12:00:00.000Z";
+    await store.recordScan({ id: "c1", createdAt: "2026-09-08T10:00:00.000Z", source: "card", ua: "phone", ipHash: "a" });
+    await store.recordScan({ id: "w1", createdAt: "2026-09-09T09:00:00.000Z", source: "wa", ua: "phone", ipHash: "b", page: "/gallery" });
+    await store.recordScan({ id: "w2", createdAt: "2026-09-09T11:30:00.000Z", source: "wa", ua: "phone", ipHash: "c", page: "/dive-sites/blue-hole-dahab" });
+    await store.recordScan({ id: "w0", createdAt: "2026-09-01T11:30:00.000Z", source: "wa", ua: "phone", ipHash: "d" }); // written before taps carried a page
+    const cards = await store.scanStats(now, { except: ["wa"] });
+    expect(cards.total).toBe(1);
+    expect(cards.bySource).toEqual({ card: 1 });
+    const wa = await store.scanStats(now, { only: ["wa"] });
+    expect(wa.total).toBe(3);
+    expect(wa.today).toBe(2);
+    expect(wa.last).toBe("2026-09-09T11:30:00.000Z");
+    const recent = await store.recentScans("wa", 2);
+    expect(recent).toEqual([
+      { createdAt: "2026-09-09T11:30:00.000Z", page: "/dive-sites/blue-hole-dahab" },
+      { createdAt: "2026-09-09T09:00:00.000Z", page: "/gallery" },
+    ]);
+    expect((await store.recentScans("wa", 5))[2]).toEqual({ createdAt: "2026-09-01T11:30:00.000Z", page: "" });
+    expect((await store.scanStats(now)).total).toBe(4);
+  });
+
   it("counts scans of the card by source and time", async () => {
     await store.recordScan({ id: "s1", createdAt: "2026-08-20T00:00:00.000Z", source: "card", ua: "phone", ipHash: "x" });
     await store.recordScan({ id: "s2", createdAt: "2026-09-05T20:00:00.000Z", source: "card", ua: "phone", ipHash: "y" });

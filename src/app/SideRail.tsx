@@ -192,8 +192,17 @@ function Handle({ open, name, onToggle, onOpen }: { open: boolean; name: string;
   );
 }
 
-/** While the coast is in over the page, the page waits behind a scrim and does not scroll. */
-function useSheet(open: boolean, narrow: boolean, close: () => void) {
+/**
+ * While the coast is in over the page, the page waits behind a scrim and does not
+ * scroll. The menu button at the top left asks for the coast through one event, so
+ * the two doors open the same room.
+ */
+function useSheet(open: boolean, narrow: boolean, close: () => void, toggle: () => void) {
+  useEffect(() => {
+    if (!narrow) return;
+    window.addEventListener("od:rail", toggle);
+    return () => window.removeEventListener("od:rail", toggle);
+  }, [narrow, toggle]);
   useEffect(() => {
     if (!open || !narrow) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
@@ -240,7 +249,7 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
     else window.location.href = href;
   }, () => setOpen(false));
   const { sx, narrow } = useEdge(rail);
-  useSheet(open, narrow, () => setOpen(false));
+  useSheet(open, narrow, () => setOpen(false), () => setOpen((o) => !o));
   useEffect(() => {
     const path = pathRef.current, line = drawRef.current;
     if (!path || !line) return;
@@ -386,7 +395,7 @@ function HomeRail() {
   const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); setOpen(false); jump(id); };
   const { rail, scrub, handlers } = useScrub(points, (i) => { setOpen(false); jump(STOPS[i].id); }, () => setOpen(false));
   const { sx, narrow } = useEdge(rail);
-  useSheet(open, narrow, () => setOpen(false));
+  useSheet(open, narrow, () => setOpen(false), () => setOpen((o) => !o));
 
   return (
     <>

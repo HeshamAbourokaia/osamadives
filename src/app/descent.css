@@ -993,22 +993,6 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .navbtn span:last-child { top: 25px; }
 .descent .navbtn.is-open span:first-child { top: 21px; transform: rotate(45deg); }
 .descent .navbtn.is-open span:last-child { top: 21px; transform: rotate(-45deg); }
-.descent .navsheet {
-  position: fixed; inset: 0; z-index: 65; background: rgba(6,20,32,0.96); color: #edf4f2;
-  display: grid; align-content: center; justify-items: start; padding: 5rem var(--sc-gutter) 3rem; gap: 2rem;
-  animation: navsheet-in 220ms var(--sc-ease-out, ease-out) both;
-}
-@keyframes navsheet-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-.descent .navsheet nav { display: grid; gap: 0.2rem; width: 100%; }
-.descent .navsheet nav a {
-  display: block; min-height: 52px; padding: 0.75rem 0; color: #edf4f2; text-decoration: none;
-  font: 800 clamp(1.7rem, 7vw, 2.4rem)/1.1 var(--sc-font-display); text-transform: uppercase; letter-spacing: -0.02em;
-  border-bottom: 1px solid rgba(237,244,242,0.12);
-}
-.descent .navsheet nav a.navsheet__wa { margin-top: 1rem; font: 700 1rem/1.2 var(--sc-font-display); text-transform: none; letter-spacing: 0; color: #3fd1be; border: 0; }
-.descent .navsheet__foot { font: 500 0.6rem/1.6 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(237,244,242,0.55); margin: 0; }
-@media (max-width: 860px) { .descent .navbtn { display: block; } }
-@media (prefers-reduced-motion: reduce) { .descent .navsheet { animation: none; } }
 
 /* hero ribbons: the three pills the previous homepage carried */
 .descent .brand-ribbons { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.3rem; }
@@ -1220,6 +1204,8 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .siderail:hover, .descent .siderail:focus-within { opacity: 1; }
 .descent .siderail__coast { position: absolute; inset: 0; pointer-events: none; }
 .descent .siderail__panel { position: absolute; inset: 0; }
+/* the menu button is a phone thing; the desk has the links along the top */
+@media (max-width: 860px) { .descent .navbtn { display: block; } }
 .descent .siderail__handle, .descent .siderail__scrim { display: none; }
 .descent .siderail__stop { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; text-decoration: none; color: #edf4f2; }
 .descent .siderail__dot { position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; transform: translate(-50%, -50%); border-radius: 50%; border: 1px solid rgba(63,209,190,0.9); background: rgba(6,20,32,0.7); box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 0 0 2px rgba(6,20,32,0.25); transition: transform 220ms var(--sc-ease-out, ease-out), background 220ms, box-shadow 220ms; }
@@ -1375,9 +1361,6 @@ html:not(.sc-ready) .w__i { transform: none; }
 .sharecode figcaption { font: 500 0.88rem/1.55 var(--sc-font-text); color: rgba(237,244,242,0.8); max-width: 30ch; text-transform: none; letter-spacing: 0; }
 .sharecode figcaption strong { display: block; font: 700 1rem/1.2 var(--sc-font-display); color: #F4FAF8; margin-bottom: 0.25rem; letter-spacing: 0.01em; }
 .sharecode__wa { display: inline-block; margin-top: 0.5rem; color: var(--reef-glow); text-decoration: underline; text-underline-offset: 0.2em; }
-.navsheet .sharecode { margin: 1.4rem 0 0.4rem; }
-.navsheet .sharecode__code { width: 5.6rem; }
-.navsheet .sharecode figcaption { color: rgba(237,244,242,0.7); font-size: 0.82rem; }
 @media (max-width: 480px) { .sharecode { gap: 0.9rem; } .sharecode__code { width: 6rem; } }
 
 
@@ -1654,7 +1637,7 @@ html:not(.sc-ready) .w__i { transform: none; }
 /* A press answers with a ripple from the point of the touch. The targets clip it
    to their own shape; a pill's outer glow is a box shadow, which its own overflow
    never clips. */
-.descent .cta, .descent .navbtn, .descent .peak-year-chip, .descent .book__arrow, .descent .fpage__open, .descent .navsheet__wa, .descent .lead-link, .descent .sharecode__wa,
+.descent .cta, .descent .navbtn, .descent .peak-year-chip, .descent .book__arrow, .descent .fpage__open, .descent .lead-link, .descent .sharecode__wa,
 .lb .lb-btn, .tail .lb-btn { position: relative; overflow: hidden; }
 .ripple {
   position: absolute; border-radius: 50%; pointer-events: none; z-index: 5;

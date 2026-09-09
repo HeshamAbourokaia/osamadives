@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 // Every press on a button or pill answers with a teal ripple from the point of the touch,
 // the way water does. One listener for the page; the ripple is a span that removes itself.
-const TARGETS = ".cta, .lb-btn, .navbtn, .peak-year-chip, .book__arrow, .fpage__open, .navsheet__wa, .lead-link, .sharecode__wa";
+const TARGETS = ".cta, .lb-btn, .navbtn, .peak-year-chip, .book__arrow, .fpage__open, .lead-link, .sharecode__wa";
 
 export default function TapRipple() {
   useEffect(() => {

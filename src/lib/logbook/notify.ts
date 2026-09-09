@@ -1,3 +1,4 @@
+import { coursesOf, sitesOf } from "@/lib/logbook/types";
 import type { LogbookEntry } from "./types";
 import { siteInfo } from "./sites";
 import { stampInfo } from "./stamps";
@@ -9,8 +10,8 @@ export interface ModerationLinks {
 }
 
 function summary(e: LogbookEntry): string {
-  const site = siteInfo(e.site);
-  const bits = [e.name, e.country, site.label, e.divedOn, e.course].filter(Boolean).join(" · ");
+  const where = sitesOf(e).map((k) => siteInfo(k).label).join(" + ");
+  const bits = [e.name, e.country, where, e.divedOn, coursesOf(e).join(" + ")].filter(Boolean).join(" · ");
   const flags = e.flags.length ? `\nFlags: ${e.flags.join(", ")}` : "";
   const stamps = e.stamps.map((k) => stampInfo(k).label).join(", ");
   return `New review\n${bits}\nStamp: ${stamps}${flags}\n\n${e.note}`;

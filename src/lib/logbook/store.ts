@@ -74,6 +74,9 @@ export class FileStore implements LogbookStore {
           reply: "", featured: false, videoUrl: null, moderatedBy: "",
           ...rest,
           stamps: stamps && stamps.length ? stamps : stamp ? [stamp as StampKey] : [],
+          // The plural fields came later, like "stamps" did before them.
+          sites: r.sites?.length ? r.sites : r.site ? [r.site] : [],
+          courses: r.courses?.length ? r.courses : r.course ? [r.course] : [],
         } as LogbookEntry;
       });
     } catch (e) {
@@ -230,7 +233,7 @@ export class FileStore implements LogbookStore {
 // ---------------------------------------------------------------------------
 type Row = {
   id: string; created_at: string; status: string; name: string; country: string; site: string;
-  dived_on: string; course: string; stamp: string; stamps: unknown; note: string; photo_url: string | null;
+  dived_on: string; course: string; courses: unknown; sites: unknown; stamp: string; stamps: unknown; note: string; photo_url: string | null;
   flags: unknown; moderated_at: string | null; moderated_by: string | null; ip_hash: string;
   reply: string | null; featured: boolean | null; video_url: string | null;
 };
@@ -242,8 +245,12 @@ const fromRow = (r: Row): LogbookEntry => ({
   name: r.name,
   country: r.country,
   site: r.site as LogbookEntry["site"],
+  // The plural columns came later, the same way "stamps" did: read them when the row
+  // has them, otherwise wrap the single value the row was written with.
+  sites: (Array.isArray(r.sites) && r.sites.length ? r.sites : r.site ? [r.site] : []) as LogbookEntry["sites"],
   divedOn: r.dived_on,
   course: r.course as LogbookEntry["course"],
+  courses: (Array.isArray(r.courses) && r.courses.length ? r.courses : r.course ? [r.course] : []) as LogbookEntry["courses"],
   // "stamps" is the array column; rows written before a review could carry more than
   // one stamp only have the old singular "stamp" column, so fall back to wrapping it.
   stamps: (Array.isArray(r.stamps) && r.stamps.length ? r.stamps : r.stamp ? [r.stamp] : []) as StampKey[],
@@ -298,6 +305,10 @@ export class NeonStore implements LogbookStore {
         // "stamp" (singular) stays for rows written before a review could carry more than
         // one; "stamps" is the array every row is read from now, with "stamp" as its fallback.
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS stamps jsonb NOT NULL DEFAULT '[]'::jsonb`;
+        // A student who did three courses over a week, or two sites in a day, should not
+        // have to write three reviews. "site" and "course" stay as the first of each.
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS sites jsonb NOT NULL DEFAULT '[]'::jsonb`;
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS courses jsonb NOT NULL DEFAULT '[]'::jsonb`;
         // Who approved: 'link' (the signed link in the phone notification) or 'admin' (the password page).
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS moderated_by text NOT NULL DEFAULT ''`;
         // Reactions came later. One reaction per (review, emoji, device).
@@ -323,10 +334,11 @@ export class NeonStore implements LogbookStore {
 
   async create(e: LogbookEntry) {
     const sql = await this.db();
-    // "stamp" (singular) is kept in step as the first stamp, for anything still reading it directly.
+    // The singular columns are kept in step as the first of each array, for anything still
+    // reading them directly and for rows that predate the plural ones.
     await sql`INSERT INTO logbook_entries
-      (id, created_at, status, name, country, site, dived_on, course, stamp, stamps, note, photo_url, flags, moderated_at, ip_hash, reply, featured, video_url)
-      VALUES (${e.id}, ${e.createdAt}, ${e.status}, ${e.name}, ${e.country}, ${e.site}, ${e.divedOn}, ${e.course},
+      (id, created_at, status, name, country, site, sites, dived_on, course, courses, stamp, stamps, note, photo_url, flags, moderated_at, ip_hash, reply, featured, video_url)
+      VALUES (${e.id}, ${e.createdAt}, ${e.status}, ${e.name}, ${e.country}, ${e.site}, ${JSON.stringify(e.sites)}::jsonb, ${e.divedOn}, ${e.course}, ${JSON.stringify(e.courses)}::jsonb,
               ${e.stamps[0] ?? null}, ${JSON.stringify(e.stamps)}::jsonb, ${e.note}, ${e.photoUrl}, ${JSON.stringify(e.flags)}::jsonb, ${e.moderatedAt}, ${e.ipHash},
               ${e.reply}, ${e.featured}, ${e.videoUrl})`;
   }

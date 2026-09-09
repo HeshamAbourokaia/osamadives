@@ -1,3 +1,4 @@
+import { sitesOf } from "@/lib/logbook/types";
 import DescentShell from "@/app/DescentShell";
 import type { Metadata, Viewport } from "next";
 import BackToPlace from "@/components/BackToPlace";
@@ -41,7 +42,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 export default async function EntryPage({ params }: { params: { id: string } }) {
   const e = await approved(params.id);
   if (!e) notFound();
-  const site = siteInfo(e.site);
+  const site = siteInfo(sitesOf(e)[0] ?? e.site);
   return (
     <DescentShell>
       <div className="lb-action-bar"><Link href="/logbook#sign" className="lb-btn">Add your page</Link></div>

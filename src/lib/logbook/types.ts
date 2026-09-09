@@ -47,15 +47,34 @@ export type Course = (typeof COURSES)[number];
 
 export type ModeratedBy = "link" | "admin" | "";
 
+/**
+ * Students often did several courses with Osama over a week, and several sites in a
+ * day. These read every one off an entry whatever shape the row is: the arrays when
+ * they are there, the old single value wrapped when they are not.
+ */
+export function sitesOf(e: { site?: SiteKey | ""; sites?: SiteKey[] }): SiteKey[] {
+  const many = e.sites?.filter(Boolean) ?? [];
+  return many.length ? many : e.site ? [e.site] : [];
+}
+export function coursesOf(e: { course?: Course; courses?: Course[] }): Course[] {
+  const many = (e.courses ?? []).filter(Boolean) as Course[];
+  return many.length ? many : e.course ? [e.course] : [];
+}
+
 export interface LogbookEntry {
   id: string;
   createdAt: string;
   status: EntryStatus;
   name: string;
   country: string;
+  /** Where they dived. Kept as the first of `sites` so rows written before a review
+      could name more than one still read correctly everywhere. */
   site: SiteKey;
+  sites: SiteKey[];
   divedOn: string;
+  /** The first of `courses`, for the same reason. */
   course: Course;
+  courses: Course[];
   /** What Osama chose to mark this dive with. One at first; he can add more later. */
   stamps: StampKey[];
   note: string;

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { siteInfo } from "@/lib/logbook/sites";
 import { stampInfo } from "@/lib/logbook/stamps";
-import { STAMP_KEYS } from "@/lib/logbook/types";
+import { STAMP_KEYS, coursesOf, sitesOf } from "@/lib/logbook/types";
 import PageCard, { type PageData } from "./PageCard";
 import ReviewSocial, { deviceId, type SocialData } from "./ReviewSocial";
 
@@ -42,7 +42,7 @@ const countryOf = (e: PageData) => e.country.trim().toLowerCase();
 const stampIndex = (k: string) => (STAMP_KEYS as readonly string[]).indexOf(k);
 
 function haystack(e: PageData): string {
-  return [e.name, e.country, e.note, e.reply ?? "", siteInfo(e.site).label, e.course, ...e.stamps.map((k) => stampInfo(k).label)]
+  return [e.name, e.country, e.note, e.reply ?? "", ...sitesOf(e).map((k) => siteInfo(k).label), ...coursesOf(e), ...e.stamps.map((k) => stampInfo(k).label)]
     .join(" ")
     .toLowerCase();
 }
@@ -161,8 +161,8 @@ export default function ReviewWall({ initial, total, topNumber, children }: Prop
       if (e.reply) replies++;
       years.add(yearOf(e));
       months.add(monthOf(e));
-      sites.add(e.site);
-      if (e.course) courses.add(e.course);
+      for (const k of sitesOf(e)) sites.add(k);
+      for (const c of coursesOf(e)) courses.add(c);
       const c = countryOf(e);
       if (c) countries.set(c, { label: e.country.trim(), n: (countries.get(c)?.n ?? 0) + 1 });
       for (const k of e.stamps) stamps.add(k);
@@ -185,8 +185,8 @@ export default function ReviewWall({ initial, total, topNumber, children }: Prop
     const kept = source.filter((e) => {
       if (filters.year && yearOf(e) !== filters.year) return false;
       if (filters.month && monthOf(e) !== filters.month) return false;
-      if (filters.site && e.site !== filters.site) return false;
-      if (filters.course && e.course !== filters.course) return false;
+      if (filters.site && !sitesOf(e).includes(filters.site as never)) return false;
+      if (filters.course && !coursesOf(e).includes(filters.course as never)) return false;
       if (filters.country && countryOf(e) !== filters.country) return false;
       if (filters.stamp && !e.stamps.includes(filters.stamp as PageData["stamps"][number])) return false;
       if (filters.only === "photo" && !e.photoUrl) return false;

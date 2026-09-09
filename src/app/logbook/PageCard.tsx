@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { entryNumber, formatDivedOn } from "@/lib/logbook/format";
 import { siteInfo } from "@/lib/logbook/sites";
-import type { LogbookEntry } from "@/lib/logbook/types";
+import { coursesOf, sitesOf, type LogbookEntry } from "@/lib/logbook/types";
 import Stamp from "./Stamp";
 
-export type PageData = Pick<LogbookEntry, "id" | "name" | "country" | "site" | "divedOn" | "course" | "stamps" | "note" | "photoUrl" | "createdAt"> & Partial<Pick<LogbookEntry, "reply" | "videoUrl" | "featured">>;
+export type PageData = Pick<LogbookEntry, "id" | "name" | "country" | "site" | "divedOn" | "course" | "stamps" | "note" | "photoUrl" | "createdAt"> & Partial<Pick<LogbookEntry, "reply" | "videoUrl" | "featured" | "sites" | "courses">>;
 
 interface Props {
   entry: PageData;
@@ -14,7 +14,10 @@ interface Props {
 }
 
 export default function PageCard({ entry, number, variant = "wall", inkStamp = false }: Props) {
-  const site = siteInfo(entry.site);
+  // A page can name several sites and several courses now; older pages name one.
+  const places = sitesOf(entry).map(siteInfo);
+  const site = places[0] ?? siteInfo(entry.site);
+  const courses = coursesOf(entry);
   const when = formatDivedOn(entry.divedOn) || new Date(entry.createdAt).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
   const isLocalPreview = Boolean(entry.photoUrl && /^(blob:|data:)/.test(entry.photoUrl));
   return (
@@ -31,8 +34,7 @@ export default function PageCard({ entry, number, variant = "wall", inkStamp = f
       <h3 className="lb-page__name">{entry.name || "Your name"}</h3>
       {entry.country ? <span className="lb-page__from lb-mono">from {entry.country}</span> : null}
       <span className="lb-page__site lb-mono">
-        {site.label}
-        {site.depth ? ` · ${site.depth}` : ""}
+        {places.length > 1 ? places.map((p) => p.label).join(" · ") : `${site.label}${site.depth ? ` · ${site.depth}` : ""}`}
       </span>
       {entry.videoUrl ? (
         <div className="lb-page__photo lb-page__video">
@@ -52,7 +54,7 @@ export default function PageCard({ entry, number, variant = "wall", inkStamp = f
         </div>
       ) : null}
       <div className="lb-page__foot lb-mono">
-        <span>{entry.course ? `${entry.course} · ` : ""}Stamped by Osama</span>
+        <span>{courses.length ? `${courses.join(" · ")} · ` : ""}Stamped by Osama</span>
         <span>Dahab</span>
       </div>
     </article>

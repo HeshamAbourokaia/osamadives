@@ -67,17 +67,23 @@ export async function POST(req: Request) {
   const country = cleanText(form.get("country"), LIMITS.country.max);
   const note = cleanText(form.get("note"), LIMITS.note.max, true);
   const divedOn = cleanText(form.get("divedOn"), 10);
-  const site = form.get("site");
+  // A student who did three courses over a week, or two sites in a day, sends all of
+  // them. The first of each is kept in the old singular field so nothing that reads it
+  // directly has to change.
+  const sites = form.getAll("site").filter((v): v is string => typeof v === "string");
+  const courses = form.getAll("course").filter((v): v is string => typeof v === "string" && v !== "");
+  const site = sites[0];
+  const course = courses[0] ?? "";
   // One to five stamps, in ladder order whatever order they were tapped in.
   const stamps = orderStamps(form.getAll("stamp").filter((v): v is string => typeof v === "string"));
-  const course = form.get("course") ?? "";
 
   if (name.length < LIMITS.name.min) return fail("Tell Osama your name.");
   if (note.length < LIMITS.note.min) return fail("A few more words. Osama reads every page.");
-  if (!isOneOf(SITE_KEYS, site)) return fail("Pick where you dived.");
+  if (!sites.length || !sites.every((v) => isOneOf(SITE_KEYS, v))) return fail("Pick where you dived.");
+  if (sites.length > SITE_KEYS.length) return fail("Check the sites you picked.");
   if (!stamps.length) return fail("Pick at least one stamp.");
   if (stamps.length > 5) return fail("Five stamps is the most a page can carry.");
-  if (!isOneOf(COURSES, course)) return fail("Pick a course, or leave it blank.");
+  if (!courses.every((v) => isOneOf(COURSES, v))) return fail("Check the courses you picked.");
   if (!validDivedOn(divedOn)) return fail("Check the date.");
   if (form.get("consent") !== "yes") return fail("Tick the box so Osama can show your page.");
   for (const text of [name, country, note]) {
@@ -113,7 +119,11 @@ export async function POST(req: Request) {
   const { flags } = assessEntry({ name, country, note });
   const entry: LogbookEntry = {
     id, createdAt: new Date().toISOString(), status: "pending",
-    name, country, site, divedOn, course, stamps, note, photoUrl,
+    name, country,
+    site: site as LogbookEntry["site"], sites: sites as LogbookEntry["sites"],
+    divedOn,
+    course: course as LogbookEntry["course"], courses: courses as LogbookEntry["courses"],
+    stamps, note, photoUrl,
     flags, moderatedAt: null, moderatedBy: "", ipHash,
     reply: "", featured: false, videoUrl: null,
   };

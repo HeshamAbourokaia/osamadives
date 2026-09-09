@@ -637,3 +637,60 @@
 .google-card p { margin: 0; font: 500 1rem/1.6 var(--display); color: var(--ink); display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
 .google-card:hover p, .google-card:focus-within p { -webkit-line-clamp: unset; }
 .google-card a { color: var(--reef); text-decoration: none; }
+
+/* ------------------------------------------------------- the picker sheet ---
+   A wall of chips is a lot to read on a phone, and a native multi-select is worse.
+   One row names what you have chosen; a sheet slides up with the whole list. */
+.picker__trigger {
+  display: flex; align-items: center; gap: 0.7rem; width: 100%; min-height: 52px;
+  padding: 0 0.9rem; border-radius: 12px;
+  border: 1px solid rgba(237, 244, 242, 0.2); background: rgba(237, 244, 242, 0.05);
+  color: rgba(237, 244, 242, 0.45); font: 600 1rem/1.3 var(--lb-display, inherit); text-align: left;
+  transition: border-color 180ms, background-color 180ms;
+}
+.picker__trigger.has-value { color: var(--light, #edf4f2); border-color: rgba(63, 209, 190, 0.45); background: rgba(63, 209, 190, 0.07); }
+.picker__trigger:focus-visible { outline: 2px solid var(--glow, #3fd1be); outline-offset: 2px; }
+.picker__value { flex: 1; }
+.picker__trigger svg { width: 20px; height: 20px; flex: none; fill: rgba(237, 244, 242, 0.5); }
+
+.picker { position: fixed; inset: 0; z-index: 90; display: flex; align-items: flex-end; justify-content: center; background: rgba(4, 18, 26, 0.62); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); animation: picker-in 180ms ease-out both; }
+.picker__panel {
+  width: 100%; max-width: 32rem; max-height: 82svh; display: flex; flex-direction: column;
+  background: #0b1c26; color: var(--light, #edf4f2);
+  border: 1px solid rgba(237, 244, 242, 0.12); border-bottom: 0;
+  border-radius: 20px 20px 0 0; padding: 0.6rem 1rem calc(1rem + env(safe-area-inset-bottom));
+  animation: picker-up 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.picker__grip { display: block; width: 40px; height: 4px; border-radius: 999px; background: rgba(237, 244, 242, 0.25); margin: 0.2rem auto 0.8rem; flex: none; }
+.picker__head { display: flex; align-items: center; gap: 1rem; flex: none; }
+.picker__head h2 { flex: 1; margin: 0; font: 700 1.1rem/1.2 var(--lb-display, inherit); }
+.picker__done { min-height: 40px; padding: 0 1.1rem; border-radius: 999px; border: 0; background: var(--glow, #3fd1be); color: #04121a; font: 700 0.9rem/1 var(--lb-display, inherit); }
+.picker__note { margin: 0.4rem 0 0; flex: none; font: 500 0.78rem/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: rgba(237, 244, 242, 0.5); }
+.picker__list { list-style: none; margin: 0.6rem 0 0; padding: 0; overflow-y: auto; }
+.picker__opt {
+  display: flex; align-items: center; gap: 0.85rem; width: 100%; min-height: 56px; padding: 0.5rem 0.2rem;
+  background: none; border: 0; border-bottom: 1px solid rgba(237, 244, 242, 0.08);
+  color: inherit; text-align: left;
+}
+.picker__opt[aria-disabled="true"] { opacity: 0.38; }
+.picker__opt-words { flex: 1; display: grid; gap: 0.15rem; }
+.picker__opt-words strong { font: 600 1rem/1.25 var(--lb-display, inherit); }
+.picker__opt-words small { font: 500 0.7rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: rgba(237, 244, 242, 0.5); }
+/* the stamp carries its own size everywhere else on the page; inside a row it has to
+   take the row's */
+.picker__icon { flex: none; width: 44px; height: 44px; display: grid; place-items: center; }
+.picker__icon .lb-stamp { width: 44px !important; height: 44px !important; margin: 0 !important; transform: none !important; mix-blend-mode: normal !important; opacity: 0.9; color: rgba(237,244,242,0.75); }
+.picker__opt.is-on .picker__icon .lb-stamp { opacity: 1; color: var(--glow, #3fd1be); }
+.picker__icon svg { width: 100%; height: 100%; display: block; }
+.picker__tick { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(237, 244, 242, 0.28); display: grid; place-items: center; }
+.picker__tick svg { width: 15px; height: 15px; fill: transparent; }
+.picker__opt.is-on .picker__tick { background: var(--glow, #3fd1be); border-color: var(--glow, #3fd1be); }
+.picker__opt.is-on .picker__tick svg { fill: #04121a; }
+.picker__opt.is-on .picker__opt-words strong { color: var(--glow, #3fd1be); }
+@keyframes picker-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes picker-up { from { opacity: 0; transform: translateY(12%); } to { opacity: 1; transform: none; } }
+@media (min-width: 861px) {
+  .picker { align-items: center; }
+  .picker__panel { border-radius: 20px; border-bottom: 1px solid rgba(237, 244, 242, 0.12); max-height: 78vh; padding-bottom: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) { .picker, .picker__panel { animation: none; } }

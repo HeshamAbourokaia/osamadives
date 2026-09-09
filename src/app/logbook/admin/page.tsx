@@ -11,7 +11,7 @@ import { siteInfo } from "@/lib/logbook/sites";
 import { stampInfo } from "@/lib/logbook/stamps";
 import { getStore } from "@/lib/logbook/store";
 import { TTL, signToken } from "@/lib/logbook/tokens";
-import { LIMITS, type EntryStatus, type LogbookEntry } from "@/lib/logbook/types";
+import { LIMITS, type EntryStatus, type LogbookEntry, coursesOf, sitesOf } from "@/lib/logbook/types";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Reviews", robots: { index: false, follow: false } };
@@ -140,9 +140,9 @@ export default async function AdminPage({
   const body = (e: LogbookEntry) => (
     <>
       <span className="lb-mono" style={{ color: "var(--ink-soft)" }}>
-        {when(e)} · {siteInfo(e.site).label} · {e.stamps.map((k) => stampInfo(k).label).join(" + ")}
+        {when(e)} · {sitesOf(e).map((k) => siteInfo(k).label).join(" + ")} · {e.stamps.map((k) => stampInfo(k).label).join(" + ")}
         {e.divedOn ? ` · ${e.divedOn}` : ""}
-        {e.course ? ` · ${e.course}` : ""}
+        {coursesOf(e).length ? ` · ${coursesOf(e).join(" + ")}` : ""}
         {e.flags.length ? ` · flags: ${e.flags.join(", ")}` : ""}
         {e.featured ? " · REVIEW OF THE MONTH" : ""}
         {e.moderatedAt ? ` · ${e.status === "approved" ? "put on the site" : e.status === "hidden" ? "hidden" : "moderated"} ${moderatedHow(e)} ${whenExact(e.moderatedAt)}` : ""}
@@ -167,7 +167,7 @@ export default async function AdminPage({
         <span className="lb-fold__name">{e.name}&apos;s review</span>
         <span className="lb-fold__meta lb-mono">
           {e.country ? `${e.country} · ` : ""}
-          {siteInfo(e.site).label} · {when(e)}
+          {sitesOf(e).map((k) => siteInfo(k).label).join(" + ")} · {when(e)}
         </span>
         <span className={`lb-admin__status is-${e.status}`}>{e.status === "approved" ? "On the site" : "Hidden"}</span>
       </summary>

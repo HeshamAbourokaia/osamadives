@@ -7,6 +7,7 @@ import { STAMPS, orderStamps } from "@/lib/logbook/stamps";
 
 const MAX_STAMPS = 5;
 import { COURSES, LIMITS, type Course, type SiteKey, type StampKey } from "@/lib/logbook/types";
+import PickerSheet from "./PickerSheet";
 import { MONTHS } from "@/lib/logbook/format";
 
 const THIS_YEAR = new Date().getFullYear();
@@ -25,11 +26,11 @@ type Done = { id: string; cardUrl: string };
 export default function LogbookForm({ nextNumber }: Props) {
   const [name, setName] = useState("");
   const [country, setCountry] = useState("");
-  const [site, setSite] = useState<SiteKey | "">("");
+  const [sites, setSites] = useState<SiteKey[]>([]);
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
   const divedOn = month && year ? `${year}-${month}` : "";
-  const [course, setCourse] = useState<Course>("");
+  const [courses, setCourses] = useState<Course[]>([]);
   const [stamps, setStamps] = useState<StampKey[]>([]);
   const [note, setNote] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
@@ -46,33 +47,25 @@ export default function LogbookForm({ nextNumber }: Props) {
   // Arriving from a dive-site page preselects that site.
   useEffect(() => {
     const wanted = new URLSearchParams(window.location.search).get("site");
-    if (wanted && SITES.some((s) => s.key === wanted)) setSite(wanted as SiteKey);
+    if (wanted && SITES.some((s) => s.key === wanted)) setSites([wanted as SiteKey]);
   }, []);
 
   const preview: PageData = {
     id: "preview",
-    name, country, note, divedOn, course, photoUrl,
-    site: site || "lighthouse-reef-dahab",
+    name, country, note, divedOn, photoUrl,
+    course: courses[0] ?? "",
+    courses,
+    site: sites[0] ?? "lighthouse-reef-dahab",
+    sites: sites.length ? sites : ["lighthouse-reef-dahab"],
     stamps: stamps.length ? stamps : ["introduction"],
     createdAt: new Date().toISOString(),
     reply: "", videoUrl: null, featured: false,
   };
 
-  // Tap a stamp to add it, tap again to take it off. Up to five, the same as Osama can give.
-  function pickStamp(key: StampKey) {
-    setStamps((prev) => {
-      if (prev.includes(key)) return prev.filter((k) => k !== key);
-      if (prev.length >= MAX_STAMPS) return prev;
-      return orderStamps([...prev, key]);
-    });
-    setInked(false);
-    requestAnimationFrame(() => setInked(true));
-  }
-
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    if (!site) return setError("Pick where we dived.");
+    if (!sites.length) return setError("Pick where we dived.");
     if (!stamps.length) return setError("Pick at least one stamp.");
     if ((month && !year) || (!month && year)) return setError("Pick both the month and the year, or leave both blank.");
     if (note.trim().length < LIMITS.note.min) return setError("A few more words. Osama reads every review.");
@@ -80,7 +73,10 @@ export default function LogbookForm({ nextNumber }: Props) {
     setBusy(true);
     try {
       const data = new FormData(e.currentTarget);
-      data.set("site", site);
+      data.delete("site");
+      for (const k of sites) data.append("site", k);
+      data.delete("course");
+      for (const c of courses) data.append("course", c);
       data.delete("stamp");
       for (const k of stamps) data.append("stamp", k);
       const res = await fetch("/api/logbook", { method: "POST", body: data });
@@ -121,14 +117,15 @@ export default function LogbookForm({ nextNumber }: Props) {
 
           <div className="lb-field">
             <span className="lb-label lb-mono">2 · Where we dived</span>
-            <div className="lb-chips" role="group" aria-label="Dive site">
-              {SITES.map((s) => (
-                <button key={s.key} type="button" className="lb-chip" aria-pressed={site === s.key} onClick={() => setSite(s.key)}>
-                  {s.label}
-                  <small>{s.depth || s.where}</small>
-                </button>
-              ))}
-            </div>
+            <PickerSheet
+              id="lb-site"
+              label="Where we dived"
+              placeholder="Pick a site, or several"
+              options={SITES.map((s) => ({ value: s.key, label: s.label, hint: s.depth || s.where }))}
+              value={sites}
+              onChange={(v) => setSites(v as SiteKey[])}
+            />
+            <small>Pick every site we went to.</small>
           </div>
 
           <div className="lb-two">
@@ -152,12 +149,15 @@ export default function LogbookForm({ nextNumber }: Props) {
               <small>Month and year is enough. Leave it blank if you are not sure.</small>
             </div>
             <div className="lb-field">
-              <label className="lb-mono" htmlFor="lb-course">Course, if you did one</label>
-              <select id="lb-course" name="course" className="lb-select" value={course} onChange={(e) => setCourse(e.target.value as Course)}>
-                {COURSES.map((c) => (
-                  <option key={c || "none"} value={c}>{c || "Just diving"}</option>
-                ))}
-              </select>
+              <span className="lb-label lb-mono">Courses, if you did any</span>
+              <PickerSheet
+                id="lb-course"
+                label="Courses you did"
+                placeholder="Just diving"
+                options={COURSES.filter(Boolean).map((c) => ({ value: c, label: c }))}
+                value={courses}
+                onChange={(v) => setCourses(v as Course[])}
+              />
             </div>
           </div>
 
@@ -188,15 +188,16 @@ export default function LogbookForm({ nextNumber }: Props) {
           </div>
 
           <div className="lb-field">
-            <span className="lb-label lb-mono">6 · Pick your stamps (one to five), then press Submit review</span>
-            <div className="lb-stamps" role="group" aria-label="Stamps">
-              {STAMPS.map((s) => (
-                <button key={s.key} type="button" className="lb-stamp-pick" aria-pressed={stamps.includes(s.key)} aria-disabled={!stamps.includes(s.key) && stamps.length >= MAX_STAMPS} onClick={() => pickStamp(s.key)}>
-                  <Stamp stamp={s.key} uid={`pick-${s.key}`} className="lb-stamp--static" />
-                  <span>{s.label}</span>
-                </button>
-              ))}
-            </div>
+            <span className="lb-label lb-mono">6 · Your stamps, then press Submit review</span>
+            <PickerSheet
+              id="lb-stamps"
+              label="Your stamps"
+              placeholder="Pick one to five"
+              max={MAX_STAMPS}
+              options={STAMPS.map((s) => ({ value: s.key, label: s.label, icon: <Stamp stamp={s.key} uid={`pick-${s.key}`} className="lb-stamp--static" /> }))}
+              value={stamps}
+              onChange={(v) => { setStamps(orderStamps(v as StampKey[])); setInked(false); requestAnimationFrame(() => setInked(true)); }}
+            />
           </div>
 
           <label className="lb-consent">

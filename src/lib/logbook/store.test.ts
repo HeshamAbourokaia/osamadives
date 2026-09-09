@@ -6,8 +6,8 @@ import { FileStore } from "./store";
 import type { LogbookEntry } from "./types";
 
 const entry = (id: string, createdAt: string, ipHash = "ip1"): LogbookEntry => ({
-  id, createdAt, status: "pending", name: "Ana", country: "Spain", site: "blue-hole-dahab",
-  divedOn: "2026-05", course: "Open Water", stamps: ["open-water"], note: "Thank you Osama, I felt safe the whole way.",
+  id, createdAt, status: "pending", name: "Ana", country: "Spain", site: "blue-hole-dahab", sites: ["blue-hole-dahab"],
+  divedOn: "2026-05", course: "Open Water", courses: ["Open Water"], stamps: ["open-water"], note: "Thank you Osama, I felt safe the whole way.",
   photoUrl: null, flags: [], moderatedAt: null, moderatedBy: "", ipHash, reply: "", featured: false, videoUrl: null,
 });
 

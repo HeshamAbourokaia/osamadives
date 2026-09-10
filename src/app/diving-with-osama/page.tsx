@@ -1,5 +1,6 @@
 import DescentShell from "@/app/DescentShell";
 import PickButton from "@/app/PickButton";
+import CourseFinder from "@/app/CourseFinder";
 import { WHATSAPP } from "@/lib/contact";
 
 export const metadata = {
@@ -40,6 +41,7 @@ export default function DivingWithOsamaPage() {
       </header>
 
       <main className="wiw">
+        <div className="only-mobile"><CourseFinder /></div>
         <section>
           <h2>Where people start</h2>
           <p className="wiw__lead">Most of the people I take into the water have never breathed underwater before.</p>

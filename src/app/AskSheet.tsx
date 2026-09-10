@@ -8,7 +8,7 @@ import { composeMessage, QUICK_QUESTIONS, removePick, whatsappFor, type Pick } f
  * and four questions people actually ask first, each one a WhatsApp message ready to
  * send. Nothing here sells anything; it starts a conversation with the right words.
  */
-export default function AskSheet({ picks, onClose }: { picks: Pick[]; onClose: () => void }) {
+export default function AskSheet({ picks, level, onClose }: { picks: Pick[]; level?: string | null; onClose: () => void }) {
   const panel = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -18,7 +18,7 @@ export default function AskSheet({ picks, onClose }: { picks: Pick[]; onClose: (
     panel.current?.querySelector<HTMLElement>("a, button")?.focus({ preventScroll: true });
     return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
   }, [onClose]);
-  const text = composeMessage(picks);
+  const text = composeMessage(picks, level);
   return (
     <div className="ask" role="presentation" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="ask__panel" role="dialog" aria-modal="true" aria-label="Ask Osama" ref={panel}>

@@ -160,7 +160,7 @@
   .ask__send { display: flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 999px; background: #3fd1be; color: #04121a; text-decoration: none; font: 700 0.95rem/1 var(--sc-font-display); }
   .ask__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
   .ask__list a { display: flex; align-items: center; min-height: 48px; padding: 0.6rem 0.9rem; border-radius: 12px; border: 1px solid rgba(23, 18, 8, 0.12); background: #fff; color: #171208; text-decoration: none; font-size: 15px; line-height: 1.4; }
-  .ask__list a::after { content: "\\2197"; margin-left: auto; padding-left: 0.6rem; color: #0a7d70; }
+  .ask__list a::after { content: "\203A"; margin-left: auto; padding-left: 0.6rem; color: #0a7d70; font-size: 1.3rem; line-height: 1; }
   .ask__foot { margin: 1rem 0 0; font-size: 12px; line-height: 1.5; color: rgba(23, 18, 8, 0.55); }
   .ask__close { position: absolute; top: 0.9rem; right: 0.9rem; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(23, 18, 8, 0.15); background: #fff; color: #171208; font-size: 1.4rem; line-height: 1; cursor: pointer; }
   @keyframes ask-fade { from { opacity: 0; } to { opacity: 1; } }

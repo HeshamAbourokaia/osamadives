@@ -163,7 +163,7 @@ export default async function Home() {
               <p>There was no camera waiting in Dahab that day. A visitor brought one, took this picture, and carried the film home to England. The roll was developed there, prints were made the old-fashioned way, and then the photograph began its journey back: a traveller heading to Dahab agreed to carry it to Shark Restaurant for Osama&apos;s family.</p>
             </div>
             <OdometerYear className="peak-year" from={1987} to={2026} at={[0.08, 0.9]} parallax={-1} />
-            <div className="peak-frame" data-sc-parallax="0.25">
+            <div className="peak-frame">
               <a className="peak-mat" href="/gallery" aria-label="Open the gallery to see the full family archive">
                 <div className="peak-plate peak-plate--story">
                   <img

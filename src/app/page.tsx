@@ -25,6 +25,8 @@ import DahabNow from "./DahabNow";
 import HoldToDive from "./HoldToDive";
 import PickButton from "./PickButton";
 import CourseFinder from "./CourseFinder";
+import VoiceNote from "./VoiceNote";
+import HowFar from "./HowFar";
 import WhatsAppCount from "./WhatsAppCount";
 import { LENS_MAP } from "./lensMap";
 import { diveSites } from "@/lib/dive-sites";
@@ -108,6 +110,7 @@ export default async function Home() {
               <a className="cta brand-cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama on WhatsApp</a>
               <a className="brand-start only-mobile" href="#peak-act">Start here <i aria-hidden="true" /></a>
               <p className="brand-hold only-mobile">Or hold your thumb on the screen and the page dives down on its own.</p>
+              <div className="only-mobile"><VoiceNote /></div>
               <div className="brand-ribbons">
                 <LogbookRibbon variant="hero" />
                 <InstagramRibbon variant="hero" />
@@ -157,6 +160,7 @@ export default async function Home() {
               </a>
             </li>
           </ul>
+          <HowFar />
           <p className="quickstart__note">Courses and dives are arranged through CDWS-registered dive centres in Dahab.</p>
         </section>
 

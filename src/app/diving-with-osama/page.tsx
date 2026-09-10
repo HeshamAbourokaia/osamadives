@@ -1,6 +1,7 @@
 import DescentShell from "@/app/DescentShell";
 import PickButton from "@/app/PickButton";
 import CourseFinder from "@/app/CourseFinder";
+import DayStrip from "@/app/DayStrip";
 import { WHATSAPP } from "@/lib/contact";
 
 export const metadata = {
@@ -187,6 +188,7 @@ export default function DivingWithOsamaPage() {
 
         <section className="wiw__end">
           <h2>How it actually happens</h2>
+          <div className="only-mobile"><DayStrip /></div>
           <p>
             Message me and tell me what you would like to do and roughly when. I will tell you
             honestly whether it suits you or whether something else would suit you better, and I will

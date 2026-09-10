@@ -87,11 +87,6 @@ export default async function Home() {
       </svg>
       <div className="sc-grain" aria-hidden="true" />
       <DescentNav />
-      <aside className="hud mono" id="hud" aria-hidden="true">
-        <span className="hud__depth"><span id="hud-depth">00.0</span> <small>M</small></span>
-        <span className="hud__label" id="hud-label">Surface</span>
-        <span className="hud__track"><i id="hud-track" /></span>
-      </aside>
 
       <main id="descent-main">
         {/* ACT 0 · SURFACE: his name and his face, before the descent begins. Real
@@ -290,8 +285,7 @@ export default async function Home() {
           <p className="line" data-sc-in>From the sand, straight into the sea.</p>
         </section>
 
-        {/* ACT 4b · THE DESCENT: three of Osama's own photographs, shown at the depth they were taken.
-            The dive computer reads those depths, nothing invented. */}
+        {/* ACT 4b · THE DESCENT: three of Osama's own photographs, shown at the depth they were taken. */}
         <section className="g-abyss" id="descent-act" data-sc-act="pin" data-sc-span="2.7" style={{ "--sc-span": 2.7 } as React.CSSProperties}>
           <div data-sc-stage className="depth-stage">
             <img className="depth-photo depth-photo--1" data-sc-parallax="-0.24" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle over the reef at Om El Seed, seven metres down, photographed by Osama" />
@@ -374,9 +368,8 @@ export default async function Home() {
               </div>
             </div>
             </div>
-            {/* The ruler under the sites: the band lights the depth of whichever site is
-                in focus, and the dive computer reads the same site while this rail is on
-                screen. The Blue Hole runs past the end of the scale. */}
+            {/* The ruler under the sites lights the depth of whichever site is in focus.
+                The Blue Hole runs past the end of the scale. */}
             <div className="depth-ruler" id="depth-ruler" aria-hidden="true" style={{ "--lo": 3, "--hi": 25 } as React.CSSProperties}>
               <span className="depth-ruler__site mono" id="depth-ruler-site">Three Pools</span>
               <div className="depth-ruler__scale">
@@ -621,7 +614,7 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ACT 8 · SURFACING: the camera breaks the surface, the gauge reads zero */}
+        {/* ACT 8 · SURFACING: the camera breaks the surface */}
         <section className="g-abyss" id="surface-act" data-sc-act="scrub" data-sc-span="1.4" style={{ "--sc-span": 1.4 } as React.CSSProperties} data-sc-dwell="0.3">
           <div data-sc-stage className="water-column">
             <img className="sc-stage__poster" data-sc-parallax="-0.22" src="/descent/surface-poster.webp" srcSet="/descent/surface-poster-m.webp 800w, /descent/surface-poster.webp 1600w" sizes="100vw" alt="" />

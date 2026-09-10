@@ -490,39 +490,6 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     letter-spacing: 0.18em; text-transform: uppercase;
   }
 
-  /* the dive HUD: depth follows the page. the signature instrument. */
-  /* The gauge stands down while the reading is zero, which is the whole first third of
-     the page and the last of it. It is a dive computer, not a badge. */
-  .hud { opacity: 0; transform: translateY(-6px); pointer-events: none; transition: opacity 320ms ease-out, transform 320ms ease-out; }
-  .hud.is-under { opacity: 1; transform: none; pointer-events: auto; }
-  .hud {
-    position: fixed; top: 1.1rem; right: 1.2rem; z-index: 60;
-    display: grid; gap: 0.3rem; justify-items: end;
-    padding: 0.7rem 0.95rem;
-    background: linear-gradient(135deg, rgba(20, 60, 66, 0.55), rgba(4, 14, 20, 0.5) 45%, rgba(20, 60, 66, 0.4));
-    border: 1px solid rgba(190, 240, 232, 0.35);
-    border-radius: 14px;
-    backdrop-filter: blur(16px) saturate(170%); -webkit-backdrop-filter: blur(16px) saturate(170%);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -1px 0 rgba(255,255,255,0.08), inset 1px 0 0 rgba(255,255,255,0.18), 0 14px 40px -18px rgba(0,0,0,0.6);
-    pointer-events: none;
-  }
-  .hud__depth {
-    font: 500 1.3rem/1 var(--mono); font-feature-settings: "tnum";
-    color: var(--reef-glow); letter-spacing: 0.04em;
-  }
-  .hud__depth small { font-size: 0.62em; color: rgba(63, 209, 190, 0.7); }
-  .hud__label {
-    font: 500 0.56rem/1 var(--mono);
-    letter-spacing: 0.2em; text-transform: uppercase;
-    color: rgba(237, 244, 242, 0.66);
-  }
-  .hud__track { width: 100%; height: 2px; background: rgba(63,209,190,0.18); position: relative; border-radius: 1px; }
-  .hud__track i { position: absolute; inset-block: 0; left: 0; width: 100%; background: var(--reef-glow); border-radius: 1px; transform-origin: left center; transform: scaleX(0); }
-  @media (max-width: 700px) {
-    .hud { top: 0.7rem; right: 0.7rem; padding: 0.5rem 0.65rem; }
-    .hud__depth { font-size: 1.05rem; }
-  }
-
   /* wordmark, fixed, tiny */
   .brand {
     position: fixed; top: 1.35rem; left: 1.4rem; z-index: 60;
@@ -1040,18 +1007,13 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .surface-small { margin: 0.9rem 0 0; font: 500 0.82rem/1.6 var(--sc-font-text); color: rgba(237,244,242,0.72); max-width: 40ch; }
 .descent .surface-small a { color: #3fd1be; }
 
-/* the phone: the menu button owns the top right, the dive computer moves down a notch */
-@media (max-width: 860px) {
-  .descent .hud { top: 4.6rem !important; }
-}
-
 /* rails fill their stage so frames hung high and low read against the middle */
 .descent .journal-rail, .descent .gal-rail { height: 100svh; align-items: center; }
 .descent .journal-rail .station { align-self: center; }
-/* the orbit heading wraps before it reaches the dive computer on a phone */
+/* the orbit heading has room for the fixed top navigation on a phone */
 @media (max-width: 860px) { .descent .orbit-head { padding-right: 6.5rem; } }
 
-/* One dark strip behind the fixed chrome so the brand, the links and the dive computer
+/* One dark strip behind the fixed chrome so the brand and the links
    read on every ground, the bone and lagoon acts included. It fades out below, so on
    the photo hero it is a light hand on the top edge rather than a bar. */
 .descent .topbar {
@@ -1143,8 +1105,8 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
    Every control on the page is a capsule of glass: the backdrop is blurred and
    saturated, the edge refracts (Chrome bends the backdrop through an SVG filter,
    others get a bright rim), a specular sits on the top edge, and the whole thing
-   floats on a soft shadow. Applied to nav, gauge, pills, buttons, book arrows. */
-.descent .lg, .descent .cta, .descent .cta--quiet, .descent .navbtn, .descent .brand-ribbons a, .descent .topnav, .descent .hud, .descent .book__arrow, .descent .tail .lb-btn {
+   floats on a soft shadow. Applied to nav, pills, buttons, book arrows. */
+.descent .lg, .descent .cta, .descent .cta--quiet, .descent .navbtn, .descent .brand-ribbons a, .descent .topnav, .descent .book__arrow, .descent .tail .lb-btn {
   isolation: isolate; border-radius: 999px;
   background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.18)) !important;
   border: 1px solid rgba(255,255,255,0.45) !important;
@@ -1153,13 +1115,12 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
   color: #fff;
 }
 @supports (backdrop-filter: url("#lg-refract")) {
-  .descent .cta, .descent .navbtn, .descent .brand-ribbons a, .descent .hud { backdrop-filter: blur(14px) saturate(180%) url("#lg-refract"); -webkit-backdrop-filter: blur(14px) saturate(180%) url("#lg-refract"); }
+  .descent .cta, .descent .navbtn, .descent .brand-ribbons a { backdrop-filter: blur(14px) saturate(180%) url("#lg-refract"); -webkit-backdrop-filter: blur(14px) saturate(180%) url("#lg-refract"); }
 }
 .descent .cta { background: linear-gradient(135deg, rgba(63,209,190,0.85), rgba(63,209,190,0.55) 50%, rgba(63,209,190,0.8)) !important; color: #04121a; }
 .descent .cta--quiet { color: #edf4f2; }
 .descent .topnav { padding: 0.55rem 1rem; gap: 1.1rem; left: 8.2rem; top: 0.95rem; }
 .descent .topnav a { color: #f3f8f6; text-shadow: none; }
-.descent .hud { border-radius: 16px; }
 .descent .tail .lb-btn { color: var(--ink, #171208) !important; background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.6)) !important; border-color: rgba(11,107,96,0.35) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), inset 1px 0 0 rgba(255,255,255,0.6), 0 18px 40px -22px rgba(11,107,96,0.5) !important; }
 .descent .tail .lb-btn--paper { background: linear-gradient(135deg, rgba(11,107,96,0.92), rgba(11,107,96,0.7) 50%, rgba(11,107,96,0.9)) !important; color: #fff !important; }
 .descent .book__arrow { width: 52px; height: 52px; color: var(--ink, #171208); font-size: 2rem; background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.6)) !important; border-color: rgba(11,107,96,0.3) !important; }
@@ -1169,14 +1130,11 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .cta, .descent .cta--quiet, .descent .tail .lb-btn { position: relative; }
 
 .descent .orbit-card__hud i { filter: drop-shadow(0 0 4px rgba(63,209,190,0.9)); }
-/* the dive computer keeps a dark tint so its digits read over bright water */
-.descent .hud { background: linear-gradient(135deg, rgba(20,60,66,0.66), rgba(4,14,20,0.6) 45%, rgba(20,60,66,0.52)) !important; }
-
 /* ================= liquid glass, second cut: thick clear glass =================
    The centre is nearly clear (a whisper of blur), the rim refracts the backdrop
    outward through a lens map (Chrome), a bright edge and a top highlight give the
    thickness, and the capsule gives under a press and springs back. */
-.descent .lg, .descent .cta, .descent .cta--quiet, .descent .navbtn, .descent .brand-ribbons a, .descent .topnav, .descent .hud, .descent .book__arrow, .descent .tail .lb-btn, .descent .fpage__open {
+.descent .lg, .descent .cta, .descent .cta--quiet, .descent .navbtn, .descent .brand-ribbons a, .descent .topnav, .descent .book__arrow, .descent .tail .lb-btn, .descent .fpage__open {
   background: linear-gradient(160deg, rgba(255,255,255,0.34), rgba(255,255,255,0.06) 38%, rgba(255,255,255,0.1) 62%, rgba(255,255,255,0.28)) !important;
   border: 1px solid rgba(255,255,255,0.55) !important;
   backdrop-filter: blur(3px) saturate(170%) brightness(1.06); -webkit-backdrop-filter: blur(3px) saturate(170%) brightness(1.06);
@@ -1196,7 +1154,6 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .book__arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); }
 .descent .book__arrow:active:not(:disabled) { transform: translateY(-50%) scale(0.92); }
 .descent .cta { background: linear-gradient(160deg, rgba(63,209,190,0.92), rgba(63,209,190,0.6) 40%, rgba(63,209,190,0.7) 65%, rgba(63,209,190,0.95)) !important; }
-.descent .hud { background: linear-gradient(160deg, rgba(20,60,66,0.62), rgba(4,14,20,0.55) 45%, rgba(20,60,66,0.5)) !important; backdrop-filter: blur(10px) saturate(170%); -webkit-backdrop-filter: blur(10px) saturate(170%); }
 .descent .topnav { backdrop-filter: blur(10px) saturate(170%); -webkit-backdrop-filter: blur(10px) saturate(170%); background: linear-gradient(160deg, rgba(255,255,255,0.22), rgba(6,20,32,0.28) 45%, rgba(255,255,255,0.14)) !important; }
 
 /* the two strip buttons keep their reading colours under the glass */
@@ -1654,19 +1611,8 @@ html:not(.sc-ready) .w__i { transform: none; }
 }
 @keyframes ripple-out { to { transform: scale(1); opacity: 0; } }
 
-/* The dive computer pings when the profile reaches a new marker: one ring out. */
-.descent .hud::after {
-  content: ""; position: absolute; inset: -2px; border-radius: inherit; pointer-events: none;
-  border: 1.5px solid rgba(63, 209, 190, 0.9); opacity: 0;
-}
-.descent .hud.is-ping::after { animation: hud-ping 720ms ease-out; }
-@keyframes hud-ping {
-  0% { opacity: 0.9; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.16); }
-}
 @media (prefers-reduced-motion: reduce) {
   .descent .orbit-card__dot { animation: none; }
-  .descent .hud.is-ping::after { animation: none; }
   .ripple { display: none; }
 }
 
@@ -1717,7 +1663,7 @@ html:not(.sc-ready) .w__i { transform: none; }
 /* The guide's ledger was being covered by the next act sliding up over the seam. */
 @media (max-width: 860px) {
   .descent .guide-stage { padding-bottom: 24svh; }
-  /* the year numeral sat under the gauge */
+  /* the year numeral sits below the fixed top navigation */
   .descent .peak-year { top: 13svh; font-size: clamp(4.4rem, 19vw, 6.6rem); }
 }
 
@@ -1762,15 +1708,9 @@ html:not(.sc-ready) .w__i { transform: none; }
 
 /* ------------------------------------------------ the phone, second pass -- */
 @media (max-width: 860px) {
-  /* The dive computer was a large pill covering the top right of every screen: the
-     last digits of the year, the top of the guide's quote. It is a single line now. */
-  .descent .hud { top: 4.9rem !important; right: 0.7rem; padding: 0.38rem 0.6rem; gap: 0.15rem; border-radius: 10px; }
-  .descent .hud__depth { font-size: 0.95rem; }
-  .descent .hud__label { font-size: 0.48rem; letter-spacing: 0.14em; }
-  .descent .hud__track { height: 1.5px; }
-  /* the year sits below the gauge, not under it */
+  /* Keep the year clear of the fixed top navigation. */
   .descent .peak-year { top: 17svh; font-size: clamp(4rem, 17vw, 6rem); }
-  /* the guide's panel starts below the gauge too */
+  /* the guide's panel starts below the fixed top navigation */
   .descent .guide-stage { padding-top: 9.5rem; }
   /* the hero's last line was under the dock */
   .descent .brand-copy { padding-bottom: 5.2rem; }

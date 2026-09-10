@@ -17,7 +17,6 @@ export default function RailFocus() {
     if (!rails.length) return;
     rails.forEach((r) => r.classList.add("rail-focus"));
     let frame = 0;
-    let shown: string | null = null; // which ruler currently holds the dive computer
 
     const measure = () => {
       frame = 0;
@@ -28,8 +27,7 @@ export default function RailFocus() {
         const box = rail.getBoundingClientRect();
         const rulerId = rail.getAttribute("data-ruler");
         if (box.bottom < 0 || box.top > vh) {
-          // off screen: leave the cards as they were, and give the dive computer back
-          if (rulerId && shown === rulerId) { shown = null; window.dispatchEvent(new CustomEvent("od:site", { detail: null })); }
+          // off screen: leave the cards as they were
           continue;
         }
         let best: HTMLElement | null = null;
@@ -49,7 +47,7 @@ export default function RailFocus() {
           card.style.setProperty("--focus", focus.toFixed(3));
           if (focus > bestFocus) { bestFocus = focus; best = card; }
         }
-        // The site in focus lights its depth on the ruler and on the dive computer.
+        // The site in focus lights its depth on the ruler.
         // A card with no depth (the morning photograph) keeps the previous site lit.
         if (rulerId && best && bestFocus > 0.3) {
           const depth = best.getAttribute("data-depth");
@@ -63,8 +61,6 @@ export default function RailFocus() {
             ruler.setAttribute("data-deep", hi > 30 ? "1" : "0");
             const site = document.getElementById(rulerId + "-site");
             if (site) site.textContent = name;
-            shown = rulerId;
-            window.dispatchEvent(new CustomEvent("od:site", { detail: { depth: hi, label: `${hi} m · ${name}` } }));
           }
         }
       }

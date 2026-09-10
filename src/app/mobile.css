@@ -271,9 +271,28 @@
      sit on the paper, so the page has the width and a swipe turns it. Stamps sat
      over the name and the entry line once a page carried three or more; here they
      take a row of their own. */
-  .flipbook__stage { padding: 0 0.4rem; }
+  .flipbook__stage { position: relative; padding: 0 0.4rem; }
   .book__arrow { display: none; }
   .fpage__open { display: none; } /* a tap on the page opens it; the pill sat on the entry line */
+  .book__caption .book__count { display: none; } /* the count sits between the arrows under the book */
+  /* A book has edges: two sheets show beneath the page along the right and the bottom. */
+  .flipbook__book { position: relative; z-index: 0; }
+  .flipbook__book::before, .flipbook__book::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 2px; background: #f6f2e8; }
+  .flipbook__book::before { transform: translate(4px, 4px); }
+  .flipbook__book::after { transform: translate(8px, 8px); background: #ede7da; }
+  /* The corner of the page lifts once when the book arrives and stays lifted: a page
+     waiting to be turned. It is a button, so the corner itself turns the page too. */
+  .book__ear { position: absolute; right: 0.4rem; bottom: 0; z-index: 7; width: 0; height: 0; padding: 0; border: 0; cursor: pointer; border-top-left-radius: 3px;
+    background: linear-gradient(to top left, var(--lagoon, #e6f6f3) 0 50%, #efeadd 50% 100%);
+    box-shadow: -3px -3px 7px -2px rgba(23, 18, 8, 0.32); }
+  .is-inviting .book__ear { animation: ear-lift 1.1s cubic-bezier(0.2, 0.9, 0.3, 1) 0.4s both; }
+  .book__ear.is-off { display: none; }
+  @keyframes ear-lift { 0% { width: 0; height: 0; } 55% { width: 48px; height: 48px; } 100% { width: 36px; height: 36px; } }
+  /* the arrows under the book, with the count between them: the way to turn a page that needs no gesture */
+  .book__turn { display: flex; align-items: center; justify-content: center; gap: 1.1rem; margin-top: -0.2rem; }
+  .book__turn-btn { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(11, 107, 96, 0.35); background: var(--paper, #fffdf7); color: var(--ink, #171208); font: 300 1.9rem/1 var(--display, inherit); cursor: pointer; box-shadow: 0 8px 20px -12px rgba(23, 18, 8, 0.5); }
+  .book__turn-btn:disabled { opacity: 0.3; }
+  .book__turn-count { color: var(--reef, #0b6b60); font-size: 0.8rem; letter-spacing: 0.12em; min-width: 3.4rem; text-align: center; }
   .lb-page .lb-page__meta, .lb-page .lb-page__name { padding-right: 0; overflow-wrap: anywhere; }
   .lb-page .lb-page__stamps { position: static; display: flex; justify-content: flex-end; flex-wrap: wrap; margin: 0.35rem 0 0.1rem; }
   .lb-page .lb-page__stamps .lb-stamp + .lb-stamp { margin-left: -1.2rem; }
@@ -315,12 +334,13 @@
   .descent .siderail__panel { overflow-y: auto; overflow-x: hidden; touch-action: pan-y; overscroll-behavior: contain; border-radius: 16px 0 0 16px; background: #061420; }
 }
 @media (min-width: 861px) {
-  .msgbtn, .only-mobile { display: none !important; }
+  .msgbtn, .only-mobile, .book__turn, .book__ear { display: none !important; }
 }
 @media (prefers-reduced-motion: reduce) {
   .descent .siderail .siderail__stop.is-active .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); }
   .descent .brand-start i { animation: none; }
   .msgbtn { transition: none; }
+  .is-inviting .book__ear { animation: none; width: 36px; height: 36px; }
   .viewer__strip { scroll-behavior: auto; }
 }
 @media (max-width: 860px) {

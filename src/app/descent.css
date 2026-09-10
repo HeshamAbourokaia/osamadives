@@ -1766,3 +1766,30 @@ html:not(.sc-ready) .w__i { transform: none; }
   .descent .surface-copy { bottom: 11.6rem !important; padding-bottom: 0; }
   .descent .depth-copy { bottom: 7rem; }
 }
+
+/* On a phone the archive is a page of evidence, so let the story and its print
+   occupy two distinct beats. Keeping the intro in normal flow prevents the
+   photograph from ever showing through the copy while the pinned act advances. */
+@media (max-width: 860px) {
+  .descent .peak-stage {
+    display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+    gap: 0; padding: clamp(6.4rem, 14vh, 8.5rem) var(--sc-gutter) 1.5rem;
+  }
+  .descent .peak-story-intro {
+    position: relative; inset: auto; width: 100%; max-width: 34rem; margin: 0;
+    padding: 0.9rem 0.95rem 1rem; text-align: center;
+  }
+  .descent .peak-story-intro .microcopy { margin-bottom: 0.65rem; }
+  .descent .peak-story-intro h2 {
+    max-width: none; margin-bottom: 0.75rem;
+    font-size: clamp(1.5rem, 6.8vw, 2.15rem); line-height: 0.98;
+  }
+  .descent .peak-story-intro p {
+    max-width: none; font-size: clamp(0.76rem, 3.1vw, 0.88rem); line-height: 1.45;
+    text-align: left;
+  }
+  .descent .peak-frame {
+    flex: 0 0 auto; width: min(92vw, 34rem); margin-top: clamp(0.9rem, 2.5vh, 1.5rem);
+  }
+  .descent .peak-captions { margin-top: 0.65rem; min-height: 2.8rem; }
+}

@@ -45,10 +45,12 @@
   .descent .peak-year { top: 8.6rem; }
 
   /* ---- the hero: one image, one sentence, one action ---- */
-  .descent .brand-stage { min-height: 40rem; }
-  .descent .brand-stage__photo { object-position: 74% 32%; }
+  /* Keep the whole teaching photograph on a phone, with the introduction below it. */
+  .descent .brand-stage { height: auto; min-height: 0; padding-top: 4.5rem; }
+  .descent .brand-stage__photo { position: relative; inset: auto; height: auto; object-fit: contain; object-position: center; transform: none !important; }
+  .descent .brand-stage > .sc-scrim { display: none; }
   .descent .brand-ribbons, .descent .brand-small { display: none; }
-  .descent .brand-copy { bottom: 6.4rem; padding-bottom: 0; }
+  .descent .brand-copy { position: relative; inset: auto; max-width: none; padding: 1.5rem var(--sc-gutter) 2rem; }
   .descent .brand-copy h1 { font-size: clamp(3rem, 15vw, 4.4rem); }
   .descent .brand-copy .sc-body { font-size: 17px; max-width: 30ch; }
   .descent .brand-start { display: inline-flex; align-items: center; min-height: 44px; gap: 0.5rem; color: rgba(237,244,242,0.85); text-decoration: none; font: 600 0.8rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }

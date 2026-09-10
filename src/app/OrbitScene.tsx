@@ -312,7 +312,6 @@ export default function OrbitScene({ items: allItems, osamaSrc, osamaSrcMobile, 
                 <span className="orbit-card__kicker">{item.kicker}</span>
                 <span className="orbit-card__title">{item.title}</span>
                 <span className="orbit-card__meta">{item.meta}</span>
-                <span className="orbit-card__hud" aria-hidden="true"><i /><i /><i /><i /><b>Open</b></span>
                 <span className="orbit-card__dot" aria-hidden="true" />
               </a>
             ))}

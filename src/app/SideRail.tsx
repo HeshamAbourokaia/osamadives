@@ -8,14 +8,14 @@ import { WHATSAPP } from "@/lib/contact";
 // the Gulf of Aqaba, Taba at the top down to Ras Mohammed at the tip: home, drawn small.
 const STOPS = [
   { id: "brand-act", label: "Surface", at: 0.04 },
-  { id: "guide-act", label: "Osama", at: 0.15 },
-  { id: "peak-act", label: "1987", at: 0.26 },
-  { id: "descent-act", label: "Classroom", at: 0.32 },
-  { id: "coast-act", label: "Sites", at: 0.37 },
-  { id: "orbit-act", label: "World", at: 0.5, town: "Dahab" },
-  { id: "school-act", label: "School", at: 0.62 },
-  { id: "gallery-act", label: "Gallery", at: 0.73 },
-  { id: "stories", label: "Reviews", at: 0.84 },
+  { id: "peak-act", label: "1987", at: 0.14 },
+  { id: "guide-act", label: "Osama", at: 0.24 },
+  { id: "descent-act", label: "Classroom", at: 0.35 },
+  { id: "coast-act", label: "Sites", at: 0.4 },
+  { id: "orbit-act", label: "World", at: 0.52, town: "Dahab" },
+  { id: "school-act", label: "School", at: 0.64 },
+  { id: "gallery-act", label: "Gallery", at: 0.75 },
+  { id: "stories", label: "Reviews", at: 0.85 },
   { id: "surface-act", label: "Contact", at: 0.95 },
 ];
 // Taba, Nuweiba, Ras Shaitan, Dahab, Sharm el Sheikh, Ras Mohammed: the shore as a line.

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 const LINKS = [
   { href: "/diving-with-osama", label: "Teaching" },
   { href: "/dive-sites", label: "Sites" },
@@ -17,6 +19,12 @@ const LINKS = [
  * page does not hold as well.
  */
 export default function DescentNav() {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const sync = (event: Event) => setOpen((event as CustomEvent<boolean>).detail);
+    window.addEventListener("od:rail-state", sync);
+    return () => window.removeEventListener("od:rail-state", sync);
+  }, []);
   return (
     <>
       <div className="topbar" aria-hidden="true" />
@@ -26,8 +34,10 @@ export default function DescentNav() {
       </nav>
       <button
         type="button"
-        className="navbtn"
-        aria-label="Menu"
+        className={`navbtn${open ? " is-open" : ""}`}
+        aria-label={open ? "Close menu" : "Menu"}
+        aria-expanded={open}
+        aria-controls="od-coast-menu"
         onClick={() => window.dispatchEvent(new Event("od:rail"))}
       >
         <span aria-hidden="true" />

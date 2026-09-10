@@ -988,11 +988,11 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
   width: 44px; height: 44px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.28);
   background: rgba(6,20,32,0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); cursor: pointer; padding: 0;
 }
-.descent .navbtn span { position: absolute; left: 12px; right: 12px; height: 2px; background: #fff; border-radius: 2px; transition: transform 200ms var(--sc-ease-out, ease-out), top 200ms; }
+.descent .navbtn > span:not(.ripple) { position: absolute; left: 12px; right: 12px; height: 2px; background: #fff; border-radius: 2px; transition: transform 200ms var(--sc-ease-out, ease-out), top 200ms; }
 .descent .navbtn span:first-child { top: 17px; }
-.descent .navbtn span:last-child { top: 25px; }
+.descent .navbtn span:nth-child(2) { top: 25px; }
 .descent .navbtn.is-open span:first-child { top: 21px; transform: rotate(45deg); }
-.descent .navbtn.is-open span:last-child { top: 21px; transform: rotate(-45deg); }
+.descent .navbtn.is-open span:nth-child(2) { top: 21px; transform: rotate(-45deg); }
 
 /* hero ribbons: the three pills the previous homepage carried */
 .descent .brand-ribbons { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.3rem; }
@@ -1637,8 +1637,10 @@ html:not(.sc-ready) .w__i { transform: none; }
 /* A press answers with a ripple from the point of the touch. The targets clip it
    to their own shape; a pill's outer glow is a box shadow, which its own overflow
    never clips. */
-.descent .cta, .descent .navbtn, .descent .peak-year-chip, .descent .book__arrow, .descent .fpage__open, .descent .lead-link, .descent .sharecode__wa,
+.descent .cta, .descent .peak-year-chip, .descent .book__arrow, .descent .fpage__open, .descent .lead-link, .descent .sharecode__wa,
 .lb .lb-btn, .tail .lb-btn { position: relative; overflow: hidden; }
+/* The fixed menu button already contains its ripple; keep it in the viewport. */
+.descent .navbtn { overflow: hidden; }
 .ripple {
   position: absolute; border-radius: 50%; pointer-events: none; z-index: 5;
   background: radial-gradient(circle, rgba(63, 209, 190, 0.55) 0%, rgba(63, 209, 190, 0.28) 40%, rgba(63, 209, 190, 0) 70%);

@@ -63,7 +63,7 @@
   /* one action per screen: the floating Message button carries it on every screen, so
      the copy never repeats it, the hero included */
   .descent .entry-copy .cta, .descent .surface-copy .cta, .descent .brand-cta { display: none; }
-  /* the year numeral sits under the gauge, measured from the top, not the viewport */
+  /* the year numeral sits below the fixed top navigation */
   .descent .peak-year { top: 8.6rem; }
 
   /* ---- the hero: one image, one sentence, one action ---- */
@@ -100,8 +100,7 @@
   .deck__dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(63,209,190,0.3); transition: transform 200ms, background 200ms; }
   .deck__dots i.is-on { background: #3fd1be; transform: scale(1.3); }
 
-  /* the fixed depth gauge sits at this height, and the copyright line below
-     repeats these words anyway */
+  /* Keep the copyright line compact on a phone. */
   .descent .tail-foot > span:first-of-type { display: none; }
   .descent .tail-foot > nav { display: grid; grid-template-columns: 1fr 1fr; gap: 0.1rem 1rem; }
 
@@ -131,12 +130,6 @@
   /* a page that opens on a full bleed photo meets the dark cap, with no stripe of
      bone paper between the two */
   .descent-inner .inner-body > header.mt-14 { margin-top: 0 !important; }
-
-  /* The gauge printed the same words the panel underneath it was already saying, and
-     it sat on them. On a phone it keeps the depth and drops the label; the rail on the
-     edge names the act now. */
-  .descent .hud__label { display: none; }
-  .descent .hud { padding: 0.4rem 0.6rem; }
 
   /* ---- the rail says it is there ----
      A little more line and a little more dot, so it reads against a photograph

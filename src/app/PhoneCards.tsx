@@ -2,9 +2,11 @@
 
 import ShareButton from "./ShareButton";
 import PickButton from "./PickButton";
+import SiteFit from "./SiteFit";
 import type { Pick } from "@/lib/picks";
+import type { SiteLevel } from "@/lib/level";
 
-export interface PhoneCardItem { href: string; title: string; kicker: string; text: string; image: string; alt: string; pick?: Pick }
+export interface PhoneCardItem { href: string; title: string; kicker: string; text: string; image: string; alt: string; pick?: Pick; level?: SiteLevel }
 
 const SITE = "https://www.osamadives.com";
 
@@ -23,6 +25,7 @@ export default function PhoneCards({ items, label }: { items: PhoneCardItem[]; l
           <img className="pcard__img" src={it.image} alt={it.alt} loading={i < 2 ? "eager" : "lazy"} decoding="async" />
           <div className="pcard__body">
             <span className="pcard__kicker">{it.kicker}</span>
+            {it.level ? <SiteFit site={it.level} /> : null}
             <h2 className="pcard__title"><a className="pcard__link" href={it.href}>{it.title}</a></h2>
             <p className="pcard__text">{it.text}</p>
             {it.pick ? <PickButton {...it.pick} /> : null}

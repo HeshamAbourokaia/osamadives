@@ -1,5 +1,6 @@
 import { whatsapp } from "@/lib/contact";
 import DescentShell from "@/app/DescentShell";
+import LevelPicker from "@/app/LevelPicker";
 import PhoneCards from "@/app/PhoneCards";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
@@ -34,9 +35,10 @@ export default function DiveSitesPage() {
       {/* Dive Sites Grid */}
       <main className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
-                    <PhoneCards
+                    <div className="only-mobile"><LevelPicker /></div>
+          <PhoneCards
             label="The dive sites"
-            items={diveSites.map((site) => ({ href: `/dive-sites/${site.slug}`, title: site.name, pick: { id: `site:${site.slug}`, label: site.name.replace(/,\s*Dahab$/, ""), kind: "site" as const }, kicker: `${site.depthMin} to ${site.depthMax} m · from the shore`, text: site.description.length > 130 ? site.description.slice(0, 130).replace(/\s+\S*$/, "") + "." : site.description, image: site.featuredImage, alt: site.imageAlt }))}
+            items={diveSites.map((site) => ({ href: `/dive-sites/${site.slug}`, title: site.name, pick: { id: `site:${site.slug}`, label: site.name.replace(/,\s*Dahab$/, ""), kind: "site" as const }, level: site.level, kicker: `${site.depthMin} to ${site.depthMax} m · from the shore`, text: site.description.length > 130 ? site.description.slice(0, 130).replace(/\s+\S*$/, "") + "." : site.description, image: site.featuredImage, alt: site.imageAlt }))}
           />
 <div className="only-desktop grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {diveSites.map((site) => (

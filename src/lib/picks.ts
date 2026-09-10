@@ -65,7 +65,7 @@ export function composeMessage(picks: Pick[], level?: string | null) {
   if (sites.length) parts.push(`diving ${list(sites)}`);
   if (courses.length) parts.push(list(courses));
   const about = parts.length ? ` I would love to talk about ${list(parts)}.` : " I would love to chat about diving in Dahab.";
-  const who = level ? ` I am ${level}.` : "";
+  const who = level ? ` ${level}.` : "";
   return `Hi Osama! I found you on osamadives.com.${about}${who}`;
 }
 

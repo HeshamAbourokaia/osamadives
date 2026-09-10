@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { WHATSAPP } from "@/lib/contact";
 import { composeMessage, onPicks, readPicks, whatsappFor, type Pick } from "@/lib/picks";
+import { levelSays, onLevel, readLevel, type Level } from "@/lib/level";
 import AskSheet from "./AskSheet";
 
 /**
@@ -20,6 +21,7 @@ export default function MessageButton() {
   const [away, setAway] = useState(false);
   const [picks, setPicks] = useState<Pick[]>([]);
   const [sheet, setSheet] = useState(false);
+  const [level, setLevel] = useState<Level | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const hold = useRef(0);
   const held = useRef(false);
@@ -41,6 +43,8 @@ export default function MessageButton() {
   useEffect(() => {
     setPicks(readPicks());
     const off = onPicks(setPicks);
+    setLevel(readLevel());
+    const offLevel = onLevel(setLevel);
     let t = 0;
     const onPicked = (e: Event) => {
       const d = (e as CustomEvent<{ label: string; added: boolean; count: number }>).detail;
@@ -49,10 +53,10 @@ export default function MessageButton() {
       t = window.setTimeout(() => setToast(null), 2200);
     };
     window.addEventListener("od:picked", onPicked);
-    return () => { off(); window.removeEventListener("od:picked", onPicked); window.clearTimeout(t); };
+    return () => { off(); offLevel(); window.removeEventListener("od:picked", onPicked); window.clearTimeout(t); };
   }, []);
   const close = useCallback(() => setSheet(false), []);
-  const href = picks.length ? whatsappFor(composeMessage(picks)) : WHATSAPP;
+  const href = picks.length || level ? whatsappFor(composeMessage(picks, levelSays(level))) : WHATSAPP;
   const startHold = () => { held.current = false; window.clearTimeout(hold.current); hold.current = window.setTimeout(() => { held.current = true; setSheet(true); }, 480); };
   const endHold = () => window.clearTimeout(hold.current);
   return (
@@ -78,7 +82,7 @@ export default function MessageButton() {
         <span>Message</span>
         {picks.length ? <span className="msgbtn__count" aria-hidden="true">{picks.length}</span> : null}
       </a>
-      {sheet ? <AskSheet picks={picks} onClose={close} /> : null}
+      {sheet ? <AskSheet picks={picks} level={levelSays(level)} onClose={close} /> : null}
     </>
   );
 }

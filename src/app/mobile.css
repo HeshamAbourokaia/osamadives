@@ -165,6 +165,37 @@
   .ask__close { position: absolute; top: 0.9rem; right: 0.9rem; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(23, 18, 8, 0.15); background: #fff; color: #171208; font-size: 1.4rem; line-height: 1; cursor: pointer; }
   @keyframes ask-fade { from { opacity: 0; } to { opacity: 1; } }
   @keyframes ask-rise { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+  /* ---- your level, and what each site says to it ---- */
+  .level { display: grid; gap: 0.5rem; margin: 0 0 1rem; }
+  .level__k { font: 700 0.62rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: #0a7d70; }
+  .level__row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .level__btn { min-height: 40px; padding: 0 0.85rem; border-radius: 999px; border: 1px solid rgba(10, 125, 112, 0.35); background: #fffdf8; color: #075f55; font: 700 0.8rem/1 var(--sc-font-display); cursor: pointer; }
+  .level__btn.is-on { background: #0a7d70; border-color: #0a7d70; color: #fff; }
+  .fit { display: inline-block; margin-top: 0.15rem; padding: 0.3rem 0.6rem; border-radius: 999px; font: 700 0.66rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .fit--yes { background: rgba(10, 125, 112, 0.14); color: #075f55; }
+  .fit--next { background: rgba(23, 18, 8, 0.08); color: rgba(23, 18, 8, 0.7); }
+  .fit--with { background: rgba(63, 209, 190, 0.18); color: #075f55; }
+  .fit--no { background: rgba(23, 18, 8, 0.08); color: rgba(23, 18, 8, 0.6); }
+  /* ---- which course am I: three taps ---- */
+  .finder { display: grid; gap: 1rem; padding: 1.1rem 1rem 1.2rem; border-radius: 16px; background: #fffdf8; border: 1px solid rgba(23, 18, 8, 0.1); box-shadow: 0 10px 30px -22px rgba(6, 20, 32, 0.6); color: #171208; }
+  .finder__head { display: grid; gap: 0.3rem; }
+  .finder__head .microcopy { color: #0a7d70; }
+  .finder__title { margin: 0; font: 800 1.45rem/1.05 var(--sc-font-display); letter-spacing: -0.02em; }
+  .finder__q { display: grid; gap: 0.5rem; }
+  .finder__k { font: 700 0.66rem/1.3 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: rgba(23, 18, 8, 0.6); }
+  .finder__opts { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .finder__opt { min-height: 44px; padding: 0 0.95rem; border-radius: 999px; border: 1px solid rgba(10, 125, 112, 0.35); background: #fff; color: #075f55; font: 700 0.86rem/1 var(--sc-font-display); cursor: pointer; }
+  .finder__opt.is-on { background: #0a7d70; border-color: #0a7d70; color: #fff; }
+  .finder__answer { display: grid; gap: 0.55rem; padding: 0.95rem 1rem 1rem; border-radius: 14px; background: rgba(10, 125, 112, 0.07); border: 1px solid rgba(10, 125, 112, 0.18); }
+  .finder__answer .microcopy { color: #0a7d70; }
+  .finder__course { margin: 0; font: 800 1.35rem/1.05 var(--sc-font-display); letter-spacing: -0.02em; }
+  .finder__say { margin: 0; font-size: 15px; line-height: 1.5; color: rgba(23, 18, 8, 0.82); }
+  .finder__acts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.3rem; }
+  .finder__wa { display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: #3fd1be; color: #04121a; text-decoration: none; font: 700 0.88rem/1 var(--sc-font-display); }
+  .finder__again { justify-self: start; min-height: 40px; padding: 0; border: 0; background: none; color: rgba(23, 18, 8, 0.6); font: 600 0.8rem/1 var(--sc-font-display); text-decoration: underline; text-underline-offset: 0.2em; cursor: pointer; }
+  .finder__note { margin: 0; font-size: 12px; line-height: 1.5; color: rgba(23, 18, 8, 0.55); }
+  .descent .school .finder { margin: 0 0 1.4rem; }
+  .wiw .finder { margin: 0 0 2rem; }
 
   /* a page that opens on a full bleed photo meets the dark cap, with no stripe of
      bone paper between the two */

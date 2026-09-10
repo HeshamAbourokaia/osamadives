@@ -4,6 +4,7 @@ import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
 import PickButton from "@/app/PickButton";
+import SiteFit from "@/app/SiteFit";
 import { notFound } from "next/navigation";
 import { diveSites, getDiveSiteBySlug } from "@/lib/dive-sites";
 
@@ -94,6 +95,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
             <div>
               <p className="text-xs uppercase text-gray-500 tracking-wide">Level</p>
               <p className="font-semibold text-gray-900">{site.level}</p>
+              <div className="only-mobile mt-1"><SiteFit site={site.level} /></div>
             </div>
             <div>
               <p className="text-xs uppercase text-gray-500 tracking-wide">Distance</p>

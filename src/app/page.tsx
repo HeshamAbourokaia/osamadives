@@ -24,6 +24,7 @@ import TripleTapQR from "./TripleTapQR";
 import DahabNow from "./DahabNow";
 import HoldToDive from "./HoldToDive";
 import PickButton from "./PickButton";
+import CourseFinder from "./CourseFinder";
 import WhatsAppCount from "./WhatsAppCount";
 import { LENS_MAP } from "./lensMap";
 import { diveSites } from "@/lib/dive-sites";
@@ -477,6 +478,7 @@ export default async function Home() {
               <h2><Words text="Learn it properly." mode="in" /></h2>
               <p className="sc-body">Small groups, slow briefings, the same reef he learned on. Pick the course that matches where you are, and he takes you the rest of the way.</p>
             </div>
+            <div className="only-mobile"><CourseFinder /></div>
             <div className="exhibits" data-sc-in data-sc-stagger="90">
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">I</span>

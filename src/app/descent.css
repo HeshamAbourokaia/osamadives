@@ -510,6 +510,31 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
 
   /* ================= act 1 · entry: full-bleed scrub ================= */
   .entry-copy { max-width: min(92vw, 1080px); }
+  /* The copy is carried by the diver instead of sitting on top of the footage.
+     A fine tow line points toward his fins; its angle follows the same progress
+     variable as the scrubbed film, so the words feel pulled through the water. */
+  .entry-towline {
+    display: inline-block; width: min(44rem, 100%); max-width: 100%; position: relative; z-index: 1; transform-origin: 0 100%; vertical-align: bottom;
+    transform: translate3d(calc(var(--sc-p, 0) * 3.2vw), calc((0.5 - var(--sc-p, 0)) * 1.8vh), 0) rotate(calc((0.5 - var(--sc-p, 0)) * 2.4deg));
+    will-change: transform;
+  }
+  .entry-towline__line {
+    content: ""; position: absolute; left: calc(100% - 0.2rem); top: 42%;
+    width: clamp(8rem, 23vw, 21rem); height: 3px; pointer-events: none; transform-origin: 0 50%; z-index: 2;
+    transform: rotate(calc(-18deg + var(--sc-p, 0) * 30deg));
+    background: linear-gradient(90deg, rgba(159,232,220,0.95), rgba(63,209,190,0.55) 65%, transparent);
+    box-shadow: 0 0 10px rgba(63,209,190,0.42); opacity: calc(0.48 + var(--sc-p, 0) * 0.3);
+  }
+  .entry-towline__bubbles {
+    content: ""; position: absolute; left: calc(100% + clamp(4rem, 12vw, 9rem)); top: 34%;
+    width: 8px; height: 8px; border: 1px solid rgba(159,232,220,0.82); border-radius: 50%; pointer-events: none; z-index: 2;
+    box-shadow: 20px -16px 0 -1px rgba(159,232,220,0.65), 43px 8px 0 -2px rgba(159,232,220,0.58), 72px -25px 0 -2px rgba(159,232,220,0.45);
+    animation: tow-bubbles 3.6s ease-in-out infinite;
+  }
+  @keyframes tow-bubbles {
+    0%, 100% { opacity: 0.28; transform: translate3d(0, 3px, 0) scale(0.82); }
+    50% { opacity: 0.78; transform: translate3d(8px, -7px, 0) scale(1); }
+  }
   .entry-copy .microcopy { color: rgba(240,247,245,0.98); margin-bottom: 1.3rem; display: inline-block; background: rgba(4,14,20,0.72); padding: 0.5em 0.75em; border-radius: 3px; border: 1px solid rgba(63,209,190,0.22); }
   .entry-copy h2 {
     font: 800 clamp(3rem, 8.6vw, 7.6rem)/0.96 var(--sc-font-display);
@@ -597,17 +622,32 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     color: var(--sc-ink-soft); margin: 0; font-style: italic;
   }
 
-  /* ================= act 4 · the peak: the mounted print ================= */
+  /* ================= act 1 · the archive: the mounted print ================= */
   .peak-stage { display: grid; place-items: center; padding: 5vh var(--sc-gutter); position: relative; }
+  .peak-story-intro {
+    position: absolute; inset-inline: var(--sc-gutter); top: clamp(1.2rem, 5vh, 4rem); z-index: 5;
+    max-width: min(70rem, 94vw); margin-inline: auto; text-align: center; color: #edf4f2;
+  }
+  .peak-story-intro .microcopy { display: block; margin-bottom: 0.9rem; color: var(--reef-glow); }
+  .peak-story-intro h2 {
+    max-width: 24ch; margin: 0 auto 0.7rem;
+    font: 800 clamp(1.9rem, 4vw, 3.8rem)/0.96 var(--sc-font-display);
+    letter-spacing: -0.025em; text-transform: uppercase; text-wrap: balance;
+  }
+  .peak-story-intro p {
+    max-width: 84ch; margin: 0 auto;
+    font: 500 clamp(0.82rem, 1.05vw, 0.92rem)/1.48 var(--sc-font-text);
+    color: rgba(237,244,242,0.78); text-wrap: pretty;
+  }
   .peak-year {
-    position: absolute; inset-inline: 0; top: 4vh;
-    justify-content: center; z-index: 0;
-    font: 900 clamp(7rem, 22vw, 19rem)/1 var(--sc-font-display);
+    position: absolute; left: auto; right: clamp(1rem, 5vw, 5rem); top: clamp(7rem, 14vh, 10rem);
+    justify-content: flex-end; z-index: 4; opacity: 0.78;
+    font: 900 clamp(4rem, 10vw, 9rem)/1 var(--sc-font-display);
     font-feature-settings: "tnum";
     color: transparent; -webkit-text-stroke: 2px rgba(63, 209, 190, 0.34);
     letter-spacing: 0.01em; pointer-events: none;
   }
-  .peak-frame { width: min(78vw, 900px); position: relative; z-index: 1; margin-top: 7vh; }
+  .peak-frame { width: min(68vw, 780px); position: relative; z-index: 1; margin-top: clamp(14rem, 30vh, 18rem); }
   .peak-mat {
     background: var(--bone); padding: clamp(0.7rem, 1.6vw, 1.3rem);
     border-radius: 3px;
@@ -615,37 +655,16 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   }
   .peak-plate { position: relative; overflow: hidden; aspect-ratio: 3 / 2; }
 
-  /* A contact sheet of four prints. Each one holds its scattered position and full
-     colour until its own window opens (--w0 to --w1 of the act), so the sheet reads
-     as four distinct photographs before anything moves. --pt is that window's own
-     0-1 progress, shared by both kinds of print below. */
+  /* A single print stays on the table while the next one dissolves over it. The
+     changing frame keeps the journey readable: 1987, the handover, then today. */
   .peak-plate img.peak-photo {
     position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
     z-index: var(--pz, 1);
-    --pt: clamp(0, (var(--sc-p, 0) - var(--w0)) / max(calc(var(--w1) - var(--w0)), 0.001), 1);
   }
   .peak-photo--tall { object-position: center 18%; }
-
-  /* Three prints fly off the sheet in their turn: translating and turning away from
-     the centre, along the same line they were already leaning on, holding until
-     past the middle of their own window before they start to fade so the motion
-     reads before the disappearance does. */
-  .peak-photo--fly {
-    transform:
-      translate(calc(var(--x0) + (var(--x1) - var(--x0)) * var(--pt)), calc(var(--y0) + (var(--y1) - var(--y0)) * var(--pt)))
-      rotate(calc(var(--r0) + (var(--r1) - var(--r0)) * var(--pt)))
-      scale(calc(var(--s0) + (var(--s1) - var(--s0)) * var(--pt)));
-    opacity: clamp(0, calc(1 - (var(--pt) - 0.55) / 0.45), 1);
-  }
-
-  /* The fourth print, 2024, never leaves: it un-scatters and grows to fill the
-     whole sheet over most of the act, then keeps a slow, continuing zoom for as
-     long as the sheet stays bare, so the plate is never quite still. */
-  .peak-photo--grow {
-    transform:
-      translate(calc(var(--x0) * (1 - var(--pt))), calc(var(--y0) * (1 - var(--pt))))
-      rotate(calc(var(--r0) * (1 - var(--pt))))
-      scale(calc(var(--s0) + (1 - var(--s0)) * var(--pt) + max(0, calc(var(--sc-p, 0) - var(--w1))) * 0.12));
+  .peak-photo--story {
+    opacity: clamp(0, calc((var(--sc-p, 0) - var(--w0, 0)) * 12), 1);
+    transform: scale(1.025);
   }
   .peak-captions { position: relative; min-height: 3.6rem; margin-top: 1rem; }
   .peak-captions p {
@@ -715,7 +734,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
      (--card-y), so the front of the ring passes low, across his hands, and the
      back passes high behind his shoulders, never across his face. */
   .orbit-stage { display: grid; grid-template-rows: auto 1fr; padding: 4vh var(--sc-gutter) 4.5vh; gap: 0; height: 100svh; }
-  .orbit-head { max-width: 46ch; position: relative; z-index: 3; }
+  .orbit-head { max-width: 46ch; position: relative; z-index: 3; margin-bottom: clamp(0.35rem, 1vh, 0.9rem); }
   .orbit-head .microcopy { color: var(--sc-accent); display: block; margin-bottom: 0.7rem; }
   .orbit-head h2 { font: 700 clamp(1.6rem, 3.4vw, 2.6rem)/1.08 var(--sc-font-display); letter-spacing: var(--sc-track-tight); margin: 0; }
   .orbit-tagline { font: 500 italic clamp(0.85rem, 1.3vw, 1rem)/1.5 var(--sc-font-text); color: var(--sc-ink-soft); margin: 0.7rem 0 0; }
@@ -748,8 +767,13 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   /* At the axis (translateZ 0) so depth sorting does the rest: cards at +r paint over
      him, cards at -r paint behind him. rotateY(-deg) is applied by the script so he
      faces the camera while the ring turns. */
-  .orbit-figure { position: absolute; left: 50%; bottom: 0; height: var(--figure-h); width: auto; z-index: 50; transform: translateX(-50%); pointer-events: none; }
-  .orbit-figure img { height: 100%; width: auto; display: block; filter: drop-shadow(0 30px 50px rgba(11,111,96,0.34)); }
+  .orbit-figure { position: absolute; left: 50%; bottom: clamp(0.8rem, 3.5vh, 2.6rem); height: var(--figure-h); width: auto; z-index: 50; transform: translateX(-50%); pointer-events: none; }
+  .orbit-figure::before {
+    content: ""; position: absolute; left: 50%; bottom: 2%; width: 82%; height: 76%; transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.74), rgba(63,209,190,0.22) 42%, transparent 72%);
+    filter: blur(18px); opacity: 0.72; z-index: -1;
+  }
+  .orbit-figure img { height: 100%; width: auto; display: block; filter: contrast(1.12) brightness(1.06) saturate(1.12) drop-shadow(0 30px 50px rgba(11,111,96,0.38)); }
   .orbit-card {
     position: absolute; left: 50%; top: var(--ring-cy); width: clamp(8rem, 12.5vw, 11rem);
     transform: translate(-50%, -50%) translateY(calc(var(--card-rise, 0px) + var(--card-y, 0px)))
@@ -777,7 +801,8 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     .orbit-head h2 { font-size: clamp(1.4rem, 6.4vw, 1.8rem); }
     .orbit-grid { grid-template-columns: 1fr; }
     .orbit-grid__figure { max-width: 12rem; margin-inline: auto; }
-    .orbit-3d { --ring-r: clamp(9rem, 36vw, 11rem); --ring-cy: 56%; --figure-h: 90%; min-height: 62vh; perspective: 900px; }
+    .orbit-3d { --ring-r: clamp(9rem, 36vw, 11rem); --ring-cy: 56%; --figure-h: 88%; min-height: 62vh; perspective: 900px; }
+    .orbit-figure { bottom: 2.5%; }
     .orbit-card { width: clamp(6.8rem, 30vw, 8rem); }
     .orbit-card img { height: 4.2rem; }
     .orbit-card__title { font-size: 0.74rem; }
@@ -868,8 +893,16 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     .coast-lead { flex-basis: 78vw; }
     .station, .station-img { flex-basis: 74vw; min-height: 52vh; }
     .coast-note { flex-basis: 70vw; }
+    .entry-towline {
+      transform: translate3d(calc(var(--sc-p, 0) * 4vw), calc((0.5 - var(--sc-p, 0)) * 1.2vh), 0) rotate(calc((0.5 - var(--sc-p, 0)) * 1.5deg));
+    }
+    .entry-towline__line {
+      left: 12%; top: calc(100% + 0.9rem); width: 72%; transform: rotate(calc(-4deg + var(--sc-p, 0) * 9deg));
+      opacity: 0.55;
+    }
+    .entry-towline__bubbles { left: 72%; top: calc(100% + 0.8rem); transform: scale(0.8); }
     .entry-copy h2 { font-size: clamp(2.5rem, 12vw, 3.4rem); }
-    .peak-frame { width: 92vw; margin-top: 12vh; }
+    .peak-frame { width: 92vw; margin-top: clamp(12rem, 31vh, 16rem); }
     .entry-foot { display: none; }
   }
 
@@ -1061,23 +1094,23 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .guide-panel .rule-draw { margin-bottom: 1rem; }
 @media (max-width: 860px) { .descent .guide-panel { padding: 1.2rem; border-radius: 14px; } }
 
-/* ================= orbit: the hover frame ================= */
-/* Hover or focus a card and it comes forward with a targeting frame: four corner
-   brackets, a scan line sweeping the picture, a glow, and the word Open. */
-.descent .orbit-card__hud { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 180ms; }
-.descent .orbit-card__hud i { position: absolute; width: 14px; height: 14px; border: 2px solid #3fd1be; transition: transform 260ms var(--sc-ease-out, ease-out); }
-.descent .orbit-card__hud i:nth-child(1) { top: 5px; left: 5px; border-right: 0; border-bottom: 0; transform: translate(8px, 8px); }
-.descent .orbit-card__hud i:nth-child(2) { top: 5px; right: 5px; border-left: 0; border-bottom: 0; transform: translate(-8px, 8px); }
-.descent .orbit-card__hud i:nth-child(3) { bottom: 5px; left: 5px; border-right: 0; border-top: 0; transform: translate(8px, -8px); }
-.descent .orbit-card__hud i:nth-child(4) { bottom: 5px; right: 5px; border-left: 0; border-top: 0; transform: translate(-8px, -8px); }
-.descent .orbit-card__hud b { position: absolute; right: 0.55rem; top: 0.5rem; font: 700 0.58rem/1 var(--sc-font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: #06141b; background: #3fd1be; padding: 0.3rem 0.45rem; border-radius: 3px; }
-.descent .orbit-card__hud::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(to right, transparent, #3fd1be, transparent); opacity: 0.9; animation: orbit-scan 1.4s linear infinite; }
-@keyframes orbit-scan { from { transform: translateY(0); } to { transform: translateY(5.6rem); } }
-.descent .orbit-card:is(:hover, :focus-visible) { --hot: 1.32; border-color: rgba(63,209,190,0.7); box-shadow: 0 0 0 1px rgba(63,209,190,0.6), 0 0 44px rgba(63,209,190,0.35), 0 30px 60px -24px rgba(11,111,96,0.6); z-index: 200 !important; }
-.descent .orbit-card:is(:hover, :focus-visible) .orbit-card__hud { opacity: 1; }
-.descent .orbit-card:is(:hover, :focus-visible) .orbit-card__hud i { transform: translate(0, 0); }
-.descent .orbit-card:focus-visible { outline: none; }
-@media (prefers-reduced-motion: reduce) { .descent .orbit-card__hud::before { animation: none; } }
+/* ================= orbit: a quiet focus state ================= */
+/* Cards now answer with a small lift and a soft sea-glass rim. The orbit stays
+   legible while the selected story gets attention, without the old targeting UI. */
+@media (hover: hover) and (pointer: fine) {
+  .descent .orbit-card:is(:hover, :focus-visible) {
+    --hot: 1.08;
+    border-color: rgba(11, 107, 96, 0.42);
+    box-shadow: 0 0 0 2px rgba(63, 209, 190, 0.2), 0 22px 50px -24px rgba(11, 111, 96, 0.65);
+    z-index: 200 !important;
+  }
+  .descent .orbit-card:is(:hover, :focus-visible)::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent 48%, rgba(63,209,190,0.12));
+  }
+  .descent .orbit-card:is(:hover, :focus-visible) img { transform: scale(1.03); filter: saturate(1.08) contrast(1.04); }
+}
+.descent .orbit-card:focus-visible { outline: 2px solid var(--reef-glow); outline-offset: 4px; }
 
 /* ================= guide act: full bleed, fits the screen ================= */
 .descent .guide-stage { min-height: 100svh; padding: 4vh var(--sc-gutter); }
@@ -1129,7 +1162,6 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 
 .descent .cta, .descent .cta--quiet, .descent .tail .lb-btn { position: relative; }
 
-.descent .orbit-card__hud i { filter: drop-shadow(0 0 4px rgba(63,209,190,0.9)); }
 /* ================= liquid glass, second cut: thick clear glass =================
    The centre is nearly clear (a whisper of blur), the rim refracts the backdrop
    outward through a lens map (Chrome), a bright edge and a top highlight give the
@@ -1175,7 +1207,9 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .siderail__stop.is-reached .siderail__dot { background: rgba(63,209,190,0.55); border-color: #3fd1be; box-shadow: 0 0 8px rgba(63,209,190,0.5); }
 .descent .siderail__stop.is-active .siderail__dot { background: #3fd1be; box-shadow: 0 0 0 4px rgba(63,209,190,0.22), 0 0 16px rgba(63,209,190,0.8); transform: translate(-50%, -50%) scale(1.25); }
 .descent .siderail__stop:hover .siderail__dot { transform: translate(-50%, -50%) scale(1.35); }
-.descent .siderail__label { position: absolute; right: 28px; top: 50%; transform: translate(6px, -50%); font: 600 0.58rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #06141b; background: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.7); padding: 0.4rem 0.6rem; border-radius: 999px; backdrop-filter: blur(10px) saturate(160%); -webkit-backdrop-filter: blur(10px) saturate(160%); opacity: 0; transition: opacity 180ms, transform 180ms var(--sc-ease-out, ease-out); pointer-events: none; white-space: nowrap; }
+.descent .siderail__label { position: absolute; right: 28px; top: calc(50% + var(--label-offset, 0px)); transform: translate(6px, -50%); font: 600 0.58rem/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: #06141b; background: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.7); padding: 0.4rem 0.6rem; border-radius: 999px; backdrop-filter: blur(10px) saturate(160%); -webkit-backdrop-filter: blur(10px) saturate(160%); opacity: 0; transition: opacity 180ms, transform 180ms var(--sc-ease-out, ease-out); pointer-events: none; white-space: nowrap; }
+.descent .siderail__stop[href="#descent-act"] { --label-offset: -0.9rem; }
+.descent .siderail__stop[href="#coast-act"] { --label-offset: 0.9rem; }
 .descent .siderail:hover .siderail__label, .descent .siderail__stop:focus-visible .siderail__label, .descent .siderail__stop.is-active .siderail__label { opacity: 1; transform: translate(0, -50%); }
 .descent .siderail__stop.is-active .siderail__label { background: #3fd1be; border-color: #3fd1be; }
 .descent .siderail__town { position: absolute; left: 24px; top: 50%; transform: translateY(-50%); font: 700 0.5rem/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(63,209,190,0.95); text-shadow: 0 0 8px rgba(63,209,190,0.6); white-space: nowrap; pointer-events: none; }
@@ -1300,6 +1334,9 @@ html:not(.sc-ready) .w__i { transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .w__i { transform: none !important; transition: none !important; }
   .descent .entry-copy h2.focus-in { filter: none; transform: none; opacity: 1; }
+  .descent .entry-towline { transform: none !important; }
+  .descent .entry-towline__line { opacity: 0.35; }
+  .descent .entry-towline__bubbles { animation: none; }
   .descent .wl__below { animation: none; }
 }
 

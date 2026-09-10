@@ -102,7 +102,7 @@ export default async function Home() {
               <p className="sc-body only-desktop">PADI Master Scuba Diver Trainer. Guided dives and courses from the shore in Dahab, South Sinai. Fourth family here, on this beach since 1983; in 2011 I took the family&apos;s hospitality underwater.</p>
               <p className="sc-body only-mobile">I am a PADI Master Scuba Diver Trainer. I take you into the Red Sea from the beach in Dahab, the water I grew up in.</p>
               <a className="cta brand-cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama on WhatsApp</a>
-              <a className="brand-start only-mobile" href="#guide-act">Start here <i aria-hidden="true" /></a>
+              <a className="brand-start only-mobile" href="#peak-act">Start here <i aria-hidden="true" /></a>
               <div className="brand-ribbons">
                 <LogbookRibbon variant="hero" />
                 <InstagramRibbon variant="hero" />
@@ -154,6 +154,55 @@ export default async function Home() {
           <p className="quickstart__note">Courses and dives are arranged through CDWS-registered dive centres in Dahab.</p>
         </section>
 
+        {/* ACT 1 · THE ARCHIVE: one photograph's journey from Dahab to England and back */}
+        <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="3.4" style={{ "--sc-span": 3.4 } as React.CSSProperties}>
+          <div data-sc-stage className="peak-stage">
+            <div className="peak-story-intro">
+              <span className="microcopy">The archive · August 1987</span>
+              <h2>Someone brought a camera to the beach.</h2>
+              <p>There was no camera waiting in Dahab that day. A visitor brought one, took this picture, and carried the film home to England. The roll was developed there, prints were made the old-fashioned way, and then the photograph began its journey back: a traveller heading to Dahab agreed to carry it to Shark Restaurant for Osama&apos;s family.</p>
+            </div>
+            <OdometerYear className="peak-year" from={1987} to={2026} at={[0.08, 0.9]} parallax={-1} />
+            <div className="peak-frame" data-sc-parallax="0.25">
+              <a className="peak-mat" href="/gallery" aria-label="Open the gallery to see the full family archive">
+                <div className="peak-plate peak-plate--story">
+                  <img
+                    className="peak-photo peak-photo--story"
+                    style={{ "--w0": -0.16, "--pz": 1 } as React.CSSProperties}
+                    src="/descent/peak-1987.webp" srcSet="/descent/peak-1987-m.webp 800w, /descent/peak-1987.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933}
+                    alt="The original scratched August 1987 photograph: four young people beside an orange Bedouin truck on the Dahab shore"
+                  />
+                  <img
+                    className="peak-photo peak-photo--story"
+                    style={{ "--w0": 0.24, "--pz": 2 } as React.CSSProperties}
+                    src="/descent/peak-2012.webp" srcSet="/descent/peak-2012-m.webp 720w, /descent/peak-2012.webp 720w" sizes="(max-width: 860px) 92vw, 78vw" width={720} height={431}
+                    alt="Osama in 2012 helping a young boy into a scuba tank almost as big as the boy"
+                  />
+                  <img
+                    className="peak-photo peak-photo--story peak-photo--tall"
+                    style={{ "--w0": 0.48, "--pz": 3 } as React.CSSProperties}
+                    src="/descent/peak-2021.webp" srcSet="/descent/peak-2021-m.webp 800w, /descent/peak-2021.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={2488}
+                    alt="Osama in 2021 with his instructor, marking the handover from student to teacher"
+                  />
+                  <img
+                    className="peak-photo peak-photo--story"
+                    style={{ "--w0": 0.72, "--pz": 4 } as React.CSSProperties}
+                    src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="(max-width: 860px) 92vw, 78vw" width={1600} height={899}
+                    alt="Osama teaching a student in the clear shallows of Dahab today"
+                  />
+                </div>
+              </a>
+              <div className="peak-captions">
+                <p data-sc-cue="0 0.25 0.08 0.1">The original print · Assalah shore · August 1987</p>
+                <p data-sc-cue="0.24 0.49 0.08 0.1">The story continues · Osama teaching the next generation</p>
+                <p data-sc-cue="0.48 0.73 0.08 0.1">The handover · learning, teaching, and a new certificate</p>
+                <p data-sc-cue="0.72 1 0.08 0.1">Today · Osama and his student on the same shore</p>
+              </div>
+              <PeakYears years={[{ year: "1987", at: 0.06 }, { year: "2012", at: 0.3 }, { year: "2021", at: 0.55 }, { year: "Today", at: 0.82 }]} />
+            </div>
+          </div>
+        </section>
+
         {/* ACT 1 · ENTRY: the sea, scrubbing under the wheel from the first pixel */}
         <section className="g-abyss" id="entry-act" data-sc-act="scrub" data-sc-span="2.3" style={{ "--sc-span": 2.3 } as React.CSSProperties} data-sc-dwell="0.35">
           <div data-sc-stage className="water-column">
@@ -166,10 +215,14 @@ export default async function Home() {
             <div className="copy-scrim" aria-hidden="true" />
             <div className="sea-scrim-m" aria-hidden="true" />
             <div className="sc-copy sc-copy--lead entry-copy" data-sc-cue="0 0.85 0">
-              <span className="microcopy">Dive log · Dahab, South Sinai · kept since 1983</span>
-              <h2 className="focus-in">The sea took him in.</h2>
-              <p className="stand">Osama is a PADI Master Scuba Diver Trainer, born on this shore. His family has lived beside the water since 1983. Scroll to descend.</p>
-              <a className="cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
+              <div className="entry-towline">
+                <span className="microcopy">Dive log · Dahab, South Sinai · kept since 1983</span>
+                <h2 className="focus-in">The sea took him in.</h2>
+                <p className="stand">Osama is a PADI Master Scuba Diver Trainer, born on this shore. His family has lived beside the water since 1983. Scroll to descend.</p>
+                <a className="cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama</a>
+                <span className="entry-towline__line" aria-hidden="true" />
+                <span className="entry-towline__bubbles" aria-hidden="true" />
+              </div>
             </div>
             <div className="entry-foot microcopy" data-sc-cue="0 0.5 0 0.3">
               <span>Red Sea · 28 C in summer</span>
@@ -222,59 +275,6 @@ export default async function Home() {
                   <figcaption>Before the morning dive · Lighthouse, Dahab</figcaption>
                 </figure>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ACT 3 · SILENCE: one ledger line in the dark */}
-        <section className="g-night silence silence--short">
-          <span className="microcopy" data-sc-in>Entry 001 · August 1987</span>
-          <p className="line" data-sc-in>Someone brought a camera to the beach.</p>
-        </section>
-
-        {/* ACT 4 · THE PEAK: the print becomes the man, the year runs behind it */}
-        <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="3.1" style={{ "--sc-span": 3.1 } as React.CSSProperties}>
-          <div data-sc-stage className="peak-stage">
-            <OdometerYear className="peak-year" from={1987} to={2024} at={[0.1, 0.86]} parallax={-1} />
-            <div className="peak-frame" data-sc-parallax="0.35">
-              <a className="peak-mat" href="/gallery" aria-label="Open the gallery to see every stage">
-                <div className="peak-plate">
-                  {/* Four prints on a contact sheet. Three fly off in their turn as their own
-                      years pass; 2024, the one Osama is holding a course on today, grows the
-                      whole time and is the only one still there when the sheet is bare. */}
-                  <img
-                    className="peak-photo peak-photo--fly"
-                    style={{ "--pz": 1, "--x0": "-19%", "--y0": "-17%", "--r0": "-7deg", "--s0": 0.52, "--x1": "-150%", "--y1": "-118%", "--r1": "-28deg", "--s1": 0.5, "--w0": 0.015, "--w1": 0.23 } as React.CSSProperties}
-                    src="/descent/peak-1987.webp" srcSet="/descent/peak-1987-m.webp 800w, /descent/peak-1987.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933}
-                    alt="A scratched family photograph from August 1987: four young people arm in arm on the Dahab shore beside an orange Bedouin truck"
-                  />
-                  <img
-                    className="peak-photo peak-photo--fly"
-                    style={{ "--pz": 2, "--x0": "20%", "--y0": "-19%", "--r0": "6deg", "--s0": 0.5, "--x1": "148%", "--y1": "-128%", "--r1": "25deg", "--s1": 0.48, "--w0": 0.28, "--w1": 0.47 } as React.CSSProperties}
-                    src="/descent/peak-2012.webp" srcSet="/descent/peak-2012-m.webp 720w, /descent/peak-2012.webp 720w" sizes="(max-width: 860px) 92vw, 78vw" width={720} height={431}
-                    alt="Osama in 2012, helping a young boy into a scuba tank almost as big as the boy"
-                  />
-                  <img
-                    className="peak-photo peak-photo--fly peak-photo--tall"
-                    style={{ "--pz": 3, "--x0": "-18%", "--y0": "20%", "--r0": "5deg", "--s0": 0.5, "--x1": "-145%", "--y1": "132%", "--r1": "22deg", "--s1": 0.48, "--w0": 0.5, "--w1": 0.69 } as React.CSSProperties}
-                    src="/descent/peak-2021.webp" srcSet="/descent/peak-2021-m.webp 800w, /descent/peak-2021.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={2488}
-                    alt="Osama in 2021 holding a certificate beside his instructor Andrzej Kruczkowski"
-                  />
-                  <img
-                    className="peak-photo peak-photo--grow"
-                    style={{ "--pz": 4, "--x0": "19%", "--y0": "18%", "--r0": "-5deg", "--s0": 0.52, "--w0": 0.7, "--w1": 0.87 } as React.CSSProperties}
-                    src="/descent/peak-now.webp" srcSet="/descent/peak-now-m.webp 800w, /descent/peak-now.webp 1400w" sizes="(max-width: 860px) 92vw, 78vw" width={1400} height={933}
-                    alt="Osama on the same shore in 2024, in his wetsuit before a dive, the sea on his left and the Sinai mountains behind"
-                  />
-                </div>
-              </a>
-              <div className="peak-captions">
-                <p data-sc-cue="0 0.26 0 0.06">The shore at Assalah · August 1987 · from the family album</p>
-                <p data-sc-cue="0.3 0.48 0.06 0.06">2012 · a tank bigger than the boy · teaching the next generation</p>
-                <p data-sc-cue="0.52 0.7 0.06 0.06">2021 · the handover · with his own instructor, Andrzej</p>
-                <p data-sc-cue="0.74 1 0.06 0.06">2024 · the same shore, decades on · before a morning dive</p>
-              </div>
-              <PeakYears years={[{ year: "1987", at: 0.06 }, { year: "2012", at: 0.36 }, { year: "2021", at: 0.58 }, { year: "2024", at: 0.82 }]} />
             </div>
           </div>
         </section>

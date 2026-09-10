@@ -84,16 +84,14 @@
     border-radius: 999px; background: #3fd1be; color: #04121a; text-decoration: none;
     font: 700 0.95rem/1 var(--sc-font-display);
     box-shadow: 0 12px 28px -10px rgba(63, 209, 190, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    transition: transform 260ms var(--sc-ease-out, ease-out), opacity 200ms;
   }
   .msgbtn svg { width: 24px; height: 24px; fill: #04121a; flex: none; }
+  /* it steps off the screen while the page is being read downwards, and comes back
+     the moment the thumb stops or turns, so it never sits on a line being read */
+  .msgbtn.is-away { transform: translateY(calc(100% + 1.4rem)); opacity: 0; pointer-events: none; }
+  body.is-reading .msgbtn { display: none; } /* a page open to read has the whole screen */
 
-  /* ---- decks: the pattern used by stories, sites and reviews ---- */
-  .deck { display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 0.75rem; padding: 0 var(--sc-gutter, 1.25rem); scroll-padding-inline: var(--sc-gutter, 1.25rem); }
-  .deck::-webkit-scrollbar { display: none; }
-  .deck > * { flex: 0 0 86vw; scroll-snap-align: center; }
-  .deck__dots { display: flex; justify-content: center; gap: 6px; padding: 0.6rem 0 0; }
-  .deck__dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(63,209,190,0.3); transition: transform 200ms, background 200ms; }
-  .deck__dots i.is-on { background: #3fd1be; transform: scale(1.3); }
 
   /* Keep the copyright line compact on a phone. */
   .descent .tail-foot > span:first-of-type { display: none; }
@@ -268,21 +266,18 @@
   .descent-inner .site-head p + p { margin-top: 0.7rem !important; font-size: 15px !important; color: rgba(255,255,255,0.72) !important; }
   .only-desktop { display: none !important; }
 
-  /* reviews as a deck */
-  .review-deck .deck > * { flex-basis: 84vw; }
-  .review-deck__card { display: block; }
-  .descent .review-deck .review-deck__link { display: flex; justify-content: center; align-items: center; width: max-content; min-height: 44px; margin: 0.5rem auto 0; padding: 0 1rem; border: 1px solid rgba(10,125,112,0.4); border-radius: 999px; color: #075f55; font: 600 0.72rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; }
-  .review-deck__controls { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1rem; }
-  .review-deck__controls button { min-width: 48px; min-height: 48px; border: 1px solid rgba(10,125,112,0.4); border-radius: 50%; background: #fffdf8; color: #075f55; font-size: 1.5rem; }
-  .review-deck__controls button:disabled { opacity: 0.35; }
-  .review-deck__count { font: 500 0.8rem/1 var(--mono); color: #075f55; }
-  .review-deck .deck { align-items: flex-start; }
-  .review-deck .lb-page__meta, .review-deck .lb-page__name { padding-right: 0; overflow-wrap: anywhere; }
-  .review-deck .lb-page__meta { flex-wrap: wrap; gap: 0.35rem 1rem; }
-  .review-deck .lb-page__stamps { position: static; justify-content: flex-end; }
-  .review-deck .lb-page__foot { flex-wrap: wrap; }
-  .review-deck .book__caption { text-align: center; margin: 0.6rem 0 0; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(23,18,8,0.6); }
-  .review-deck .lb-page { min-height: 0; }
+  /* ---- the book of reviews on a phone ----
+     The same page-curl book as the desk, one page at a time. The side arrows would
+     sit on the paper, so the page has the width and a swipe turns it. Stamps sat
+     over the name and the entry line once a page carried three or more; here they
+     take a row of their own. */
+  .flipbook__stage { padding: 0 0.4rem; }
+  .book__arrow { display: none; }
+  .fpage__open { display: none; } /* a tap on the page opens it; the pill sat on the entry line */
+  .lb-page .lb-page__meta, .lb-page .lb-page__name { padding-right: 0; overflow-wrap: anywhere; }
+  .lb-page .lb-page__stamps { position: static; display: flex; justify-content: flex-end; flex-wrap: wrap; margin: 0.35rem 0 0.1rem; }
+  .lb-page .lb-page__stamps .lb-stamp + .lb-stamp { margin-left: -1.2rem; }
+  .lb-page .lb-page__foot { flex-wrap: wrap; }
 
   /* the tail of a story */
   .story-tail { display: grid; gap: 0.8rem; margin: 2rem var(--sc-gutter, 1.25rem) 0; }
@@ -325,11 +320,12 @@
 @media (prefers-reduced-motion: reduce) {
   .descent .siderail .siderail__stop.is-active .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); }
   .descent .brand-start i { animation: none; }
-  .deck, .viewer__strip { scroll-behavior: auto; }
+  .msgbtn { transition: none; }
+  .viewer__strip { scroll-behavior: auto; }
 }
 @media (max-width: 860px) {
   /* the last small taps: links inside the reviews, the ledger and the feed */
-  .descent .lb-page a, .descent .review-deck a, .descent .lb a.lb-mono, .descent .tail a.inline-flex, .descent-inner .inner-body a.inline-flex, .descent .guide-panel dd a { display: inline-flex; align-items: center; min-height: 44px; }
+  .descent .lb-page a, .descent .lb a.lb-mono, .descent .tail a.inline-flex, .descent-inner .inner-body a.inline-flex, .descent .guide-panel dd a { display: inline-flex; align-items: center; min-height: 44px; }
   .descent .guide-panel li, .descent .school-note, .descent .school-more dd, .descent .lb-stand, .descent .lb-page__note { font-size: 16px; line-height: 1.55; }
 }
 

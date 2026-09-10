@@ -23,6 +23,7 @@ type Flip = {
   getCurrentPageIndex(): number;
   getPageCount(): number;
   getOrientation(): "portrait" | "landscape";
+  getSettings(): { disableFlipByClick: boolean };
   update(): void;
   destroy(): void;
 };
@@ -66,9 +67,9 @@ export default function MemoryBook({ pages }: Props) {
   const [index, setIndex] = useState(0);
   const [ready, setReady] = useState(false);
   const [open, setOpen] = useState<number | null>(null);
-  const down = useRef<{ x: number; y: number; t: number } | null>(null);
   const n = pages.length;
   const [scales, setScales] = useState<Record<number, number>>({});
+  const [narrow, setNarrow] = useState(false);
   const report = useCallback((i: number, s: number) => { setScales((prev) => (prev[i] === s ? prev : { ...prev, [i]: s })); }, []);
   const uniform = Math.min(1, ...Object.values(scales));
 
@@ -80,8 +81,13 @@ export default function MemoryBook({ pages }: Props) {
     import("page-flip").then(({ PageFlip }) => {
       if (!alive || !el) return;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      // On a phone the book shows one page, taller than the desk's. The engine's mobile
+      // scroll support keeps a finger moving up or down the paper scrolling the page;
+      // a sideways swipe or a corner drag turns the page.
+      const phone = window.matchMedia("(max-width: 860px)").matches;
+      setNarrow(phone);
       pf = new (PageFlip as unknown as new (el: HTMLElement, s: Record<string, unknown>) => Flip)(el, {
-        width: 440, height: 600,
+        width: phone ? 340 : 440, height: phone ? 560 : 600,
         size: "stretch", minWidth: 240, maxWidth: 560, minHeight: 330, maxHeight: 760,
         showCover: true, usePortrait: true, mobileScrollSupport: true,
         drawShadow: true, maxShadowOpacity: 0.55,
@@ -104,21 +110,45 @@ export default function MemoryBook({ pages }: Props) {
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+    document.body.classList.add("is-reading"); // the phone's Message pill stands down while a page is open
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; document.body.classList.remove("is-reading"); };
   }, [open]);
 
+  // Turning back. The engine's flipPrev aims at a point ten pixels from the left of a
+  // two-page spread; in the phone's one-page mode that point lands mid-book and the
+  // "no flip by click" guard rejects it, so the guard is lifted for the one call.
+  const flipBack = useCallback(() => {
+    const pf = flip.current;
+    if (!pf) return;
+    const s = pf.getSettings();
+    const keep = s.disableFlipByClick;
+    s.disableFlipByClick = false;
+    try { pf.flipPrev(); } finally { s.disableFlipByClick = keep; }
+  }, []);
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowRight") { e.preventDefault(); flip.current?.flipNext(); }
-    if (e.key === "ArrowLeft") { e.preventDefault(); flip.current?.flipPrev(); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); flipBack(); }
   };
-  // A press that does not travel is a click: open the page. A press that travels is the engine's drag.
-  const onPointerDown = (e: React.PointerEvent) => { down.current = { x: e.clientX, y: e.clientY, t: Date.now() }; };
-  const onPointerUp = useCallback((i: number) => (e: React.PointerEvent) => {
-    const d = down.current; down.current = null;
-    if (!d) return;
-    const moved = Math.hypot(e.clientX - d.x, e.clientY - d.y);
-    if (moved < 6 && Date.now() - d.t < 500 && !pages[i].hard) setOpen(i);
-  }, [pages]);
+  // On a phone the engine's own swipe turns pages forward; a swipe back reaches the same
+  // guard, so the book reads that one itself.
+  const touch = useRef<{ x: number; y: number; t: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => { const t = e.touches[0]; touch.current = { x: t.clientX, y: t.clientY, t: Date.now() }; };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const from = touch.current; touch.current = null;
+    const t = e.changedTouches[0];
+    if (!from || !t || !narrow) return;
+    const dx = t.clientX - from.x, dy = Math.abs(t.clientY - from.y);
+    if (dx > 48 && dy < 60 && Date.now() - from.t < 500) flipBack();
+  };
+  // A tap opens the page. The browser only fires a click for a press that did not travel,
+  // so a drag or a swipe never lands here. It is read at the book, not on the page: on a
+  // phone the engine shows a clone of each page, and a clone carries no handlers of its own.
+  const onBookClick = (e: React.MouseEvent) => {
+    const page = (e.target as Element).closest<HTMLElement>(".fpage");
+    if (!page) return;
+    const i = Number(page.dataset.idx);
+    if (Number.isFinite(i) && !pages[i]?.hard) setOpen(i);
+  };
 
   const right = flip.current?.getOrientation() === "landscape" ? Math.min(n - 1, index % 2 === 0 ? index + 1 : index) : index;
   const captionIdx = index === 0 ? 0 : right;
@@ -127,25 +157,23 @@ export default function MemoryBook({ pages }: Props) {
   return (
     <div className="flipbook" role="region" aria-roledescription="book" aria-label={`Reviews, ${caption}`} tabIndex={0} onKeyDown={onKey}>
       <span className="book__ghost" aria-hidden="true">Reviews</span>
-      <button type="button" className="book__arrow book__arrow--prev lg" onClick={() => flip.current?.flipPrev()} disabled={!ready || index === 0} aria-label="Previous page">&#8249;</button>
+      <button type="button" className="book__arrow book__arrow--prev lg" onClick={flipBack} disabled={!ready || index === 0} aria-label="Previous page">&#8249;</button>
       <button type="button" className="book__arrow book__arrow--next lg" onClick={() => flip.current?.flipNext()} disabled={!ready || index >= n - 1} aria-label="Next page">&#8250;</button>
 
       <div className="flipbook__stage">
-        <div className="flipbook__book" ref={bookRef}>
+        <div className="flipbook__book" ref={bookRef} onClick={onBookClick} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           {pages.map((pg, i) => (
             <div
               className={`fpage${pg.hard ? " fpage--hard" : ""}`}
               data-density={pg.hard ? "hard" : "soft"}
+              data-idx={i}
               key={i}
-              onPointerDown={onPointerDown}
-              onPointerUp={onPointerUp(i)}
-              onDoubleClick={() => { if (!pg.hard) setOpen(i); }}
             >
               <div className="fpage__paper">
                 <FitPage index={i} report={report} scale={pg.hard ? 1 : uniform}>{pg.node}</FitPage>
               </div>
               {!pg.hard ? (
-                <button type="button" className="fpage__open lg" onPointerDown={(e) => e.stopPropagation()} onPointerUp={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); setOpen(i); }} aria-label={`Open ${pg.caption}`}>Open page</button>
+                <button type="button" className="fpage__open lg" aria-label={`Open ${pg.caption}`}>Open page</button>
               ) : null}
             </div>
           ))}
@@ -155,7 +183,7 @@ export default function MemoryBook({ pages }: Props) {
       <p className="book__caption lb-mono" aria-live="polite">
         <span>{caption}</span>
         <span className="book__count">{Math.min(n, captionIdx + 1)} / {n}</span>
-        <span className="book__hint">Drag a corner, or use the arrows</span>
+        <span className="book__hint">{narrow ? "Swipe to turn a page, tap to read it" : "Drag a corner, or use the arrows"}</span>
       </p>
 
       {open !== null ? (

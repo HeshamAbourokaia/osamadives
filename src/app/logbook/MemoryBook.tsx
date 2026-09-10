@@ -110,7 +110,8 @@ export default function MemoryBook({ pages }: Props) {
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+    document.body.classList.add("is-reading"); // the phone's Message pill stands down while a page is open
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; document.body.classList.remove("is-reading"); };
   }, [open]);
 
   // Turning back. The engine's flipPrev aims at a point ten pixels from the left of a

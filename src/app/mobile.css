@@ -90,6 +90,7 @@
   /* it steps off the screen while the page is being read downwards, and comes back
      the moment the thumb stops or turns, so it never sits on a line being read */
   .msgbtn.is-away { transform: translateY(calc(100% + 1.4rem)); opacity: 0; pointer-events: none; }
+  body.is-reading .msgbtn { display: none; } /* a page open to read has the whole screen */
 
 
   /* Keep the copyright line compact on a phone. */

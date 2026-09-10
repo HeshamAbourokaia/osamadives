@@ -10,6 +10,7 @@ const STOPS = [
   { id: "brand-act", label: "Surface", at: 0.04 },
   { id: "guide-act", label: "Osama", at: 0.15 },
   { id: "peak-act", label: "1987", at: 0.26 },
+  { id: "descent-act", label: "Classroom", at: 0.32 },
   { id: "coast-act", label: "Sites", at: 0.37 },
   { id: "orbit-act", label: "World", at: 0.5, town: "Dahab" },
   { id: "school-act", label: "School", at: 0.62 },

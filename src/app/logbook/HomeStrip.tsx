@@ -4,7 +4,7 @@ import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
 import PageCard from "./PageCard";
 import WeddingPage from "./WeddingPage";
-import BookOrDeck from "./BookOrDeck";
+import MemoryBook from "./MemoryBook";
 import "./logbook.css";
 
 const archivo = Archivo({ subsets: ["latin"], weight: ["500", "700", "800"], variable: "--lb-display", display: "swap" });
@@ -32,7 +32,7 @@ export default async function HomeStrip() {
             <h2 className="lb-h2">Written by the people I took into the water.</h2>
             <p className="lb-stand">Reviews written by the people I took into the water. Every one becomes a page in my logbook, signed by me.</p>
           </div>
-          <BookOrDeck
+          <MemoryBook
             pages={[
               { hard: true, caption: "The book of reviews", node: (
                 <div className="book__cover" key="cover">

@@ -196,6 +196,44 @@
   .finder__note { margin: 0; font-size: 12px; line-height: 1.5; color: rgba(23, 18, 8, 0.55); }
   .descent .school .finder { margin: 0 0 1.4rem; }
   .wiw .finder { margin: 0 0 2rem; }
+  /* ---- how far is Dahab from you ---- */
+  .howfar { display: grid; gap: 0.6rem; }
+  .howfar__ask { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 46px; padding: 0 1rem 0 0.75rem; border-radius: 999px; border: 1px solid rgba(63,209,190,0.35); background: rgba(237,244,242,0.06); color: #f4faf8; font: 700 0.9rem/1 var(--sc-font-display); cursor: pointer; justify-self: start; }
+  .howfar__ask:disabled { opacity: 0.6; }
+  .howfar__needle { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid rgba(63,209,190,0.7); position: relative; }
+  .howfar__needle::after { content: ""; position: absolute; left: 50%; top: 50%; width: 2px; height: 9px; background: #3fd1be; transform: translate(-50%, -100%) rotate(35deg); transform-origin: 50% 100%; }
+  .howfar__answer { display: grid; grid-template-columns: 64px 1fr; gap: 0.9rem; align-items: center; }
+  .howfar__dial { position: relative; width: 64px; height: 64px; border-radius: 50%; border: 1.5px solid rgba(63,209,190,0.45); background: rgba(6,20,32,0.6); }
+  .howfar__arrow { position: absolute; left: 50%; top: 50%; width: 3px; height: 26px; margin: -26px 0 0 -1.5px; background: linear-gradient(to top, transparent, #3fd1be 30%, #9fe8dc); border-radius: 2px; transform-origin: 50% 100%; transition: transform 900ms cubic-bezier(0.2, 0.9, 0.3, 1); }
+  .howfar__n { position: absolute; left: 50%; top: 4px; transform: translateX(-50%); font: 700 0.5rem/1 var(--mono); color: rgba(237,244,242,0.6); }
+  .howfar__line { margin: 0; font-size: 14px; line-height: 1.5; color: rgba(237,244,242,0.82); }
+  /* ---- Osama's voice: the pill appears once the recording is on the site ---- */
+  .voice { display: inline-flex; align-items: center; gap: 0.7rem; margin: 0.9rem 0 0; padding: 0.35rem 1rem 0.35rem 0.35rem; border-radius: 999px; border: 1px solid rgba(63,209,190,0.35); background: rgba(237,244,242,0.06); color: #f4faf8; cursor: pointer; text-align: left; }
+  .voice__ring { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: conic-gradient(#3fd1be calc(var(--p, 0) * 360deg), rgba(63,209,190,0.25) 0); }
+  .voice__icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #061420; font-size: 0.8rem; color: #3fd1be; }
+  .voice__words { display: grid; line-height: 1.25; }
+  .voice__words strong { font: 700 0.9rem/1.2 var(--sc-font-display); }
+  .voice__words span { font-size: 12px; color: rgba(237,244,242,0.6); }
+  /* ---- keep it on your phone ---- */
+  .keep { display: grid; grid-template-columns: 44px 1fr; gap: 0.8rem; align-items: start; margin: 1.4rem 0 0; padding: 0.9rem; border-radius: 14px; background: rgba(237,244,242,0.06); border: 1px solid rgba(190,240,232,0.18); }
+  .keep__icon { border-radius: 50%; background: #f4f1ea; }
+  .keep__words { display: grid; gap: 0.35rem; font-size: 13px; line-height: 1.45; color: rgba(237,244,242,0.72); }
+  .keep__words strong { color: #f4faf8; font: 700 0.95rem/1.25 var(--sc-font-display); }
+  .keep__btn { justify-self: start; min-height: 40px; padding: 0 0.9rem; border-radius: 999px; border: 0; background: #3fd1be; color: #04121a; font: 700 0.85rem/1 var(--sc-font-display); cursor: pointer; }
+  /* ---- a day with Osama, live ---- */
+  .day { display: grid; gap: 0.8rem; margin: 0 0 2rem; }
+  .day__head { display: grid; gap: 0.3rem; }
+  .day__head .microcopy { color: #0a7d70; }
+  .day__title { margin: 0; font: 800 1.3rem/1.1 var(--sc-font-display); letter-spacing: -0.02em; color: #171208; }
+  .day__strip { list-style: none; margin: 0 calc(-1 * var(--sc-gutter, 1.25rem)); padding: 0 var(--sc-gutter, 1.25rem); display: flex; gap: 0.7rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .day__strip::-webkit-scrollbar { display: none; }
+  .day__card { flex: 0 0 68vw; max-width: 20rem; scroll-snap-align: start; display: grid; gap: 0.45rem; padding: 0 0 0.6rem; border-radius: 14px; overflow: hidden; background: #fffdf8; border: 1px solid rgba(23,18,8,0.1); box-shadow: 0 10px 26px -20px rgba(6,20,32,0.7); }
+  .day__card img { display: block; width: 100%; height: 9.5rem; object-fit: cover; }
+  .day__card.is-past { opacity: 0.72; }
+  .day__card.is-now { border-color: #0a7d70; box-shadow: 0 0 0 2px rgba(10,125,112,0.25), 0 10px 26px -20px rgba(6,20,32,0.7); }
+  .day__time { padding: 0 0.8rem; font: 700 0.66rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: #0a7d70; }
+  .day__card.is-now .day__time { color: #075f55; }
+  .day__line { margin: 0; padding: 0 0.8rem; font-size: 14px; line-height: 1.45; color: rgba(23,18,8,0.8); }
 
   /* a page that opens on a full bleed photo meets the dark cap, with no stripe of
      bone paper between the two */

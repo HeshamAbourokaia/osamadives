@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import SiteAnalytics from "./components/SiteAnalytics";
+import PwaRegister from "./PwaRegister";
 import { diveSites } from "@/lib/dive-sites";
 import "./globals.css";
 
@@ -19,7 +20,12 @@ const geistMono = localFont({
   display: "swap",
 });
 
+export const viewport = { themeColor: "#061420" };
+
 export const metadata: Metadata = {
+  manifest: "/manifest.webmanifest",
+  icons: { icon: "/brand/stamp-192.png", apple: "/brand/stamp-180.png" },
+  appleWebApp: { capable: true, title: "OsamaDives", statusBarStyle: "black-translucent" },
   title: "OsamaDives | PADI Diving Instructor in Dahab, Egypt - Since 1983",
   description:
     "Osama is a PADI Master Scuba Diver Trainer in Dahab, Egypt. Pioneer family since 1983. Experience the Red Sea with an Ambassador of Dahab.",
@@ -169,6 +175,7 @@ export default function RootLayout({
       >
         <GoogleAnalytics />
         <SiteAnalytics />
+        <PwaRegister />
         {children}
         <Analytics />
       </body>

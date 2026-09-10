@@ -1,8 +1,10 @@
 "use client";
 
 import ShareButton from "./ShareButton";
+import PickButton from "./PickButton";
+import type { Pick } from "@/lib/picks";
 
-export interface PhoneCardItem { href: string; title: string; kicker: string; text: string; image: string; alt: string }
+export interface PhoneCardItem { href: string; title: string; kicker: string; text: string; image: string; alt: string; pick?: Pick }
 
 const SITE = "https://www.osamadives.com";
 
@@ -23,6 +25,7 @@ export default function PhoneCards({ items, label }: { items: PhoneCardItem[]; l
             <span className="pcard__kicker">{it.kicker}</span>
             <h2 className="pcard__title"><a className="pcard__link" href={it.href}>{it.title}</a></h2>
             <p className="pcard__text">{it.text}</p>
+            {it.pick ? <PickButton {...it.pick} /> : null}
           </div>
           <ShareButton className="pcard__share" url={`${SITE}${it.href}`} title={it.title} label="Share" />
         </li>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { WHATSAPP } from "@/lib/contact";
 
@@ -120,6 +120,11 @@ function useScrub(points: Point[], onPick: (i: number) => void, onDismiss?: () =
 
   const handlers = {
     onTouchStart: (e: React.TouchEvent) => {
+      // Short screens scroll the menu itself instead of scrubbing the coastline.
+      if (e.currentTarget.scrollHeight > e.currentTarget.clientHeight + 1) {
+        from.current = null;
+        return;
+      }
       const t = e.touches[0];
       const i = nearest(t.clientY);
       from.current = { i, x: t.clientX, y: t.clientY, moved: false, gone: false };
@@ -174,6 +179,7 @@ function Handle({ open, name, onToggle, onOpen }: { open: boolean; name: string;
       className="siderail__handle"
       aria-label={open ? "Close the menu" : `Menu. You are on ${name}`}
       aria-expanded={open}
+      aria-controls="od-coast-menu"
       onClick={onToggle}
       onTouchStart={(e) => { drag.current = { x: e.touches[0].clientX, opened: false }; }}
       onTouchMove={(e) => {
@@ -197,7 +203,11 @@ function Handle({ open, name, onToggle, onOpen }: { open: boolean; name: string;
  * scroll. The menu button at the top left asks for the coast through one event, so
  * the two doors open the same room.
  */
-function useSheet(open: boolean, narrow: boolean, close: () => void, toggle: () => void) {
+function useSheet(open: boolean, narrow: boolean, close: () => void, toggle: () => void, rail: React.RefObject<HTMLElement>) {
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("od:rail-state", { detail: open && narrow }));
+    if (!narrow) close();
+  }, [open, narrow, close]);
   useEffect(() => {
     if (!narrow) return;
     window.addEventListener("od:rail", toggle);
@@ -205,12 +215,30 @@ function useSheet(open: boolean, narrow: boolean, close: () => void, toggle: () 
   }, [narrow, toggle]);
   useEffect(() => {
     if (!open || !narrow) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const panel = rail.current?.querySelector<HTMLElement>(".siderail__panel");
+    if (panel) panel.scrollTop = 0;
+    rail.current?.querySelector<HTMLElement>(".siderail__panel a")?.focus({ preventScroll: true });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { e.preventDefault(); close(); }
+      if (e.key !== "Tab") return;
+      const button = document.querySelector<HTMLElement>(".navbtn");
+      const items = Array.from(rail.current?.querySelectorAll<HTMLElement>("button, a") ?? []);
+      const focusable = [button, ...items].filter((el): el is HTMLElement => !!el && el.getClientRects().length > 0);
+      const index = focusable.indexOf(document.activeElement as HTMLElement);
+      const next = index < 0 ? 0 : (index + (e.shiftKey ? -1 : 1) + focusable.length) % focusable.length;
+      e.preventDefault();
+      focusable[next]?.focus();
+    };
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
-  }, [open, narrow, close]);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+      previousFocus?.focus({ preventScroll: true });
+    };
+  }, [open, narrow, close, rail]);
 }
 
 function Coast({ sx, pathRef, drawRef }: { sx: number; pathRef: React.RefObject<SVGPathElement>; drawRef: React.RefObject<SVGPathElement> }) {
@@ -249,7 +277,9 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
     else window.location.href = href;
   }, () => setOpen(false));
   const { sx, narrow } = useEdge(rail);
-  useSheet(open, narrow, () => setOpen(false), () => setOpen((o) => !o));
+  const close = useCallback(() => setOpen(false), []);
+  const toggle = useCallback(() => setOpen((o) => !o), []);
+  useSheet(open, narrow, close, toggle, rail);
   useEffect(() => {
     const path = pathRef.current, line = drawRef.current;
     if (!path || !line) return;
@@ -267,7 +297,7 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
         aria-label="Pages of the site, laid along the Sinai shore"
       >
         <Handle open={open} name={stops[activeIndex].label} onToggle={() => setOpen((o) => !o)} onOpen={() => setOpen(true)} />
-        <div className="siderail__panel" {...handlers}>
+        <div id="od-coast-menu" className="siderail__panel" aria-hidden={narrow && !open} {...handlers}>
           <Coast sx={sx} pathRef={pathRef} drawRef={drawRef} />
           {stops.map((s, i) => {
             const external = s.href.startsWith("http");
@@ -275,6 +305,8 @@ function SiteRail({ stops }: { stops: typeof SITE_STOPS }) {
               <a
                 key={s.href}
                 href={s.href}
+                tabIndex={narrow && !open ? -1 : undefined}
+                onClick={close}
                 target={external ? "_blank" : undefined}
                 rel={external ? "noopener noreferrer" : undefined}
                 className={`siderail__stop${i === activeIndex ? " is-active" : ""}${i < activeIndex ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
@@ -395,7 +427,9 @@ function HomeRail() {
   const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); setOpen(false); jump(id); };
   const { rail, scrub, handlers } = useScrub(points, (i) => { setOpen(false); jump(STOPS[i].id); }, () => setOpen(false));
   const { sx, narrow } = useEdge(rail);
-  useSheet(open, narrow, () => setOpen(false), () => setOpen((o) => !o));
+  const close = useCallback(() => setOpen(false), []);
+  const toggle = useCallback(() => setOpen((o) => !o), []);
+  useSheet(open, narrow, close, toggle, rail);
 
   return (
     <>
@@ -406,12 +440,13 @@ function HomeRail() {
         aria-label="Sections of the dive, laid along the Sinai shore from Taba to Ras Mohammed"
       >
         <Handle open={open} name={STOPS.find((s) => s.id === active)?.label ?? STOPS[0].label} onToggle={() => setOpen((o) => !o)} onOpen={() => setOpen(true)} />
-        <div className="siderail__panel" {...handlers}>
+        <div id="od-coast-menu" className="siderail__panel" aria-hidden={narrow && !open} {...handlers}>
           <Coast sx={sx} pathRef={pathRef} drawRef={drawRef} />
           {STOPS.map((s, i) => (
             <a
               key={s.id}
               href={`#${s.id}`}
+              tabIndex={narrow && !open ? -1 : undefined}
               className={`siderail__stop${active === s.id ? " is-active" : ""}${i < reached ? " is-reached" : ""}${s.town ? " has-town" : ""}${i === scrub ? " is-scrub" : ""}`}
               style={stopStyle(points[i], sx)}
               onClick={go(s.id)}

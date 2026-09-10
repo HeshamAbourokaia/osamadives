@@ -21,6 +21,8 @@ import OdometerYear from "./OdometerYear";
 import Contours from "./Contours";
 import TapRipple from "./TapRipple";
 import TripleTapQR from "./TripleTapQR";
+import DahabNow from "./DahabNow";
+import HoldToDive from "./HoldToDive";
 import WhatsAppCount from "./WhatsAppCount";
 import { LENS_MAP } from "./lensMap";
 import { diveSites } from "@/lib/dive-sites";
@@ -103,6 +105,7 @@ export default async function Home() {
               <p className="sc-body only-mobile">I am a PADI Master Scuba Diver Trainer. I take you into the Red Sea from the beach in Dahab, the water I grew up in.</p>
               <a className="cta brand-cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama on WhatsApp</a>
               <a className="brand-start only-mobile" href="#peak-act">Start here <i aria-hidden="true" /></a>
+              <p className="brand-hold only-mobile">Or hold your thumb on the screen and the page dives down on its own.</p>
               <div className="brand-ribbons">
                 <LogbookRibbon variant="hero" />
                 <InstagramRibbon variant="hero" />
@@ -119,6 +122,7 @@ export default async function Home() {
             page at a glance and does not need the shortcut. */}
         <section className="g-abyss quickstart only-mobile" aria-label="Where to start">
           <p className="quickstart__line">PADI Master Scuba Diver Trainer · Dahab, South Sinai · on this beach since 1983</p>
+          <DahabNow />
           <ul className="quickstart__grid">
             <li>
               <a href="/dive-sites">
@@ -663,6 +667,7 @@ export default async function Home() {
       <RailFocus />
       <TapRipple />
       <TripleTapQR />
+      <HoldToDive />
       <WhatsAppCount />
       <BackToTop />
       <ReturnToPlace />

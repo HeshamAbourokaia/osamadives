@@ -119,6 +119,21 @@
   .quickstart__d { font-size: 13px; line-height: 1.38; color: rgba(237,244,242,0.66); }
   .quickstart__wide { grid-column: 1 / -1; }
   .quickstart__note { margin: 0; font-size: 13px; line-height: 1.5; color: rgba(237,244,242,0.55); }
+  /* Dahab, right now: the clock, the sea, and where he probably is */
+  .dahab-now { display: grid; gap: 0.35rem; padding: 0.85rem 0.95rem; border-radius: 14px; background: rgba(63,209,190,0.08); border: 1px solid rgba(63,209,190,0.22); min-height: 6.2rem; }
+  .dahab-now__head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .dahab-now__k { font: 700 0.66rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: #3fd1be; }
+  .dahab-now__t { font: 500 1.35rem/1 var(--mono); font-feature-settings: "tnum"; color: #f4faf8; letter-spacing: 0.04em; }
+  .dahab-now__sea { margin: 0; font: 600 0.95rem/1.4 var(--sc-font-display); color: #f4faf8; }
+  .dahab-now__sea--quiet { color: rgba(237,244,242,0.5); font-weight: 500; }
+  .dahab-now__osama { margin: 0; font-size: 13px; line-height: 1.45; color: rgba(237,244,242,0.72); }
+  /* hold to dive: the page carries you down while the thumb stays; the hint under Start here */
+  .descent .brand-hold { margin: 0.6rem 0 0; font-size: 13px; line-height: 1.45; color: rgba(237,244,242,0.55); max-width: 30ch; }
+  html.is-diving, html.is-diving body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .dive-cue { position: fixed; left: 50%; bottom: calc(1.2rem + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 58; padding: 0.45rem 0.8rem; border-radius: 999px; background: rgba(6, 20, 32, 0.78); color: #3fd1be; font: 700 0.62rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid rgba(63,209,190,0.35); pointer-events: none; animation: dive-cue-in 220ms ease-out; }
+  @keyframes dive-cue-in { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  /* one door: the coast handle on the edge opens the menu; the button at the top went */
+  .descent .navbtn { display: none !important; }
 
   /* a page that opens on a full bleed photo meets the dark cap, with no stripe of
      bone paper between the two */

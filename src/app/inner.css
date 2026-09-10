@@ -21,17 +21,6 @@
 .descent-inner .inner { background: linear-gradient(#061420 0 4.6rem, transparent 4.6rem); }
 @media (max-width: 860px) { .descent-inner .inner { background: linear-gradient(#061420 0 5.4rem, transparent 5.4rem); } }
 
-.inner-context { position: absolute; inset: 0 var(--sc-gutter, 1.25rem) auto; z-index: 3; height: 4.6rem; display: flex; align-items: flex-end; gap: 0.55rem; padding-bottom: 0.7rem; color: rgba(237, 244, 242, 0.64); font: 600 0.66rem/1 var(--sc-font-mono, ui-monospace, monospace); letter-spacing: 0.11em; text-transform: uppercase; }
-.inner-context a { color: inherit; text-decoration: none; }
-.inner-context__brand { color: var(--reef-glow, #3fd1be) !important; }
-.inner-context__cta { margin-left: auto; padding: 0.5rem 0.8rem; border: 1px solid rgba(63, 209, 190, 0.5); border-radius: 999px; color: #dff8f2 !important; transition: background 160ms ease, color 160ms ease; }
-.inner-context__cta:hover { background: var(--reef-glow, #3fd1be); color: #061420 !important; }
-@media (max-width: 860px) {
-  .inner-context { height: 5.4rem; padding-bottom: 0.65rem; font-size: 0.59rem; letter-spacing: 0.08em; }
-  .inner-context > span:last-of-type { display: none; }
-  .inner-context__cta { padding: 0.48rem 0.65rem; }
-}
-
 /* The reviews keep their lagoon; only their own bar and foot go, the shell has both.
    The one action they carried, write a review, sits under the top bar on the right. */
 .descent-inner .lb-action-bar { position: absolute; right: var(--sc-gutter); top: 5.4rem; z-index: 3; }

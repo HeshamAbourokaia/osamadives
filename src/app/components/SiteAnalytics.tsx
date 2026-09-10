@@ -51,7 +51,9 @@ function SiteAnalyticsTracker() {
   useEffect(() => {
     if (!GA_MEASUREMENT_ID) return;
     const fired = new Set<number>();
-    const onScroll = () => {
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
       const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const depth = Math.round((window.scrollY / max) * 100);
       for (const threshold of [25, 50, 75, 90]) {
@@ -61,9 +63,10 @@ function SiteAnalyticsTracker() {
         }
       }
     };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(measure); };
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    measure();
+    return () => { window.removeEventListener("scroll", onScroll); if (frame) cancelAnimationFrame(frame); };
   }, [pathname, searchParams]);
 
   useEffect(() => {

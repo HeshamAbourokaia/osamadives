@@ -121,8 +121,10 @@ function useScrub(points: Point[], onPick: (i: number) => void, onDismiss?: () =
 
   const handlers = {
     onTouchStart: (e: React.TouchEvent) => {
-      // Short screens scroll the menu itself instead of scrubbing the coastline.
-      if (e.currentTarget.scrollHeight > e.currentTarget.clientHeight + 1) {
+      // A short landscape screen scrolls the menu itself instead of scrubbing the coastline.
+      // Only a panel that can actually scroll opts out: the labels overhang the box on
+      // every phone, which makes scrollHeight larger with nothing to scroll.
+      if (getComputedStyle(e.currentTarget).overflowY === "auto" && e.currentTarget.scrollHeight > e.currentTarget.clientHeight + 1) {
         from.current = null;
         return;
       }

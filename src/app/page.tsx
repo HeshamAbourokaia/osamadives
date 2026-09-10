@@ -95,7 +95,7 @@ export default async function Home() {
             Hesham's request 4 Sep 2026: "his face is the branding." */}
         <section className="g-abyss brand-act" id="brand-act">
           <div className="brand-stage">
-            <img className="brand-stage__photo" data-sc-parallax="-0.12" src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="100vw" fetchPriority="high" alt="Osama teaching a diving student in the crystal-clear shallow water of Dahab, Egypt" />
+            <img className="brand-stage__photo" data-sc-parallax="-0.12" src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="(max-width: 860px) 200vw, 100vw" fetchPriority="high" alt="Osama teaching a diving student in the crystal-clear shallow water of Dahab, Egypt" />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="brand-copy" data-sc-in>
               <h1>Osama<span className="sr-only">, PADI Master Scuba Diver Trainer in Dahab, Egypt</span>.</h1>

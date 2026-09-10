@@ -802,7 +802,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   .orbit-hint::after { content: "\00a0\2192"; }
 
   @media (max-width: 860px) {
-    .orbit-stage { padding-top: 4vh; height: 100svh; }
+    .orbit-stage { padding-top: 6rem; height: 100svh; } /* the heading clears the fixed top bar while pinned */
     .orbit-head h2 { font-size: clamp(1.4rem, 6.4vw, 1.8rem); }
     .orbit-grid { grid-template-columns: 1fr; }
     .orbit-grid__figure { max-width: 12rem; margin-inline: auto; }
@@ -899,14 +899,9 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     .coast-lead { flex-basis: 78vw; }
     .station, .station-img { flex-basis: 74vw; min-height: 52vh; }
     .coast-note { flex-basis: 70vw; }
-    .entry-towline {
-      transform: translate3d(calc(var(--sc-p, 0) * 4vw), calc((0.5 - var(--sc-p, 0)) * 1.2vh), 0) rotate(calc((0.5 - var(--sc-p, 0)) * 1.5deg));
-    }
-    .entry-towline__line {
-      left: 12%; top: calc(100% + 0.9rem); width: 72%; transform: rotate(calc(-4deg + var(--sc-p, 0) * 9deg));
-      opacity: 0.55;
-    }
-    .entry-towline__bubbles { left: 72%; top: calc(100% + 0.8rem); transform: scale(0.8); }
+    /* the tow line under the words read as a slider on a phone, and the drift as a fault */
+    .entry-towline { transform: none !important; }
+    .entry-towline__line, .entry-towline__bubbles { display: none; }
     .entry-copy h2 { font-size: clamp(2.5rem, 12vw, 3.4rem); }
     .peak-frame { width: 92vw; margin-top: clamp(14rem, 35vh, 19rem); }
     .entry-foot { display: none; }
@@ -983,7 +978,8 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 @media (max-width: 860px) {
   .descent .depth-credit { display: none; }
   .descent .depth-cue { max-width: 100%; }
-  .descent .depth-cue--classroom { top: auto; bottom: clamp(7rem, 16vh, 10rem); right: 0; max-width: min(88vw, 26rem); }
+  /* the classroom cue reads like the other two on a phone: left, at the foot of the photograph, no box */
+  .descent .depth-cue--classroom { top: auto; bottom: 0; left: 0; right: auto; max-width: 100%; padding: 0; border: 0; border-radius: 0; text-align: left; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 
 /* station photographs, behind the ledger text */
@@ -1762,7 +1758,6 @@ html:not(.sc-ready) .w__i { transform: none; }
   /* The dock sits at the foot of the screen, so nothing else may: the copy of the
      clip acts and the surfacing act's foot line move up above it. */
   .descent .entry-copy { bottom: 8.2rem !important; }
-  .descent .surface-foot { bottom: 6.4rem; }
   .descent .surface-copy { bottom: 11.6rem !important; padding-bottom: 0; }
   .descent .depth-copy { bottom: 7rem; }
 }
@@ -1777,11 +1772,11 @@ html:not(.sc-ready) .w__i { transform: none; }
   }
   .descent .peak-story-intro {
     position: relative; inset: auto; width: 100%; max-width: 34rem; margin: 0;
-    padding: 0.9rem 0.95rem 1rem; text-align: center;
+    padding: 0; text-align: left; background: none; border: 0; box-shadow: none;
   }
   .descent .peak-story-intro .microcopy { margin-bottom: 0.65rem; }
   .descent .peak-story-intro h2 {
-    max-width: none; margin-bottom: 0.75rem;
+    max-width: none; margin: 0 0 0.75rem;
     font-size: clamp(1.5rem, 6.8vw, 2.15rem); line-height: 0.98;
   }
   .descent .peak-story-intro p {
@@ -1794,17 +1789,14 @@ html:not(.sc-ready) .w__i { transform: none; }
   .descent .peak-captions { margin-top: 0.65rem; min-height: 2.8rem; }
 }
 
-/* Give the archive counter its own breathing space on a phone. It used to sit
-   behind the story panel, so only a few turquoise strokes survived at the edge.
-   In the stack it is a visible beat between the written handover and the print. */
+/* The running year on a phone takes its place in the stack, between the words and
+   the print, on the right. Pinned to the bottom it sat on the year chips. */
 @media (max-width: 860px) {
   .descent .peak-year {
-    position: absolute; left: auto; right: clamp(1rem, 5vw, 2rem); top: auto !important;
-    bottom: clamp(4rem, 11vh, 5.2rem); width: auto;
-    justify-content: flex-end; margin: 0; padding-top: 0.25rem;
-    border-top: 1px solid rgba(63, 209, 190, 0.24);
-    font-size: clamp(2.2rem, 6vw, 3rem); opacity: 0.86; z-index: 2;
+    position: relative; inset: auto; top: auto !important; width: auto;
+    align-self: flex-end; justify-content: flex-end; margin: 0.6rem 0 0; padding: 0; border: 0;
+    font-size: clamp(2.2rem, 8vw, 3rem); opacity: 0.7; z-index: 2;
     transform: none !important;
   }
-  .descent .peak-frame { margin-top: clamp(1.8rem, 4.6vh, 3rem); }
+  .descent .peak-frame { margin-top: 0.5rem; }
 }

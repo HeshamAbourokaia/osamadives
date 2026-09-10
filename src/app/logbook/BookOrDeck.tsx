@@ -51,7 +51,6 @@ export default function BookOrDeck(props: { pages: BookPage[] }) {
   };
   return (
     <div className="review-deck" role="region" aria-roledescription="carousel" aria-label="The book of reviews" tabIndex={0} onKeyDown={onDeckKeyDown}>
-      {cards.length > 1 ? <p className="review-deck__hint">Swipe to explore, or use the arrows below</p> : null}
       <div className="deck" ref={strip} id={stripId}>
         {cards.map((p, i) => (
           <div key={i} className="review-deck__card" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${cards.length}`}>

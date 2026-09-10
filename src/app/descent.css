@@ -1793,3 +1793,17 @@ html:not(.sc-ready) .w__i { transform: none; }
   }
   .descent .peak-captions { margin-top: 0.65rem; min-height: 2.8rem; }
 }
+
+/* Give the archive counter its own breathing space on a phone. It used to sit
+   behind the story panel, so only a few turquoise strokes survived at the edge.
+   In the stack it is a visible beat between the written handover and the print. */
+@media (max-width: 860px) {
+  .descent .peak-year {
+    position: relative; left: auto; right: auto; top: auto !important;
+    order: 2; flex: 0 0 auto; align-self: flex-end; width: 100%;
+    justify-content: flex-end; margin: clamp(1.2rem, 3.2vh, 1.8rem) 0 0;
+    padding-top: 0.25rem; border-top: 1px solid rgba(63, 209, 190, 0.24);
+    font-size: clamp(3.2rem, 15vw, 5.4rem); opacity: 0.82; z-index: 2;
+  }
+  .descent .peak-frame { order: 3; margin-top: clamp(0.65rem, 1.8vh, 1.15rem); }
+}

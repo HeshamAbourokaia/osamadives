@@ -92,7 +92,7 @@ export default function MemoryBook({ pages }: Props) {
         showCover: true, usePortrait: true, mobileScrollSupport: true,
         drawShadow: true, maxShadowOpacity: 0.55,
         flippingTime: reduced ? 1 : 900,
-        useMouseEvents: true, swipeDistance: 24,
+        useMouseEvents: !phone, swipeDistance: 24,
         disableFlipByClick: true,     // a click opens the page; a drag turns it
         showPageCorners: true,
       });
@@ -129,8 +129,8 @@ export default function MemoryBook({ pages }: Props) {
     if (e.key === "ArrowRight") { e.preventDefault(); flip.current?.flipNext(); }
     if (e.key === "ArrowLeft") { e.preventDefault(); flipBack(); }
   };
-  // On a phone the engine's own swipe turns pages forward; a swipe back reaches the same
-  // guard, so the book reads that one itself.
+  // On a phone the book reads the swipe itself, at any speed: the engine only turned a
+  // page for a fast flick, and an ordinary swipe curled the corner and let it fall back.
   const touch = useRef<{ x: number; y: number; t: number } | null>(null);
   const onTouchStart = (e: React.TouchEvent) => { const t = e.touches[0]; touch.current = { x: t.clientX, y: t.clientY, t: Date.now() }; };
   const onTouchEnd = (e: React.TouchEvent) => {
@@ -138,8 +138,18 @@ export default function MemoryBook({ pages }: Props) {
     const t = e.changedTouches[0];
     if (!from || !t || !narrow) return;
     const dx = t.clientX - from.x, dy = Math.abs(t.clientY - from.y);
-    if (dx > 48 && dy < 60 && Date.now() - from.t < 500) flipBack();
+    if (Math.abs(dx) < 30 || Math.abs(dx) < dy * 1.2 || Date.now() - from.t > 1500) return;
+    if (dx < 0) flip.current?.flipNext(); else flipBack();
   };
+  // The corner of the page lifts once when the book comes into view: a page waiting to be turned.
+  const [invited, setInvited] = useState(false);
+  useEffect(() => {
+    const el = bookRef.current?.closest(".flipbook");
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver((es) => { if (es.some((x) => x.isIntersecting)) { setInvited(true); io.disconnect(); } }, { threshold: 0.4 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   // A tap opens the page. The browser only fires a click for a press that did not travel,
   // so a drag or a swipe never lands here. It is read at the book, not on the page: on a
   // phone the engine shows a clone of each page, and a clone carries no handlers of its own.
@@ -155,7 +165,7 @@ export default function MemoryBook({ pages }: Props) {
   const caption = pages[captionIdx]?.caption ?? "";
 
   return (
-    <div className="flipbook" role="region" aria-roledescription="book" aria-label={`Reviews, ${caption}`} tabIndex={0} onKeyDown={onKey}>
+    <div className={`flipbook${invited ? " is-inviting" : ""}`} role="region" aria-roledescription="book" aria-label={`Reviews, ${caption}`} tabIndex={0} onKeyDown={onKey}>
       <span className="book__ghost" aria-hidden="true">Reviews</span>
       <button type="button" className="book__arrow book__arrow--prev lg" onClick={flipBack} disabled={!ready || index === 0} aria-label="Previous page">&#8249;</button>
       <button type="button" className="book__arrow book__arrow--next lg" onClick={() => flip.current?.flipNext()} disabled={!ready || index >= n - 1} aria-label="Next page">&#8250;</button>
@@ -178,12 +188,18 @@ export default function MemoryBook({ pages }: Props) {
             </div>
           ))}
         </div>
+        <button type="button" className={`book__ear${index >= n - 1 ? " is-off" : ""}`} aria-label="Turn the page" onClick={() => flip.current?.flipNext()} />
+      </div>
+      <div className="book__turn">
+        <button type="button" className="book__turn-btn" onClick={flipBack} disabled={!ready || index === 0} aria-label="Previous page">&#8249;</button>
+        <span className="book__turn-count lb-mono">{Math.min(n, captionIdx + 1)} / {n}</span>
+        <button type="button" className="book__turn-btn" onClick={() => flip.current?.flipNext()} disabled={!ready || index >= n - 1} aria-label="Next page">&#8250;</button>
       </div>
 
       <p className="book__caption lb-mono" aria-live="polite">
         <span>{caption}</span>
         <span className="book__count">{Math.min(n, captionIdx + 1)} / {n}</span>
-        <span className="book__hint">{narrow ? "Swipe to turn a page, tap to read it" : "Drag a corner, or use the arrows"}</span>
+        <span className="book__hint">{narrow ? "Swipe, or use the arrows, to turn the page. Tap a page to read it." : "Drag a corner, or use the arrows"}</span>
       </p>
 
       {open !== null ? (

@@ -41,7 +41,7 @@ export default async function HomeStrip() {
                     <img src="/brand/stamp-512.png" alt="" width={110} height={110} />
                     <span className="lb-mono">Reviews{total ? ` · ${total}` : ""}</span>
                     <h3 className="lb-h2">The book of the people I took into the water.</h3>
-                    <p className="lb-stand">Drag a corner to turn.</p>
+                    <p className="lb-stand"><span className="only-desktop">Drag a corner to turn.</span><span className="only-mobile">Swipe to turn the page.</span></p>
                   </div>
                 </div>
               ) },

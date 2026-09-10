@@ -9,7 +9,6 @@ import WhatsAppCount from "./WhatsAppCount";
 import BackToTop from "@/components/BackToTop";
 import SideRail from "./SideRail";
 import MessageButton from "./MessageButton";
-import InnerContext from "./InnerContext";
 import "./descent.css";
 import "./mobile.css";
 import "./inner.css";
@@ -27,7 +26,6 @@ export default function DescentShell({ children }: { children: ReactNode }) {
       <DescentNav />
       <div className="inner g-bone" data-sc-spotlight>
         <Contours seed={5} glow={false} />
-        <InnerContext />
         <div className="inner-body">{children}</div>
       </div>
       <div className="tail"><TailFoot /></div>

@@ -34,24 +34,19 @@
   /* ---- the tab bar owns the foot of the screen ---- */
   .descent { padding-bottom: calc(3.4rem + env(safe-area-inset-bottom)); }
   .descent .backtotop, .descent button[aria-label="Back to top"] { display: none !important; }
-  .descent .surface-foot { bottom: 5.6rem; }
+  /* the surfacing act's line of links sat on its own copy; the tail foot below carries the same links */
+  .descent .surface-foot { display: none; }
   .descent .surface-copy { bottom: 10.6rem !important; }
   .descent .depth-copy { bottom: 6.4rem; }
   .descent .entry-copy { bottom: 6.2rem !important; }
-  /* The entry clip is a wide underwater shot. Covering a portrait phone crops the
-     diver to a tank or a fin, so keep the full pass visible and let the water column
-     carry the letterbox around it. */
-  .descent #entry-act [data-sc-stage] :is(video[data-sc-scrub], .sc-stage__poster) {
-    object-fit: contain;
-    object-position: center 18%;
-    background: #0a2a3a;
-  }
-  /* The depth photographs are wide frames too. Keep the full diver and reef in
-     view on a portrait screen, with the abyss filling the unused edges. */
-  .descent #descent-act .depth-photo {
-    object-fit: contain;
-    object-position: center;
-    background: #061420;
+  /* The entry clip is a wide underwater shot. Covering a portrait phone showed a tank
+     or a fin; a full-width 16:9 strip showed all of him at the size of a stamp. A 4:3
+     window under the top bar keeps him whole and gives him size, and the water
+     column carries the words below it. */
+  .descent #entry-act [data-sc-stage] :is(video[data-sc-scrub], canvas[data-sc-sequence], .sc-stage__poster) {
+    object-fit: cover;
+    object-position: 50% 42%;
+    top: 5.2rem; bottom: auto; height: 75vw;
   }
   /* A phone should receive the complete safety rule at once. The desktop can
      keep the word-by-word reveal, while the mobile heading stays whole and calm. */
@@ -63,13 +58,13 @@
   /* one action per screen: the floating Message button carries it on every screen, so
      the copy never repeats it, the hero included */
   .descent .entry-copy .cta, .descent .surface-copy .cta, .descent .brand-cta { display: none; }
-  /* the year numeral sits below the fixed top navigation */
-  .descent .peak-year { top: 8.6rem; }
 
   /* ---- the hero: one image, one sentence, one action ---- */
-  /* Keep the whole teaching photograph on a phone, with the introduction below it. */
+  /* His face is the branding. A portrait crop of the teaching photograph, framed on
+     him, stands under the top bar at three fifths of the screen; the introduction
+     sits below it on the dark, so no scrim has to fight the water for the words. */
   .descent .brand-stage { height: auto; min-height: 0; padding-top: 4.5rem; }
-  .descent .brand-stage__photo { position: relative; inset: auto; height: auto; object-fit: contain; object-position: center; transform: none !important; }
+  .descent .brand-stage__photo { position: relative; inset: auto; width: 100%; height: min(60svh, 34rem); min-height: 22rem; object-fit: cover; object-position: 76% 30%; transform: none !important; }
   .descent .brand-stage > .sc-scrim { display: none; }
   .descent .brand-ribbons, .descent .brand-small { display: none; }
   .descent .brand-copy { position: relative; inset: auto; max-width: none; padding: 1.5rem var(--sc-gutter) 2rem; }
@@ -276,12 +271,11 @@
   /* reviews as a deck */
   .review-deck .deck > * { flex-basis: 84vw; }
   .review-deck__card { display: block; }
-  .descent .review-deck__link { display: flex; justify-content: center; min-height: 48px; margin-top: 0.75rem; border: 1px solid rgba(10,125,112,0.4); border-radius: 999px; color: #075f55; font-weight: 700; text-decoration: none; }
+  .descent .review-deck .review-deck__link { display: flex; justify-content: center; align-items: center; width: max-content; min-height: 44px; margin: 0.5rem auto 0; padding: 0 1rem; border: 1px solid rgba(10,125,112,0.4); border-radius: 999px; color: #075f55; font: 600 0.72rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; }
   .review-deck__controls { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1rem; }
   .review-deck__controls button { min-width: 48px; min-height: 48px; border: 1px solid rgba(10,125,112,0.4); border-radius: 50%; background: #fffdf8; color: #075f55; font-size: 1.5rem; }
   .review-deck__controls button:disabled { opacity: 0.35; }
   .review-deck__count { font: 500 0.8rem/1 var(--mono); color: #075f55; }
-  .review-deck__hint { text-align: center; font-size: 14px; color: #4b4232; margin: 0.5rem 0; }
   .review-deck .deck { align-items: flex-start; }
   .review-deck .lb-page__meta, .review-deck .lb-page__name { padding-right: 0; overflow-wrap: anywhere; }
   .review-deck .lb-page__meta { flex-wrap: wrap; gap: 0.35rem 1rem; }

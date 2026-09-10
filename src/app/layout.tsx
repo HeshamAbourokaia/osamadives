@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import GoogleAnalytics from "./components/GoogleAnalytics";
+import SiteAnalytics from "./components/SiteAnalytics";
+import { diveSites } from "@/lib/dive-sites";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -135,6 +137,48 @@ const structuredData = {
         datePublished: "2026-04-30",
       },
     },
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://www.osamadives.com/#service",
+      name: "OsamaDives",
+      url: "https://www.osamadives.com",
+      description:
+        "Personal dive guiding and scuba instruction in Dahab, arranged through CDWS-registered dive centres.",
+      image: "https://www.osamadives.com/images/OsamaDives.png",
+      provider: { "@id": "https://www.osamadives.com/#person" },
+      areaServed: {
+        "@type": "Place",
+        name: "Dahab, South Sinai, Egypt",
+      },
+      serviceType: ["Scuba diving instruction", "Dive guiding", "PADI courses"],
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Dahab",
+        addressRegion: "South Sinai",
+        addressCountry: "EG",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        telephone: "+201090208050",
+        availableLanguage: ["English", "Arabic"],
+      },
+      sameAs: [
+        "https://facebook.com/osamasharks",
+        "https://instagram.com/osama_mohamed_hassan",
+      ],
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://www.osamadives.com/#dive-sites",
+      name: "Dahab dive sites guided by OsamaDives",
+      itemListElement: diveSites.map((site, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: site.name,
+        url: `https://www.osamadives.com/dive-sites/${site.slug}`,
+      })),
+    },
   ],
 };
 
@@ -155,6 +199,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <GoogleAnalytics />
+        <SiteAnalytics />
         {children}
         <Analytics />
       </body>

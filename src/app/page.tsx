@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import { archivo, plex } from "./fonts";
 import { WHATSAPP } from "@/lib/contact";
 import TailFoot from "./TailFoot";
@@ -237,7 +238,7 @@ export default async function Home() {
         </section>
 
         {/* ACT 4 · THE PEAK: the print becomes the man, the year runs behind it */}
-        <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="3.8" style={{ "--sc-span": 3.8 } as React.CSSProperties}>
+        <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="3.1" style={{ "--sc-span": 3.1 } as React.CSSProperties}>
           <div data-sc-stage className="peak-stage">
             <OdometerYear className="peak-year" from={1987} to={2024} at={[0.1, 0.86]} parallax={-1} />
             <div className="peak-frame" data-sc-parallax="0.35">
@@ -291,7 +292,7 @@ export default async function Home() {
 
         {/* ACT 4b · THE DESCENT: three of Osama's own photographs, shown at the depth they were taken.
             The dive computer reads those depths, nothing invented. */}
-        <section className="g-abyss" id="descent-act" data-sc-act="pin" data-sc-span="3.2" style={{ "--sc-span": 3.2 } as React.CSSProperties}>
+        <section className="g-abyss" id="descent-act" data-sc-act="pin" data-sc-span="2.7" style={{ "--sc-span": 2.7 } as React.CSSProperties}>
           <div data-sc-stage className="depth-stage">
             <img className="depth-photo depth-photo--1" data-sc-parallax="-0.24" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle over the reef at Om El Seed, seven metres down, photographed by Osama" />
             <img className="depth-photo depth-photo--2" data-sc-parallax="-0.24" src="/descent/depth-8.webp" srcSet="/descent/depth-8-m.webp 800w, /descent/depth-8.webp 1600w" sizes="100vw" alt="Coral on the reef shelf at the edge of the Blue Hole, eight metres down, photographed by Osama" />
@@ -301,7 +302,7 @@ export default async function Home() {
             <Bubbles count={22} strength={0.7} />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="depth-copy">
-              <div className="depth-cue" data-sc-cue="0.02 0.3 0.08 0.06">
+              <div className="depth-cue depth-cue--classroom" data-sc-cue="0.02 0.3 0.08 0.06">
                 <span className="microcopy">7 metres · Om El Seed · where he teaches</span>
                 <h2><Words text="His classroom. Every first breath starts here." at={0.02} /></h2>
               </div>
@@ -311,7 +312,7 @@ export default async function Home() {
               </div>
               <div className="depth-cue" data-sc-cue="0.7 1 0.06 0">
                 <span className="microcopy">12 metres · the blue · how he dives</span>
-                <h2><Words text="He guides. You dive within your training, every time." at={0.7} /></h2>
+                <h2 className="depth-heading"><Words text="He guides. You dive within your training, every time." at={0.7} /></h2>
               </div>
             </div>
             <div className="depth-credit microcopy" data-sc-cue="0.05">Photographs by Osama, on ordinary working days</div>
@@ -319,7 +320,7 @@ export default async function Home() {
         </section>
 
         {/* ACT 5 · THE COAST: lateral travel, south to north, five real dives */}
-        <section className="g-abyss" id="coast-act" data-sc-act="pan" data-sc-span="4.4" style={{ "--sc-span": 4.4 } as React.CSSProperties}>
+        <section className="g-abyss" id="coast-act" data-sc-act="pan" data-sc-span="3.6" style={{ "--sc-span": 3.6 } as React.CSSProperties}>
           <div data-sc-stage className="rail-stage">
                         <div className="coast-lead lead-fixed">
                 <span className="microcopy">Stop 2 · the sites · south to north</span>
@@ -405,7 +406,7 @@ export default async function Home() {
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">B</span>
                 <a className="exhibit-card" data-sc-spotlight href="/dive-sites/blue-hole-dahab" data-sc-tilt="5" data-sc-parallax="-0.08">
-                  <img src="/images/OsamaDives_The_Blue_Hole.jpeg" alt="The Blue Hole in Dahab, the famous vertical drop with the Arch at 55 metres" loading="lazy" />
+                  <Image src="/images/OsamaDives_The_Blue_Hole.jpeg" alt="The Blue Hole in Dahab, the famous vertical drop with the Arch at 55 metres" width={1200} height={800} sizes="(max-width: 860px) 92vw, 30vw" loading="lazy" />
                   <div className="row"><h3>Blue Hole</h3><span className="spec">A pilgrimage</span></div>
                   <p>Divers travel from every corner of the world to descend into this sinkhole. Open Water is the minimum. The Arch is for technical divers only; recreational diving here stops at 40 metres. I have dived it more than a thousand times. I know its moods, and how to show you its magic safely.</p>
                 </a>
@@ -413,7 +414,7 @@ export default async function Home() {
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">C</span>
                 <a className="exhibit-card" data-sc-spotlight href="/dive-sites/the-canyon-dahab" data-sc-tilt="5" data-sc-parallax="0.06">
-                  <img src="/images/OsamDives_The_Canyon.jpg" alt="The Canyon dive site in Dahab, dramatic formations with shafts of light" loading="lazy" />
+                  <Image src="/images/OsamDives_The_Canyon.jpg" alt="The Canyon dive site in Dahab, dramatic formations with shafts of light" width={1200} height={800} sizes="(max-width: 860px) 92vw, 30vw" loading="lazy" />
                   <div className="row"><h3>The Canyon</h3><span className="spec">A cathedral</span></div>
                   <p>You descend through a narrow passage as beams of sunlight pierce the water above you. Walls covered in soft coral, home to lionfish, moray eels, and schools of glassfish.</p>
                 </a>
@@ -421,7 +422,7 @@ export default async function Home() {
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">S</span>
                 <a className="exhibit-card" data-sc-spotlight href="/dive-sites" data-sc-tilt="5" data-sc-parallax="-0.08">
-                  <img src="/images/FB_IMG_1621238990084.jpg" alt="Shore diving in Dahab, an easy beach entry with no boats" loading="lazy" />
+                  <Image src="/images/FB_IMG_1621238990084.jpg" alt="Shore diving in Dahab, an easy beach entry with no boats" width={1200} height={800} sizes="(max-width: 860px) 92vw, 30vw" loading="lazy" />
                   <div className="row"><h3>Shore diving</h3><span className="spec">No boats</span></div>
                   <p>Forget crowded boats and rough seas. In Dahab you walk to your dive site. Gear up on the beach, wade in through calm water, and you are diving within minutes. More time underwater, less time commuting.</p>
                 </a>
@@ -431,7 +432,7 @@ export default async function Home() {
         </section>
 
         {/* ACT 5c · THE JOURNAL: his stories, a rail that pans as the visitor scrolls */}
-        <section className="g-night" id="journal-act" data-sc-act="pan" data-sc-span="3" style={{ "--sc-span": 3 } as React.CSSProperties}>
+        <section className="g-night" id="journal-act" data-sc-act="pan" data-sc-span="2.3" style={{ "--sc-span": 2.3 } as React.CSSProperties}>
           <div data-sc-stage className="rail-stage">
                         <div className="coast-lead lead-fixed">
                 <span className="microcopy">The journal</span>
@@ -443,7 +444,7 @@ export default async function Home() {
 <div className="coast-rail journal-rail js-rail">
               {posts.map((post) => (
                 <a className="station journal-card" href={`/blog/${post.slug}`} key={post.slug} data-sc-tilt="4">
-                  <img className="station__img" src={post.featuredImage} alt="" loading="lazy" />
+                  <Image className="station__img" src={post.featuredImage} alt="" width={800} height={520} sizes="(max-width: 860px) 82vw, 28vw" loading="lazy" />
                   <span className="microcopy">{new Date(post.date).getFullYear()} · journal</span>
                   <h3>{post.title}</h3>
                   <p>{post.excerpt}</p>
@@ -458,7 +459,7 @@ export default async function Home() {
             stories, gallery and reviews orbiting him. Sits here because by this point
             the visitor has met him (the guide), seen the depths and toured the sites;
             this is the "everything he's built" beat before the school closes the dive. */}
-        <section className="g-lagoon" id="orbit-act" data-sc-act="pin" data-sc-span="2.6" style={{ "--sc-span": 2.6 } as React.CSSProperties}>
+        <section className="g-lagoon" id="orbit-act" data-sc-act="pin" data-sc-span="2.2" style={{ "--sc-span": 2.2 } as React.CSSProperties}>
           <div data-sc-stage className="orbit-stage">
             <div className="orbit-head">
               <span className="microcopy">9 m · his world</span>
@@ -599,7 +600,7 @@ export default async function Home() {
         </section>
 
         {/* ACT 7b · THE GALLERY: a rail of his photographs, panning as the visitor scrolls */}
-        <section className="g-abyss" id="gallery-act" data-sc-act="pan" data-sc-span="3.2" style={{ "--sc-span": 3.2 } as React.CSSProperties}>
+        <section className="g-abyss" id="gallery-act" data-sc-act="pan" data-sc-span="2.5" style={{ "--sc-span": 2.5 } as React.CSSProperties}>
           <div data-sc-stage className="rail-stage">
                         <div className="coast-lead lead-fixed">
                 <span className="microcopy">The gallery</span>
@@ -611,7 +612,7 @@ export default async function Home() {
 <div className="coast-rail gal-rail js-rail">
               {frames.map((photo, i) => (
                 <a className={`gal-frame gal-frame--${i % 3}`} href="/gallery" key={photo.id} data-sc-tilt="3" data-sc-parallax={i % 2 ? "-0.18" : "0.12"}>
-                  <img src={photo.src} alt={photo.alt} loading="lazy" />
+                  <Image src={photo.src} alt={photo.alt} width={800} height={600} sizes="(max-width: 860px) 82vw, 28vw" loading="lazy" />
                   <figcaption className="microcopy">{photo.title}</figcaption>
                 </a>
               ))}

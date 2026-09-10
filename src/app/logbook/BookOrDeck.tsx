@@ -40,22 +40,31 @@ export default function BookOrDeck(props: { pages: BookPage[] }) {
       behavior: reduced ? "auto" : "smooth",
     });
   };
+  const onDeckKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft" && on > 0) {
+      event.preventDefault();
+      move(on - 1);
+    } else if (event.key === "ArrowRight" && on < cards.length - 1) {
+      event.preventDefault();
+      move(on + 1);
+    }
+  };
   return (
-    <div className="review-deck" role="region" aria-roledescription="carousel" aria-label="The book of reviews">
+    <div className="review-deck" role="region" aria-roledescription="carousel" aria-label="The book of reviews" tabIndex={0} onKeyDown={onDeckKeyDown}>
       {cards.length > 1 ? <p className="review-deck__hint">Swipe to explore, or use the arrows below</p> : null}
       <div className="deck" ref={strip} id={stripId}>
         {cards.map((p, i) => (
           <div key={i} className="review-deck__card" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${cards.length}`}>
             {p.node}
-            {p.href ? <a href={p.href} className="review-deck__link" aria-label={`Read full story: ${p.caption}`}>Read full story <span aria-hidden="true">&nbsp;→</span></a> : null}
+            {p.href ? <a href={p.href} className="review-deck__link" aria-label={`Read full story: ${p.caption}`} data-analytics-event="review_open" data-analytics-category="engagement" data-analytics-label="Read full review">Read full story <span aria-hidden="true">&nbsp;→</span></a> : null}
           </div>
         ))}
       </div>
       {cards.length > 1 ? (
         <div className="review-deck__controls">
-          <button type="button" aria-label="Previous review" aria-controls={stripId} disabled={on === 0} onClick={() => move(on - 1)}>←</button>
+          <button type="button" aria-label="Previous review" aria-controls={stripId} disabled={on === 0} onClick={() => move(on - 1)} data-analytics-event="review_previous" data-analytics-category="engagement" data-analytics-label="Previous review">←</button>
           <span className="review-deck__count">{on + 1} / {cards.length}</span>
-          <button type="button" aria-label="Next review" aria-controls={stripId} disabled={on >= cards.length - 1} onClick={() => move(on + 1)}>→</button>
+          <button type="button" aria-label="Next review" aria-controls={stripId} disabled={on >= cards.length - 1} onClick={() => move(on + 1)} data-analytics-event="review_next" data-analytics-category="engagement" data-analytics-label="Next review">→</button>
         </div>
       ) : null}
       <p className="book__caption mono" aria-live="polite">{cards[on]?.caption}</p>

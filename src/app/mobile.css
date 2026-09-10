@@ -38,6 +38,28 @@
   .descent .surface-copy { bottom: 10.6rem !important; }
   .descent .depth-copy { bottom: 6.4rem; }
   .descent .entry-copy { bottom: 6.2rem !important; }
+  /* The entry clip is a wide underwater shot. Covering a portrait phone crops the
+     diver to a tank or a fin, so keep the full pass visible and let the water column
+     carry the letterbox around it. */
+  .descent #entry-act [data-sc-stage] :is(video[data-sc-scrub], .sc-stage__poster) {
+    object-fit: contain;
+    object-position: center 18%;
+    background: #0a2a3a;
+  }
+  /* The depth photographs are wide frames too. Keep the full diver and reef in
+     view on a portrait screen, with the abyss filling the unused edges. */
+  .descent #descent-act .depth-photo {
+    object-fit: contain;
+    object-position: center;
+    background: #061420;
+  }
+  /* A phone should receive the complete safety rule at once. The desktop can
+     keep the word-by-word reveal, while the mobile heading stays whole and calm. */
+  .descent #descent-act .depth-heading .w,
+  .descent #descent-act .depth-heading .w__i {
+    overflow: visible;
+    transform: none !important;
+  }
   /* one action per screen: the floating Message button carries it on every screen, so
      the copy never repeats it, the hero included */
   .descent .entry-copy .cta, .descent .surface-copy .cta, .descent .brand-cta { display: none; }

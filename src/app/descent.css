@@ -1799,11 +1799,12 @@ html:not(.sc-ready) .w__i { transform: none; }
    In the stack it is a visible beat between the written handover and the print. */
 @media (max-width: 860px) {
   .descent .peak-year {
-    position: relative; left: auto; right: auto; top: auto !important;
-    order: 2; flex: 0 0 auto; align-self: flex-end; width: 100%;
-    justify-content: flex-end; margin: clamp(1.2rem, 3.2vh, 1.8rem) 0 0;
-    padding-top: 0.25rem; border-top: 1px solid rgba(63, 209, 190, 0.24);
-    font-size: clamp(3.2rem, 15vw, 5.4rem); opacity: 0.82; z-index: 2;
+    position: absolute; left: auto; right: clamp(1rem, 5vw, 2rem); top: auto !important;
+    bottom: clamp(4rem, 11vh, 5.2rem); width: auto;
+    justify-content: flex-end; margin: 0; padding-top: 0.25rem;
+    border-top: 1px solid rgba(63, 209, 190, 0.24);
+    font-size: clamp(2.2rem, 6vw, 3rem); opacity: 0.86; z-index: 2;
+    transform: none !important;
   }
-  .descent .peak-frame { order: 3; margin-top: clamp(0.65rem, 1.8vh, 1.15rem); }
+  .descent .peak-frame { margin-top: clamp(1.8rem, 4.6vh, 3rem); }
 }

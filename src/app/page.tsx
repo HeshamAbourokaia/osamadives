@@ -23,6 +23,7 @@ import TapRipple from "./TapRipple";
 import TripleTapQR from "./TripleTapQR";
 import DahabNow from "./DahabNow";
 import HoldToDive from "./HoldToDive";
+import PickButton from "./PickButton";
 import WhatsAppCount from "./WhatsAppCount";
 import { LENS_MAP } from "./lensMap";
 import { diveSites } from "@/lib/dive-sites";
@@ -482,6 +483,7 @@ export default async function Home() {
                 <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/descent/arch-lagoon.webp" srcSet="/descent/arch-lagoon-m.webp 800w, /descent/arch-lagoon.webp 1400w" sizes="(max-width: 860px) 92vw, 40vw" alt="The turquoise lagoon at Dahab where first dives happen" />
                   <div className="row"><h3>Intro Dive</h3><span className="spec">Half a day</span></div>
+                  <PickButton className="only-mobile" id="course:intro-dive" label="Intro dive" kind="course" />
                   <p>Never tried it. A pool, then the sea, no certification, just a first breath underwater.</p>
                   <details className="more exhibit-more">
                     <summary>Try diving before you commit</summary>
@@ -498,6 +500,7 @@ export default async function Home() {
                 <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="0.06">
                   <img className="exhibit-img--faces" src="/descent/padi-first-fins.webp" alt="A young student in a small wetsuit standing proudly in the street at Assalah, his father beside him" />
                   <div className="row"><h3>Open Water</h3><span className="spec">3-4 days · 18 m</span></div>
+                  <PickButton className="only-mobile" id="course:open-water" label="Open Water" kind="course" />
                   <p>The certification. You leave able to dive anywhere in the world.</p>
                   <details className="more exhibit-more">
                     <summary>The passport to a blue world</summary>
@@ -514,6 +517,7 @@ export default async function Home() {
                 <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/descent/bluehole-aerial.webp" alt="The Blue Hole of Dahab seen from above, a deep blue circle in the reef shelf" />
                   <div className="row"><h3>Advanced</h3><span className="spec">2 days · 30 m</span></div>
+                  <PickButton className="only-mobile" id="course:advanced" label="Advanced" kind="course" />
                   <p>Five adventure dives. Opens the deep sites, night diving included.</p>
                   <details className="more exhibit-more">
                     <summary>Unlock the world&apos;s best dive sites</summary>
@@ -530,6 +534,7 @@ export default async function Home() {
                 <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="0.06">
                   <img src="/descent/osama-truck.webp" srcSet="/descent/osama-truck-m.webp 800w, /descent/osama-truck.webp 960w" sizes="(max-width: 860px) 92vw, 40vw" alt="Osama on the back of a pickup truck in his wetsuit after a dive, talking to divers" />
                   <div className="row"><h3>Rescue Diver</h3><span className="spec">4 days</span></div>
+                  <PickButton className="only-mobile" id="course:rescue-diver" label="Rescue Diver" kind="course" />
                   <p>The course that turns you into a buddy worth diving with.</p>
                   <details className="more exhibit-more">
                     <summary>Open Water saves yourself. Rescue saves others.</summary>
@@ -546,6 +551,7 @@ export default async function Home() {
                 <div className="exhibit-card" data-sc-spotlight data-sc-tilt="5" data-sc-parallax="-0.08">
                   <img src="/descent/seven-tanks.webp" srcSet="/descent/seven-tanks-m.webp 800w, /descent/seven-tanks.webp 1200w" sizes="(max-width: 860px) 92vw, 40vw" alt="Seven scuba tanks laid out on the sea floor" />
                   <div className="row"><h3>Divemaster</h3><span className="spec">2 weeks to a month</span></div>
+                  <PickButton className="only-mobile" id="course:divemaster" label="Divemaster" kind="course" />
                   <p>Several weeks at my side. The first professional step, if you want one.</p>
                   <details className="more exhibit-more">
                     <summary>Turn your passion into a profession</summary>

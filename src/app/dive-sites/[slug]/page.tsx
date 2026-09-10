@@ -3,6 +3,7 @@ import DescentShell from "@/app/DescentShell";
 import Image from "next/image";
 import BackToPlace from "@/components/BackToPlace";
 import Link from "next/link";
+import PickButton from "@/app/PickButton";
 import { notFound } from "next/navigation";
 import { diveSites, getDiveSiteBySlug } from "@/lib/dive-sites";
 
@@ -77,6 +78,7 @@ export default function DiveSiteDetailPage({ params }: { params: { slug: string 
               {site.name}
             </h1>
             <p className="text-white/90 text-lg max-w-3xl">{site.tagline}</p>
+            <div className="only-mobile mt-4"><PickButton id={`site:${site.slug}`} label={site.name.replace(/,\s*Dahab$/, "")} kind="site" /></div>
           </div>
         </div>
       </header>

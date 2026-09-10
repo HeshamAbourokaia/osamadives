@@ -1,4 +1,5 @@
 import DescentShell from "@/app/DescentShell";
+import PickButton from "@/app/PickButton";
 import { WHATSAPP } from "@/lib/contact";
 
 export const metadata = {
@@ -45,6 +46,7 @@ export default function DivingWithOsamaPage() {
           <dl className="wiw__list">
             <div>
               <dt>An intro dive</dt>
+              <PickButton className="only-mobile" id="course:intro-dive" label="Intro dive" kind="course" />
               <dd>
                 <span className="wiw__meta">Half a day · the Lighthouse · no experience needed</span>
                 A shallow, sheltered entry at the Lighthouse, the authorised spot in town. No
@@ -55,6 +57,7 @@ export default function DivingWithOsamaPage() {
             </div>
             <div>
               <dt>Open Water</dt>
+              <PickButton className="only-mobile" id="course:open-water" label="Open Water" kind="course" />
               <dd>
                 <span className="wiw__meta">Three to four days · to 18 metres · beginners</span>
                 The certification that works anywhere in the world. The real work is not the depth.
@@ -107,6 +110,7 @@ export default function DivingWithOsamaPage() {
           <dl className="wiw__list">
             <div>
               <dt>Advanced</dt>
+              <PickButton className="only-mobile" id="course:advanced" label="Advanced" kind="course" />
               <dd>
                 <span className="wiw__meta">Two days · five dives · to 30 metres</span>
                 Deep and Underwater Navigation are the two you must do, then three you choose from
@@ -118,6 +122,7 @@ export default function DivingWithOsamaPage() {
             </div>
             <div>
               <dt>Rescue Diver</dt>
+              <PickButton className="only-mobile" id="course:rescue-diver" label="Rescue Diver" kind="course" />
               <dd>
                 <span className="wiw__meta">Three to four days · Advanced and 20 logged dives</span>
                 Open Water teaches you to look after yourself. Rescue is about everybody else. It
@@ -142,6 +147,7 @@ export default function DivingWithOsamaPage() {
           <dl className="wiw__list">
             <div>
               <dt>Divemaster</dt>
+              <PickButton className="only-mobile" id="course:divemaster" label="Divemaster" kind="course" />
               <dd>
                 <span className="wiw__meta">Two weeks to a month · Rescue certified</span>
                 Several weeks at my side. It is the first professional level: leading dives,

@@ -36,7 +36,7 @@ export default function DiveSitesPage() {
         <div className="max-w-6xl mx-auto">
                     <PhoneCards
             label="The dive sites"
-            items={diveSites.map((site) => ({ href: `/dive-sites/${site.slug}`, title: site.name, kicker: `${site.depthMin} to ${site.depthMax} m · from the shore`, text: site.description.length > 130 ? site.description.slice(0, 130).replace(/\s+\S*$/, "") + "." : site.description, image: site.featuredImage, alt: site.imageAlt }))}
+            items={diveSites.map((site) => ({ href: `/dive-sites/${site.slug}`, title: site.name, pick: { id: `site:${site.slug}`, label: site.name.replace(/,\s*Dahab$/, ""), kind: "site" as const }, kicker: `${site.depthMin} to ${site.depthMax} m · from the shore`, text: site.description.length > 130 ? site.description.slice(0, 130).replace(/\s+\S*$/, "") + "." : site.description, image: site.featuredImage, alt: site.imageAlt }))}
           />
 <div className="only-desktop grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {diveSites.map((site) => (

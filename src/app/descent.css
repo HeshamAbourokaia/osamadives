@@ -968,12 +968,17 @@ html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: n
 .descent .depth-photo--1 { opacity: clamp(0, 1 - (var(--sc-p, 0) - 0.3) / 0.08, 1); }
 .descent .depth-photo--2 { opacity: calc(clamp(0, (var(--sc-p, 0) - 0.3) / 0.08, 1) * clamp(0, 1 - (var(--sc-p, 0) - 0.64) / 0.08, 1)); }
 .descent .depth-photo--3 { opacity: clamp(0, (var(--sc-p, 0) - 0.64) / 0.08, 1); }
-.descent .depth-copy { position: absolute; left: var(--sc-gutter); right: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); z-index: 2; }
+.descent .depth-copy { position: absolute; inset: 0 var(--sc-gutter); z-index: 2; pointer-events: none; }
 .descent .depth-cue { position: absolute; left: 0; bottom: 0; max-width: 34rem; }
+.descent .depth-cue--classroom { top: clamp(5.8rem, 12vh, 9rem); bottom: auto; max-width: min(38rem, 76vw); padding: 0.75rem 0.9rem 0.85rem; border-left: 2px solid rgba(63, 209, 190, 0.7); border-radius: 0 8px 8px 0; background: linear-gradient(90deg, rgba(4, 14, 20, 0.78), rgba(4, 14, 20, 0.25)); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
 .descent .depth-cue .microcopy { display: inline-block; color: var(--reef-glow); background: rgba(4,14,20,0.72); padding: 0.5em 0.75em; border-radius: 3px; border: 1px solid rgba(63,209,190,0.22); margin-bottom: 1rem; }
 .descent .depth-cue h2 { font: 800 clamp(2rem, 4.6vw, 4.2rem)/0.98 var(--sc-font-display); letter-spacing: -0.02em; text-transform: uppercase; margin: 0; text-wrap: balance; text-shadow: 0 2px 30px rgba(0,0,0,0.5); }
 .descent .depth-credit { position: absolute; right: var(--sc-gutter); bottom: 1.4rem; z-index: 2; color: rgba(237,244,242,0.6); }
-@media (max-width: 860px) { .descent .depth-credit { display: none; } .descent .depth-cue { max-width: 100%; } }
+@media (max-width: 860px) {
+  .descent .depth-credit { display: none; }
+  .descent .depth-cue { max-width: 100%; }
+  .descent .depth-cue--classroom { top: 6.6rem; max-width: min(82vw, 23rem); }
+}
 
 /* station photographs, behind the ledger text */
 .descent .station__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.38; z-index: 0; }

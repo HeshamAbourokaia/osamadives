@@ -269,7 +269,7 @@
   .quickstart__d { color: rgba(16, 35, 58, 0.68); }
   .quickstart__note { color: rgba(16, 35, 58, 0.6); }
   .dahab-now { padding: 0; overflow: hidden; background: #fff; border: 1px solid rgba(10, 125, 112, 0.18); box-shadow: 0 14px 30px -22px rgba(16, 35, 58, 0.6); min-height: 0; }
-  .dahab-now__scene { position: relative; height: 150px; }
+  .dahab-now__scene { position: relative; height: 172px; }
   .dahab-now__scene .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
   .dahab-now__head { position: absolute; left: 0.85rem; right: 0.85rem; top: 0.7rem; align-items: flex-start; }
   .dahab-now__k { color: #0b4a5a; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); }
@@ -279,29 +279,102 @@
   .dahab-now__sea { color: #10233a; }
   .dahab-now__sea--quiet { color: rgba(16, 35, 58, 0.5); }
   .dahab-now__osama { color: rgba(16, 35, 58, 0.72); }
-  /* the scene moves: the sea, the kites, and the diver who walks in once */
+  /* ---- the scene moves ---------------------------------------------------
+     One sixteen second cycle, and the acts land in order: he walks in from off
+     the left with his tank on, settles, lifts a camera to the water reading, the
+     flash goes off on the pill, a thumb up, then he stands and breathes until it
+     comes round again. Everything reads --play, so not a frame of it runs until
+     the card is on a screen; nobody arrives after the walk is over. */
+  .dahab-now { --play: paused; }
+  .dahab-now.is-live { --play: running; }
+  .scene__waves path, .scene__kite, .scene__sun, .scene__cloud--a, .scene__cloud--b, .scene__bird,
+  .scene__boat, .scene__fronds, .scene__walk, .scene__bob, .scene__leg--l, .scene__leg--r,
+  .scene__fin--l, .scene__fin--r, .scene__arm, .scene__cam, .scene__ok,
+  .scene__flash, .scene__tag { animation-play-state: var(--play, running); }
+
+  /* the weather itself, always turning over */
   .scene__waves path { animation: sea-drift 6s linear infinite; }
   .scene__waves path:last-child { animation-duration: 9s; animation-direction: reverse; }
   @keyframes sea-drift { from { transform: translateX(0); } to { transform: translateX(40px); } }
   .scene__kite { animation: kite-drift 7s ease-in-out infinite alternate; transform-origin: center; }
   .scene__kite--b { animation-duration: 9s; animation-delay: -3s; }
   @keyframes kite-drift { from { transform: translate(0, 0); } to { transform: translate(14px, -5px); } }
-  .scene__diver { animation: diver-in 2.6s cubic-bezier(0.2, 0.7, 0.3, 1) 0.3s both; }
-  @keyframes diver-in { from { transform: translateX(150px); } to { transform: translateX(0); } }
-  .scene__leg--l, .scene__leg--r, .scene__fin--l, .scene__fin--r { transform-box: fill-box; transform-origin: 50% 0; animation: diver-step 0.5s ease-in-out 0.3s 5 alternate; }
-  .scene__leg--r, .scene__fin--r { animation-direction: alternate-reverse; }
-  @keyframes diver-step { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
-  .scene__arm { transform-box: fill-box; transform-origin: 50% 10%; animation: diver-arm 0.5s ease-in-out 0.3s 5 alternate; }
-  @keyframes diver-arm { from { transform: rotate(10deg); } to { transform: rotate(-12deg); } }
+  .scene__cloud--a { animation: cloud-drift 44s linear infinite; }
+  .scene__cloud--b { animation: cloud-drift 31s linear infinite; animation-delay: -11s; }
+  @keyframes cloud-drift { from { transform: translateX(-120px); } to { transform: translateX(300px); } }
+  .scene__bird { animation: bird-cross 26s linear infinite; }
+  @keyframes bird-cross { from { transform: translate(-60px, 10px); } to { transform: translate(300px, -16px); } }
+  .scene__boat { transform-box: fill-box; transform-origin: 50% 100%; animation: boat-rock 4.5s ease-in-out infinite alternate; }
+  @keyframes boat-rock { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+  .scene__fronds { transform-box: fill-box; transform-origin: 74% 46%; animation: frond-sway 6.5s ease-in-out infinite alternate; }
+  @keyframes frond-sway { from { transform: rotate(-3.5deg); } to { transform: rotate(3.5deg); } }
   .scene__sun { animation: sun-breathe 5s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
   @keyframes sun-breathe { from { transform: scale(1); } to { transform: scale(1.06); } }
+
+  /* the diver, and the one clock all of him runs on */
+  .scene__walk { animation: diver-walk 16s linear infinite; }
+  @keyframes diver-walk { 0% { transform: translateX(-172px); } 15%, 100% { transform: translateX(0); } }
+  .scene__bob { transform-box: fill-box; transform-origin: 50% 100%; animation: diver-bob 16s ease-in-out infinite; }
+  @keyframes diver-bob {
+    0%, 15% { transform: translateY(0); }
+    24% { transform: translateY(-1.5px); }
+    33% { transform: translateY(0); }
+    48% { transform: translateY(-1.6px); }
+    64% { transform: translateY(0); }
+    82% { transform: translateY(-1.6px); }
+    100% { transform: translateY(0); }
+  }
+  .scene__leg--l, .scene__leg--r { transform-box: fill-box; transform-origin: 50% 0; }
+  .scene__fin--l { transform-box: fill-box; transform-origin: 100% 0; }
+  .scene__fin--r { transform-box: fill-box; transform-origin: 0% 0; }
+  .scene__leg--l, .scene__fin--l { animation: diver-step-l 16s linear infinite; }
+  .scene__leg--r, .scene__fin--r { animation: diver-step-r 16s linear infinite; }
+  @keyframes diver-step-l {
+    0% { transform: rotate(13deg); } 2.5% { transform: rotate(-13deg); } 5% { transform: rotate(13deg); }
+    7.5% { transform: rotate(-13deg); } 10% { transform: rotate(13deg); } 12.5% { transform: rotate(-13deg); }
+    15%, 100% { transform: rotate(0deg); }
+  }
+  @keyframes diver-step-r {
+    0% { transform: rotate(-13deg); } 2.5% { transform: rotate(13deg); } 5% { transform: rotate(-13deg); }
+    7.5% { transform: rotate(13deg); } 10% { transform: rotate(-13deg); } 12.5% { transform: rotate(13deg); }
+    15%, 100% { transform: rotate(0deg); }
+  }
+  /* one arm does the swing, the camera and the thumb, pivoting at the shoulder */
+  .scene__arm { transform-box: fill-box; transform-origin: 62% 34%; animation: diver-arm 16s ease-in-out infinite; }
+  @keyframes diver-arm {
+    0% { transform: rotate(-11deg); } 2.5% { transform: rotate(12deg); } 5% { transform: rotate(-11deg); }
+    7.5% { transform: rotate(12deg); } 10% { transform: rotate(-11deg); } 12.5% { transform: rotate(12deg); }
+    15%, 20% { transform: rotate(0deg); }
+    24%, 48% { transform: rotate(-105deg); }
+    54%, 100% { transform: rotate(0deg); }
+  }
+  .scene__cam { opacity: 0; animation: cam-show 16s linear infinite; }
+  @keyframes cam-show { 0%, 22% { opacity: 0; } 24%, 33% { opacity: 1; } 35%, 100% { opacity: 0; } }
+  .scene__ok { opacity: 0; animation: ok-show 16s linear infinite; }
+  @keyframes ok-show { 0%, 35% { opacity: 0; } 37%, 46% { opacity: 1; } 48%, 100% { opacity: 0; } }
+  /* the shutter: the pill he is pointing at takes the flash */
+  .scene__flash { opacity: 0; transform-box: fill-box; transform-origin: center; animation: tag-flash 16s linear infinite; }
+  @keyframes tag-flash {
+    0%, 26% { opacity: 0; transform: scale(0.4); }
+    27.5% { opacity: 0.95; transform: scale(0.75); }
+    31% { opacity: 0; transform: scale(1.45); }
+    100% { opacity: 0; transform: scale(1.45); }
+  }
+  .scene__tag { transform-box: fill-box; transform-origin: center; animation: tag-pop 16s linear infinite; }
+  @keyframes tag-pop { 0%, 26% { transform: scale(1); } 28% { transform: scale(1.11); } 31.5%, 100% { transform: scale(1); } }
   /* how far: a plane on an arc between you and Dahab */
   .howfar { color: #10233a; }
   .howfar__ask { border-color: rgba(10, 125, 112, 0.35); background: rgba(255, 255, 255, 0.7); color: #10233a; }
   .howfar__needle { border-color: rgba(10, 125, 112, 0.7); }
   .howfar__needle::after { background: #0a7d70; }
   .howfar__answer { grid-template-columns: 1fr; gap: 0.5rem; }
-  .howfar__arc { display: block; width: 100%; height: 92px; }
+  .howfar__arc { display: block; width: 100%; height: auto; }
+  /* the two clocks, and the gap between them read as a sentence */
+  .howfar__clocks { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.5rem; margin-top: 0.1rem; }
+  .howfar__clock { display: grid; justify-items: start; font: 500 0.66rem/1.3 var(--mono); letter-spacing: 0.04em; color: rgba(16, 35, 58, 0.6); text-transform: uppercase; }
+  .howfar__clock--there { justify-items: end; text-align: right; }
+  .howfar__clock b { font: 700 1.05rem/1.2 var(--mono); font-feature-settings: "tnum"; color: #10233a; letter-spacing: 0; text-transform: none; }
+  .howfar__gap { font: 600 0.66rem/1.25 var(--sc-font-text); text-align: center; color: #0a7d70; max-width: 8.5rem; }
   .howfar__plane { offset-path: path("M22 74 Q160 -18 298 74"); offset-rotate: auto; animation: plane-fly 3.2s cubic-bezier(0.3, 0.1, 0.4, 1) 0.2s both; }
   @keyframes plane-fly { from { offset-distance: 0%; } to { offset-distance: 100%; } }
   @supports not (offset-path: path("M0 0 L1 1")) { .howfar__plane { transform: translate(284px, 62px) rotate(30deg); } }
@@ -544,7 +617,12 @@
   .descent .siderail .siderail__stop.is-active .siderail__label { animation: none; opacity: 1; transform: translate(0, -50%); }
   .descent .brand-start i { animation: none; }
   .msgbtn { transition: none; }
-  .scene__waves path, .scene__kite, .scene__diver, .scene__leg--l, .scene__leg--r, .scene__fin--l, .scene__fin--r, .scene__arm, .scene__sun, .howfar__plane, .howfar__dot--dahab { animation: none !important; }
+  .scene__waves path, .scene__kite, .scene__sun, .scene__cloud--a, .scene__cloud--b, .scene__bird,
+  .scene__boat, .scene__fronds, .scene__walk, .scene__bob, .scene__leg--l, .scene__leg--r,
+  .scene__fin--l, .scene__fin--r, .scene__arm, .scene__cam, .scene__ok, .scene__flash, .scene__tag,
+  .howfar__plane, .howfar__dot--dahab { animation: none !important; }
+  /* he has already arrived, and the camera and the sign stay out of it */
+  .scene__cam, .scene__ok, .scene__flash { opacity: 0 !important; }
   .howfar__plane { offset-distance: 100%; }
   .viewer__strip { scroll-behavior: auto; }
 }

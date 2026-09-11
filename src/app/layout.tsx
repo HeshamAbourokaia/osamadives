@@ -20,7 +20,7 @@ const geistMono = localFont({
   display: "swap",
 });
 
-export const viewport = { themeColor: "#061420" };
+export const viewport = { themeColor: "#061420", colorScheme: "only light" as const };
 
 export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",

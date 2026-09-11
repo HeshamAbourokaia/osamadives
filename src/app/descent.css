@@ -623,30 +623,46 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   }
 
   /* ================= act 1 · the archive: the mounted print ================= */
-  .peak-stage { display: grid; place-items: center; padding: 5vh var(--sc-gutter); position: relative; }
-  .peak-story-intro {
-    position: absolute; inset-inline: var(--sc-gutter); top: clamp(1.2rem, 5vh, 4rem); z-index: 6;
-    max-width: min(70rem, 94vw); margin-inline: auto; padding: clamp(0.7rem, 1.8vw, 1.25rem) clamp(0.85rem, 3vw, 2rem) 1.1rem;
+  .peak-stage {
+    display: grid; place-items: center; padding: 5vh var(--sc-gutter); position: relative;
+    /* the panel's box, named once so the running year can be placed from it */
+    --peak-panel-top: clamp(1.2rem, 5vh, 4rem);
+    --peak-panel-h: clamp(11rem, 21vh, 14rem);
+  }
+  /* The archive's words: one story per print, stacked in place so each crosses over as
+     its photograph does. The panel keeps a set height, so the frame under it never jumps
+     as the longer and shorter stories trade places. */
+  .peak-stories {
+    position: absolute; inset-inline: var(--sc-gutter); top: var(--peak-panel-top); z-index: 6;
+    max-width: min(70rem, 94vw); margin-inline: auto; min-height: var(--peak-panel-h);
+    isolation: isolate;
+  }
+  .peak-story {
+    position: absolute; inset-inline: 0; top: 0;
+    padding: clamp(0.7rem, 1.8vw, 1.25rem) clamp(0.85rem, 3vw, 2rem) 1.1rem;
     text-align: center; color: #edf4f2;
     background: linear-gradient(180deg, rgba(2, 9, 14, 0.98), rgba(2, 9, 14, 0.94));
     border: 1px solid rgba(63, 209, 190, 0.2); border-radius: 12px;
     box-shadow: 0 18px 42px -24px rgba(0, 0, 0, 0.9);
-    isolation: isolate;
   }
-  .peak-story-intro .microcopy { display: block; margin-bottom: 0.9rem; color: var(--reef-glow); }
-  .peak-story-intro h2 {
+  .peak-story .microcopy { display: block; margin-bottom: 0.9rem; color: var(--reef-glow); }
+  .peak-story h2 {
     max-width: 24ch; margin: 0 auto 0.7rem;
     font: 800 clamp(1.9rem, 4vw, 3.8rem)/0.96 var(--sc-font-display);
     letter-spacing: -0.025em; text-transform: uppercase; text-wrap: balance;
   }
-  .peak-story-intro p {
+  .peak-story p {
     max-width: 84ch; margin: 0 auto;
     font: 500 clamp(0.82rem, 1.05vw, 0.92rem)/1.48 var(--sc-font-text);
     color: rgba(237,244,242,0.78); text-wrap: pretty;
   }
+  /* The running year used to sit hard right, where the side rail covered its last digit
+     and the story panel hid the rest of it. Centred and set behind the print, it keeps a
+     clear lane at every width and reads as the watermark it was meant to be. */
   .peak-year {
-    position: absolute; left: auto; right: clamp(1rem, 5vw, 5rem); top: clamp(7rem, 14vh, 10rem);
-    justify-content: flex-end; z-index: 4; opacity: 0.78;
+    position: absolute; left: 50%; right: auto; translate: -50% 0;
+    top: calc(var(--peak-panel-top) + var(--peak-panel-h) + 0.6rem);
+    justify-content: center; z-index: 0; opacity: 0.55;
     font: 900 clamp(4rem, 10vw, 9rem)/1 var(--sc-font-display);
     font-feature-settings: "tnum";
     color: transparent; -webkit-text-stroke: 2px rgba(63, 209, 190, 0.34);
@@ -807,7 +823,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     .orbit-grid { grid-template-columns: 1fr; }
     .orbit-grid__figure { max-width: 12rem; margin-inline: auto; }
     .orbit-3d { --ring-r: clamp(9rem, 36vw, 11rem); --ring-cy: 56%; --figure-h: 86%; min-height: 62vh; perspective: 900px; }
-    .orbit-figure { bottom: clamp(1.6rem, 5vh, 3rem); }
+    .orbit-figure { left: 55%; bottom: clamp(3.8rem, 9vh, 5.4rem); } /* up off the cards and the pill, a touch to the right */
     .orbit-card { width: clamp(6.8rem, 30vw, 8rem); }
     .orbit-card img { height: 4.2rem; }
     .orbit-card__title { font-size: 0.74rem; }
@@ -962,6 +978,7 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
    headline and the Largest Contentful Paint does not wait for JavaScript. The engine
    takes over opacity per frame once it mounts. */
 html:not(.sc-ready) .descent .entry-copy[data-sc-cue] { opacity: 1; transform: none; }
+html:not(.sc-ready) .descent .peak-story:first-child[data-sc-cue] { opacity: 1; transform: none; }
 
 /* ================= act 4b · the descent: three photographs at their true depths ================= */
 .descent .depth-stage { background: var(--abyss-deep); }
@@ -1769,19 +1786,6 @@ html:not(.sc-ready) .w__i { transform: none; }
   .descent .peak-stage {
     display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
     gap: 0; padding: clamp(6.4rem, 14vh, 8.5rem) var(--sc-gutter) 1.5rem;
-  }
-  .descent .peak-story-intro {
-    position: relative; inset: auto; width: 100%; max-width: 34rem; margin: 0;
-    padding: 0; text-align: left; background: none; border: 0; box-shadow: none;
-  }
-  .descent .peak-story-intro .microcopy { margin-bottom: 0.65rem; }
-  .descent .peak-story-intro h2 {
-    max-width: none; margin: 0 0 0.75rem;
-    font-size: clamp(1.5rem, 6.8vw, 2.15rem); line-height: 0.98;
-  }
-  .descent .peak-story-intro p {
-    max-width: none; font-size: clamp(0.76rem, 3.1vw, 0.88rem); line-height: 1.45;
-    text-align: left;
   }
   .descent .peak-frame {
     flex: 0 0 auto; width: min(92vw, 34rem); margin-top: clamp(0.9rem, 2.5vh, 1.5rem);

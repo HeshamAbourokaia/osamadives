@@ -167,10 +167,30 @@ export default async function Home() {
         {/* ACT 1 · THE ARCHIVE: one photograph's journey from Dahab to England and back */}
         <section className="g-night" id="peak-act" data-sc-act="pin" data-sc-span="3.4" style={{ "--sc-span": 3.4 } as React.CSSProperties}>
           <div data-sc-stage className="peak-stage">
-            <div className="peak-story-intro">
-              <span className="microcopy">The archive · August 1987</span>
-              <h2>Someone brought a camera to the beach.</h2>
-              <p>There was no camera waiting in Dahab that day. A visitor brought one, took this picture, and carried the film home to England. The roll was developed there, prints were made the old-fashioned way, and then the photograph began its journey back: a traveller heading to Dahab agreed to carry it to Shark Restaurant for Osama&apos;s family.</p>
+            {/* The words change with the photograph: each frame carries its own story,
+                in Osama's voice, cued to the same stretch of the act as its print. The
+                single fixed intro went: the first story says what it used to say. */}
+            <div className="peak-stories" aria-live="polite">
+              <div className="peak-story" data-sc-cue="0 0.25 0.08 0.1">
+                <span className="microcopy">The archive · August 1987</span>
+                <h2>Someone brought a camera to the beach.</h2>
+                <p>There was no camera in Dahab that day. A visitor took this picture and carried the film home to England. The prints came back months later in a traveller&apos;s bag, to Shark Restaurant, for my family. This is how a photograph reached us then.</p>
+              </div>
+              <div className="peak-story" data-sc-cue="0.24 0.49 0.08 0.1">
+                <span className="microcopy">2012 · my son</span>
+                <h2>A tank bigger than the boy.</h2>
+                <p>Abdullah, my son, on the promenade, and my hands on his straps. He learned to breathe under water on the same shore I did. He dives beside me now, guiding, with his own certifications, and Divemaster is the next step.</p>
+              </div>
+              <div className="peak-story" data-sc-cue="0.48 0.73 0.08 0.1">
+                <span className="microcopy">2021 · the handover</span>
+                <h2>The student became the teacher.</h2>
+                <p>With my own instructor, Andrzej, and a new certificate in my hand. Everything I teach, I was taught here first, on this sand, by people who had the patience to wait for me.</p>
+              </div>
+              <div className="peak-story" data-sc-cue="0.72 1 0.08 0.1">
+                <span className="microcopy">Today · the same shore</span>
+                <h2>Forty years on, the same water.</h2>
+                <p>A student in the shallows this year, a few metres from where that first picture was taken. The town has grown around us. The welcome is the one my family gave in 1983.</p>
+              </div>
             </div>
             <OdometerYear className="peak-year" from={1987} to={2026} at={[0.08, 0.9]} parallax={-1} />
             <div className="peak-frame">

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { WHATSAPP } from "@/lib/contact";
-import { composeMessage, onPicks, readPicks, whatsappFor, type Pick } from "@/lib/picks";
+import { clearPicks, composeMessage, onPicks, readPicks, whatsappFor, type Pick } from "@/lib/picks";
 import { levelSays, onLevel, readLevel, type Level } from "@/lib/level";
 import AskSheet from "./AskSheet";
 
@@ -25,6 +25,10 @@ export default function MessageButton() {
   const [toast, setToast] = useState<string | null>(null);
   const hold = useRef(0);
   const held = useRef(false);
+  // Once the message has gone to WhatsApp, the next one starts fresh: the phone leaving
+  // the page within a few seconds of the tap is the sign it went.
+  const sent = useRef(0);
+  const markSent = useCallback(() => { sent.current = Date.now(); }, []);
   useEffect(() => {
     let last = window.scrollY;
     let still = 0;
@@ -53,7 +57,9 @@ export default function MessageButton() {
       t = window.setTimeout(() => setToast(null), 2200);
     };
     window.addEventListener("od:picked", onPicked);
-    return () => { off(); offLevel(); window.removeEventListener("od:picked", onPicked); window.clearTimeout(t); };
+    const onHide = () => { if (document.visibilityState === "hidden" && sent.current && Date.now() - sent.current < 15000) { sent.current = 0; clearPicks(); } };
+    document.addEventListener("visibilitychange", onHide);
+    return () => { off(); offLevel(); window.removeEventListener("od:picked", onPicked); document.removeEventListener("visibilitychange", onHide); window.clearTimeout(t); };
   }, []);
   const close = useCallback(() => setSheet(false), []);
   const href = picks.length || level ? whatsappFor(composeMessage(picks, levelSays(level))) : WHATSAPP;
@@ -76,13 +82,13 @@ export default function MessageButton() {
         onTouchMove={endHold}
         onTouchCancel={endHold}
         onContextMenu={(e) => { if (held.current) e.preventDefault(); }}
-        onClick={(e) => { if (held.current) { e.preventDefault(); held.current = false; } }}
+        onClick={(e) => { if (held.current) { e.preventDefault(); held.current = false; return; } if (picks.length) markSent(); }}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3zm0 1.8a7.2 7.2 0 1 1-3.7 13.4l-.3-.2-2.6.7.7-2.5-.2-.3A7.2 7.2 0 0 1 12 4.8zm-2.6 3.6c-.2 0-.5.1-.7.3-.3.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.8 2.2.9 2.6.7 3.1.6.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.2-1.7-.8c-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.5-1.5-1.8-.1-.3 0-.4.1-.5l.4-.5.3-.5c.1-.2 0-.3 0-.5l-.8-1.8c-.2-.4-.4-.4-.6-.4h-.4z" /></svg>
         <span>Message</span>
         {picks.length ? <span className="msgbtn__count" aria-hidden="true">{picks.length}</span> : null}
       </a>
-      {sheet ? <AskSheet picks={picks} level={levelSays(level)} onClose={close} /> : null}
+      {sheet ? <AskSheet picks={picks} level={levelSays(level)} onClose={close} onSend={markSent} /> : null}
     </>
   );
 }

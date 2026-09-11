@@ -7,10 +7,21 @@ type Now = { ok: true; water: number; wave: number; air: number; wind: number; i
 const ZONE = "Africa/Cairo";
 
 function dahabClock() {
-  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: ZONE, hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date());
-  const h = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
+  const now = new Date();
+  const h24 = Number(new Intl.DateTimeFormat("en-GB", { timeZone: ZONE, hour: "2-digit", hourCycle: "h23" }).formatToParts(now).find((p) => p.type === "hour")?.value ?? 0);
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: ZONE, hour: "numeric", minute: "2-digit", hour12: true }).formatToParts(now);
+  const h = parts.find((p) => p.type === "hour")?.value ?? "12";
   const m = parts.find((p) => p.type === "minute")?.value ?? "00";
-  return { text: `${String(h).padStart(2, "0")}:${m}`, hour: h };
+  const ap = (parts.find((p) => p.type === "dayPeriod")?.value ?? "").toUpperCase();
+  return { text: `${h}:${m} ${ap}`, hour: h24 };
+}
+
+/** "18:53" reads as "6:53 PM" */
+function ampm(t: string) {
+  const [hh, mm] = t.split(":").map(Number);
+  if (!Number.isFinite(hh) || !Number.isFinite(mm)) return t;
+  const h = hh % 12 || 12;
+  return `${h}:${String(mm).padStart(2, "0")} ${hh < 12 ? "AM" : "PM"}`;
 }
 
 /* Where Osama probably is, from Dahab's clock alone. Nothing is tracked and nothing is
@@ -49,7 +60,7 @@ export default function DahabNow() {
       </div>
       {now && now.ok ? (
         <p className="dahab-now__sea">
-          Water {now.water}° · sea {sea(now.wave)} · air {now.air}° · {now.isDay ? `sunset ${now.sunset}` : `sunrise ${now.sunrise}`}
+          Water {now.water}° · sea {sea(now.wave)} · air {now.air}° · {now.isDay ? `sunset ${ampm(now.sunset)}` : `sunrise ${ampm(now.sunrise)}`}
         </p>
       ) : (
         <p className="dahab-now__sea dahab-now__sea--quiet">{now ? "The sea reading is resting." : "Reading the sea…"}</p>

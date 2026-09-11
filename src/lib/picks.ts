@@ -11,19 +11,26 @@ export type Pick = { id: string; label: string; kind: "site" | "course" };
 const KEY = "od-picks";
 const EVENT = "od:picks";
 const NUMBER = "201090208050";
+/** A message that was never sent goes away after three hours, so the next person to
+    pick up the phone does not inherit somebody else's plan. */
+export const PICKS_TTL_MS = 3 * 60 * 60 * 1000;
 
 export function readPicks(): Pick[] {
   try {
     const raw = localStorage.getItem(KEY);
-    const list = raw ? (JSON.parse(raw) as Pick[]) : [];
-    return Array.isArray(list) ? list.filter((p) => p && typeof p.id === "string" && typeof p.label === "string") : [];
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as Pick[] | { list: Pick[]; at: number };
+    const list = Array.isArray(parsed) ? parsed : parsed?.list;
+    const at = Array.isArray(parsed) ? 0 : Number(parsed?.at ?? 0);
+    if (!Array.isArray(list) || (at && Date.now() - at > PICKS_TTL_MS) || (!at)) { if (!Array.isArray(list) || !at) localStorage.removeItem(KEY); return []; }
+    return list.filter((p) => p && typeof p.id === "string" && typeof p.label === "string");
   } catch {
     return [];
   }
 }
 
 function writePicks(list: Pick[]) {
-  try { localStorage.setItem(KEY, JSON.stringify(list)); } catch { /* private mode: the message still sends */ }
+  try { if (list.length) localStorage.setItem(KEY, JSON.stringify({ list, at: Date.now() })); else localStorage.removeItem(KEY); } catch { /* private mode: the message still sends */ }
   window.dispatchEvent(new CustomEvent(EVENT, { detail: list }));
 }
 

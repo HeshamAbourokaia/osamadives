@@ -246,6 +246,74 @@
   .day__time { padding: 0 0.8rem; font: 700 0.66rem/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: #0a7d70; }
   .day__card.is-now .day__time { color: #075f55; }
   .day__line { margin: 0; padding: 0 0.8rem; font-size: 14px; line-height: 1.45; color: rgba(23,18,8,0.8); }
+  /* ---- the sunny block: sky to sand, the way the place actually looks ---- */
+  .quickstart { background: linear-gradient(180deg, #d6f0fa 0%, #f5efe0 58%, #f3e2bd 100%); color: #10233a; }
+  .quickstart__line { color: #0a7d70; }
+  .quickstart__grid a { background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(10, 125, 112, 0.16); box-shadow: 0 10px 24px -20px rgba(16, 35, 58, 0.5); }
+  .quickstart__k { color: #10233a; }
+  .quickstart__d { color: rgba(16, 35, 58, 0.68); }
+  .quickstart__note { color: rgba(16, 35, 58, 0.6); }
+  .dahab-now { padding: 0; overflow: hidden; background: #fff; border: 1px solid rgba(10, 125, 112, 0.18); box-shadow: 0 14px 30px -22px rgba(16, 35, 58, 0.6); min-height: 0; }
+  .dahab-now__scene { position: relative; height: 150px; }
+  .dahab-now__scene .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .dahab-now__head { position: absolute; left: 0.85rem; right: 0.85rem; top: 0.7rem; align-items: flex-start; }
+  .dahab-now__k { color: #0b4a5a; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); }
+  .scene--night ~ .dahab-now__head .dahab-now__k, .dahab-now--night .dahab-now__k { color: #dff4fb; text-shadow: none; }
+  .dahab-now__t { color: #10233a; background: rgba(255, 255, 255, 0.82); padding: 0.25rem 0.55rem; border-radius: 10px; font-size: 1.25rem; }
+  .dahab-now__body { display: grid; gap: 0.3rem; padding: 0.7rem 0.9rem 0.85rem; }
+  .dahab-now__sea { color: #10233a; }
+  .dahab-now__sea--quiet { color: rgba(16, 35, 58, 0.5); }
+  .dahab-now__osama { color: rgba(16, 35, 58, 0.72); }
+  /* the scene moves: the sea, the kites, and the diver who walks in once */
+  .scene__waves path { animation: sea-drift 6s linear infinite; }
+  .scene__waves path:last-child { animation-duration: 9s; animation-direction: reverse; }
+  @keyframes sea-drift { from { transform: translateX(0); } to { transform: translateX(40px); } }
+  .scene__kite { animation: kite-drift 7s ease-in-out infinite alternate; transform-origin: center; }
+  .scene__kite--b { animation-duration: 9s; animation-delay: -3s; }
+  @keyframes kite-drift { from { transform: translate(0, 0); } to { transform: translate(14px, -5px); } }
+  .scene__diver { animation: diver-in 2.6s cubic-bezier(0.2, 0.7, 0.3, 1) 0.3s both; }
+  @keyframes diver-in { from { transform: translateX(150px); } to { transform: translateX(0); } }
+  .scene__leg--l, .scene__leg--r, .scene__fin--l, .scene__fin--r { transform-box: fill-box; transform-origin: 50% 0; animation: diver-step 0.5s ease-in-out 0.3s 5 alternate; }
+  .scene__leg--r, .scene__fin--r { animation-direction: alternate-reverse; }
+  @keyframes diver-step { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+  .scene__arm { transform-box: fill-box; transform-origin: 50% 10%; animation: diver-arm 0.5s ease-in-out 0.3s 5 alternate; }
+  @keyframes diver-arm { from { transform: rotate(10deg); } to { transform: rotate(-12deg); } }
+  .scene__sun { animation: sun-breathe 5s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+  @keyframes sun-breathe { from { transform: scale(1); } to { transform: scale(1.06); } }
+  /* how far: a plane on an arc between you and Dahab */
+  .howfar { color: #10233a; }
+  .howfar__ask { border-color: rgba(10, 125, 112, 0.35); background: rgba(255, 255, 255, 0.7); color: #10233a; }
+  .howfar__needle { border-color: rgba(10, 125, 112, 0.7); }
+  .howfar__needle::after { background: #0a7d70; }
+  .howfar__answer { grid-template-columns: 1fr; gap: 0.5rem; }
+  .howfar__arc { display: block; width: 100%; height: 92px; }
+  .howfar__plane { offset-path: path("M22 74 Q160 -18 298 74"); offset-rotate: auto; animation: plane-fly 3.2s cubic-bezier(0.3, 0.1, 0.4, 1) 0.2s both; }
+  @keyframes plane-fly { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+  @supports not (offset-path: path("M0 0 L1 1")) { .howfar__plane { transform: translate(284px, 62px) rotate(30deg); } }
+  .howfar__dot--dahab { animation: dahab-pulse 2.4s ease-out 3.4s infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes dahab-pulse { 0% { transform: scale(1); opacity: 1; } 70% { transform: scale(2.6); opacity: 0; } 100% { transform: scale(2.6); opacity: 0; } }
+  .howfar__row { display: grid; grid-template-columns: 56px 1fr; gap: 0.8rem; align-items: center; }
+  .howfar__dial { width: 56px; height: 56px; border-color: rgba(10, 125, 112, 0.45); background: rgba(255, 255, 255, 0.8); }
+  .howfar__arrow { background: linear-gradient(to top, transparent, #0a7d70 30%, #3fd1be); }
+  .howfar__n { color: rgba(16, 35, 58, 0.55); }
+  .howfar__line { color: rgba(16, 35, 58, 0.85); }
+  /* ---- when are you coming: the year on the shore ---- */
+  .when { display: grid; gap: 0.9rem; margin: 0 0 2rem; padding: 1.1rem 1rem 1.2rem; border-radius: 16px; background: linear-gradient(180deg, #e7f6fb, #fbf3e2); border: 1px solid rgba(10, 125, 112, 0.14); color: #10233a; }
+  .when__head { display: grid; gap: 0.3rem; }
+  .when__head .microcopy { color: #0a7d70; }
+  .when__title { margin: 0; font: 800 1.45rem/1.05 var(--sc-font-display); letter-spacing: -0.02em; }
+  .when__months { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.35rem; }
+  .when__m { min-height: 42px; border-radius: 10px; border: 1px solid rgba(10, 125, 112, 0.3); background: rgba(255, 255, 255, 0.75); color: #075f55; font: 700 0.82rem/1 var(--sc-font-display); cursor: pointer; }
+  .when__m.is-on { background: #0a7d70; border-color: #0a7d70; color: #fff; }
+  .when__answer { display: grid; gap: 0.7rem; padding: 0.9rem; border-radius: 14px; background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(10, 125, 112, 0.16); }
+  .when__facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+  .when__facts li { display: grid; grid-template-columns: 4.2rem 1fr; gap: 0.6rem; align-items: baseline; font-size: 15px; line-height: 1.4; }
+  .when__facts .mono { font: 700 0.62rem/1.4 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(16, 35, 58, 0.55); }
+  .when__facts strong { font-weight: 600; }
+  .when__says { margin: 0; display: grid; gap: 0.25rem; font-size: 15px; line-height: 1.5; color: rgba(16, 35, 58, 0.85); }
+  .when__says .microcopy { color: #0a7d70; }
+  .when__wa { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: #3fd1be; color: #04121a; text-decoration: none; font: 700 0.88rem/1 var(--sc-font-display); }
+  .when__note { margin: 0; font-size: 12px; line-height: 1.5; color: rgba(16, 35, 58, 0.55); }
 
   /* a page that opens on a full bleed photo meets the dark cap, with no stripe of
      bone paper between the two */
@@ -299,8 +367,8 @@
 
   .descent .siderail__handle {
     display: grid; grid-auto-flow: row; justify-items: center; align-content: center; gap: 9px;
-    position: absolute; right: 10px; top: 50%; z-index: 2; transform: translateY(-50%);
-    width: 30px; min-height: 120px; padding: 13px 0 11px; border: 1px solid rgba(63, 209, 190, 0.45); border-radius: 12px;
+    position: absolute; right: 6px; top: 50%; z-index: 2; transform: translateY(-50%);
+    width: 26px; min-height: 120px; padding: 13px 0 11px; border: 1px solid rgba(63, 209, 190, 0.45); border-radius: 12px;
     background: rgba(6, 20, 32, 0.86); border-left: 1px solid rgba(63, 209, 190, 0.7);
     box-shadow: -4px 0 18px rgba(63, 209, 190, 0.28); color: #3fd1be; pointer-events: auto;
     transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -311,7 +379,7 @@
   .descent .siderail__handle-name { writing-mode: vertical-rl; transform: rotate(180deg); font: 700 0.58rem/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: #3fd1be; white-space: nowrap; }
   .descent .siderail__handle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(63, 209, 190, 0.8)); animation: rail-beckon 1.15s ease-in-out 0.6s 3; }
   /* open, the handle rides on the panel's outer edge and points the other way */
-  .descent .siderail.is-open .siderail__handle { transform: translate(calc(10px - var(--rail-w)), -50%); }
+  .descent .siderail.is-open .siderail__handle { transform: translate(calc(6px - var(--rail-w)), -50%); }
   .descent .siderail.is-open .siderail__handle svg { animation: none; transform: rotate(180deg); }
   @keyframes rail-beckon { 0%, 100% { transform: translateX(0); opacity: 0.7; } 50% { transform: translateX(-4px); opacity: 1; } }
   .descent .siderail__scrim { display: block; position: fixed; inset: 0; z-index: 65; background: rgba(4, 18, 26, 0.5); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); animation: tapqr-in 180ms ease-out both; }
@@ -468,6 +536,8 @@
   .descent .brand-start i { animation: none; }
   .msgbtn { transition: none; }
   .is-inviting .book__ear { animation: none; width: 36px; height: 36px; }
+  .scene__waves path, .scene__kite, .scene__diver, .scene__leg--l, .scene__leg--r, .scene__fin--l, .scene__fin--r, .scene__arm, .scene__sun, .howfar__plane, .howfar__dot--dahab { animation: none !important; }
+  .howfar__plane { offset-distance: 100%; }
   .viewer__strip { scroll-behavior: auto; }
 }
 @media (max-width: 860px) {

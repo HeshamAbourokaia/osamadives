@@ -293,6 +293,29 @@
 .lb-admin__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .lb-admin .lb-consent input { accent-color: var(--reef); }
 
+/* ---- ready-made replies for Osama ----------------------------------------- */
+.lb-admin-replies { max-width: 74rem; margin: 0 auto; padding: 2.5rem 2rem 3rem; background: var(--bone-dim); }
+.lb-admin-replies__head { display: flex; align-items: start; justify-content: space-between; gap: 1.5rem; }
+.lb-admin-replies h2 { margin: .55rem 0 .45rem; font: 800 clamp(1.55rem, 3vw, 2.2rem)/1.1 var(--display); color: var(--ink); }
+.lb-admin-replies__head .lb-stand { max-width: 42rem; margin: 0; }
+.lb-admin-replies__badge { display: inline-block; padding: .5rem .7rem; border-radius: 999px; background: var(--surface); color: var(--glow); font-weight: 700; white-space: nowrap; }
+.lb-admin-replies__choices { display: flex; flex-wrap: wrap; gap: .55rem; margin: 1.5rem 0; }
+.lb-admin-replies__choices button { min-height: 44px; padding: .65rem .85rem; border: 1px solid rgba(23, 18, 8, .25); border-radius: 4px; background: #fff; color: var(--ink); font: 600 .8rem/1.25 var(--display); cursor: pointer; }
+.lb-admin-replies__choices button:hover, .lb-admin-replies__choices button.is-selected { border-color: var(--glow); background: var(--surface); color: var(--glow); }
+.lb-admin-replies__field { display: grid; gap: .5rem; max-width: 58rem; }
+.lb-admin-replies__field textarea { width: 100%; border: 1px solid rgba(23, 18, 8, .25); border-radius: 3px; background: #fff; color: var(--ink); padding: .8rem .9rem; font: 500 1.05rem/1.8 var(--display); }
+.lb-admin-replies__field textarea:focus { outline: 2px solid var(--reef); outline-offset: 1px; }
+.lb-admin-replies__translation { max-width: 58rem; margin: .8rem 0 1rem; padding: .75rem .9rem; border-radius: 3px; background: var(--surface); color: var(--ink-soft); font: 400 .9rem/1.55 var(--display); }
+.lb-admin-replies__hint { align-self: center; color: var(--ink-soft); font: 400 .8rem/1.4 var(--display); }
+@media (max-width: 720px) {
+  .lb-admin-replies { padding: 2rem 1rem 2.5rem; }
+  .lb-admin-replies__head { display: block; }
+  .lb-admin-replies__badge { margin-top: 1rem; }
+  .lb-admin-replies__choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lb-admin-replies__choices button { width: 100%; }
+  .lb-admin-replies__hint { flex-basis: 100%; }
+}
+
 /* ==========================================================================
    Light theme: shallow water and sand instead of the abyss. The paper wall is
    unchanged; the ground around it is the surface of the lagoon.

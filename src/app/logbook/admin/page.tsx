@@ -5,6 +5,7 @@ import MediaUpload from "./MediaUpload";
 import Stamp from "../Stamp";
 import { STAMPS } from "@/lib/logbook/stamps";
 import SignIn from "./SignIn";
+import QuickReplies from "./QuickReplies";
 import { siteUrl } from "@/lib/logbook/config";
 import { moderatorKey } from "@/lib/logbook/session";
 import { siteInfo } from "@/lib/logbook/sites";
@@ -240,6 +241,8 @@ export default async function AdminPage({
           ) : null}
         </div>
       </section>
+
+      <QuickReplies />
 
       <section className="lb-wall" style={{ paddingTop: "2.5rem", paddingBottom: "3rem", background: "var(--bone)" }}>
         <div className="lb-wall__inner">

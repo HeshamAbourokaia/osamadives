@@ -39,6 +39,7 @@ import { blogPosts } from "@/lib/blog-posts";
 import { galleryPhotos } from "@/lib/gallery-config";
 import { getStore } from "@/lib/logbook/store";
 import type { LogbookEntry } from "@/lib/logbook/types";
+import HoverClip from "@/app/HoverClip";
 import { buildOrbitItems } from "@/lib/orbit-content";
 import "./descent.css";
 import "./mobile.css";
@@ -231,6 +232,27 @@ export default async function Home() {
               </div>
               <PeakYears years={[{ year: "1987", at: 0.06 }, { year: "2012", at: 0.3 }, { year: "2021", at: 0.55 }, { year: "Today", at: 0.82 }]} />
             </div>
+          </div>
+        </section>
+
+        {/* ACT 1b · STILL: his own footage, and the one thing every course is really about.
+            Nothing is laid over this video on purpose. No caustics, no light band, no
+            bubbles, no scrim. The whole point is that you can see what he is doing. */}
+        <section className="g-abyss still-act" id="still-act" aria-labelledby="still-heading">
+          <figure className="still-act__frame">
+            <HoverClip />
+          </figure>
+          <div className="still-act__words" data-sc-in data-sc-stagger="70">
+            <span className="microcopy">His own camera · thirty seconds · nothing touching the sand</span>
+            <h2 id="still-heading">Holding still is the hardest thing I teach.</h2>
+            <p>
+              No hands, no fins working, nothing on the bottom. The breath does all of it: in and
+              you lift a little, out and you settle. Most people spend a whole course looking for
+              it, and the ones who find it stop chasing the fish and start watching them.
+            </p>
+            <p>
+              It is also how the reef survives us. A diver who can hold still never kicks the coral.
+            </p>
           </div>
         </section>
 

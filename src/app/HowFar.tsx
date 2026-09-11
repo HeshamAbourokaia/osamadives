@@ -57,11 +57,23 @@ export default function HowFar() {
       {state === "none" ? <p className="howfar__line">This browser cannot say where you are. Dahab is on the east coast of Sinai, an hour along the shore from Sharm el Sheikh airport.</p> : null}
       {typeof state === "object" && state !== null ? (
         <div className="howfar__answer" aria-live="polite">
-          <span className="howfar__dial" aria-hidden="true">
-            <span className="howfar__arrow" style={{ transform: `rotate(${state.deg}deg)` }} />
-            <span className="howfar__n">N</span>
-          </span>
-          <p className="howfar__line">{line(state)}</p>
+          {/* you at one end, Dahab at the other, and a plane that makes the trip once */}
+          <svg className="howfar__arc" viewBox="0 0 320 92" aria-hidden="true" focusable="false">
+            <path d="M22 74 Q160 -18 298 74" fill="none" stroke="rgba(10,125,112,0.5)" strokeWidth="2" strokeDasharray="4 6" strokeLinecap="round" />
+            <circle cx="22" cy="74" r="6" fill="#10233a" />
+            <text x="22" y="89" textAnchor="middle" fontSize="10" fontWeight="700" fill="#10233a" fontFamily="ui-monospace, monospace">YOU</text>
+            <circle className="howfar__dot--dahab" cx="298" cy="74" r="6" fill="rgba(63,209,190,0.6)" />
+            <circle cx="298" cy="74" r="5" fill="#0a7d70" />
+            <text x="298" y="89" textAnchor="middle" fontSize="10" fontWeight="700" fill="#0a7d70" fontFamily="ui-monospace, monospace">DAHAB</text>
+            <g className="howfar__plane"><path d="M10 0 L3 -1.5 L-5 -7 L-8 -6 L-3 -1 L-9 -0.5 L-11 -3 L-13 -3 L-12 0 L-13 3 L-11 3 L-9 0.5 L-3 1 L-8 6 L-5 7 L3 1.5 Z" fill="#10233a" /></g>
+          </svg>
+          <div className="howfar__row">
+            <span className="howfar__dial" aria-hidden="true">
+              <span className="howfar__arrow" style={{ transform: `rotate(${state.deg}deg)` }} />
+              <span className="howfar__n">N</span>
+            </span>
+            <p className="howfar__line">{line(state)}</p>
+          </div>
         </div>
       ) : null}
     </div>

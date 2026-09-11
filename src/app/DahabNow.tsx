@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DahabScene, { type Phase } from "./DahabScene";
 
 type Now = { ok: true; water: number; wave: number; air: number; wind: number; isDay: boolean; sunrise: string; sunset: string } | { ok: false };
 
@@ -13,7 +14,21 @@ function dahabClock() {
   const h = parts.find((p) => p.type === "hour")?.value ?? "12";
   const m = parts.find((p) => p.type === "minute")?.value ?? "00";
   const ap = (parts.find((p) => p.type === "dayPeriod")?.value ?? "").toUpperCase();
-  return { text: `${h}:${m} ${ap}`, hour: h24 };
+  return { text: `${h}:${m} ${ap}`, hour: h24, minute: Number(m) };
+}
+
+const mins = (t: string) => { const [h, m] = t.split(":").map(Number); return Number.isFinite(h) && Number.isFinite(m) ? h * 60 + m : NaN; };
+
+/** Day, the golden hour around sunrise and sunset, or night: what the drawing wears. */
+function phaseOf(clock: { hour: number; minute: number } | null, now: Now | null): Phase {
+  if (!clock) return "day";
+  const t = clock.hour * 60 + clock.minute;
+  if (now && now.ok) {
+    const rise = mins(now.sunrise), set = mins(now.sunset);
+    if ((Number.isFinite(rise) && Math.abs(t - rise) <= 50) || (Number.isFinite(set) && Math.abs(t - set) <= 50)) return "golden";
+    return now.isDay ? "day" : "night";
+  }
+  return clock.hour >= 6 && clock.hour < 18 ? "day" : "night";
 }
 
 /** "18:53" reads as "6:53 PM" */
@@ -44,7 +59,7 @@ export default function DahabNow() {
   const [now, setNow] = useState<Now | null>(null);
   // The clock is read on the phone only, after the page is on screen: a time rendered
   // on the server would not match the one the phone shows a second later.
-  const [clock, setClock] = useState<{ text: string; hour: number } | null>(null);
+  const [clock, setClock] = useState<{ text: string; hour: number; minute: number } | null>(null);
   useEffect(() => {
     const tick = () => setClock(dahabClock());
     tick();
@@ -52,20 +67,28 @@ export default function DahabNow() {
     fetch("/api/dahab").then((r) => r.json()).then((d: Now) => setNow(d)).catch(() => setNow({ ok: false }));
     return () => window.clearInterval(id);
   }, []);
+  const [forced, setForced] = useState<Phase | null>(null);
+  useEffect(() => { const p = new URLSearchParams(window.location.search).get("phase"); if (p === "day" || p === "golden" || p === "night") setForced(p); }, []);
+  const phase = forced ?? phaseOf(clock, now);
   return (
-    <div className="dahab-now" aria-live="polite">
-      <div className="dahab-now__head">
-        <span className="dahab-now__k">Dahab, right now</span>
-        <span className="dahab-now__t" aria-label={clock ? `The time in Dahab is ${clock.text}` : "Reading the time in Dahab"}>{clock ? clock.text : "--:--"}</span>
+    <div className={`dahab-now dahab-now--${phase}`} aria-live="polite">
+      <div className="dahab-now__scene">
+        <DahabScene phase={phase} water={now && now.ok ? now.water : undefined} air={now && now.ok ? now.air : undefined} />
+        <div className="dahab-now__head">
+          <span className="dahab-now__k">Dahab, right now</span>
+          <span className="dahab-now__t" aria-label={clock ? `The time in Dahab is ${clock.text}` : "Reading the time in Dahab"}>{clock ? clock.text : "--:--"}</span>
+        </div>
       </div>
-      {now && now.ok ? (
-        <p className="dahab-now__sea">
-          Water {now.water}° · sea {sea(now.wave)} · air {now.air}° · {now.isDay ? `sunset ${ampm(now.sunset)}` : `sunrise ${ampm(now.sunrise)}`}
-        </p>
-      ) : (
-        <p className="dahab-now__sea dahab-now__sea--quiet">{now ? "The sea reading is resting." : "Reading the sea…"}</p>
-      )}
-      <p className="dahab-now__osama">{clock ? whereHeIs(clock.hour) : "\u00a0"}</p>
+      <div className="dahab-now__body">
+        {now && now.ok ? (
+          <p className="dahab-now__sea">
+            Water {now.water}° · sea {sea(now.wave)} · air {now.air}° · {now.isDay ? `sunset ${ampm(now.sunset)}` : `sunrise ${ampm(now.sunrise)}`}
+          </p>
+        ) : (
+          <p className="dahab-now__sea dahab-now__sea--quiet">{now ? "The sea reading is resting." : "Reading the sea…"}</p>
+        )}
+        <p className="dahab-now__osama">{clock ? whereHeIs(clock.hour) : "\u00a0"}</p>
+      </div>
     </div>
   );
 }

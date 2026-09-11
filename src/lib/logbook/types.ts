@@ -134,4 +134,5 @@ export const LIMITS = {
   reply: { max: 280 },
   photoBytes: 6 * 1024 * 1024,
   mediaBytes: 200 * 1024 * 1024,   // Osama uploading straight from his phone
+  clipBytes: 80 * 1024 * 1024,     // a reviewer's clip: about a minute of phone video
 } as const;

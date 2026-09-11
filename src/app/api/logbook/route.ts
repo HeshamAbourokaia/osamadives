@@ -128,7 +128,7 @@ export async function POST(req: Request) {
     divedOn,
     course: course as LogbookEntry["course"], courses: courses as LogbookEntry["courses"],
     stamps, note, photoUrl,
-    flags, moderatedAt: null, moderatedBy: "", ipHash,
+    flags, moderatedAt: null, moderatedBy: "", moderatedFrom: "", ipHash,
     reply: "", featured: false, videoUrl,
   };
   await store.create(entry);

@@ -6,6 +6,7 @@ import { cleanText } from "@/lib/logbook/sanitize";
 import { orderStamps } from "@/lib/logbook/stamps";
 import { getStore } from "@/lib/logbook/store";
 import { LIMITS } from "@/lib/logbook/types";
+import { whereFrom } from "@/lib/logbook/where";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,7 +26,7 @@ export async function POST(req: Request) {
   const store = getStore({ fresh: true });
   const now = new Date().toISOString();
   if (action === "approve" || action === "hide") {
-    await store.setStatus(id, action === "approve" ? "approved" : "hidden", now, "admin");
+    await store.setStatus(id, action === "approve" ? "approved" : "hidden", now, "admin", whereFrom(req));
   } else if (action === "delete") {
     await store.remove(id);
   } else if (action === "save") {

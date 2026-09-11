@@ -3,6 +3,7 @@ import { siteUrl } from "@/lib/logbook/config";
 import { isValidId } from "@/lib/logbook/ids";
 import { getStore } from "@/lib/logbook/store";
 import { verifyToken } from "@/lib/logbook/tokens";
+import { whereFrom } from "@/lib/logbook/where";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,7 +28,9 @@ export async function GET(req: Request) {
   }
 
   const store = getStore();
-  const entry = await store.setStatus(id, action === "approve" ? "approved" : "hidden", new Date().toISOString(), "link");
+  // This link carries no passcode, so note roughly where the tap came from. It is the
+  // only record of whose phone approved a review.
+  const entry = await store.setStatus(id, action === "approve" ? "approved" : "hidden", new Date().toISOString(), "link", whereFrom(req));
   if (!entry) return page("No such entry.", "<p>It may have been removed.</p>", 404);
 
   revalidatePath("/logbook");

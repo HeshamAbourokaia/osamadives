@@ -8,7 +8,7 @@ import type { LogbookEntry } from "./types";
 const entry = (id: string, createdAt: string, ipHash = "ip1"): LogbookEntry => ({
   id, createdAt, status: "pending", name: "Ana", country: "Spain", site: "blue-hole-dahab", sites: ["blue-hole-dahab"],
   divedOn: "2026-05", course: "Open Water", courses: ["Open Water"], stamps: ["open-water"], note: "Thank you Osama, I felt safe the whole way.",
-  photoUrl: null, flags: [], moderatedAt: null, moderatedBy: "", ipHash, reply: "", featured: false, videoUrl: null,
+  photoUrl: null, flags: [], moderatedAt: null, moderatedBy: "", moderatedFrom: "", ipHash, reply: "", featured: false, videoUrl: null,
 });
 
 describe("FileStore", () => {
@@ -125,4 +125,19 @@ describe("FileStore", () => {
     expect(st.last).toBe("2026-09-06T01:00:00.000Z");
     expect(st.bySource).toEqual({ card: 2, sticker: 1 });
   });
+
+  // The approve button in the phone notification carries no passcode, so the row keeps a
+  // coarse note of where it was tapped. Older rows have nothing, and must stay readable.
+  it("remembers roughly where an approval came from, and stays blank when nothing was read", async () => {
+    await store.create(entry("w1", "2026-09-11T00:00:00.000Z"));
+    const saved = await store.setStatus("w1", "approved", "2026-09-11T10:00:00.000Z", "link", "a phone in Dahab, Egypt");
+    expect(saved?.moderatedBy).toBe("link");
+    expect(saved?.moderatedFrom).toBe("a phone in Dahab, Egypt");
+    expect((await store.get("w1"))?.moderatedFrom).toBe("a phone in Dahab, Egypt");
+
+    await store.create(entry("w2", "2026-09-11T00:00:00.000Z"));
+    const quiet = await store.setStatus("w2", "hidden", "2026-09-11T10:00:00.000Z", "admin");
+    expect(quiet?.moderatedFrom).toBe("");
+  });
+
 });

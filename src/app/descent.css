@@ -1013,8 +1013,21 @@ html:not(.sc-ready) .descent .peak-story:first-child[data-sc-cue] { opacity: 1; 
 @media (max-width: 860px) {
   .descent .depth-credit { display: none; }
   .descent .depth-cue { max-width: 100%; }
-  /* the classroom cue reads like the other two on a phone: left, at the foot of the photograph, no box */
-  .descent .depth-cue--classroom { top: auto; bottom: 0; left: 0; right: auto; max-width: 100%; padding: 0; border: 0; border-radius: 0; text-align: left; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  /* The classroom cue keeps the panel it has on a wide screen: held to the right, on a
+     dark wash that fades out to the left. Set flush left and full width it lay straight
+     across the slate the student is holding up, which is the whole point of the
+     photograph. The wash is transparent at its left end, so the writing reads through. */
+  .descent .depth-cue--classroom {
+    top: auto; bottom: clamp(0.5rem, 3vh, 1.6rem); left: auto; right: 0;
+    max-width: min(19rem, 80vw);
+    padding: 0.6rem 0.75rem 0.7rem;
+    border-left: 0; border-right: 2px solid rgba(63, 209, 190, 0.7);
+    border-radius: 8px 0 0 8px; text-align: right;
+    background: linear-gradient(270deg, rgba(4, 14, 20, 0.88), rgba(4, 14, 20, 0.3));
+    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+  }
+  .descent .depth-cue--classroom h2 { font-size: clamp(1.45rem, 6.6vw, 1.95rem); }
+  .descent .depth-cue--classroom .microcopy { margin-bottom: 0.6rem; font-size: 0.54rem; letter-spacing: 0.1em; padding: 0.45em 0.6em; }
 }
 
 /* station photographs, behind the ledger text */

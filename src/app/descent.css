@@ -822,8 +822,26 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
     .orbit-head h2 { font-size: clamp(1.4rem, 6.4vw, 1.8rem); }
     .orbit-grid { grid-template-columns: 1fr; }
     .orbit-grid__figure { max-width: 12rem; margin-inline: auto; }
-    .orbit-3d { --ring-r: clamp(9rem, 36vw, 11rem); --ring-cy: 56%; --figure-h: 86%; min-height: 62vh; perspective: 900px; }
-    .orbit-figure { left: 55%; bottom: clamp(3.8rem, 9vh, 5.4rem); } /* up off the cards and the pill, a touch to the right */
+    .orbit-3d { --ring-r: clamp(9rem, 36vw, 11rem); --ring-cy: 52%; --figure-h: 86%; min-height: 62vh; perspective: 900px; }
+    /* the light pools behind his head rather than his knees, so the top of the act is
+       lit instead of empty */
+    .orbit-3d::before { background:
+      radial-gradient(58vw 40vh at 50% 44%, rgba(63, 209, 190, 0.32), transparent 70%),
+      radial-gradient(34vw 22vh at 50% 46%, rgba(255, 255, 255, 0.6), transparent 72%); }
+    /* He is a square cut-out, and on a phone he was being crushed to a third of his real
+       width: the figure shrink-wraps to whatever room is left beside `left`, and the
+       global `img { max-width: 100% }` then clamped the width while `height: 100%` held
+       the height, so the picture was squashed rather than scaled. Sized by width here,
+       the proportions come back. The cut-out ends in a straight line across his legs,
+       so the bottom is faded out instead of stopping dead in the middle of the light. */
+    .orbit-figure {
+      left: 52%; bottom: clamp(5.5rem, 13vh, 7.5rem);
+      height: auto; width: min(94vw, 23rem);
+      -webkit-mask-image: linear-gradient(180deg, #000 0 66%, rgba(0, 0, 0, 0.45) 84%, transparent 98%);
+      mask-image: linear-gradient(180deg, #000 0 66%, rgba(0, 0, 0, 0.45) 84%, transparent 98%);
+    }
+    .orbit-figure img { width: 100%; height: auto; }
+    .orbit-figure::before { bottom: 8%; height: 62%; }
     .orbit-card { width: clamp(6.8rem, 30vw, 8rem); }
     .orbit-card img { height: 4.2rem; }
     .orbit-card__title { font-size: 0.74rem; }
@@ -1800,7 +1818,11 @@ html:not(.sc-ready) .w__i { transform: none; }
     position: relative; inset: auto; top: auto !important; width: auto;
     align-self: flex-end; justify-content: flex-end; margin: 0.6rem 0 0; padding: 0; border: 0;
     font-size: clamp(2.2rem, 8vw, 3rem); opacity: 0.7; z-index: 2;
-    transform: none !important;
+    /* The desktop rule centres the numeral with the standalone `translate` property, and
+       `transform: none` does not touch that one: it is its own property, applied before
+       any transform. Left in place it walked the year half its width off the left edge,
+       which is why the first digits were sliced away on a phone. */
+    transform: none !important; translate: none !important;
   }
   .descent .peak-frame { margin-top: 0.5rem; }
 }

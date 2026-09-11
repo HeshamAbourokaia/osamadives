@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DahabScene, { type Phase } from "./DahabScene";
 
 type Now = { ok: true; water: number; wave: number; air: number; wind: number; isDay: boolean; sunrise: string; sunset: string } | { ok: false };
@@ -69,11 +69,34 @@ export default function DahabNow() {
   }, []);
   const [forced, setForced] = useState<Phase | null>(null);
   useEffect(() => { const p = new URLSearchParams(window.location.search).get("phase"); if (p === "day" || p === "golden" || p === "night") setForced(p); }, []);
+
+  // The drawing holds still until the card is actually on a screen, and the diver starts
+  // his walk from the edge each time you arrive at it. An animation that plays out while
+  // the block is far below the fold is an animation nobody ever sees.
+  const host = useRef<HTMLDivElement>(null);
+  const [live, setLive] = useState(false);
+  const [run, setRun] = useState(0);
+  useEffect(() => {
+    const el = host.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") { setLive(true); return; }
+    let on = false;
+    const io = new IntersectionObserver((entries) => {
+      const seen = entries[0].intersectionRatio >= 0.4;
+      if (seen === on) return;
+      on = seen;
+      setLive(seen);
+      if (seen) setRun((n) => n + 1);
+    }, { threshold: [0, 0.4, 0.8] });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const phase = forced ?? phaseOf(clock, now);
   return (
-    <div className={`dahab-now dahab-now--${phase}`} aria-live="polite">
+    <div ref={host} className={`dahab-now dahab-now--${phase}${live ? " is-live" : ""}`} aria-live="polite">
       <div className="dahab-now__scene">
-        <DahabScene phase={phase} water={now && now.ok ? now.water : undefined} air={now && now.ok ? now.air : undefined} />
+        <DahabScene key={run} phase={phase} water={now && now.ok ? now.water : undefined} air={now && now.ok ? now.air : undefined} />
         <div className="dahab-now__head">
           <span className="dahab-now__k">Dahab, right now</span>
           <span className="dahab-now__t" aria-label={clock ? `The time in Dahab is ${clock.text}` : "Reading the time in Dahab"}>{clock ? clock.text : "--:--"}</span>

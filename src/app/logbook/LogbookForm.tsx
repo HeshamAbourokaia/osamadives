@@ -1,6 +1,7 @@
 "use client";
 
 import Script from "next/script";
+import { upload } from "@vercel/blob/client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SITES } from "@/lib/logbook/sites";
 import { STAMPS, orderStamps } from "@/lib/logbook/stamps";
@@ -34,6 +35,8 @@ export default function LogbookForm({ nextNumber }: Props) {
   const [stamps, setStamps] = useState<StampKey[]>([]);
   const [note, setNote] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
+  const [video, setVideo] = useState<File | null>(null);
+  const [clipPct, setClipPct] = useState<number | null>(null);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -43,6 +46,8 @@ export default function LogbookForm({ nextNumber }: Props) {
 
   const photoUrl = useMemo(() => (photo ? URL.createObjectURL(photo) : null), [photo]);
   useEffect(() => () => { if (photoUrl) URL.revokeObjectURL(photoUrl); }, [photoUrl]);
+  const clipUrl = useMemo(() => (video ? URL.createObjectURL(video) : null), [video]);
+  useEffect(() => () => { if (clipUrl) URL.revokeObjectURL(clipUrl); }, [clipUrl]);
 
   // Arriving from a dive-site page preselects that site.
   useEffect(() => {
@@ -59,7 +64,7 @@ export default function LogbookForm({ nextNumber }: Props) {
     sites: sites.length ? sites : ["lighthouse-reef-dahab"],
     stamps: stamps.length ? stamps : ["introduction"],
     createdAt: new Date().toISOString(),
-    reply: "", videoUrl: null, featured: false,
+    reply: "", videoUrl: clipUrl, featured: false,
   };
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -79,6 +84,21 @@ export default function LogbookForm({ nextNumber }: Props) {
       for (const c of courses) data.append("course", c);
       data.delete("stamp");
       for (const k of stamps) data.append("stamp", k);
+      // The clip goes straight to storage first, so a minute of video never squeezes
+      // through the form request; only its address travels with the page.
+      data.delete("clip");
+      if (video) {
+        if (video.size > LIMITS.clipBytes) throw new Error("That clip is over 80 MB. Trim it to a minute or so, or send it to Osama on WhatsApp after.");
+        setClipPct(0);
+        const safe = video.name.replace(/[^a-z0-9.]+/gi, "-").slice(-60) || "clip.mp4";
+        const blob = await upload(`logbook/clips/${safe}`, video, {
+          access: "public",
+          handleUploadUrl: "/api/logbook/blob",
+          onUploadProgress: ({ percentage }) => setClipPct(Math.round(percentage)),
+        });
+        data.set("videoUrl", blob.url);
+        setClipPct(null);
+      }
       const res = await fetch("/api/logbook", { method: "POST", body: data });
       const json = (await res.json()) as { ok: boolean; error?: string; id?: string; cardUrl?: string };
       if (!json.ok || !json.id || !json.cardUrl) throw new Error(json.error || "Something went wrong. Try again.");
@@ -88,6 +108,7 @@ export default function LogbookForm({ nextNumber }: Props) {
       setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
     } finally {
       setBusy(false);
+      setClipPct(null);
     }
   }
 
@@ -188,6 +209,20 @@ export default function LogbookForm({ nextNumber }: Props) {
           </div>
 
           <div className="lb-field">
+            <span className="lb-label lb-mono">Or a short clip from the day</span>
+            <label className="lb-drop">
+              {clipUrl ? <video className="lb-drop__thumb" src={clipUrl} muted playsInline preload="metadata" /> : null}
+              <span>{video ? video.name : "Tap to add a clip. MP4 or MOV, up to a minute or so (80 MB). It shows once Osama has read your page."}</span>
+              <input type="file" name="clip" accept="video/mp4,video/quicktime,video/webm" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} />
+              {video ? (
+                <button type="button" className="lb-drop__remove" onClick={(e) => { e.preventDefault(); setVideo(null); if (formRef.current) { const input = formRef.current.querySelector<HTMLInputElement>('input[name="clip"]'); if (input) input.value = ""; } }}>
+                  Remove
+                </button>
+              ) : null}
+            </label>
+          </div>
+
+          <div className="lb-field">
             <span className="lb-label lb-mono">6 · Your stamps, then press Submit review</span>
             <PickerSheet
               id="lb-stamps"
@@ -220,7 +255,7 @@ export default function LogbookForm({ nextNumber }: Props) {
           {error ? <p className="lb-error" role="alert">{error}</p> : null}
 
           <div>
-            <button type="submit" className="lb-btn" disabled={busy}>{busy ? "Sending..." : "Submit review"}</button>
+            <button type="submit" className="lb-btn" disabled={busy}>{busy ? (clipPct !== null ? `Sending your clip… ${clipPct}%` : "Sending...") : "Submit review"}</button>
           </div>
         </form>
       </div>

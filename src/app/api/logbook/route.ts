@@ -104,6 +104,10 @@ export async function POST(req: Request) {
   }
 
   const id = newId();
+  // A clip the reviewer sent straight to storage: only an address in our own clips
+  // folder is kept, and it shows only once the page is approved.
+  const clipField = form.get("videoUrl");
+  const videoUrl = typeof clipField === "string" && /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\/logbook\/clips\/[^\s"']+$/i.test(clipField) ? clipField : null;
   let photoUrl: string | null = null;
   const photo = form.get("photo");
   if (photo instanceof File && photo.size > 0) {
@@ -125,7 +129,7 @@ export async function POST(req: Request) {
     course: course as LogbookEntry["course"], courses: courses as LogbookEntry["courses"],
     stamps, note, photoUrl,
     flags, moderatedAt: null, moderatedBy: "", ipHash,
-    reply: "", featured: false, videoUrl: null,
+    reply: "", featured: false, videoUrl,
   };
   await store.create(entry);
 

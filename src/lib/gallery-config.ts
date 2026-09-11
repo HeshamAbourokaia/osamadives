@@ -202,8 +202,8 @@ export const galleryPhotos: GalleryPhoto[] = [
   },
   {
     id: 'coral-reef-1',
-    src: '/images/20250507_2113_Vibrant-Coral-Reef_remix_01jtn7404xftcbbj5rpbj1xh15.png',
-    alt: 'Vibrant coral reef teeming with colorful fish in the Red Sea',
+    src: '/images/reef/coral-garden.webp',
+    alt: 'A coral garden rising out of the deep blue at Dahab, hard corals in yellow and pink across the top of the reef',
     title: 'Living Tapestry',
     description: 'These corals were here before my family arrived in 1983. They will be here long after. When I was young, my father showed me how to read the reef - which corals meant healthy water, which fish meant good fishing. Now I pass that knowledge to visitors. Hospitality goes deeper than tables and chairs.',
     location: 'Dahab, Red Sea',
@@ -214,8 +214,8 @@ export const galleryPhotos: GalleryPhoto[] = [
   },
   {
     id: 'coral-reef-2',
-    src: '/images/20250507_2113_Vibrant Coral Reef_remix_01jtn7404xftcbbj5rpbj1xh15.png',
-    alt: 'Close-up of healthy coral formations in Dahab',
+    src: '/images/reef/coral-close.webp',
+    alt: 'Butterflyfish over the coral heads on the shallow reef at Dahab',
     title: 'Patience in Stone',
     description: 'A coral head this size took decades to grow, maybe centuries. Every tiny polyp a small act of faith. I think about patience differently since I started diving. The reef teaches you that the best things unfold slowly, that presence matters more than speed.',
     location: 'Dahab, Red Sea',
@@ -225,8 +225,8 @@ export const galleryPhotos: GalleryPhoto[] = [
   },
   {
     id: 'split-view',
-    src: '/images/20250506_2155_Split-View-Dive-Adventure_simple_compose_01jtjq33dff84rv6vkcwef3g89.png',
-    alt: 'Split view showing above and below water in Dahab',
+    src: '/images/reef/two-worlds.webp',
+    alt: 'Osama standing chest deep in the sea at Dahab with the Sinai mountains behind him',
     title: 'Between Two Worlds',
     description: 'This is what Dahab means to me: desert mountains meeting underwater gardens. Above, Bedouin hospitality and endless tea. Below, a silence so complete you hear your own heartbeat. My family planted roots in both worlds.',
     location: 'Dahab, Egypt',
@@ -234,18 +234,6 @@ export const galleryPhotos: GalleryPhoto[] = [
     featured: true,
     category: 'diving',
     tags: ['split-view', 'creative', 'dahab']
-  },
-  {
-    id: 'osama-himself',
-    src: '/images/OsamaDives_Him_Self.jpeg',
-    alt: 'Osama in full Cressi dive gear and DiveYork mask strap at the Dahab shoreline with Sinai mountains behind him, another diver walking in the background',
-    title: 'Ready to Go',
-    description: 'Cressi wetsuit on, gear checked, Sinai mountains behind me. This is my morning routine - getting ready for another day in my office, the Red Sea.',
-    location: 'Dahab, Egypt',
-    coordinates: { lat: 28.5000, lng: 34.5167 },
-    featured: true,
-    category: 'diving',
-    tags: ['osama', 'portrait', 'cressi']
   },
   {
     id: 'osama-tanks',
@@ -257,17 +245,6 @@ export const galleryPhotos: GalleryPhoto[] = [
     coordinates: { lat: 28.5000, lng: 34.5167 },
     category: 'diving',
     tags: ['technical', 'trimix', 'tanks']
-  },
-  {
-    id: 'open-water',
-    src: '/images/OsamaDives_PADI_Open_Water.jpeg',
-    alt: 'PADI Open Water diving course student in Dahab',
-    title: 'The Moment Everything Changes',
-    description: 'I have seen hundreds of first breaths underwater. The initial panic, the confusion, then - that moment. The face softens. The eyes widen. Something shifts forever. Dahab\'s calm lagoon cradles beginners like a gentle hand.',
-    location: 'Dahab, Egypt',
-    coordinates: { lat: 28.5000, lng: 34.5167 },
-    category: 'training',
-    tags: ['padi', 'open-water', 'certification', 'students']
   },
   {
     id: 'advanced-water',
@@ -292,29 +269,6 @@ export const galleryPhotos: GalleryPhoto[] = [
     tags: ['oxygen', 'emergency', 'safety', 'training']
   },
   {
-    id: 'camel-safari',
-    src: '/images/Camels.jpeg',
-    alt: 'Camel safari to remote dive sites in Sinai',
-    title: 'The Old Way to the Sea',
-    description: 'Before trucks, before cars, Bedouins crossed Sinai by camel. The Ras Abu Galum safari honors that tradition - riding through bronze canyons to reach reefs that speedboats will never find. Guests arrive the way visitors have for centuries.',
-    location: 'Ras Abu Galum, Sinai',
-    coordinates: { lat: 28.6167, lng: 34.5500 },
-    featured: true,
-    category: 'adventures',
-    tags: ['camel', 'safari', 'adventure', 'sinai']
-  },
-  {
-    id: 'after-dive',
-    src: '/images/Osama at the back of the truck after the dive.jpg',
-    alt: 'Osama relaxing after a dive at the back of a truck',
-    title: 'The Stories We Tell',
-    description: 'The truck ride back is when the magic settles in. Salt-dried skin, sun-warmed smiles, and that shared silence of people who just witnessed something beautiful together. This is when strangers become friends. The reef gives you stories; the ride home lets you savor them.',
-    location: 'Dahab, Egypt',
-    coordinates: { lat: 28.5000, lng: 34.5167 },
-    category: 'adventures',
-    tags: ['post-dive', 'relaxation', 'community']
-  },
-  {
     id: 'fb-dive-1',
     src: '/images/FB_IMG_1621238990084.jpg',
     alt: 'Osama in wetsuit giving OK sign with a young boy in wetsuit in front of Planet Divers center in Dahab, tank cart beside them',
@@ -337,17 +291,6 @@ export const galleryPhotos: GalleryPhoto[] = [
     tags: ['friends', 'post-dive', 'dahab']
   },
   {
-    id: 'fb-dive-3',
-    src: '/images/FB_IMG_1625154383404.jpg',
-    alt: 'Diver exploring coral formations',
-    title: 'Reading the Garden',
-    description: 'Every coral formation tells a story if you know how to listen. This table coral shelters a family of cardinalfish. That brain coral marks where the current shifts. Years of diving taught me to read the reef like my father taught me to read the weather.',
-    location: 'Dahab, Red Sea',
-    coordinates: { lat: 28.5000, lng: 34.5167 },
-    category: 'underwater',
-    tags: ['coral', 'exploration', 'underwater']
-  },
-  {
     id: 'fb-dive-4',
     src: '/images/FB_IMG_1632329112940.jpg',
     alt: 'Group selfie of Osama with six friends and divers sitting on a wooden bench in a courtyard with green plants in Dahab',
@@ -357,17 +300,6 @@ export const galleryPhotos: GalleryPhoto[] = [
     coordinates: { lat: 28.5000, lng: 34.5167 },
     category: 'diving',
     tags: ['dahab', 'friends', 'community']
-  },
-  {
-    id: 'fb-dive-5',
-    src: '/images/FB_IMG_1638331910256.jpg',
-    alt: 'Diver hovering behind a giant gorgonian fan coral in the deep blue Red Sea',
-    title: 'Sea Fan Cathedral',
-    description: 'One of the biggest gorgonian fans I know on our reefs. Every time I bring a diver here, they just stop and stare.',
-    location: 'Dahab, Red Sea',
-    coordinates: { lat: 28.5000, lng: 34.5167 },
-    category: 'underwater',
-    tags: ['gorgonian', 'coral', 'underwater']
   },
 
   // === NEW GALLERY IMAGES - DIVING ===
@@ -527,11 +459,44 @@ export const galleryPhotos: GalleryPhoto[] = [
     tags: ['osama', 'portrait', 'surface']
   },
   {
+    id: 'gallery-the-crack',
+    src: '/images/reef/canyon-crack.webp',
+    alt: 'Looking up at a narrow crack of daylight from inside a dark rift in the reef, thirty metres down',
+    title: 'Looking Up from the Crack',
+    description: 'Thirty metres down, looking up at the crack where the light comes in. The camera wrote the depth and the temperature into the corner: twenty nine point nine metres, twenty four degrees. Nothing down there is in a hurry.',
+    location: 'Dahab, Red Sea',
+    coordinates: { lat: 28.5000, lng: 34.5167 },
+    category: 'underwater',
+    tags: ['canyon', 'light', 'depth']
+  },
+  {
+    id: 'gallery-over-the-reef',
+    src: '/images/reef/over-the-reef.webp',
+    alt: 'Osama hovering in deep blue water above a coral bottom, trimmed flat and still',
+    title: 'Hanging Still',
+    description: 'Neutral, hands off, nothing touching the reef. This is the thing I spend most of a course teaching, and the thing people remember years later when they float instead of swim.',
+    location: 'Dahab, Red Sea',
+    coordinates: { lat: 28.5000, lng: 34.5167 },
+    category: 'underwater',
+    tags: ['buoyancy', 'osama', 'reef']
+  },
+  {
+    id: 'gallery-anthias-wall',
+    src: '/images/reef/anthias-wall.webp',
+    alt: 'A diver beside a coral wall in a crowd of orange anthias, soft corals in purple on the rock',
+    title: 'The Anthias Hour',
+    description: 'Anthias hang over the coral in their thousands and drop into it the moment a shadow passes. Stay still for a minute and they come back out around you. Most people miss it because they keep swimming.',
+    location: 'Dahab, Red Sea',
+    coordinates: { lat: 28.5000, lng: 34.5167 },
+    category: 'marine-life',
+    tags: ['anthias', 'reef', 'soft-coral']
+  },
+  {
     id: 'gallery-thistlegorm-wreck',
-    src: '/images/gallery/diving/ss-thistlegorm-wreck-day.webp',
-    alt: 'Two divers exploring the massive hull of the SS Thistlegorm wreck resting on its side on the ocean floor, torch beams cutting through the blue water',
-    title: 'The Thistlegorm Hull',
-    description: 'The SS Thistlegorm on the bottom, divers with torches along the hull. A British ship sunk in 1941, now one of the great wreck dives, a full day from Dahab.',
+    src: '/images/gallery/diving/whatsapp-image-2025-05-08-at-15.46.36.jpeg',
+    alt: 'Motorcycles in the hold of the SS Thistlegorm, still in their rows under decades of coral growth',
+    title: 'Still in Their Rows',
+    description: 'The motorcycles in the hold of the SS Thistlegorm, where they were loaded in 1941. A British supply ship bombed on its way to Alexandria, now one of the great wreck dives, a full day from Dahab.',
     location: 'SS Thistlegorm, Red Sea',
     featured: true,
     category: 'diving',

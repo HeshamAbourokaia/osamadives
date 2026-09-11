@@ -36,7 +36,7 @@ export const diveSites: DiveSite[] = [
     bestFor: ["Iconic Dahab dive", "Wall diving", "Technical diving training", "Photography"],
     marineLife: ["Blue and gold fusiliers", "Butterflyfish", "Glassfish schools", "Reef sharks (occasional)", "Whale sharks (rare)", "Eagle rays"],
     featuredImage: "/images/OsamaDives_The_Blue_Hole.jpeg",
-    imageAlt: "The Blue Hole - famous diving site near Dahab on the Red Sea, Egypt",
+    imageAlt: "The Blue Hole at Dahab from the air: the dark shaft cut through the shallow reef, the shore road and the cafes along the edge",
     keywords: [
       "Blue Hole Dahab",
       "Blue Hole diving",
@@ -66,8 +66,8 @@ export const diveSites: DiveSite[] = [
     distanceFromDahab: "5 km north",
     bestFor: ["Dramatic light", "Underwater photography", "Big-fish spotting", "Advanced training"],
     marineLife: ["Glassfish schools", "Large groupers", "Lionfish", "Garden eels", "Octopus", "Crocodilefish"],
-    featuredImage: "/images/OsamaDives_The_Blue_Hole.jpeg",
-    imageAlt: "The Canyon dive site in Dahab - an underwater canyon in the Red Sea",
+    featuredImage: "/images/sites/the-canyon.webp",
+    imageAlt: "Inside the Canyon at Dahab: a diver in the narrow fissure at twenty seven metres, with daylight in the slot above",
     keywords: [
       "The Canyon Dahab",
       "Canyon dive Dahab",
@@ -96,8 +96,8 @@ export const diveSites: DiveSite[] = [
     distanceFromDahab: "In town",
     bestFor: ["Training", "Night dives", "Macro photography", "Refresher dives", "Easy shore entry"],
     marineLife: ["Octopus", "Lionfish", "Frogfish (lucky)", "Spanish dancers (night)", "Anemonefish", "Triggerfish", "Damselfish swarms"],
-    featuredImage: "/images/OsamaDives_The_Blue_Hole.jpeg",
-    imageAlt: "Lighthouse Reef in Dahab - the main town dive site for training and night diving",
+    featuredImage: "/images/sites/lighthouse-reef.webp",
+    imageAlt: "Osama on the reef at Dahab in a cloud of anthias, the small orange fish that hang over the coral all day",
     keywords: [
       "Lighthouse Reef Dahab",
       "Lighthouse diving Dahab",
@@ -126,8 +126,8 @@ export const diveSites: DiveSite[] = [
     distanceFromDahab: "In town, north end",
     bestFor: ["Easy diving", "Spotting rays", "Building dive hours", "Family-friendly"],
     marineLife: ["Garden eels (hundreds)", "Bluespotted ribbontail rays", "Goatfish", "Fusiliers", "Stingrays", "Anemonefish"],
-    featuredImage: "/images/OsamaDives_The_Blue_Hole.jpeg",
-    imageAlt: "Eel Garden dive site in Dahab - sandy slope with garden eels and bluespotted rays",
+    featuredImage: "/images/sites/eel-garden.webp",
+    imageAlt: "A spotted eagle ray gliding over the shallow reef plate at Dahab, a diver following behind it",
     keywords: [
       "Eel Garden Dahab",
       "Eel Garden diving",
@@ -156,8 +156,8 @@ export const diveSites: DiveSite[] = [
     distanceFromDahab: "5 km north",
     bestFor: ["Swim-throughs", "Photography", "Fun dives", "Turtles (lucky)"],
     marineLife: ["Parrotfish", "Butterflyfish", "Turtles (occasional)", "Trumpetfish", "Anthias swarms", "Moray eels"],
-    featuredImage: "/images/OsamaDives_The_Blue_Hole.jpeg",
-    imageAlt: "Three Pools dive site in Dahab - coral swim-throughs in the Red Sea reef",
+    featuredImage: "/images/sites/three-pools.webp",
+    imageAlt: "Osama standing on the sand inside a coral swim-through at Dahab, giving the OK sign with both hands",
     keywords: [
       "Three Pools Dahab",
       "Three Pools diving",

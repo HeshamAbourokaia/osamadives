@@ -66,6 +66,7 @@ export default function MemoryBook({ pages }: Props) {
   const flip = useRef<Flip | null>(null);
   const [index, setIndex] = useState(0);
   const [ready, setReady] = useState(false);
+  const [flipping, setFlipping] = useState(false);
   const [open, setOpen] = useState<number | null>(null);
   const n = pages.length;
   const [scales, setScales] = useState<Record<number, number>>({});
@@ -98,6 +99,7 @@ export default function MemoryBook({ pages }: Props) {
       });
       pf.loadFromHTML(el.querySelectorAll(".fpage"));
       pf.on("flip", (e) => setIndex(Number(e.data) || 0));
+      pf.on("changeState", (e) => setFlipping(e.data !== "read"));
       flip.current = pf;
       setReady(true);
     });
@@ -165,7 +167,7 @@ export default function MemoryBook({ pages }: Props) {
   const caption = pages[captionIdx]?.caption ?? "";
 
   return (
-    <div className={`flipbook${invited ? " is-inviting" : ""}`} role="region" aria-roledescription="book" aria-label={`Reviews, ${caption}`} tabIndex={0} onKeyDown={onKey}>
+    <div className={`flipbook${invited ? " is-inviting" : ""}${flipping ? " is-flipping" : ""}`} role="region" aria-roledescription="book" aria-label={`Reviews, ${caption}`} tabIndex={0} onKeyDown={onKey}>
       <span className="book__ghost" aria-hidden="true">Reviews</span>
       <button type="button" className="book__arrow book__arrow--prev lg" onClick={flipBack} disabled={!ready || index === 0} aria-label="Previous page">&#8249;</button>
       <button type="button" className="book__arrow book__arrow--next lg" onClick={() => flip.current?.flipNext()} disabled={!ready || index >= n - 1} aria-label="Next page">&#8250;</button>
@@ -188,7 +190,10 @@ export default function MemoryBook({ pages }: Props) {
             </div>
           ))}
         </div>
-        <button type="button" className={`book__ear${index >= n - 1 ? " is-off" : ""}`} aria-label="Turn the page" onClick={() => flip.current?.flipNext()} />
+        <button type="button" className={`book__ear${index >= n - 1 ? " is-off" : ""}`} aria-label="Turn the page" onClick={() => flip.current?.flipNext()}>
+          {/* the corner, drawn: the ground where the paper has lifted, and the back of the fold */}
+          <svg viewBox="0 0 36 36" aria-hidden="true" focusable="false"><path d="M0 36 L36 36 L36 0 Z" fill="#e6f6f3" /><path d="M0 36 L36 0 L0 0 Z" fill="#efeadd" /><path d="M0 36 L36 0" stroke="rgba(23,18,8,0.22)" strokeWidth="1.2" /></svg>
+        </button>
       </div>
       <div className="book__turn">
         <button type="button" className="book__turn-btn" onClick={flipBack} disabled={!ready || index === 0} aria-label="Previous page">&#8249;</button>

@@ -12,11 +12,10 @@ const LINKS = [
 ];
 
 /**
- * The brand at the top left and the links along the top on a desk. On a phone, one
- * button: the menu sign everybody already knows, and it opens the same coast the
- * handle on the edge does, so there is one menu with two doors and nothing that lives
- * behind only one of them. The sheet it used to open held nothing the foot of every
- * page does not hold as well.
+ * The brand at the top left and the links along the top on a desk. On a phone, a
+ * capsule at the top right, the way the big phone apps carry it: Menu opens the same
+ * coast the handle on the edge does, Home goes home. The handle on the edge still says
+ * where you are and still opens the coast; the capsule is the door everybody sees.
  */
 export default function DescentNav() {
   const [open, setOpen] = useState(false);
@@ -32,17 +31,27 @@ export default function DescentNav() {
       <nav className="topnav" aria-label="Site">
         {LINKS.map((l) => <a key={l.href} href={l.href}>{l.label}</a>)}
       </nav>
-      <button
-        type="button"
-        className={`navbtn${open ? " is-open" : ""}`}
-        aria-label={open ? "Close menu" : "Menu"}
-        aria-expanded={open}
-        aria-controls="od-coast-menu"
-        onClick={() => window.dispatchEvent(new Event("od:rail"))}
-      >
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-      </button>
+      <div className="capsule" role="group" aria-label="Menu and home">
+        <button
+          type="button"
+          className="capsule__btn capsule__menu"
+          aria-label={open ? "Close the menu" : "Open the menu"}
+          aria-expanded={open}
+          aria-controls="od-coast-menu"
+          onClick={() => window.dispatchEvent(new Event("od:rail"))}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+          <span>Menu</span>
+        </button>
+        <a
+          className="capsule__btn capsule__home"
+          href="/"
+          aria-label="Home"
+          onClick={(e) => { if (window.location.pathname === "/") { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); } }}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 10v10h14V10" /></svg>
+        </a>
+      </div>
     </>
   );
 }

@@ -27,7 +27,9 @@ const DONE: Record<string, string> = {
 // "from the phone link" is the Approve button in the ntfy, Telegram or email message;
 // "on this page" is the password-protected moderation page.
 function moderatedHow(e: LogbookEntry) {
-  return e.moderatedBy === "link" ? "from the phone link" : e.moderatedBy === "admin" ? "on this page" : "(before this was recorded)";
+  const how = e.moderatedBy === "link" ? "from the phone link" : e.moderatedBy === "admin" ? "on this page" : "(before this was recorded)";
+  // The phone link needs no passcode, so where it was tapped is worth seeing.
+  return e.moderatedFrom ? `${how}, ${e.moderatedFrom}` : how;
 }
 function whenExact(iso: string) {
   return new Date(iso).toLocaleString("en-GB", { timeZone: "Africa/Cairo", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) + " Dahab time";

@@ -83,6 +83,8 @@ export interface LogbookEntry {
   moderatedAt: string | null;
   /** How it was approved or hidden: the signed link in the phone notification, or the password page. */
   moderatedBy: ModeratedBy;
+  /** Where from, in words: "a phone in Dahab, Egypt". Coarse, and blank on older rows. */
+  moderatedFrom: string;
   ipHash: string;
   reply: string;
   featured: boolean;

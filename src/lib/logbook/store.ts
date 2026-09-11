@@ -15,7 +15,7 @@ export interface LogbookStore {
   create(entry: LogbookEntry): Promise<void>;
   get(id: string): Promise<LogbookEntry | null>;
   list(opts?: ListOptions): Promise<LogbookEntry[]>;
-  setStatus(id: string, status: EntryStatus, moderatedAt: string, by?: ModeratedBy): Promise<LogbookEntry | null>;
+  setStatus(id: string, status: EntryStatus, moderatedAt: string, by?: ModeratedBy, from?: string): Promise<LogbookEntry | null>;
   update(id: string, patch: EntryPatch): Promise<LogbookEntry | null>;
   countSince(ipHash: string, sinceIso: string): Promise<number>;
   countStatus(status: EntryStatus): Promise<number>;
@@ -78,7 +78,7 @@ export class FileStore implements LogbookStore {
       return raw.map((r) => {
         const { stamp, stamps, ...rest } = r;
         return {
-          reply: "", featured: false, videoUrl: null, moderatedBy: "",
+          reply: "", featured: false, videoUrl: null, moderatedBy: "", moderatedFrom: "",
           ...rest,
           stamps: stamps && stamps.length ? stamps : stamp ? [stamp as StampKey] : [],
           // The plural fields came later, like "stamps" did before them.
@@ -139,7 +139,7 @@ export class FileStore implements LogbookStore {
     });
   }
 
-  setStatus(id: string, status: EntryStatus, moderatedAt: string, by: ModeratedBy = "") {
+  setStatus(id: string, status: EntryStatus, moderatedAt: string, by: ModeratedBy = "", from = "") {
     return this.locked(async () => {
       const all = await this.readAll();
       const e = all.find((x) => x.id === id);
@@ -147,6 +147,7 @@ export class FileStore implements LogbookStore {
       e.status = status;
       e.moderatedAt = moderatedAt;
       e.moderatedBy = by;
+      e.moderatedFrom = from;
       await this.writeAll(all);
       return e;
     });
@@ -246,7 +247,7 @@ export class FileStore implements LogbookStore {
 type Row = {
   id: string; created_at: string; status: string; name: string; country: string; site: string;
   dived_on: string; course: string; courses: unknown; sites: unknown; stamp: string; stamps: unknown; note: string; photo_url: string | null;
-  flags: unknown; moderated_at: string | null; moderated_by: string | null; ip_hash: string;
+  flags: unknown; moderated_at: string | null; moderated_by: string | null; moderated_from: string | null; ip_hash: string;
   reply: string | null; featured: boolean | null; video_url: string | null;
 };
 
@@ -271,6 +272,7 @@ const fromRow = (r: Row): LogbookEntry => ({
   flags: Array.isArray(r.flags) ? (r.flags as string[]) : [],
   moderatedAt: r.moderated_at ? new Date(r.moderated_at).toISOString() : null,
   moderatedBy: (r.moderated_by ?? "") as ModeratedBy,
+  moderatedFrom: r.moderated_from ?? "",
   ipHash: r.ip_hash,
   reply: r.reply ?? "",
   featured: Boolean(r.featured),
@@ -323,6 +325,8 @@ export class NeonStore implements LogbookStore {
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS courses jsonb NOT NULL DEFAULT '[]'::jsonb`;
         // Who approved: 'link' (the signed link in the phone notification) or 'admin' (the password page).
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS moderated_by text NOT NULL DEFAULT ''`;
+        // And roughly where from, in words, because the phone link needs no passcode.
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS moderated_from text NOT NULL DEFAULT ''`;
         // Reactions came later. One reaction per (review, emoji, device).
         await sql`CREATE TABLE IF NOT EXISTS qr_scans (
           id text PRIMARY KEY,
@@ -385,9 +389,9 @@ export class NeonStore implements LogbookStore {
     return rows.length > 0;
   }
 
-  async setStatus(id: string, status: EntryStatus, moderatedAt: string, by: ModeratedBy = "") {
+  async setStatus(id: string, status: EntryStatus, moderatedAt: string, by: ModeratedBy = "", from = "") {
     const sql = await this.db();
-    const rows = (await sql`UPDATE logbook_entries SET status = ${status}, moderated_at = ${moderatedAt}, moderated_by = ${by}
+    const rows = (await sql`UPDATE logbook_entries SET status = ${status}, moderated_at = ${moderatedAt}, moderated_by = ${by}, moderated_from = ${from}
       WHERE id = ${id} RETURNING *`) as Row[];
     return rows[0] ? fromRow(rows[0]) : null;
   }

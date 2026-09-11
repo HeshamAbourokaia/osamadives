@@ -25,6 +25,7 @@ import DahabNow from "./DahabNow";
 import HoldToDive from "./HoldToDive";
 import PickButton from "./PickButton";
 import CourseFinder from "./CourseFinder";
+import YourChapter from "./YourChapter";
 import VoiceNote from "./VoiceNote";
 import HowFar from "./HowFar";
 import WhatsAppCount from "./WhatsAppCount";
@@ -308,6 +309,8 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        <YourChapter />
 
         {/* BRIDGE · the seam between the print and the sea carries one line */}
         <section className="g-abyss silence" style={{ minHeight: "34vh" }}>

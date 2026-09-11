@@ -1,10 +1,7 @@
 "use client";
 
-import Script from "next/script";
-
 const IG_PROFILE_URL = "https://instagram.com/osama_mohamed_hassan";
 const HANDLE = "@osama_mohamed_hassan";
-const BEHOLD_FEED_ID = "uMh92JNjwTxGtltG2UdH";
 
 export default function InstagramFeed() {
   return (
@@ -35,16 +32,9 @@ export default function InstagramFeed() {
           </a>
         </div>
 
-        {/* Behold widget. Renders client-side after widget.js loads. */}
-        <div className="max-w-4xl mx-auto">
-          <behold-widget feed-id={BEHOLD_FEED_ID}></behold-widget>
-        </div>
-
-        <Script
-          src="https://w.behold.so/widget.js"
-          type="module"
-          strategy="afterInteractive"
-        />
+        {/* The embedded feed came from a third party whose free plan ran out of views and
+            started showing visitors an "Upgrade Required" box in its place. The reel above
+            is his latest; the rest lives on Instagram itself. */}
 
         <div className="text-center mt-10">
           <a

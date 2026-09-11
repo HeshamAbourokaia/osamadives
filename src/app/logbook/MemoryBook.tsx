@@ -143,15 +143,6 @@ export default function MemoryBook({ pages }: Props) {
     if (Math.abs(dx) < 30 || Math.abs(dx) < dy * 1.2 || Date.now() - from.t > 1500) return;
     if (dx < 0) flip.current?.flipNext(); else flipBack();
   };
-  // The corner of the page lifts once when the book comes into view: a page waiting to be turned.
-  const [invited, setInvited] = useState(false);
-  useEffect(() => {
-    const el = bookRef.current?.closest(".flipbook");
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver((es) => { if (es.some((x) => x.isIntersecting)) { setInvited(true); io.disconnect(); } }, { threshold: 0.4 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
   // A tap opens the page. The browser only fires a click for a press that did not travel,
   // so a drag or a swipe never lands here. It is read at the book, not on the page: on a
   // phone the engine shows a clone of each page, and a clone carries no handlers of its own.
@@ -167,7 +158,7 @@ export default function MemoryBook({ pages }: Props) {
   const caption = pages[captionIdx]?.caption ?? "";
 
   return (
-    <div className={`flipbook${invited ? " is-inviting" : ""}${flipping ? " is-flipping" : ""}`} role="region" aria-roledescription="book" aria-label={`Reviews, ${caption}`} tabIndex={0} onKeyDown={onKey}>
+    <div className={`flipbook${flipping ? " is-flipping" : ""}`} role="region" aria-roledescription="book" aria-label={`Reviews, ${caption}`} tabIndex={0} onKeyDown={onKey}>
       <span className="book__ghost" aria-hidden="true">Reviews</span>
       <button type="button" className="book__arrow book__arrow--prev lg" onClick={flipBack} disabled={!ready || index === 0} aria-label="Previous page">&#8249;</button>
       <button type="button" className="book__arrow book__arrow--next lg" onClick={() => flip.current?.flipNext()} disabled={!ready || index >= n - 1} aria-label="Next page">&#8250;</button>
@@ -190,10 +181,6 @@ export default function MemoryBook({ pages }: Props) {
             </div>
           ))}
         </div>
-        <button type="button" className={`book__ear${index >= n - 1 ? " is-off" : ""}`} aria-label="Turn the page" onClick={() => flip.current?.flipNext()}>
-          {/* the corner, drawn: the ground where the paper has lifted, and the back of the fold */}
-          <svg viewBox="0 0 36 36" aria-hidden="true" focusable="false"><path d="M0 36 L36 36 L36 0 Z" fill="#e6f6f3" /><path d="M0 36 L36 0 L0 0 Z" fill="#efeadd" /><path d="M0 36 L36 0" stroke="rgba(23,18,8,0.22)" strokeWidth="1.2" /></svg>
-        </button>
       </div>
       <div className="book__turn">
         <button type="button" className="book__turn-btn" onClick={flipBack} disabled={!ready || index === 0} aria-label="Previous page">&#8249;</button>

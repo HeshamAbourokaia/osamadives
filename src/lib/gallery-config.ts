@@ -540,9 +540,9 @@ export const galleryPhotos: GalleryPhoto[] = [
   {
     id: 'gallery-teaching-child',
     src: '/images/gallery/teaching/whatsapp-image-2025-05-10-at-12.58.41-1.jpeg',
-    alt: 'Osama smiling while helping a young boy put on a scuba tank at a courtyard in Dahab, spiral staircase and coral decorations on the wall, May 2012',
-    title: 'Tank Bigger Than the Boy',
-    description: 'May 2012 - helping this boy get his tank on at the dive center courtyard. The tank is almost as tall as he is, but look at his face - determined. You see those coral decorations on the wall behind us? That is the old dive center.',
+    alt: 'Osama smiling while helping his son Abdullah put on a scuba tank at a courtyard in Dahab, spiral staircase and coral decorations on the wall, May 2012',
+    title: 'A Tank Bigger Than His Son',
+    description: 'May 2012 - helping my son Abdullah get his tank on at the dive center courtyard. The tank is almost as tall as he is, but look at his face - determined. You see those coral decorations on the wall behind us? That is the old dive center.',
     location: 'Dahab, Egypt',
     coordinates: { lat: 28.5000, lng: 34.5167 },
     date: '2012-05-02',

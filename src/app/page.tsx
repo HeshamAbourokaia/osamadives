@@ -178,7 +178,7 @@ export default async function Home() {
               </div>
               <div className="peak-story" data-sc-cue="0.24 0.49 0.08 0.1">
                 <span className="microcopy">2012 · my son</span>
-                <h2>A tank bigger than the boy.</h2>
+                <h2>A tank bigger than his son.</h2>
                 <p>Abdullah, my son, on the promenade, and my hands on his straps. He learned to breathe under water on the same shore I did. He dives beside me now, guiding, with his own certifications, and Divemaster is the next step.</p>
               </div>
               <div className="peak-story" data-sc-cue="0.48 0.73 0.08 0.1">

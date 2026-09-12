@@ -163,8 +163,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    /* The page is written in English and stays in English. Browsers were offering to
+       translate it on their own, and the headlines on this site are cut into one span
+       per word so the animation can raise them one at a time. A machine translator
+       treats every one of those spans as a sentence of its own, so what came out the
+       other side was word salad in place of his voice. `translate="no"` is the HTML
+       standard for this, and the Google meta is what Chrome's own translator reads. */
+    <html lang="en" translate="no">
       <head>
+        <meta name="google" content="notranslate" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

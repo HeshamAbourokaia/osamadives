@@ -34,6 +34,7 @@ export default function OdometerYear({
   return (
     <div
       className={`odometer ${className}`.trim()}
+      translate="no"
       style={style}
       data-sc-parallax={parallax !== undefined ? parallax : undefined}
       aria-hidden="true"

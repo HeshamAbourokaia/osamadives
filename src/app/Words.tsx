@@ -24,7 +24,7 @@ export default function Words({
 }) {
   const words = text.split(" ");
   return (
-    <span className={`w-host w-host--${mode}`} style={{ "--w-at": at, "--w-step": step, "--w-win": win } as CSSProperties}>
+    <span className={`w-host w-host--${mode}`} translate="no" style={{ "--w-at": at, "--w-step": step, "--w-win": win } as CSSProperties}>
       {words.map((word, i) => (
         <span key={i}>
           <span className="w">

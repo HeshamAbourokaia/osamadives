@@ -293,7 +293,7 @@ export default async function Home() {
               <div className="guide-panel glass glass--paper" data-sc-parallax="0.12" data-sc-in data-sc-stagger="70" data-sc-spotlight data-sc-tilt="2.5">
                 <div className="rule-draw" aria-hidden="true" />
                 <span className="microcopy">On the sand · your guide</span>
-                <h2 data-sc-kinetic="lines">Meet Osama.</h2>
+                <h2 data-sc-kinetic="lines" translate="no">Meet Osama.</h2>
                 <p className="sc-body">Osama Mohamed Hassan was born into a Dahab of fishing boats and palm shelters on the sand. He has spent his life in this water. He briefs slowly, watches closely, and laughs easily.</p>
                 {quote ? (
                   <blockquote className="guide-quote">
@@ -511,7 +511,7 @@ export default async function Home() {
           <div data-sc-stage className="orbit-stage">
             <div className="orbit-head">
               <span className="microcopy">9 m · his world</span>
-              <h2 data-sc-cue="0 1 0 0.1" data-sc-kinetic="lines">Everything he has built around him.</h2>
+              <h2 data-sc-cue="0 1 0 0.1" data-sc-kinetic="lines" translate="no">Everything he has built around him.</h2>
               <p className="orbit-tagline">Dive sites, stories, and reviews, one turn at a time.</p>
             </div>
             <OrbitScene items={orbitItems} osamaSrc="/descent/osama-cutout.webp" osamaSrcMobile="/descent/osama-cutout-m.webp" osamaAlt="Osama, cut out in his dive gear" />

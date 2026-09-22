@@ -8,6 +8,7 @@ import { assessEntry } from "@/lib/logbook/rules";
 import { FORBIDDEN_MESSAGE, cleanText, findForbidden } from "@/lib/logbook/sanitize";
 import { orderStamps } from "@/lib/logbook/stamps";
 import { getStore } from "@/lib/logbook/store";
+import { triageEntry } from "@/lib/logbook/triage";
 import { TTL, signToken } from "@/lib/logbook/tokens";
 import { COURSES, LIMITS, SITE_KEYS, type LogbookEntry } from "@/lib/logbook/types";
 
@@ -121,6 +122,8 @@ export async function POST(req: Request) {
   }
 
   const { flags } = assessEntry({ name, country, note });
+  // Jev reads the page before the phone buzzes. A few seconds at most; nothing waits on it failing.
+  const triage = await triageEntry({ name, country, note, sites, courses, divedOn });
   const entry: LogbookEntry = {
     id, createdAt: new Date().toISOString(), status: "pending",
     name, country,
@@ -129,7 +132,7 @@ export async function POST(req: Request) {
     course: course as LogbookEntry["course"], courses: courses as LogbookEntry["courses"],
     stamps, note, photoUrl,
     flags, moderatedAt: null, moderatedBy: "", moderatedFrom: "", ipHash,
-    reply: "", featured: false, videoUrl,
+    reply: "", featured: false, videoUrl, triage,
   };
   await store.create(entry);
 

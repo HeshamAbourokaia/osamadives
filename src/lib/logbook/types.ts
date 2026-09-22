@@ -1,3 +1,5 @@
+import type { Triage } from "./triage";
+
 export type EntryStatus = "pending" | "approved" | "hidden";
 
 export const SITE_KEYS = [
@@ -88,6 +90,8 @@ export interface LogbookEntry {
   ipHash: string;
   reply: string;
   featured: boolean;
+  /** What Jev made of the note when it arrived. Missing on older rows and when no key is set. */
+  triage?: Triage | null;
   videoUrl: string | null;
 }
 

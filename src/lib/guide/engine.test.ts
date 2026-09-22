@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { answerQuestion, MAX_GUIDE_LENGTH } from "./engine";
+import { answerFor, answerQuestion, MAX_GUIDE_LENGTH, needsReading } from "./engine";
 import { safeGuideHref } from "./links";
 import { CDWS, guideProfile } from "./profile";
 
@@ -76,10 +76,22 @@ describe("hostile input", () => {
       for (const l of [...(a.sources ?? []), ...(a.actions ?? [])]) expect(safeGuideHref(l.href, guideProfile.contact.href)).toBeTruthy();
     }
   });
-  it("uses no network, storage or HTML injection anywhere in the guide", () => {
+  it("uses no network, storage or HTML injection in the guide itself", () => {
+    // The one call out lives in ask-jev.ts and goes to this site's own route, nowhere else.
     for (const path of ["src/lib/guide/engine.ts", "src/lib/guide/profile.ts", "src/lib/guide/links.ts", "src/components/DiveGuide.tsx"]) {
       expect(readFileSync(path, "utf8")).not.toMatch(/\bfetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon|localStorage|sessionStorage|indexedDB|document\.cookie|dangerouslySetInnerHTML|\.innerHTML\s*=|\beval\s*\(|new Function|window\.open/);
     }
+    const askJev = readFileSync("src/lib/guide/ask-jev.ts", "utf8");
+    expect(askJev.match(/fetch\(\s*"([^"]+)"/)?.[1]).toBe("/api/guide");
+    expect(askJev).not.toMatch(/https?:/);
+  });
+  it("gives the same words by id as by keyword", () => {
+    expect(answerFor(guideProfile, "pricing")?.text).toBe(ask("how much").text);
+    expect(answerFor(guideProfile, "canyon")?.text).toBe(ask("the canyon").text);
+    expect(answerFor(guideProfile, "made-up")).toBeNull();
+    expect(needsReading(ask("best pizza in dahab"))).toBe(true);
+    expect(needsReading(ask("canyon rescue"))).toBe(true);
+    expect(needsReading(ask("the canyon"))).toBe(false);
   });
   it("has no em or en dashes in anything a visitor reads", () => {
     const words = JSON.stringify(guideProfile) + readFileSync("src/components/DiveGuide.tsx", "utf8");

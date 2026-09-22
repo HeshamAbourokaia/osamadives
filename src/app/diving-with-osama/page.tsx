@@ -43,7 +43,7 @@ export default function DivingWithOsamaPage() {
       </header>
 
       <main className="wiw">
-        <div className="only-mobile"><CourseFinder /><WhenToCome /></div>
+        <div className="trip-tools"><CourseFinder /><WhenToCome /></div>
         <section>
           <h2>Where people start</h2>
           <p className="wiw__lead">Most of the people I take into the water have never breathed underwater before.</p>

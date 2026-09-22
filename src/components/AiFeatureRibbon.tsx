@@ -26,7 +26,7 @@ export default function AiFeatureRibbon({ variant = "hero" }: Props) {
     <Link
       href="/featured/chatgpt"
       className={`${baseClasses} ${variantClasses}`}
-      aria-label="Read why ChatGPT named OsamaDives the top dive instructor in Dahab"
+      aria-label="Read how a diver found Osama through ChatGPT"
       onClick={() =>
         gtag.event({
           action: "cta_click",
@@ -37,16 +37,16 @@ export default function AiFeatureRibbon({ variant = "hero" }: Props) {
     >
       <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
         <span
-          className={`absolute inline-flex h-full w-full rounded-full ${dotColor} opacity-60 animate-ping`}
+          className={`absolute inline-flex h-full w-full rounded-full ${dotColor} opacity-60`}
         />
         <span
           className={`relative inline-flex h-2 w-2 rounded-full ${dotColor}`}
         />
       </span>
       <span className="text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap">
-        <span className="sm:hidden">Featured by ChatGPT</span>
+        <span className="sm:hidden">Found through ChatGPT</span>
         <span className="hidden sm:inline">
-          Featured by ChatGPT · top dive instructor in Dahab
+          A diver found us through ChatGPT
         </span>
       </span>
       <span

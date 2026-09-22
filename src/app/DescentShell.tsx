@@ -12,6 +12,7 @@ import MessageButton from "./MessageButton";
 import "./descent.css";
 import "./mobile.css";
 import "./inner.css";
+import "./review-refinements.css";
 
 /**
  * The frame every inner page sits in, so the journal, the gallery, the sites and

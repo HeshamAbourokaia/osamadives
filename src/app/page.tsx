@@ -22,18 +22,14 @@ import Contours from "./Contours";
 import TapRipple from "./TapRipple";
 import TripleTapQR from "./TripleTapQR";
 import DahabNow from "./DahabNow";
-import HoldToDive from "./HoldToDive";
 import PickButton from "./PickButton";
-import CourseFinder from "./CourseFinder";
+import ShoreWelcome from "./ShoreWelcome";
 import YourChapter from "./YourChapter";
 import VoiceNote from "./VoiceNote";
 import HowFar from "./HowFar";
 import WhatsAppCount from "./WhatsAppCount";
 import { LENS_MAP } from "./lensMap";
 import { diveSites } from "@/lib/dive-sites";
-import AiFeatureRibbon from "@/components/AiFeatureRibbon";
-import LogbookRibbon from "@/components/LogbookRibbon";
-import InstagramRibbon from "@/components/InstagramRibbon";
 import BackToTop from "@/components/BackToTop";
 import { blogPosts } from "@/lib/blog-posts";
 import { galleryPhotos } from "@/lib/gallery-config";
@@ -43,6 +39,7 @@ import HoverClip from "@/app/HoverClip";
 import { buildOrbitItems } from "@/lib/orbit-content";
 import "./descent.css";
 import "./mobile.css";
+import "./review-refinements.css";
 
 
 // The homepage regenerates every minute, and instantly when a logbook page is approved.
@@ -103,25 +100,21 @@ export default async function Home() {
             Hesham's request 4 Sep 2026: "his face is the branding." */}
         <section className="g-abyss brand-act" id="brand-act">
           <div className="brand-stage">
-            <img className="brand-stage__photo" data-sc-parallax="-0.12" src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="(max-width: 860px) 200vw, 100vw" fetchPriority="high" alt="Osama teaching a diving student in the crystal-clear shallow water of Dahab, Egypt" />
+            <img className="brand-stage__photo" data-sc-parallax="-0.12" src="/images/osama-brand-hero.webp" srcSet="/images/osama-brand-hero-m.webp 800w, /images/osama-brand-hero.webp 1600w" sizes="(max-width: 860px) 100vw, 60vw" width={1600} height={899} fetchPriority="high" alt="Osama teaching a diving student in the crystal-clear shallow water of Dahab, Egypt" />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="brand-copy" data-sc-in>
               <h1>Osama<span className="sr-only">, PADI Master Scuba Diver Trainer in Dahab, Egypt</span>.</h1>
               <p className="sc-body only-desktop">PADI Master Scuba Diver Trainer. Guided dives and courses from the shore in Dahab, South Sinai. Fourth family here, on this beach since 1983; in 2011 I took the family&apos;s hospitality underwater.</p>
               <p className="sc-body only-mobile">I am a PADI Master Scuba Diver Trainer. I take you into the Red Sea from the beach in Dahab, the water I grew up in.</p>
-              <a className="cta brand-cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer">Message Osama on WhatsApp</a>
-              <a className="brand-start only-mobile" href="#peak-act">Start here <i aria-hidden="true" /></a>
-              <p className="brand-hold only-mobile">Or hold your thumb on the screen and the page dives down on its own.</p>
+              <a className="cta brand-cta" href="#plan-your-dive">Plan your dive</a>
+              <a className="brand-start" href="#peak-act">Explore his story <i aria-hidden="true" /></a>
               <div className="only-mobile"><VoiceNote /></div>
-              <div className="brand-ribbons">
-                <LogbookRibbon variant="hero" />
-                <InstagramRibbon variant="hero" />
-                <AiFeatureRibbon variant="hero" />
-              </div>
               <p className="brand-small">Courses and dives are arranged through CDWS-registered dive centres in Dahab.</p>
             </div>
           </div>
         </section>
+
+        <ShoreWelcome />
 
         {/* A phone lands here cold, often from a link somebody sent. Who he is, where
             he is, and every way into the site, before the descent below takes thirty
@@ -173,7 +166,7 @@ export default async function Home() {
                 in Osama's voice, cued to the same stretch of the act as its print. The
                 single fixed intro went: the first story says what it used to say. */}
             <div className="peak-stories" aria-live="polite">
-              <div className="peak-story" data-sc-cue="0 0.25 0.08 0.1">
+              <div className="peak-story" data-sc-cue="-0.04 0.25 0.08 0.1">
                 <span className="microcopy">The archive · August 1987</span>
                 <h2>Someone brought a camera to the beach.</h2>
                 <p>There was no camera in Dahab that day. A visitor took this picture and carried the film home to England. The prints came back months later in a traveller&apos;s bag, to Shark Restaurant, for my family. This is how a photograph reached us then.</p>
@@ -225,7 +218,7 @@ export default async function Home() {
                 </div>
               </a>
               <div className="peak-captions">
-                <p data-sc-cue="0 0.25 0.08 0.1">The original print · Assalah shore · August 1987</p>
+                <p data-sc-cue="-0.04 0.25 0.08 0.1">The original print · Assalah shore · August 1987</p>
                 <p data-sc-cue="0.24 0.49 0.08 0.1">The story continues · Osama teaching the next generation</p>
                 <p data-sc-cue="0.48 0.73 0.08 0.1">The handover · learning, teaching, and a new certificate</p>
                 <p data-sc-cue="0.72 1 0.08 0.1">Today · Osama and his student on the same shore</p>
@@ -246,12 +239,12 @@ export default async function Home() {
             <span className="microcopy">His own camera · thirty seconds · nothing touching the sand</span>
             <h2 id="still-heading">Holding still is the hardest thing I teach.</h2>
             <p>
-              No hands, no fins working, nothing on the bottom. The breath does all of it: in and
-              you lift a little, out and you settle. Most people spend a whole course looking for
-              it, and the ones who find it stop chasing the fish and start watching them.
+              No hands on the sand, no fins stirring the bottom. Watch how quietly Osama
+              holds his place in the water. It takes practice, and it gives you time to
+              notice the life around you.
             </p>
             <p>
-              It is also how the reef survives us. A diver who can hold still never kicks the coral.
+              Learning to hover with control helps you keep your fins and equipment clear of the reef.
             </p>
           </div>
         </section>
@@ -315,7 +308,7 @@ export default async function Home() {
                     <ul>
                       <li>Fourth family to settle in Dahab, 1983. Pioneer roots run deep in this community.</li>
                       <li>Family hospitality since the early days of the town.</li>
-                      <li>PADI Master Scuba Diver Trainer, the highest instructor rating.</li>
+                      <li>PADI Master Scuba Diver Trainer.</li>
                       <li>From serving guests on land to guiding them underwater.</li>
                     </ul>
                   </div>
@@ -342,8 +335,22 @@ export default async function Home() {
 
         {/* ACT 4b · THE DESCENT: three of Osama's own photographs, shown at the depth they were taken. */}
         <section className="g-abyss" id="descent-act" data-sc-act="pin" data-sc-span="2.7" style={{ "--sc-span": 2.7 } as React.CSSProperties}>
+          <div className="classroom-mobile">
+            <figure>
+              <img src="/descent/depth-7-m.webp" width={800} height={1066} loading="lazy" alt="A turtle with a diver holding the complete Happy Birthday Osama sign behind it" />
+              <figcaption><span className="microcopy">Om El Seed · photographed by Osama</span><h2>His classroom.<br />Every first breath starts here.</h2></figcaption>
+            </figure>
+            <figure>
+              <img src="/descent/depth-8-m.webp" loading="lazy" alt="Coral on the reef shelf at the edge of the Blue Hole" />
+              <figcaption><span className="microcopy">The edge of the Blue Hole · where he guides</span><h2>A thousand descents here.<br />He knows its every mood.</h2></figcaption>
+            </figure>
+            <figure>
+              <img src="/descent/depth-12-m.webp" loading="lazy" alt="A diver swimming through open blue water" />
+              <figcaption><span className="microcopy">The blue · how he dives</span><h2>He guides.<br />You dive within your training, every time.</h2></figcaption>
+            </figure>
+          </div>
           <div data-sc-stage className="depth-stage">
-            <img className="depth-photo depth-photo--1" data-sc-parallax="-0.24" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle over the reef at Om El Seed, seven metres down, photographed by Osama" />
+            <img className="depth-photo depth-photo--1" data-sc-parallax="-0.24" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle with a diver holding a Happy Birthday Osama sign behind it at Om El Seed" />
             <img className="depth-photo depth-photo--2" data-sc-parallax="-0.24" src="/descent/depth-8.webp" srcSet="/descent/depth-8-m.webp 800w, /descent/depth-8.webp 1600w" sizes="100vw" alt="Coral on the reef shelf at the edge of the Blue Hole, eight metres down, photographed by Osama" />
             <img className="depth-photo depth-photo--3" data-sc-parallax="-0.24" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="A diver silhouetted in open blue water at twelve metres, photographed by Osama" />
             <div className="light-band light-band--down" aria-hidden="true" />
@@ -527,7 +534,7 @@ export default async function Home() {
               <h2><Words text="Learn it properly." mode="in" /></h2>
               <p className="sc-body">Small groups, slow briefings, the same reef he learned on. Pick the course that matches where you are, and he takes you the rest of the way.</p>
             </div>
-            <div className="only-mobile"><CourseFinder /></div>
+            <a className="lead-link" href="#plan-your-dive">Not sure where to start? Find your dive ↑</a>
             <div className="exhibits" data-sc-in data-sc-stagger="90">
               <figure className="exhibit">
                 <span className="letter" aria-hidden="true" data-sc-parallax="-0.4">I</span>
@@ -535,7 +542,7 @@ export default async function Home() {
                   <img src="/descent/arch-lagoon.webp" srcSet="/descent/arch-lagoon-m.webp 800w, /descent/arch-lagoon.webp 1400w" sizes="(max-width: 860px) 92vw, 40vw" alt="The turquoise lagoon at Dahab where first dives happen" />
                   <div className="row"><h3>Intro Dive</h3><span className="spec">Half a day</span></div>
                   <PickButton className="only-mobile" id="course:intro-dive" label="Intro dive" kind="course" />
-                  <p>Never tried it. A pool, then the sea, no certification, just a first breath underwater.</p>
+                  <p>Never tried it? Start in sheltered, confined water at the Lighthouse, with Osama beside you.</p>
                   <details className="more exhibit-more">
                     <summary>Try diving before you commit</summary>
                     <div className="more__body">
@@ -569,7 +576,7 @@ export default async function Home() {
                   <img src="/descent/bluehole-aerial.webp" alt="The Blue Hole of Dahab seen from above, a deep blue circle in the reef shelf" />
                   <div className="row"><h3>Advanced</h3><span className="spec">2 days · 30 m</span></div>
                   <PickButton className="only-mobile" id="course:advanced" label="Advanced" kind="course" />
-                  <p>Five adventure dives. Opens the deep sites, night diving included.</p>
+                  <p>Five adventure dives, including deep and navigation. Choose the other three with Osama.</p>
                   <details className="more exhibit-more">
                     <summary>Unlock the world&apos;s best dive sites</summary>
                     <div className="more__body">
@@ -724,7 +731,6 @@ export default async function Home() {
       <RailFocus />
       <TapRipple />
       <TripleTapQR />
-      <HoldToDive />
       <WhatsAppCount />
       <BackToTop />
       <ReturnToPlace />

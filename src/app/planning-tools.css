@@ -42,3 +42,14 @@
 .when__says .microcopy { color: #0a7d70; }
 .when__wa { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border-radius: 999px; background: #3fd1be; color: #04121a; text-decoration: none; font: 700 0.88rem/1 var(--sc-font-display); }
 .when__note { margin: 0; font-size: 12px; line-height: 1.5; color: rgba(16, 35, 58, 0.55); }
+
+/* Or say it in a sentence: one line, one button, and what was read from it. */
+.finder__say { display: grid; gap: 0.45rem; margin: 0 0 1rem; }
+.finder__say-row { display: flex; gap: 0.5rem; align-items: stretch; }
+.finder__say-input { flex: 1; min-width: 0; min-height: 44px; padding: 0 0.9rem; border-radius: 999px; border: 1px solid rgba(10, 125, 112, 0.35); background: #fff; color: #171208; font-size: 16px; }
+.finder__say-input::placeholder { color: rgba(23, 18, 8, 0.45); }
+.finder__say-input:focus-visible { outline: 2px solid #0a7d70; outline-offset: 2px; }
+.finder__say-go { flex: none; }
+.finder__say-go:disabled { opacity: 0.5; cursor: default; }
+.finder__heard { margin: 0; font-size: 13px; line-height: 1.5; color: rgba(23, 18, 8, 0.7); }
+@media (max-width: 480px) { .finder__say-row { flex-direction: column; } }

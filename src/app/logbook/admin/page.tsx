@@ -110,6 +110,13 @@ export default async function AdminPage({
   const waiting = by("pending");
   const live = by("approved");
   const hidden = by("hidden");
+  // Jev's shortlist for review of the month: the warmest, fullest pages on the site that are
+  // not already pinned. A nudge for Osama, not a decision.
+  const shortlist = live
+    .filter((e) => e.triage && !e.featured)
+    .map((e) => ({ e, score: (e.triage!.tone === "warm" ? e.triage!.toneConfidence : 0) + Math.min(e.note.length / 400, 1) * 0.5 + e.triage!.genuine * 0.3 }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
 
   // The full editor. Only what is waiting shows this open; the rest stay folded away.
   const editor = (e: LogbookEntry) => (
@@ -152,6 +159,9 @@ export default async function AdminPage({
       </label>
       <div className="lb-admin__actions">
         <button type="submit" name="action" value="save" className="lb-btn lb-btn--paper">Save</button>
+        {!e.triage ? (
+          <button type="submit" name="action" value="read" className="lb-btn lb-btn--paper">Read with Jev</button>
+        ) : null}
         {e.status !== "approved" ? (
           <button type="submit" name="action" value="approve" className="lb-btn">Put it on the site</button>
         ) : null}
@@ -178,6 +188,7 @@ export default async function AdminPage({
       {e.triage ? (
         <p className="lb-mono" style={{ margin: "0.35rem 0 0", color: readCarefully(e.triage) ? "#b45309" : "var(--ink-soft)" }}>
           Jev read it: {triageLine(e.triage)}
+          {e.triage.language === "Arabic" ? <> <a href="#quick-replies">Arabic quick replies</a></> : null}
         </p>
       ) : null}
       <p className="lb-page__note">{e.note}</p>
@@ -250,13 +261,21 @@ export default async function AdminPage({
         </div>
       </section>
 
-      <QuickReplies />
+      <div id="quick-replies"><QuickReplies /></div>
 
       <section className="lb-wall" style={{ paddingTop: "2.5rem", paddingBottom: "3rem", background: "var(--bone)" }}>
         <div className="lb-wall__inner">
           <div className="lb-wall__head" style={{ marginBottom: "1.4rem" }}>
             <span className="lb-mono">Waiting for you · {waiting.length}</span>
           </div>
+          {shortlist.length ? (
+            <p className="lb-stand" style={{ color: "var(--ink-soft)", marginBottom: "1.2rem" }}>
+              Review of the month, Jev&apos;s shortlist:{" "}
+              {shortlist.map(({ e }, i) => (
+                <span key={e.id}>{i ? ", " : ""}<a href={`#${e.id}`}>{e.name}</a> ({sitesOf(e).map((k) => siteInfo(k).label).join(" + ")}, {e.note.split(/\s+/).length} words)</span>
+              ))}. Tick the pin on the one you like.
+            </p>
+          ) : null}
           {waiting.length === 0 ? (
             <p className="lb-stand" style={{ color: "var(--ink-soft)" }}>
               All caught up. New reviews land here.

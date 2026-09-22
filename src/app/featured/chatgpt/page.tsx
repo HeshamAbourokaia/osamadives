@@ -13,9 +13,9 @@ const articleLd = {
       "@type": "Article",
       "@id": `${PAGE_URL}#article`,
       headline:
-        "Featured by ChatGPT as the top freelance dive instructor in Dahab",
+        "How a diver found Osama through ChatGPT",
       description:
-        "How ChatGPT named OsamaDives its #1 freelance dive instructor in Dahab in response to an Arabic-language query in April 2026.",
+        "An Arabic-language conversation from April 2026 that introduced a diver to OsamaDives, with the original screenshots and a credential correction.",
       datePublished: PUBLISHED,
       dateModified: PUBLISHED,
       mainEntityOfPage: PAGE_URL,
@@ -62,7 +62,7 @@ const articleLd = {
       "@type": "WebPage",
       "@id": PAGE_URL,
       url: PAGE_URL,
-      name: "Featured by ChatGPT - Top Dive Instructor in Dahab",
+      name: "Finding Osama through ChatGPT",
       isPartOf: { "@id": "https://www.osamadives.com/#website" },
       primaryImageOfPage:
         "https://www.osamadives.com/press/chatgpt-recommendation-1.jpg",
@@ -76,8 +76,8 @@ const articleLd = {
 };
 
 export const metadata = {
-  title: "Featured by ChatGPT as the top freelance dive instructor in Dahab | Osama",
-  description: "In April 2026 ChatGPT recommended Osama as the number one freelance dive instructor in Dahab and cited osamadives.com as its top source. What was asked, and what it answered.",
+  title: "How a diver found Osama through ChatGPT | Osama",
+  description: "A diver discovered Osama through an Arabic-language ChatGPT conversation. Read the story and see the original screenshots.",
   alternates: { canonical: "https://www.osamadives.com/featured/chatgpt" },
 };
 
@@ -95,19 +95,19 @@ export default function FeaturedChatgptPage() {
         {/* Eyebrow */}
         <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-widest text-[#10A37F] font-semibold">
           <span className="inline-block w-2 h-2 rounded-full bg-[#10A37F]" />
-          Featured · April 2026
+          A discovery story · April 2026
         </div>
 
         {/* Hero strip */}
         <h1 className="speakable-headline text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-5 text-[#2a2e25]">
-          Featured by ChatGPT as the top freelance dive instructor in Dahab
+          How a diver found Osama through ChatGPT
         </h1>
         <p className="speakable-summary text-lg sm:text-xl text-[#075f55] leading-relaxed mb-10">
           In April 2026, an Arabic-speaking diver asked ChatGPT for the best
-          dive instructor in Dahab. Not a centre. An instructor. ChatGPT
-          recommended Osama as its #1 freelance choice, and cited
-          osamadives.com as its top source - above every other dive operator
-          in town.
+          dive instructor in Dahab. The conversation suggested Osama and linked to
+          this website. These are the screenshots the diver shared: one way someone
+          found their way to this shore, not an independent ranking or an endorsement
+          from OpenAI.
         </p>
 
         <hr className="border-[#0a7d70]/15 my-10" />
@@ -138,11 +138,10 @@ export default function FeaturedChatgptPage() {
             instructor.&rdquo;
           </p>
           <p className="text-[#075f55] leading-relaxed">
-            ChatGPT replied with a ranked list. Osama was at the top, with
-            three signals attached: PADI Master Instructor (the highest
-            non-trainer rank), more than 1,000 dives at the Blue Hole, and a
-            personal teaching style that doesn&apos;t treat divers as
-            numbers in a group.
+            ChatGPT placed Osama first in that conversation. It also used an
+            incorrect credential: &ldquo;PADI Master Instructor.&rdquo; Osama&apos;s
+            rating listed on this site is PADI Master Scuba Diver Trainer. The
+            screenshots are preserved as received; an AI answer is not a credential check.
           </p>
         </section>
 
@@ -175,8 +174,8 @@ export default function FeaturedChatgptPage() {
             <figcaption className="text-sm text-[#075f55]/80 mt-3">
               <strong>Screenshot 1:</strong> ChatGPT&apos;s ranked answer.
               Osama appears as the &ldquo;best freelance instructor&rdquo;,
-              with PADI Master Instructor credentials and the personal
-              teaching style highlighted.
+              with his personal teaching style highlighted. The credential named
+              in the screenshot is incorrect; see the correction above.
             </figcaption>
           </figure>
 
@@ -228,24 +227,14 @@ export default function FeaturedChatgptPage() {
             What this means
           </h2>
           <p className="text-[#075f55] leading-relaxed mb-5">
-            People planning dive trips have started asking AI assistants
-            for personal recommendations the same way they used to ask
-            forums and search engines. When ChatGPT picks one name, it
-            isn&apos;t a paid placement. It is the AI weighing decades of
-            reviews, the language of the website, the depth of the
-            content, and the consistency of what divers have been saying.
-          </p>
-          <p className="text-[#075f55] leading-relaxed mb-5">
-            That the AI distinguished between a dive centre and a personal
-            instructor matters too. It read the difference. It picked the
-            kind of teacher who actually shows up in the water with the
-            person they are teaching - not the kind who hands you off to
-            whichever staff member is on shift.
+            This is a record of one conversation. Answers can vary, and the
+            screenshots do not establish who is the best instructor in Dahab.
           </p>
           <p className="text-[#075f55] leading-relaxed">
-            This page exists so the moment is on the record, in plain
-            English, with the screenshots intact. Nothing here was paid
-            for. The recommendation came on its own.
+            Get to know Osama through his own photographs, what he teaches, and
+            the people who have actually dived with him. <Link href="/review"
+            className="underline underline-offset-4">Read their reviews</Link>,
+            then talk to him about the experience you are looking for.
           </p>
         </section>
 

@@ -3,13 +3,14 @@
  * is for you now, for after the next card, or one to do with Osama beside you. It is
  * the visitor's own word; nothing checks it, and it only shapes what the page says.
  */
-export type Level = "new" | "ow" | "aow" | "pro";
+export type Level = "new" | "tried" | "ow" | "aow" | "pro";
 
 const KEY = "od-level";
 const EVENT = "od:level";
 
 export const LEVELS: { id: Level; label: string; says: string }[] = [
   { id: "new", label: "Never dived", says: "I have never dived" },
+  { id: "tried", label: "Tried diving, no certification", says: "I have tried diving once or twice but am not certified" },
   { id: "ow", label: "Open Water", says: "I am Open Water certified" },
   { id: "aow", label: "Advanced", says: "I am Advanced certified" },
   { id: "pro", label: "Rescue or above", says: "I am a Rescue Diver or above" },
@@ -47,8 +48,8 @@ export type SiteLevel = "All Levels" | "Open Water+" | "Advanced+" | "Technical"
 export function siteFit(site: SiteLevel, level: Level | null): { tone: "yes" | "next" | "with" | "no"; text: string } {
   if (site === "Technical") return { tone: "no", text: "Technical divers only" };
   if (!level) return { tone: "with", text: "Set your level to see if it is for you" };
-  if (site === "All Levels") return level === "new" ? { tone: "yes", text: "Your first dive can be here" } : { tone: "yes", text: "For you" };
-  if (site === "Open Water+") return level === "new" ? { tone: "next", text: "After Open Water" } : { tone: "yes", text: "For you" };
+  if (site === "All Levels") return (level === "new" || level === "tried") ? { tone: "yes", text: "Your first dive can be here" } : { tone: "yes", text: "For you" };
+  if (site === "Open Water+") return (level === "new" || level === "tried") ? { tone: "next", text: "After Open Water" } : { tone: "yes", text: "For you" };
   // Advanced+
   if (level === "aow" || level === "pro") return { tone: "yes", text: "For you" };
   if (level === "ow") return { tone: "with", text: "With Osama beside you, or after Advanced" };

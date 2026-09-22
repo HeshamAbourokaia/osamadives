@@ -9,6 +9,7 @@ export default function TailFoot() {
       <span>OsamaDives · family on this shore since 1983 · Dahab, South Sinai, Egypt</span>
       <nav aria-label="Footer">
         <a href="/diving-with-osama">Diving with Osama</a>
+        <a href="/before-you-arrive">Before you arrive</a>
         <a href="/dive-sites">Dive sites</a>
         <a href="/blog">Journal</a>
         <a href="/gallery">Gallery</a>

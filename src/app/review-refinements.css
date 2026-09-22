@@ -1,0 +1,66 @@
+@import "./planning-tools.css";
+
+/* Open on the shore: both people remain visible and text has its own space. */
+.descent .brand-stage { height: auto; min-height: 0; padding-top: 5rem; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: center; background: #f3eee4; color: #203c38; }
+.descent .brand-stage__photo { position: relative; inset: auto; width: 100%; height: auto; min-height: 0; object-fit: contain; transform: none !important; }
+.descent .brand-stage > .sc-scrim { display: none; }
+.descent .brand-copy { position: relative; inset: auto; padding: clamp(1.5rem, 4vw, 4rem); max-width: none; opacity: 1 !important; transform: none !important; }
+.descent .brand-copy h1 { color: #203c38; font-size: clamp(3.5rem, 7vw, 7rem); }
+.descent .brand-copy .sc-body, .descent .brand-small { color: #38524b; }
+.descent .brand-copy .brand-cta { display: inline-flex; background: #185e55 !important; color: #fffdf8; border-color: #185e55; text-shadow: none; box-shadow: none; }
+.descent .brand-start { display: inline-flex; align-items: center; min-height: 44px; margin: 0 0 0 1rem; color: #185e55; text-decoration: underline; text-underline-offset: 4px; font: 600 .85rem/1.4 var(--sc-font-text); letter-spacing: 0; text-transform: none; }
+.descent .brand-start i { display: none; }
+.descent .brand-hold { display: none; }
+.shore-welcome { background: #f3eee4; color: #203c38; }
+.shore-welcome__inner { max-width: 1180px; margin: auto; padding: clamp(2rem, 5vw, 4.5rem) clamp(1.25rem, 4vw, 3rem); }
+.shore-welcome__intro { display: grid; grid-template-columns: minmax(0, .65fr) minmax(0, 1.35fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+.shore-welcome__photo { margin: 0; }
+.shore-welcome__photo img, .shore-welcome__photo video { display: block; width: 100%; height: auto; border-radius: 3px; }
+.shore-welcome__photo figcaption { padding-top: .7rem; color: #54625a; font: 500 .65rem/1.5 var(--mono); }
+.shore-welcome .microcopy { color: #185e55; }
+.shore-welcome h2 { color: #203c38; margin: .75rem 0 1rem; font: 400 clamp(2rem, 3.5vw, 3.5rem)/1.08 Georgia, serif; text-transform: none; letter-spacing: -.03em; }
+.shore-welcome p { font-size: 1rem; line-height: 1.65; max-width: 58ch; }
+.shore-welcome blockquote { margin: 1.5rem 0 0; padding: .25rem 0 .25rem 1.2rem; border-left: 2px solid #ae8852; }
+.shore-welcome blockquote p { font: 400 1.25rem/1.5 Georgia, serif; margin: 0 0 .75rem; }
+.shore-welcome cite { font: 400 .8rem/1.6 var(--sc-font-text); color: #54625a; }
+.shore-welcome cite a { display: block; color: #185e55; text-decoration: underline; text-underline-offset: 3px; padding-block: .5rem; }
+.shore-planner { border-top: 1px solid #d5cfbf; margin-top: 2.5rem; padding-top: 2rem; scroll-margin-top: 6rem; }
+.shore-planner__heading h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); }
+.trip-tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; margin: 1.5rem 0; }
+.trip-tools > * { min-width: 0; }
+.trip-tool { border: 1px solid #c5d2c8; border-radius: 14px; background: #fffdf8; overflow: hidden; }
+.trip-tool > summary { display: flex; justify-content: space-between; align-items: center; gap: .75rem; padding: 1.1rem; min-height: 60px; cursor: pointer; font: 700 1rem/1.4 var(--sc-font-display); color: #185e55; list-style: none; }
+.trip-tool > summary::-webkit-details-marker { display: none; }
+.trip-tool[open] > summary > span { transform: rotate(45deg); }
+.trip-tool .finder, .trip-tool .when { margin: 0; border: 0; border-radius: 0; box-shadow: none; }
+.shore-prep-link { display: inline-flex; align-items: center; min-height: 44px; color: #185e55; text-decoration: underline; text-underline-offset: 4px; font-size: .95rem; }
+.trip-tools :is(button, a, summary):focus-visible, .hoverclip__controls button:focus-visible { outline: 3px solid #b78637; outline-offset: 4px; }
+.hoverclip__controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding-top: .75rem; color: #d1e5de; font-size: .8rem; }
+.hoverclip__controls button { min-height: 44px; padding: .6rem 1.2rem; border: 1px solid #70bbae; border-radius: 999px; background: #103b36; color: #fff; cursor: pointer; }
+.classroom-mobile { display: none; }
+/* Contain the portrait on wide screens too; the birthday slate sits at its left. */
+.descent .depth-photo--1 { object-fit: contain; transform: none !important; }
+@media (max-width: 860px) {
+  .descent .brand-stage { display: block; padding-top: 4.5rem; }
+  .descent .brand-copy { padding: 1.5rem 1.25rem 2rem; }
+  .descent .brand-copy h1 { font-size: clamp(3rem, 15vw, 4.4rem); }
+  .descent .brand-start { margin-left: .75rem; }
+  .shore-welcome__intro { grid-template-columns: 1fr; }
+  .shore-welcome__photo { max-width: 22rem; }
+  .shore-welcome h2 { font-size: 2rem; }
+  .trip-tools { grid-template-columns: 1fr; }
+  .descent #descent-act { height: auto !important; min-height: 0 !important; }
+  .descent #descent-act > .depth-stage { display: none; }
+  .classroom-mobile { display: grid; gap: 2rem; padding-bottom: 2rem; }
+  .classroom-mobile figure { margin: 0; }
+  .classroom-mobile img { display: block; width: 100%; height: auto; }
+  .classroom-mobile figcaption { padding: 1.5rem 2.75rem 1.5rem 1.25rem; }
+  .classroom-mobile .microcopy { color: #8fd6c7; }
+  .classroom-mobile h2 { margin: .8rem 0 0; color: #edf4f2; font: 700 clamp(1.6rem, 6vw, 2rem)/1.2 var(--sc-font-display); letter-spacing: -.02em; text-transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .descent .brand-start i { animation: none; } }
+
+@media (min-width: 861px) {
+  .descent .brand-copy { padding-right: 6rem; }
+  .descent .brand-copy h1 { font-size: clamp(3rem, 6.4vw, 6rem); }
+}

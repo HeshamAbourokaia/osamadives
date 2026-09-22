@@ -1,0 +1,20 @@
+.arrival { max-width: 46rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #203c38; }
+.arrival h1 { font: 400 clamp(2rem, 5vw, 3.5rem)/1.12 Georgia, serif; margin: 1rem 0; text-transform: none; letter-spacing: -.025em; }
+.arrival p { font-size: 1rem; line-height: 1.65; }
+.arrival h2 { font-size: 1.4rem; margin-top: 2rem; }
+.arrival a { color: #185e55; text-decoration: underline; text-underline-offset: 4px; }
+.arrival-languages { display: flex; gap: .5rem; margin-bottom: 2rem; }
+.arrival-languages button { min-height: 44px; border: 1px solid #185e55; border-radius: 999px; padding: .5rem 1rem; color: #185e55; background: #fffdf8; cursor: pointer; }
+.arrival-languages button[aria-pressed="true"] { background: #185e55; color: #fff; }
+.arrival-steps { list-style: none; margin: 1.5rem 0; padding: 0; display: grid; gap: .75rem; }
+.arrival-steps label { display: flex; align-items: flex-start; gap: 1rem; padding: 1.1rem; background: #fffdf8; border: 1px solid #d5cfbf; border-radius: 12px; cursor: pointer; }
+.arrival-steps input { width: 24px; height: 24px; margin-top: .2rem; accent-color: #185e55; flex: none; }
+.arrival-steps strong, .arrival-steps label span span { display: block; }
+.arrival-steps strong { margin-bottom: .5rem; font-size: 1.1rem; }
+.arrival-steps label span span { font-size: 1rem; line-height: 1.6; }
+.arrival-note { color: #54625a; }
+.arrival [lang="ar"] { font-family: Tahoma, Arial, sans-serif; }
+.arrival [lang="ar"] h1 { font-family: inherit; line-height: 1.5; }
+.arrival :is(input, button, a):focus-visible { outline: 3px solid #b78637; outline-offset: 4px; }
+.arrival [lang="ar"] .microcopy { letter-spacing: 0; }
+@media (max-width: 860px) { .arrival { padding-right: 3rem; padding-bottom: 6rem; } }

@@ -133,13 +133,11 @@ const structuredData = {
           name: "CDWS Professional ID Card",
         },
       ],
-      award:
-        "Named #1 freelance dive instructor in Dahab by ChatGPT (April 2026)",
       subjectOf: {
         "@type": "Article",
         "@id": "https://www.osamadives.com/featured/chatgpt#article",
         url: "https://www.osamadives.com/featured/chatgpt",
-        name: "Featured by ChatGPT - top dive instructor in Dahab",
+        name: "How a diver found Osama through ChatGPT",
         datePublished: "2026-04-30",
       },
     },

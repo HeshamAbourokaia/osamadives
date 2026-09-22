@@ -38,8 +38,17 @@
 .hoverclip__controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding-top: .75rem; color: #d1e5de; font-size: .8rem; }
 .hoverclip__controls button { min-height: 44px; padding: .6rem 1.2rem; border: 1px solid #70bbae; border-radius: 999px; background: #103b36; color: #fff; cursor: pointer; }
 .classroom-mobile { display: none; }
-/* Contain the portrait on wide screens too; the birthday slate sits at its left. */
-.descent .depth-photo--1 { object-fit: contain; transform: none !important; }
+/* One shared turtle composition at every width: title, whole photograph, caption.
+   These are ordinary flow elements, so no scroll cue can move words over the slate. */
+.descent .classroom-story { padding: 2.5rem 0 3rem; scroll-margin-top: 5.5rem; }
+.classroom-story__heading { max-width: 40rem; margin: 0 auto; padding: 0 2.75rem 1.25rem 1.25rem; text-align: center; }
+.classroom-story__heading .microcopy { color: #8fd6c7; }
+.descent .classroom-story__heading h2 { margin: .8rem 0 0; color: #edf4f2; font: 700 clamp(2rem, 4vw, 3.6rem)/1.1 var(--sc-font-display); letter-spacing: -.025em; text-transform: none; }
+.classroom-story__frame { max-width: 40rem; margin: 0 auto; }
+.classroom-story__frame img { display: block; width: 100%; height: auto; max-height: 70svh; object-fit: contain; }
+.classroom-story__frame figcaption { padding: 1.25rem 2.75rem 0 1.25rem; color: #edf4f2; font: 700 clamp(1.6rem, 3vw, 2.6rem)/1.2 var(--sc-font-display); text-align: center; letter-spacing: -.02em; }
+.descent #reef-act .depth-photo--2 { opacity: clamp(0, 1 - (var(--sc-p, 0) - 0.48) / 0.08, 1); }
+.descent #reef-act .depth-photo--3 { opacity: clamp(0, (var(--sc-p, 0) - 0.48) / 0.08, 1); }
 @media (max-width: 860px) {
   .descent .brand-stage { display: block; padding-top: 4.5rem; }
   .descent .brand-copy { padding: 1.5rem 1.25rem 2rem; }
@@ -49,8 +58,9 @@
   .shore-welcome__photo { max-width: 22rem; }
   .shore-welcome h2 { font-size: 2rem; }
   .trip-tools { grid-template-columns: 1fr; }
-  .descent #descent-act { height: auto !important; min-height: 0 !important; }
-  .descent #descent-act > .depth-stage { display: none; }
+  .descent #reef-act { height: auto !important; min-height: 0 !important; }
+  .descent #reef-act > .depth-stage { display: none; }
+  .classroom-story__frame img { max-height: none; }
   .classroom-mobile { display: grid; gap: 2rem; padding-bottom: 2rem; }
   .classroom-mobile figure { margin: 0; }
   .classroom-mobile img { display: block; width: 100%; height: auto; }

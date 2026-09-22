@@ -334,12 +334,19 @@ export default async function Home() {
         </section>
 
         {/* ACT 4b · THE DESCENT: three of Osama's own photographs, shown at the depth they were taken. */}
-        <section className="g-abyss" id="descent-act" data-sc-act="pin" data-sc-span="2.7" style={{ "--sc-span": 2.7 } as React.CSSProperties}>
+        <section className="g-abyss classroom-story" id="descent-act" aria-labelledby="classroom-title">
+          <div className="classroom-story__heading">
+            <span className="microcopy">Om El Seed · photographed by Osama</span>
+            <h2 id="classroom-title">His classroom.</h2>
+          </div>
+          <figure className="classroom-story__frame">
+            <img src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="(max-width: 860px) 100vw, 640px" width={800} height={1066} loading="lazy" alt="A turtle with a diver holding the complete Happy Birthday Osama sign behind it" />
+            <figcaption>Every first breath<br />starts here.</figcaption>
+          </figure>
+        </section>
+
+        <section className="g-abyss" id="reef-act" data-sc-act="pin" data-sc-span="2" style={{ "--sc-span": 2 } as React.CSSProperties}>
           <div className="classroom-mobile">
-            <figure>
-              <img src="/descent/depth-7-m.webp" width={800} height={1066} loading="lazy" alt="A turtle with a diver holding the complete Happy Birthday Osama sign behind it" />
-              <figcaption><span className="microcopy">Om El Seed · photographed by Osama</span><h2>His classroom.<br />Every first breath starts here.</h2></figcaption>
-            </figure>
             <figure>
               <img src="/descent/depth-8-m.webp" loading="lazy" alt="Coral on the reef shelf at the edge of the Blue Hole" />
               <figcaption><span className="microcopy">The edge of the Blue Hole · where he guides</span><h2>A thousand descents here.<br />He knows its every mood.</h2></figcaption>
@@ -350,7 +357,6 @@ export default async function Home() {
             </figure>
           </div>
           <div data-sc-stage className="depth-stage">
-            <img className="depth-photo depth-photo--1" data-sc-parallax="-0.24" src="/descent/depth-7.webp" srcSet="/descent/depth-7-m.webp 800w, /descent/depth-7.webp 1600w" sizes="100vw" alt="A turtle with a diver holding a Happy Birthday Osama sign behind it at Om El Seed" />
             <img className="depth-photo depth-photo--2" data-sc-parallax="-0.24" src="/descent/depth-8.webp" srcSet="/descent/depth-8-m.webp 800w, /descent/depth-8.webp 1600w" sizes="100vw" alt="Coral on the reef shelf at the edge of the Blue Hole, eight metres down, photographed by Osama" />
             <img className="depth-photo depth-photo--3" data-sc-parallax="-0.24" src="/descent/depth-12.webp" srcSet="/descent/depth-12-m.webp 800w, /descent/depth-12.webp 1600w" sizes="100vw" alt="A diver silhouetted in open blue water at twelve metres, photographed by Osama" />
             <div className="light-band light-band--down" aria-hidden="true" />
@@ -358,17 +364,13 @@ export default async function Home() {
             <Bubbles count={22} strength={0.7} />
             <div className="sc-scrim sc-scrim--lead" aria-hidden="true" />
             <div className="depth-copy">
-              <div className="depth-cue depth-cue--classroom" data-sc-cue="0.02 0.3 0.08 0.06">
-                <span className="microcopy">7 metres · Om El Seed · where he teaches</span>
-                <h2><Words text="His classroom. Every first breath starts here." at={0.02} /></h2>
-              </div>
-              <div className="depth-cue" data-sc-cue="0.36 0.64 0.06 0.06">
+              <div className="depth-cue" data-sc-cue="-0.04 0.5 0.06 0.06">
                 <span className="microcopy">8 metres · the edge of the Blue Hole · where he guides</span>
-                <h2><Words text="A thousand descents here. He knows its every mood." at={0.36} /></h2>
+                <h2><Words text="A thousand descents here. He knows its every mood." at={-0.14} /></h2>
               </div>
-              <div className="depth-cue" data-sc-cue="0.7 1 0.06 0">
+              <div className="depth-cue" data-sc-cue="0.54 1 0.06 0">
                 <span className="microcopy">12 metres · the blue · how he dives</span>
-                <h2 className="depth-heading"><Words text="He guides. You dive within your training, every time." at={0.7} /></h2>
+                <h2 className="depth-heading"><Words text="He guides. You dive within your training, every time." at={0.54} /></h2>
               </div>
             </div>
             <div className="depth-credit microcopy" data-sc-cue="0.05">Photographs by Osama, on ordinary working days</div>

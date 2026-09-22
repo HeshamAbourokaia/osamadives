@@ -248,7 +248,7 @@ type Row = {
   id: string; created_at: string; status: string; name: string; country: string; site: string;
   dived_on: string; course: string; courses: unknown; sites: unknown; stamp: string; stamps: unknown; note: string; photo_url: string | null;
   flags: unknown; moderated_at: string | null; moderated_by: string | null; moderated_from: string | null; ip_hash: string;
-  reply: string | null; featured: boolean | null; video_url: string | null;
+  reply: string | null; featured: boolean | null; video_url: string | null; triage?: unknown;
 };
 
 const fromRow = (r: Row): LogbookEntry => ({
@@ -277,6 +277,7 @@ const fromRow = (r: Row): LogbookEntry => ({
   reply: r.reply ?? "",
   featured: Boolean(r.featured),
   videoUrl: r.video_url,
+  triage: r.triage && typeof r.triage === "object" ? (r.triage as LogbookEntry["triage"]) : null,
 });
 
 export class NeonStore implements LogbookStore {
@@ -327,6 +328,8 @@ export class NeonStore implements LogbookStore {
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS moderated_by text NOT NULL DEFAULT ''`;
         // And roughly where from, in words, because the phone link needs no passcode.
         await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS moderated_from text NOT NULL DEFAULT ''`;
+        // Jev's reading of the note, kept as it came back so the moderation page can show it later.
+        await sql`ALTER TABLE logbook_entries ADD COLUMN IF NOT EXISTS triage jsonb`;
         // Reactions came later. One reaction per (review, emoji, device).
         await sql`CREATE TABLE IF NOT EXISTS qr_scans (
           id text PRIMARY KEY,
@@ -355,10 +358,10 @@ export class NeonStore implements LogbookStore {
     // The singular columns are kept in step as the first of each array, for anything still
     // reading them directly and for rows that predate the plural ones.
     await sql`INSERT INTO logbook_entries
-      (id, created_at, status, name, country, site, sites, dived_on, course, courses, stamp, stamps, note, photo_url, flags, moderated_at, ip_hash, reply, featured, video_url)
+      (id, created_at, status, name, country, site, sites, dived_on, course, courses, stamp, stamps, note, photo_url, flags, moderated_at, ip_hash, reply, featured, video_url, triage)
       VALUES (${e.id}, ${e.createdAt}, ${e.status}, ${e.name}, ${e.country}, ${e.site}, ${JSON.stringify(e.sites)}::jsonb, ${e.divedOn}, ${e.course}, ${JSON.stringify(e.courses)}::jsonb,
               ${e.stamps[0] ?? null}, ${JSON.stringify(e.stamps)}::jsonb, ${e.note}, ${e.photoUrl}, ${JSON.stringify(e.flags)}::jsonb, ${e.moderatedAt}, ${e.ipHash},
-              ${e.reply}, ${e.featured}, ${e.videoUrl})`;
+              ${e.reply}, ${e.featured}, ${e.videoUrl}, ${e.triage ? JSON.stringify(e.triage) : null}::jsonb)`;
   }
 
   async get(id: string) {

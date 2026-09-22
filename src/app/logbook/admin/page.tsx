@@ -12,6 +12,7 @@ import { siteInfo } from "@/lib/logbook/sites";
 import { stampInfo } from "@/lib/logbook/stamps";
 import { getStore } from "@/lib/logbook/store";
 import { TTL, signToken } from "@/lib/logbook/tokens";
+import { readCarefully, triageLine } from "@/lib/logbook/triage";
 import { LIMITS, type EntryStatus, type LogbookEntry, coursesOf, sitesOf } from "@/lib/logbook/types";
 
 export const dynamic = "force-dynamic";
@@ -174,6 +175,11 @@ export default async function AdminPage({
         {e.featured ? " · REVIEW OF THE MONTH" : ""}
         {e.moderatedAt ? ` · ${e.status === "approved" ? "put on the site" : e.status === "hidden" ? "hidden" : "moderated"} ${moderatedHow(e)} ${whenExact(e.moderatedAt)}` : ""}
       </span>
+      {e.triage ? (
+        <p className="lb-mono" style={{ margin: "0.35rem 0 0", color: readCarefully(e.triage) ? "#b45309" : "var(--ink-soft)" }}>
+          Jev read it: {triageLine(e.triage)}
+        </p>
+      ) : null}
       <p className="lb-page__note">{e.note}</p>
       <div className="lb-admin__links lb-mono">
         {e.photoUrl ? <a href={e.photoUrl} target="_blank" rel="noopener noreferrer">Photo</a> : null}

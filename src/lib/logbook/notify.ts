@@ -2,6 +2,7 @@ import { coursesOf, sitesOf } from "@/lib/logbook/types";
 import type { LogbookEntry } from "./types";
 import { siteInfo } from "./sites";
 import { stampInfo } from "./stamps";
+import { readCarefully, triageLine } from "./triage";
 
 export interface ModerationLinks {
   approve: string;
@@ -14,7 +15,8 @@ function summary(e: LogbookEntry): string {
   const bits = [e.name, e.country, where, e.divedOn, coursesOf(e).join(" + ")].filter(Boolean).join(" · ");
   const flags = e.flags.length ? `\nFlags: ${e.flags.join(", ")}` : "";
   const stamps = e.stamps.map((k) => stampInfo(k).label).join(", ");
-  return `New review\n${bits}\nStamp: ${stamps}${flags}\n\n${e.note}`;
+  const jev = e.triage ? `\nJev: ${triageLine(e.triage)}` : "";
+  return `New review\n${bits}\nStamp: ${stamps}${flags}${jev}\n\n${e.note}`;
 }
 
 async function telegram(e: LogbookEntry, links: ModerationLinks): Promise<boolean> {
@@ -84,7 +86,8 @@ async function ntfy(e: LogbookEntry, links: ModerationLinks): Promise<boolean> {
       Title: `New review: ${e.name}${e.country ? ` from ${e.country}` : ""}`,
       Click: links.view,
       Priority: "high",
-      Tags: "scroll",
+      // A page Jev says to read carefully gets a warning sign next to the scroll.
+      Tags: e.triage && readCarefully(e.triage) ? "scroll,warning" : "scroll",
       Actions: `view, Approve, ${links.approve}; view, Hide, ${links.hide}`,
     },
     body: summary(e).slice(0, 3800),

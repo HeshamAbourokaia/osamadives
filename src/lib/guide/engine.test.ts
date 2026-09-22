@@ -82,7 +82,7 @@ describe("hostile input", () => {
       expect(readFileSync(path, "utf8")).not.toMatch(/\bfetch\s*\(|XMLHttpRequest|WebSocket|sendBeacon|localStorage|sessionStorage|indexedDB|document\.cookie|dangerouslySetInnerHTML|\.innerHTML\s*=|\beval\s*\(|new Function|window\.open/);
     }
     const askJev = readFileSync("src/lib/guide/ask-jev.ts", "utf8");
-    expect(askJev.match(/fetch\(\s*"([^"]+)"/)?.[1]).toBe("/api/guide");
+    expect(askJev.match(/post<[^>]*>\("([^"]+)"/g)?.map((m) => m.replace(/.*\("/, "").slice(0, -1)).sort()).toEqual(["/api/guide", "/api/guide/finder"]);
     expect(askJev).not.toMatch(/https?:/);
   });
   it("gives the same words by id as by keyword", () => {

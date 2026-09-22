@@ -163,6 +163,7 @@ export class FileStore implements LogbookStore {
       if (patch.stamps !== undefined) e.stamps = patch.stamps;
       if (patch.featured !== undefined) e.featured = patch.featured;
       if (patch.videoUrl !== undefined) e.videoUrl = patch.videoUrl;
+      if (patch.triage !== undefined) e.triage = patch.triage;
       await this.writeAll(all);
       return e;
     });
@@ -408,8 +409,10 @@ export class NeonStore implements LogbookStore {
     const videoUrl = patch.videoUrl === undefined ? current.videoUrl : patch.videoUrl;
     const photoUrl = patch.photoUrl === undefined ? current.photoUrl : patch.photoUrl;
     const stamps = patch.stamps ?? current.stamps;
+    const triage = patch.triage === undefined ? (current.triage ?? null) : patch.triage;
     const rows = (await sql`UPDATE logbook_entries SET reply = ${reply}, featured = ${featured},
-      video_url = ${videoUrl}, photo_url = ${photoUrl}, stamp = ${stamps[0] ?? null}, stamps = ${JSON.stringify(stamps)}::jsonb
+      video_url = ${videoUrl}, photo_url = ${photoUrl}, stamp = ${stamps[0] ?? null}, stamps = ${JSON.stringify(stamps)}::jsonb,
+      triage = ${triage ? JSON.stringify(triage) : null}::jsonb
       WHERE id = ${id} RETURNING *`) as Row[];
     return rows[0] ? fromRow(rows[0]) : null;
   }

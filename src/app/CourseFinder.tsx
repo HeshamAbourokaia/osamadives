@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { whatsappFor, togglePick, readPicks } from "@/lib/picks";
 import { writeLevel } from "@/lib/level";
+import { askFinder } from "@/lib/guide/ask-jev";
 
 import { courseAnswer, type Dived, type Card, type Days } from "@/lib/course-finder";
 
@@ -16,20 +17,48 @@ export default function CourseFinder() {
   const [card, setCard] = useState<Card | null>(null);
   const [days, setDays] = useState<Days | null>(null);
   const [added, setAdded] = useState(false);
+  // Or say it in a sentence: Jev reads it into the same taps, and only the ones it is
+  // sure of are filled. Whatever it could not tell stays for the visitor to tap.
+  const [story, setStory] = useState("");
+  const [reading, setReading] = useState(false);
+  const [heard, setHeard] = useState<string | null>(null);
   const stepTwoDone = dived === "card" ? card !== null : want !== null;
   const done = dived !== null && stepTwoDone && days !== null;
   const result = done ? courseAnswer(dived, want, card, days) : null;
   useEffect(() => { if (result) { writeLevel(result.level); setAdded(result.course ? readPicks().some((p) => p.id === result.course!.id) : false); } }, [result?.title, result?.level, result?.course?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-  const reset = () => { setDived(null); setWant(null); setCard(null); setDays(null); };
+  const reset = () => { setDived(null); setWant(null); setCard(null); setDays(null); setHeard(null); };
   const opt = (on: boolean, onClick: () => void, label: string) => (
     <button type="button" className={`finder__opt${on ? " is-on" : ""}`} aria-pressed={on} onClick={onClick}>{label}</button>
   );
+  async function listen(e: FormEvent) {
+    e.preventDefault();
+    const text = story.trim();
+    if (!text || reading) return;
+    setReading(true);
+    setHeard(null);
+    const got = await askFinder(text);
+    setReading(false);
+    const filled: string[] = [];
+    if (got.dived) { setDived(got.dived); setCard(null); setWant(null); filled.push(got.dived === "never" ? "never dived" : got.dived === "few" ? "tried it, no card" : "you have a card"); }
+    if (got.dived === "card" && got.card) { setCard(got.card); filled.push(got.card === "ow" ? "Open Water" : got.card === "aow" ? "Advanced" : "Rescue or above"); }
+    if (got.dived && got.dived !== "card" && got.want) { setWant(got.want); filled.push(got.want === "try" ? "just to try it" : "to be certified"); }
+    if (got.days) { setDays(got.days); filled.push(got.days === "1" ? "one day" : got.days === "3" ? "two to four days" : "a week or more"); }
+    setHeard(filled.length ? `I read: ${filled.join(", ")}. Change any tap that is wrong.` : "I could not tell from that. The taps below will get you there.");
+  }
   return (
     <section className="finder" aria-label="Which dive is right for me">
       <div className="finder__head">
         <span className="microcopy">Three taps</span>
         <h3 className="finder__title">Which dive is right for me?</h3>
       </div>
+      <form className="finder__say" onSubmit={listen}>
+        <label className="finder__k mono" htmlFor="finder-story">Or say it in a sentence</label>
+        <div className="finder__say-row">
+          <input id="finder-story" type="text" className="finder__say-input" value={story} maxLength={600} onChange={(e) => setStory(e.target.value)} placeholder="Five dives in Thailand years ago, no card, four days here" autoComplete="off" />
+          <button type="submit" className="finder__opt finder__say-go" disabled={reading || !story.trim()}>{reading ? "Reading" : "Work it out"}</button>
+        </div>
+        {heard ? <p className="finder__heard" aria-live="polite">{heard}</p> : null}
+      </form>
       <Q k="Have you dived before?">
         {opt(dived === "never", () => { setDived("never"); setCard(null); }, "Never")}
         {opt(dived === "few", () => { setDived("few"); setCard(null); }, "Once or twice, no card")}

@@ -101,6 +101,8 @@ export interface EntryPatch {
   videoUrl?: string | null;
   photoUrl?: string | null;
   stamps?: StampKey[];
+  /** Jev's reading, filled in later for a review that arrived without one. */
+  triage?: Triage | null;
 }
 
 // Every reaction is a good one; there is no thumbs down. The diving set is the closest

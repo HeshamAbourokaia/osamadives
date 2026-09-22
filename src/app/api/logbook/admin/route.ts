@@ -4,8 +4,10 @@ import { moderatorKey } from "@/lib/logbook/session";
 import { isValidId } from "@/lib/logbook/ids";
 import { cleanText } from "@/lib/logbook/sanitize";
 import { orderStamps } from "@/lib/logbook/stamps";
+import { siteInfo } from "@/lib/logbook/sites";
 import { getStore } from "@/lib/logbook/store";
-import { LIMITS } from "@/lib/logbook/types";
+import { triageEntry } from "@/lib/logbook/triage";
+import { LIMITS, coursesOf, sitesOf } from "@/lib/logbook/types";
 import { whereFrom } from "@/lib/logbook/where";
 
 export const runtime = "nodejs";
@@ -29,6 +31,12 @@ export async function POST(req: Request) {
     await store.setStatus(id, action === "approve" ? "approved" : "hidden", now, "admin", whereFrom(req));
   } else if (action === "delete") {
     await store.remove(id);
+  } else if (action === "read") {
+    // A review that arrived before Jev was reading them, or while the gateway was down.
+    const e = await store.get(id);
+    if (!e) return new Response("Not found", { status: 404 });
+    const triage = await triageEntry({ name: e.name, country: e.country, note: e.note, sites: sitesOf(e).map((k) => siteInfo(k).label), courses: coursesOf(e), divedOn: e.divedOn });
+    if (triage) await store.update(id, { triage });
   } else if (action === "save") {
     const reply = cleanText(form.get("reply"), LIMITS.reply.max, true);
     const video = cleanText(form.get("videoUrl"), 500);

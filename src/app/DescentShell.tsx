@@ -7,6 +7,7 @@ import TapRipple from "./TapRipple";
 import TripleTapQR from "./TripleTapQR";
 import WhatsAppCount from "./WhatsAppCount";
 import BackToTop from "@/components/BackToTop";
+import DiveGuide from "@/components/DiveGuide";
 import SideRail from "./SideRail";
 import MessageButton from "./MessageButton";
 import "./descent.css";
@@ -32,6 +33,7 @@ export default function DescentShell({ children }: { children: ReactNode }) {
       <div className="tail"><TailFoot /></div>
       <SideRail mode="site" />
       <MessageButton />
+      <DiveGuide />
       <BackToTop />
       <TapRipple />
       <TripleTapQR />

@@ -31,6 +31,7 @@ import WhatsAppCount from "./WhatsAppCount";
 import { LENS_MAP } from "./lensMap";
 import { diveSites } from "@/lib/dive-sites";
 import BackToTop from "@/components/BackToTop";
+import DiveGuide from "@/components/DiveGuide";
 import { blogPosts } from "@/lib/blog-posts";
 import { galleryPhotos } from "@/lib/gallery-config";
 import { getStore } from "@/lib/logbook/store";
@@ -727,6 +728,7 @@ export default async function Home() {
       </div>
       <SideRail />
       <MessageButton />
+      <DiveGuide />
       <RailTravel />
       <RailFocus />
       <TapRipple />

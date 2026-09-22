@@ -53,8 +53,8 @@
   }
   /* A phone should receive the complete safety rule at once. The desktop can
      keep the word-by-word reveal, while the mobile heading stays whole and calm. */
-  .descent #reef-act .depth-heading .w,
-  .descent #reef-act .depth-heading .w__i {
+  .descent #descent-act .depth-heading .w,
+  .descent #descent-act .depth-heading .w__i {
     overflow: visible;
     transform: none !important;
   }

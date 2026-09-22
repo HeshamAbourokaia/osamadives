@@ -21,7 +21,7 @@ export default function DescentBoot() {
       // back to a card, and the page stops moving while the cards do. There the three
       // rails become ordinary acts and the cards are swiped sideways, natively.
       if (matchMedia("(max-width: 860px)").matches) {
-        document.querySelectorAll<HTMLElement>("section:has(.js-rail), #reef-act").forEach((sec) => {
+        document.querySelectorAll<HTMLElement>("section:has(.js-rail), #descent-act").forEach((sec) => {
           sec.setAttribute("data-sc-act", "flow");
           sec.removeAttribute("data-sc-span");
           sec.style.removeProperty("--sc-span");

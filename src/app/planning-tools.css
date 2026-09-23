@@ -52,4 +52,7 @@
 .finder__say-go { flex: none; }
 .finder__say-go:disabled { opacity: 0.5; cursor: default; }
 .finder__heard { margin: 0; font-size: 13px; line-height: 1.5; color: rgba(23, 18, 8, 0.7); }
+.finder__note-read { margin: 0; padding: 8px 12px; border-left: 3px solid #0a7d70; background: rgba(10, 125, 112, 0.06); font-size: 13px; line-height: 1.55; color: rgba(23, 18, 8, 0.82); }
+.finder__note-read.is-health { border-left-color: #b4532a; background: rgba(180, 83, 42, 0.07); }
+.finder__note-read a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 480px) { .finder__say-row { flex-direction: column; } }

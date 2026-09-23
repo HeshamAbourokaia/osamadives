@@ -13,7 +13,7 @@ export const NONE = "none";
 export const MIN_CONFIDENCE = 0.45;
 
 export type Reading = { id: string; confidence: number };
-type Choice = { choice?: unknown; confidence?: unknown };
+type Choice = { choice?: unknown; confidence?: unknown; probability?: unknown };
 
 export function criteriaFor(profile: GuideProfile): Record<string, string> {
   const criteria: Record<string, string> = {};
@@ -128,7 +128,22 @@ export const FINDER_QUESTIONS = {
   },
 } as const;
 
-export type FinderReading = { dived?: "never" | "few" | "card"; card?: "ow" | "aow" | "pro"; want?: "try" | "cert"; days?: "1" | "3" | "7" };
+// The same sentence also says things Osama should know before he replies. Each is a
+// yes-or-no, so one sentence can carry several. None of them decides anything: they
+// only choose which of the site's own reviewed notes to show, and one plain line in
+// the WhatsApp message so Osama knows what to ask about.
+export const ENQUIRY_FLAGS = {
+  medical: { type: "boolean", instructions: "Mentions a health condition, medication, pregnancy, a recent operation, asthma, the heart, epilepsy, diabetes, the ears or sinuses, or asks whether they are fit or allowed to dive" },
+  nerves: { type: "boolean", instructions: "Someone is nervous, anxious or scared about the water or diving, or is not a confident swimmer" },
+  children: { type: "boolean", instructions: "A child or teenager under 15 would dive or snorkel too" },
+} as const;
+export type EnquiryNote = keyof typeof ENQUIRY_FLAGS;
+export const ENQUIRY_NOTES = Object.keys(ENQUIRY_FLAGS) as EnquiryNote[];
+/** A health mention is flagged when Jev is only 40% sure: showing the screening note by
+    mistake costs a line of reading, missing it can cost a diver. */
+export const NOTE_MIN: Record<EnquiryNote, number> = { medical: 0.4, nerves: 0.5, children: 0.5 };
+
+export type FinderReading = { dived?: "never" | "few" | "card"; card?: "ow" | "aow" | "pro"; want?: "try" | "cert"; days?: "1" | "3" | "7"; notes?: EnquiryNote[] };
 export const FINDER_MIN_CONFIDENCE = 0.5;
 
 export function finderState(text: string): string {
@@ -136,10 +151,15 @@ export function finderState(text: string): string {
 }
 
 export async function readFinder(text: string, opts: ReadOptions = {}): Promise<Record<string, Reading | null> | null> {
-  const answers = await evaluate(finderState(text), FINDER_QUESTIONS, opts);
+  const answers = await evaluate(finderState(text), { ...FINDER_QUESTIONS, ...ENQUIRY_FLAGS }, opts);
   if (!answers) return null;
   const out: Record<string, Reading | null> = {};
   for (const [name, q] of Object.entries(FINDER_QUESTIONS)) out[name] = pick(answers[name], Object.keys(q.criteria));
+  // A yes-or-no comes back as a probability; kept in the same shape, with "yes" as its id.
+  for (const name of ENQUIRY_NOTES) {
+    const p = answers[name]?.probability;
+    out[name] = typeof p === "number" && Number.isFinite(p) ? { id: "yes", confidence: Math.min(1, Math.max(0, p)) } : null;
+  }
   return out;
 }
 
@@ -159,5 +179,7 @@ export function usableFinder(raw: Record<string, Reading | null> | null, min = F
   if (want && out.dived !== "card") out.want = want as FinderReading["want"];
   const days = sure("days", ["unclear"]);
   if (days) out.days = days as FinderReading["days"];
+  const notes = ENQUIRY_NOTES.filter((name) => (raw[name]?.confidence ?? 0) >= NOTE_MIN[name]);
+  if (notes.length) out.notes = notes;
   return out;
 }

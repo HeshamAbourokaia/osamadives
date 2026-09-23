@@ -26,7 +26,8 @@ export async function askJev(question: string, timeoutMs = 6000): Promise<string
   return data && typeof data.id === "string" ? data.id : null;
 }
 
-export type FinderAnswers = { dived?: "never" | "few" | "card"; card?: "ow" | "aow" | "pro"; want?: "try" | "cert"; days?: "1" | "3" | "7" };
+export type EnquiryNote = "medical" | "nerves" | "children";
+export type FinderAnswers = { dived?: "never" | "few" | "card"; card?: "ow" | "aow" | "pro"; want?: "try" | "cert"; days?: "1" | "3" | "7"; notes?: EnquiryNote[] };
 
 /** The finder's taps, read out of a sentence. Only the confident ones come back. */
 export async function askFinder(text: string, timeoutMs = 6000): Promise<FinderAnswers> {
@@ -37,5 +38,9 @@ export async function askFinder(text: string, timeoutMs = 6000): Promise<FinderA
   if (data.card === "ow" || data.card === "aow" || data.card === "pro") out.card = data.card;
   if (data.want === "try" || data.want === "cert") out.want = data.want;
   if (data.days === "1" || data.days === "3" || data.days === "7") out.days = data.days;
+  if (Array.isArray(data.notes)) {
+    const notes = (["medical", "nerves", "children"] as const).filter((n) => data.notes!.includes(n));
+    if (notes.length) out.notes = notes;
+  }
   return out;
 }

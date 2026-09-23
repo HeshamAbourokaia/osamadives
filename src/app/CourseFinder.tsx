@@ -3,7 +3,8 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { whatsappFor, togglePick, readPicks } from "@/lib/picks";
 import { writeLevel } from "@/lib/level";
-import { askFinder } from "@/lib/guide/ask-jev";
+import { askFinder, type EnquiryNote } from "@/lib/guide/ask-jev";
+import { enquiryMessage, NOTE_TEXT } from "@/lib/enquiry";
 
 import { courseAnswer, type Dived, type Card, type Days } from "@/lib/course-finder";
 
@@ -22,11 +23,15 @@ export default function CourseFinder() {
   const [story, setStory] = useState("");
   const [reading, setReading] = useState(false);
   const [heard, setHeard] = useState<string | null>(null);
+  // What Jev noticed that Osama should ask about, and the sentence it read, which the
+  // message carries in the visitor's own words (never when it mentions their health).
+  const [notes, setNotes] = useState<EnquiryNote[]>([]);
+  const [told, setTold] = useState("");
   const stepTwoDone = dived === "card" ? card !== null : want !== null;
   const done = dived !== null && stepTwoDone && days !== null;
   const result = done ? courseAnswer(dived, want, card, days) : null;
   useEffect(() => { if (result) { writeLevel(result.level); setAdded(result.course ? readPicks().some((p) => p.id === result.course!.id) : false); } }, [result?.title, result?.level, result?.course?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-  const reset = () => { setDived(null); setWant(null); setCard(null); setDays(null); setHeard(null); };
+  const reset = () => { setDived(null); setWant(null); setCard(null); setDays(null); setHeard(null); setNotes([]); setTold(""); };
   const opt = (on: boolean, onClick: () => void, label: string) => (
     <button type="button" className={`finder__opt${on ? " is-on" : ""}`} aria-pressed={on} onClick={onClick}>{label}</button>
   );
@@ -38,6 +43,8 @@ export default function CourseFinder() {
     setHeard(null);
     const got = await askFinder(text);
     setReading(false);
+    setNotes(got.notes ?? []);
+    setTold(text);
     const filled: string[] = [];
     if (got.dived) { setDived(got.dived); setCard(null); setWant(null); filled.push(got.dived === "never" ? "never dived" : got.dived === "few" ? "tried it, no card" : "you have a card"); }
     if (got.dived === "card" && got.card) { setCard(got.card); filled.push(got.card === "ow" ? "Open Water" : got.card === "aow" ? "Advanced" : "Rescue or above"); }
@@ -58,6 +65,12 @@ export default function CourseFinder() {
           <button type="submit" className="finder__opt finder__say-go" disabled={reading || !story.trim()}>{reading ? "Reading" : "Work it out"}</button>
         </div>
         {heard ? <p className="finder__heard" aria-live="polite">{heard}</p> : null}
+        {notes.map((n) => (
+          <p key={n} className={`finder__note-read${n === "medical" ? " is-health" : ""}`}>
+            {NOTE_TEXT[n].text}
+            {NOTE_TEXT[n].link ? <> <a href={NOTE_TEXT[n].link!.href} target="_blank" rel="noopener noreferrer">{NOTE_TEXT[n].link!.label}</a></> : null}
+          </p>
+        ))}
       </form>
       <Q k="Have you dived before?">
         {opt(dived === "never", () => { setDived("never"); setCard(null); }, "Never")}
@@ -90,7 +103,7 @@ export default function CourseFinder() {
           <h4 className="finder__course">{result.title}</h4>
           <p className="finder__say">{result.say}</p>
           <div className="finder__acts">
-            <a className="finder__wa" href={whatsappFor(`Hi Osama! I found you on osamadives.com. ${result.ask}`)} target="_blank" rel="noopener noreferrer">Ask Osama about this</a>
+            <a className="finder__wa" href={whatsappFor(enquiryMessage(result.ask, told, notes))} target="_blank" rel="noopener noreferrer">Ask Osama about this</a>
             {result.course ? (
               <button type="button" className={`pick${added ? " is-on" : ""}`} aria-pressed={added} onClick={() => { const { added: a, list } = togglePick({ ...result.course!, kind: "course" }); setAdded(a); window.dispatchEvent(new CustomEvent("od:picked", { detail: { label: result.course!.label, added: a, count: list.length } })); }}>
                 <span className="pick__mark" aria-hidden="true">{added ? "✓" : "+"}</span><span className="pick__word">{added ? "In your message" : "Add to my message"}</span>

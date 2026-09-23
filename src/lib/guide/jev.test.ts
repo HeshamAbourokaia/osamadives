@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { BOUNDARIES, answerFor } from "./engine";
-import { FINDER_QUESTIONS, GATEWAY, MIN_CONFIDENCE, NONE, criteriaFor, finderState, readFinder, readQuestion, stateFor, usableFinder, usableReading } from "./jev";
+import { ENQUIRY_FLAGS, FINDER_QUESTIONS, GATEWAY, MIN_CONFIDENCE, NONE, criteriaFor, finderState, readFinder, readQuestion, stateFor, usableFinder, usableReading } from "./jev";
 import { guideProfile } from "./profile";
 
 function gateway(answers: Record<string, unknown>, status = 200): typeof fetch {
@@ -77,10 +77,20 @@ describe("the finder in a sentence", () => {
     }) as unknown as typeof fetch;
     const raw = await readFinder(text, { key: "k", fetchImpl: capture });
     expect(sent!.state).toBe(finderState(text));
-    expect(Object.keys(sent!.questions)).toEqual(Object.keys(FINDER_QUESTIONS));
+    expect(Object.keys(sent!.questions)).toEqual([...Object.keys(FINDER_QUESTIONS), ...Object.keys(ENQUIRY_FLAGS)]);
     expect(raw?.dived).toEqual({ id: "few", confidence: 0.92 });
     // No card was read as "few", so the card answer is dropped; want was unsure; days is kept.
     expect(usableFinder(raw)).toEqual({ dived: "few", days: "3" });
+  });
+  it("reads the yes-or-no notes, and flags health from 40% sure", async () => {
+    const reply = (async () => ({ ok: true, status: 200, json: async () => ({ answers: {
+      dived: { choice: "never", confidence: 0.95 }, card: { choice: "none", confidence: 0.9 }, want: { choice: "try", confidence: 0.9 }, days: { choice: "1", confidence: 0.9 },
+      medical: { probability: 0.41 }, nerves: { probability: 0.88 }, children: { probability: 0.2 },
+    } }) })) as unknown as typeof fetch;
+    const raw = await readFinder("my wife is scared and I had an operation", { key: "k", fetchImpl: reply });
+    expect(raw?.medical).toEqual({ id: "yes", confidence: 0.41 });
+    expect(usableFinder(raw)).toEqual({ dived: "never", want: "try", days: "1", notes: ["medical", "nerves"] });
+    expect(usableFinder({ ...raw, medical: { id: "yes", confidence: 0.39 } })).toEqual({ dived: "never", want: "try", days: "1", notes: ["nerves"] });
   });
   it("keeps a card level only for someone with a card, and a wish only for someone without", () => {
     expect(usableFinder({ dived: { id: "card", confidence: 0.9 }, card: { id: "pro", confidence: 0.8 }, want: { id: "try", confidence: 0.9 }, days: null })).toEqual({ dived: "card", card: "pro" });

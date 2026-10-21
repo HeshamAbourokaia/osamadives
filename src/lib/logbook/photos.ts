@@ -19,7 +19,7 @@ function sniff(bytes: Uint8Array): string | null {
 export class PhotoError extends Error {}
 
 export async function savePhoto(file: File, id: string): Promise<string> {
-  if (file.size > LIMITS.photoBytes) throw new PhotoError("That photo is over 6 MB. A smaller one, please.");
+  if (file.size > LIMITS.photoBytes) throw new PhotoError("That photo is over 4 MB. A smaller one, please.");
   const bytes = new Uint8Array(await file.arrayBuffer());
   const type = sniff(bytes);
   if (!type || !TYPES[type]) throw new PhotoError("Photos need to be JPEG, PNG or WebP.");

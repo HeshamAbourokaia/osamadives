@@ -140,7 +140,7 @@ export const LIMITS = {
   country: { max: 40 },
   note: { min: 12, max: 600 },
   reply: { max: 280 },
-  photoBytes: 6 * 1024 * 1024,
+  photoBytes: 4 * 1024 * 1024,     // under Vercel's 4.5 MB for the whole form; the browser shrinks it first
   mediaBytes: 200 * 1024 * 1024,   // Osama uploading straight from his phone
   clipBytes: 80 * 1024 * 1024,     // a reviewer's clip: about a minute of phone video
 } as const;

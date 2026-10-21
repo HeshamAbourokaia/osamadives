@@ -10,6 +10,8 @@ const MAX_STAMPS = 5;
 import { COURSES, LIMITS, type Course, type SiteKey, type StampKey } from "@/lib/logbook/types";
 import PickerSheet from "./PickerSheet";
 import { MONTHS } from "@/lib/logbook/format";
+import { readResult } from "@/lib/logbook/result";
+import { shrinkPhoto } from "@/lib/logbook/shrink";
 
 const THIS_YEAR = new Date().getFullYear();
 const YEARS = Array.from({ length: THIS_YEAR - 2011 + 1 }, (_, i) => THIS_YEAR - i);
@@ -84,6 +86,14 @@ export default function LogbookForm({ nextNumber }: Props) {
       for (const c of courses) data.append("course", c);
       data.delete("stamp");
       for (const k of stamps) data.append("stamp", k);
+      // The photo is redrawn smaller before it travels: a phone's original is often
+      // over what the platform accepts for the whole form, and it would be refused unread.
+      data.delete("photo");
+      if (photo) {
+        const small = await shrinkPhoto(photo);
+        if (small.size > LIMITS.photoBytes) throw new Error("That photo is too big to send. Try another, or send it to Osama on WhatsApp after.");
+        data.set("photo", small, small.name);
+      }
       // The clip goes straight to storage first, so a minute of video never squeezes
       // through the form request; only its address travels with the page.
       data.delete("clip");
@@ -100,7 +110,7 @@ export default function LogbookForm({ nextNumber }: Props) {
         setClipPct(null);
       }
       const res = await fetch("/api/logbook", { method: "POST", body: data });
-      const json = (await res.json()) as { ok: boolean; error?: string; id?: string; cardUrl?: string };
+      const json = await readResult(res);
       if (!json.ok || !json.id || !json.cardUrl) throw new Error(json.error || "Something went wrong. Try again.");
       setDone({ id: json.id, cardUrl: json.cardUrl });
       window.scrollTo({ top: (document.getElementById("sign")?.offsetTop ?? 0) - 40, behavior: "smooth" });
@@ -198,7 +208,7 @@ export default function LogbookForm({ nextNumber }: Props) {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img className="lb-drop__thumb" src={photoUrl} alt="" />
               ) : null}
-              <span>{photo ? photo.name : "Tap to add a photo from the day. JPEG, PNG or WebP, up to 6 MB."}</span>
+              <span>{photo ? photo.name : "Tap to add a photo from the day. JPEG, PNG or WebP, any size."}</span>
               <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
               {photo ? (
                 <button type="button" className="lb-drop__remove" onClick={(e) => { e.preventDefault(); setPhoto(null); if (formRef.current) { const input = formRef.current.querySelector<HTMLInputElement>('input[name="photo"]'); if (input) input.value = ""; } }}>
